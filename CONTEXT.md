@@ -327,29 +327,33 @@ ng build --configuration production
 ### Implementado
 - [x] Fichero de contexto CONTEXT.md creado
 - [x] Hook de actualización automática configurado (`.claude/settings.json`)
-- [ ] Proyecto Angular 21 inicializado
-- [ ] Estructura de carpetas creada
-- [ ] Firebase configurado
-- [ ] PrimeNG instalado y configurado
-- [ ] Sidebar implementado
-- [ ] Módulo de euros (listado + detalle)
-- [ ] Auth (login/logout)
-- [ ] Guards de rutas
-- [ ] Sección conmemorativas
-- [ ] Sección pesetas
-- [ ] Sección estadísticas
-- [ ] Sección ubicación
+- [x] Proyecto Angular 21 inicializado (v21.2.7, standalone, SCSS, sin SSR)
+- [x] Estructura de carpetas creada (core, features, shared con subcarpetas completas)
+- [x] Firebase JS SDK instalado (sin @angular/fire — incompatible con Angular 21)
+- [x] PrimeNG 21 instalado
+- [x] Interfaces: `EuroCoin`, `ConservationState`, `AppUser`, `IAuthService`, `IEurosRepository`
+- [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `COLLECTIONS`
+- [x] Helper: `normalizeCountryName`, `getFlagPath`
+- [x] Pipe: `EuroValuePipe` (standalone)
+- [x] `AuthService` — signal + onAuthStateChanged, lazy getAuth()
+- [x] `FirestoreService` — genérico, tipado, lazy getFirestore(), CollectionName type
+- [ ] `app.config.ts` con initializeApp() ← **SIGUIENTE PASO** (necesita credenciales Firebase)
+- [ ] `app.routes.ts`
+- [ ] Layout raíz (sidebar + router-outlet)
+- [ ] Shared components: sidebar, coin-badge, country-flag, loading-spinner, login-dialog
+- [ ] `euros.service.ts` implementando IEurosRepository
+- [ ] Auth guard
+- [ ] Euros list + detail
+- [ ] Sección conmemorativas, pesetas, estadísticas, ubicación
 
 ### Pendiente / Próximos pasos
-1. Inicializar el proyecto Angular 21: `ng new coins-ddlp-front --standalone --style=scss --routing`
-2. Instalar y configurar Firebase + PrimeNG
-3. Crear estructura de carpetas según arquitectura definida
-4. Implementar `app.config.ts` con Firebase providers
-5. Implementar layout raíz (sidebar + router-outlet)
-6. Implementar listado de euros con búsqueda y filtros
-7. Implementar detalle de moneda
-8. Implementar autenticación (login modal)
-9. Añadir guards y botones de edición condicionales
+1. **`app.config.ts`** — `initializeApp(firebaseConfig)` + providers Angular (necesita credenciales Firebase)
+2. **`app.routes.ts`** — rutas raíz con lazy loading
+3. **Layout raíz** — `app.component.ts` con sidebar + router-outlet
+4. **Shared components** — sidebar, coin-badge, country-flag, loading-spinner, login-dialog
+5. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
+6. **Auth guard** — funcional con inject(AuthService)
+7. **Euros list + detail** — componentes de la feature
 
 ---
 
@@ -359,6 +363,8 @@ ng build --configuration production
 |-------|--------|
 | 2026-04-06 | Proyecto iniciado. CONTEXT.md y hook creados. |
 | 2026-04-06 | Arquitectura refactorizada: SOLID explícito, carpeta `shared/components/` genéricos, `shared/constants/literals.ts`, regla de dependencias entre capas, anti-patterns prohibidos. |
+| 2026-04-06 | Proyecto Angular 21 creado. Firebase JS SDK + PrimeNG 21 instalados (@angular/fire incompatible con Angular 21). |
+| 2026-04-06 | Capa de fundación completa: interfaces, constantes, helpers, pipe, AuthService y FirestoreService. Decisiones: year/uds como number, ConservationCode union type, AppUser agnóstico de Firebase, Observable para lecturas / Promise para escrituras, lazy getters para Firebase, CollectionName type para evitar magic strings. |
 
 ---
 
