@@ -1,14 +1,16 @@
+export type ConservationCode = 'FDC' | 'SC' | 'EBC' | 'MBC' | 'BC' | 'RC' | 'MC' | 'ND';
+
 export interface EuroCoin {
   id: string;
-  year: string;
+  year: number;
   country: string;
   mint?: string;
   faceValue: string;
   description: string;
-  uds: string;
-  conservation?: string;
-  commemorative?: string;
+  uds: number;
+  conservation: ConservationCode;
+  commemorative: boolean;
+  circulation: boolean;
   idNum: string;
   observations?: string;
-  circulation: boolean;
 }

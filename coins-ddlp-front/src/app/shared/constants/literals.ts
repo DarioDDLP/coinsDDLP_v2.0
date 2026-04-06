@@ -1,0 +1,88 @@
+export const LITERALS = {
+  shared: {
+    loading: 'Cargando...',
+    error: 'Ha ocurrido un error inesperado',
+    confirm: 'Confirmar',
+    cancel: 'Cancelar',
+    save: 'Guardar',
+    edit: 'Editar',
+    delete: 'Eliminar',
+    add: 'Añadir',
+    back: 'Volver',
+    search: 'Buscar',
+    noResults: 'No se encontraron resultados',
+    all: 'Todas',
+  },
+
+  auth: {
+    loginTitle: 'Acceder',
+    loginButton: 'Entrar',
+    logoutButton: 'Cerrar sesión',
+    emailLabel: 'Email',
+    emailPlaceholder: 'correo@ejemplo.com',
+    passwordLabel: 'Contraseña',
+    passwordPlaceholder: '••••••••',
+    loginSuccess: 'Sesión iniciada correctamente',
+    loginError: 'Email o contraseña incorrectos',
+    logoutSuccess: 'Sesión cerrada',
+  },
+
+  euros: {
+    title: 'Monedas Euro',
+    searchPlaceholder: 'Buscar por país, año, valor...',
+    filterAll: 'Todas',
+    filterOwned: 'Obtenidas',
+    filterMissing: 'Faltantes',
+    filterCirculation: 'Circulación',
+    filterCommemorative: 'Conmemorativas',
+    colCountry: 'País',
+    colYear: 'Año',
+    colFaceValue: 'Valor',
+    colMint: 'Ceca',
+    colConservation: 'Estado',
+    colUnits: 'Uds.',
+    colCirculation: 'Circulación',
+    addCoin: 'Añadir moneda',
+    editCoin: 'Editar moneda',
+    deleteCoin: 'Eliminar moneda',
+    deleteConfirm: '¿Seguro que quieres eliminar esta moneda?',
+    saveSuccess: 'Moneda guardada correctamente',
+    saveError: 'Error al guardar la moneda',
+    deleteSuccess: 'Moneda eliminada correctamente',
+    deleteError: 'Error al eliminar la moneda',
+    observationsLabel: 'Observaciones',
+    observationsPlaceholder: 'Notas sobre esta moneda...',
+    unitsLabel: 'Unidades',
+    conservationLabel: 'Estado de conservación',
+    noObservations: 'Sin observaciones',
+  },
+
+  sidebar: {
+    euros: 'Euro',
+    conmemorativas: 'Conmemorativas',
+    pesetas: 'Peseta',
+    ubicacion: 'Ubicación',
+    estadisticas: 'Estadísticas',
+  },
+
+  conmemorativas: {
+    title: 'Monedas Conmemorativas',
+  },
+
+  pesetas: {
+    title: 'Colección Pesetas',
+  },
+
+  estadisticas: {
+    title: 'Estadísticas',
+    totalCoins: 'Total monedas',
+    ownedCoins: 'Obtenidas',
+    missingCoins: 'Faltantes',
+    byCountry: 'Por país',
+    byValue: 'Por valor facial',
+  },
+
+  ubicacion: {
+    title: 'Ubicación',
+  },
+} as const;
