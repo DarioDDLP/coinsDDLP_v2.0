@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Users/dariodelapoza/Documents/Proyectos/coinsDDLP_v2.0/.claude/update-context-log.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\n⚠️  Recuerda actualizar las secciones \"Estado actual\" y \"Log de implementación\" en CONTEXT.md antes de cerrar la sesión.' >&2"
+          }
+        ]
+      }
+    ]
+  }
+}
