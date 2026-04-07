@@ -1,4 +1,6 @@
 @use 'styles/variables' as *;
+@use 'styles/typography' as *;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 @import 'primeicons/primeicons.css';
 
 *,
@@ -12,7 +14,8 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: sans-serif;
+  font-family: var(--font-family);
+  font-size: var(--font-base);
   background-image: url('/assets/background.jpg');
   background-size: cover;
   background-position: center;
