@@ -322,7 +322,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-06
+> **Última actualización:** 2026-04-07
 
 ### Implementado
 - [x] Fichero de contexto CONTEXT.md creado
@@ -330,30 +330,31 @@ ng build --configuration production
 - [x] Proyecto Angular 21 inicializado (v21.2.7, standalone, SCSS, sin SSR)
 - [x] Estructura de carpetas creada (core, features, shared con subcarpetas completas)
 - [x] Firebase JS SDK instalado (sin @angular/fire — incompatible con Angular 21)
-- [x] PrimeNG 21 instalado
+- [x] PrimeNG 21 + @primeng/themes instalados
+- [x] @angular/animations instalado (requerido por provideAnimationsAsync)
 - [x] Interfaces: `EuroCoin`, `ConservationState`, `AppUser`, `IAuthService`, `IEurosRepository`
 - [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `COLLECTIONS`
 - [x] Helper: `normalizeCountryName`, `getFlagPath`
 - [x] Pipe: `EuroValuePipe` (standalone)
 - [x] `AuthService` — signal + onAuthStateChanged, lazy getAuth()
 - [x] `FirestoreService` — genérico, tipado, lazy getFirestore(), CollectionName type
-- [ ] `app.config.ts` con initializeApp() ← **SIGUIENTE PASO** (necesita credenciales Firebase)
-- [ ] `app.routes.ts`
-- [ ] Layout raíz (sidebar + router-outlet)
-- [ ] Shared components: sidebar, coin-badge, country-flag, loading-spinner, login-dialog
+- [x] `app.config.ts` — initializeApp() Firebase + provideRouter + provideAnimationsAsync + providePrimeNG (tema Aura)
+- [x] `app.routes.ts` — rutas raíz con lazy loading, redirect `/` → `/euros`, wildcard → `/euros`
+- [x] Layout raíz — `app.ts` con SidebarComponent + router-outlet, fondo en body (global)
+- [x] `SidebarComponent` — glassmorphism, azul marino #1e3a5f, items desde sidebar.config.ts con LITERALS
+- [x] Assets en `public/assets/` (background.jpg, logo, banderas, iconos)
+- [ ] Shared components: coin-badge, country-flag, loading-spinner ← **SIGUIENTE PASO**
 - [ ] `euros.service.ts` implementando IEurosRepository
 - [ ] Auth guard
 - [ ] Euros list + detail
 - [ ] Sección conmemorativas, pesetas, estadísticas, ubicación
 
 ### Pendiente / Próximos pasos
-1. **`app.config.ts`** — `initializeApp(firebaseConfig)` + providers Angular (necesita credenciales Firebase)
-2. **`app.routes.ts`** — rutas raíz con lazy loading
-3. **Layout raíz** — `app.component.ts` con sidebar + router-outlet
-4. **Shared components** — sidebar, coin-badge, country-flag, loading-spinner, login-dialog
-5. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
-6. **Auth guard** — funcional con inject(AuthService)
-7. **Euros list + detail** — componentes de la feature
+1. **Shared components** — coin-badge, country-flag, loading-spinner
+2. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
+3. **Auth guard** — funcional con inject(AuthService)
+4. **Euros list + detail** — componentes de la feature
+5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
 
 ---
 
@@ -365,6 +366,7 @@ ng build --configuration production
 | 2026-04-06 | Arquitectura refactorizada: SOLID explícito, carpeta `shared/components/` genéricos, `shared/constants/literals.ts`, regla de dependencias entre capas, anti-patterns prohibidos. |
 | 2026-04-06 | Proyecto Angular 21 creado. Firebase JS SDK + PrimeNG 21 instalados (@angular/fire incompatible con Angular 21). |
 | 2026-04-06 | Capa de fundación completa: interfaces, constantes, helpers, pipe, AuthService y FirestoreService. Decisiones: year/uds como number, ConservationCode union type, AppUser agnóstico de Firebase, Observable para lecturas / Promise para escrituras, lazy getters para Firebase, CollectionName type para evitar magic strings. |
+| 2026-04-07 | app.config.ts, app.routes.ts y layout raíz. SidebarComponent con glassmorphism y azul marino. Assets en public/assets/. @primeng/themes y @angular/animations instalados. Login es p-dialog, no ruta separada. |
 
 ---
 
