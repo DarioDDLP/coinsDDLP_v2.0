@@ -58,6 +58,8 @@ export const LITERALS = {
   },
 
   sidebar: {
+    sectionLabel: 'Colecciones',
+    logoAlt: 'coinsDDLP logo',
     euros: 'Euro',
     conmemorativas: 'Conmemorativas',
     pesetas: 'Peseta',

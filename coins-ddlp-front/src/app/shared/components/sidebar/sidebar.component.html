@@ -1,0 +1,25 @@
+<nav class="sidebar">
+  <div class="sidebar__logo">
+    <img src="assets/logo-ddlp-dark.png" [attr.alt]="literals.logoAlt" />
+  </div>
+
+  <div class="sidebar__divider"></div>
+  <p class="sidebar__section-label">{{ literals.sectionLabel }}</p>
+
+  <ul class="sidebar__nav">
+    @for (item of items; track item.routerLink) {
+      <li>
+        <a
+          [routerLink]="item.routerLink"
+          routerLinkActive="sidebar__nav-item--active"
+          class="sidebar__nav-item"
+        >
+          <div class="sidebar__nav-icon">
+            <img [src]="item.imgUrl" [alt]="item.label" />
+          </div>
+          <span>{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+</nav>
