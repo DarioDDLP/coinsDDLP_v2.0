@@ -343,6 +343,8 @@ ng build --configuration production
 - [x] Layout raíz — `app.ts` con SidebarComponent + router-outlet, fondo en body (global)
 - [x] `SidebarComponent` — glassmorphism, azul marino #1e3a5f, items desde sidebar.config.ts con LITERALS
 - [x] Assets en `public/assets/` (background.jpg, logo, banderas, iconos)
+- [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars (cobalt, gold-tan, cream, deep-navy, midnight)
+- [x] Sidebar estilado con degradado cream → gold-tan → cream, divisor deep-navy, hover/activo gold-tan
 - [ ] Shared components: coin-badge, country-flag, loading-spinner ← **SIGUIENTE PASO**
 - [ ] `euros.service.ts` implementando IEurosRepository
 - [ ] Auth guard
@@ -367,6 +369,7 @@ ng build --configuration production
 | 2026-04-06 | Proyecto Angular 21 creado. Firebase JS SDK + PrimeNG 21 instalados (@angular/fire incompatible con Angular 21). |
 | 2026-04-06 | Capa de fundación completa: interfaces, constantes, helpers, pipe, AuthService y FirestoreService. Decisiones: year/uds como number, ConservationCode union type, AppUser agnóstico de Firebase, Observable para lecturas / Promise para escrituras, lazy getters para Firebase, CollectionName type para evitar magic strings. |
 | 2026-04-07 | app.config.ts, app.routes.ts y layout raíz. SidebarComponent con glassmorphism y azul marino. Assets en public/assets/. @primeng/themes y @angular/animations instalados. Login es p-dialog, no ruta separada. |
+| 2026-04-07 | Paleta de colores definida (cobalt #2d3a7a, gold-tan #d9b582, cream #fff5e8, deep-navy #151465, midnight #040339). Sidebar con degradado y estilos coherentes con la paleta. |
 
 ---
 
