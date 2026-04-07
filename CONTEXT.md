@@ -362,11 +362,13 @@ ng build --configuration production
 
 ### Pendiente / Próximos pasos
 1. **Shared components** — coin-badge, country-flag, loading-spinner
-2. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
-3. **Auth guard** — funcional con inject(AuthService)
-4. **Euros list + detail** — componentes de la feature
-5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
-6. **Módulo admin** — gestión de usuarios con guard de rol (custom claim Firebase)
+2. **Login/Logout** — botones en sidebar + login-dialog
+3. **`AppErrorHandler`** — ErrorHandler global en `core/services/`, registrado en `app.config.ts`. Captura errores no controlados de Firestore y runtime. Preparado para conectar a Sentry en el futuro.
+4. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
+5. **Auth guard** — funcional con inject(AuthService)
+6. **Euros list + detail** — componentes de la feature
+7. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+8. **Módulo admin** — gestión de usuarios con guard de rol (custom claim Firebase)
 
 ---
 
