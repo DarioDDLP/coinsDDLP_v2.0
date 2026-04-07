@@ -15,7 +15,11 @@
           class="sidebar__nav-item"
         >
           <div class="sidebar__nav-icon">
-            <img [src]="item.imgUrl" [alt]="item.label" />
+            @if (item.imgUrl) {
+              <img [src]="item.imgUrl" [alt]="item.label" />
+            } @else {
+              <i [class]="item.icon"></i>
+            }
           </div>
           <span>{{ item.label }}</span>
         </a>
