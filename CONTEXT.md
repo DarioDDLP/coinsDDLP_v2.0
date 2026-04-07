@@ -243,6 +243,14 @@ shared   NO importa de core ni de features.
 - [ ] Borrar moneda (confirmación con modal)
 - [ ] Logout
 
+### Módulo de administración (solo admins)
+- [ ] Acceso restringido con guard de rol admin (custom claim en Firebase Auth)
+- [ ] Listar todos los usuarios registrados
+- [ ] Dar de alta nuevos usuarios
+- [ ] Editar usuarios (email, nombre, rol)
+- [ ] Eliminar usuarios
+- [ ] Ruta protegida: `/admin/usuarios`
+
 ---
 
 ## Firebase
@@ -358,6 +366,7 @@ ng build --configuration production
 3. **Auth guard** — funcional con inject(AuthService)
 4. **Euros list + detail** — componentes de la feature
 5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+6. **Módulo admin** — gestión de usuarios con guard de rol (custom claim Firebase)
 
 ---
 
