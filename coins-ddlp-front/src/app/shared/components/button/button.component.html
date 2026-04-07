@@ -1,0 +1,15 @@
+<button
+  [type]="type()"
+  [class]="'btn btn--' + variant()"
+  [disabled]="disabled() || loading()"
+  (click)="onClick()"
+>
+  @if (loading()) {
+    <i class="pi pi-spin pi-spinner"></i>
+  } @else if (icon()) {
+    <i [class]="icon()"></i>
+  }
+  @if (label()) {
+    <span>{{ label() }}</span>
+  }
+</button>

@@ -1,0 +1,71 @@
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: var(--font-sm);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
+
+  i {
+    font-size: 14px;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  // Primary — deep-navy con hover cobalt
+  &--primary {
+    background: var(--deep-navy);
+    color: var(--cream);
+    box-shadow: 0 2px 6px rgba(21, 20, 101, 0.3);
+
+    &:hover:not(:disabled) {
+      background: var(--cobalt);
+      box-shadow: 0 4px 10px rgba(45, 58, 122, 0.35);
+    }
+  }
+
+  // Secondary — gold-tan con texto dark
+  &--secondary {
+    background: var(--gold-tan);
+    color: var(--midnight);
+    box-shadow: 0 2px 6px rgba(217, 181, 130, 0.4);
+
+    &:hover:not(:disabled) {
+      background: #c9a56e;
+      box-shadow: 0 4px 10px rgba(217, 181, 130, 0.5);
+    }
+  }
+
+  // Danger
+  &--danger {
+    background: var(--danger);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(192, 57, 43, 0.3);
+
+    &:hover:not(:disabled) {
+      background: var(--danger-hover);
+      box-shadow: 0 4px 10px rgba(192, 57, 43, 0.4);
+    }
+  }
+
+  // Ghost — sin fondo, borde cobalt
+  &--ghost {
+    background: transparent;
+    color: var(--cobalt);
+    border: 1.5px solid var(--cobalt);
+    box-shadow: none;
+
+    &:hover:not(:disabled) {
+      background: rgba(45, 58, 122, 0.08);
+    }
+  }
+}
