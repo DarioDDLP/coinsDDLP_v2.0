@@ -1,0 +1,17 @@
+@use '../../../../styles/variables' as v;
+
+.coin-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+
+  &--success   { background: v.$state-success-bg;   color: v.$state-success-text; }
+  &--info      { background: v.$state-info-bg;       color: v.$state-info-text; }
+  &--warn      { background: v.$state-warn-bg;       color: v.$state-warn-text; }
+  &--danger    { background: v.$state-danger-bg;     color: v.$state-danger-text; }
+  &--secondary { background: v.$state-secondary-bg;  color: v.$state-secondary-text; }
+}
