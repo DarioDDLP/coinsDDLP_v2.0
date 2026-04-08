@@ -330,7 +330,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-07
+> **Última actualización:** 2026-04-08
 
 ### Implementado
 - [x] Fichero de contexto CONTEXT.md creado
@@ -354,15 +354,18 @@ ng build --configuration production
 - [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars (cobalt, gold-tan, cream, deep-navy, midnight)
 - [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts), CSS vars de tamaño, peso, line-height y letter-spacing
 - [x] Sidebar estilado con degradado cream → gold-tan → cream, divisor deep-navy, hover/activo gold-tan
-- [ ] Shared components: coin-badge, country-flag, loading-spinner ← **SIGUIENTE PASO**
+- [x] Shared component: `coin-badge` — badge de estado de conservación con SCSS puro (sin PrimeNG). Colores de estado añadidos a `_variables.scss` como SCSS vars.
+- [x] Shared component: `country-flag` — imagen circular configurable via `[size]` input (default 32px), fallback si imagen no existe. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()`.
+- [ ] Shared component: loading-spinner ← **SIGUIENTE PASO**
 - [ ] `euros.service.ts` implementando IEurosRepository
 - [ ] Auth guard
 - [ ] Euros list + detail
 - [ ] Sección conmemorativas, pesetas, estadísticas, ubicación
 
 ### Pendiente / Próximos pasos
-1. **Shared components** — coin-badge, country-flag, loading-spinner
-2. **Login/Logout** — botones en sidebar + login-dialog
+1. **Shared component** — loading-spinner
+2. **`CountryFlagComponent` en sidebar** — integrar la bandera del país seleccionado en la navegación lateral
+3. **Login/Logout** — botones en sidebar + login-dialog
 3. **`AppErrorHandler`** — ErrorHandler global en `core/services/`, registrado en `app.config.ts`. Captura errores no controlados de Firestore y runtime. Preparado para conectar a Sentry en el futuro.
 4. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
 5. **Auth guard** — funcional con inject(AuthService)
@@ -383,6 +386,8 @@ ng build --configuration production
 | 2026-04-07 | app.config.ts, app.routes.ts y layout raíz. SidebarComponent con glassmorphism y azul marino. Assets en public/assets/. @primeng/themes y @angular/animations instalados. Login es p-dialog, no ruta separada. |
 | 2026-04-07 | Paleta de colores definida (cobalt #2d3a7a, gold-tan #d9b582, cream #fff5e8, deep-navy #151465, midnight #040339). Sidebar con degradado y estilos coherentes con la paleta. |
 | 2026-04-07 | Tipografía Montserrat (Google Fonts) con variables CSS de tamaño, peso, line-height y letter-spacing en _typography.scss. |
+| 2026-04-08 | `CoinBadgeComponent` — badge de estado de conservación con SCSS puro (sin PrimeNG). Decisión: usar SCSS vars en lugar de CSS custom properties para colores estáticos. Colores de estado añadidos a `_variables.scss`. |
+| 2026-04-08 | `CountryFlagComponent` — imagen circular configurable via `[size]` input, fallback `(error)`. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()` en normalización. |
 
 ---
 
