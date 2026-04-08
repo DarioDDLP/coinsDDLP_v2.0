@@ -1,0 +1,9 @@
+<img
+  class="country-flag"
+  [src]="flagPath()"
+  [alt]="country()"
+  [title]="country()"
+  [style.width]="sizePx()"
+  [style.height]="sizePx()"
+  (error)="onImageError($event)"
+/>

@@ -5,6 +5,7 @@
  */
 export function normalizeCountryName(country: string): string {
   return country
+    .trim()
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -12,5 +13,5 @@ export function normalizeCountryName(country: string): string {
 }
 
 export function getFlagPath(country: string): string {
-  return `assets/flags/${normalizeCountryName(country)}.png`;
+  return `assets/flags/${normalizeCountryName(country)}-flag.png`;
 }
