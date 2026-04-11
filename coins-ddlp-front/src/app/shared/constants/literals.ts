@@ -29,7 +29,11 @@ export const LITERALS = {
 
   euros: {
     title: 'Monedas Euro',
-    searchPlaceholder: 'Buscar por país, año, valor...',
+    countriesTitle: 'Colección Euro',
+    searchCountries: 'Buscar por país...',
+    searchYears: 'Buscar por año...',
+    searchCoins: 'Buscar por moneda...',
+    emptySearch: 'No se encontraron resultados',
     filterAll: 'Todas',
     filterOwned: 'Obtenidas',
     filterMissing: 'Faltantes',

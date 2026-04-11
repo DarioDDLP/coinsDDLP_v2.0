@@ -11,4 +11,70 @@
 
 .euros-content {
   min-height: 100vh;
+  padding: 32px 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.euros-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+
+  &__title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gold-tan);
+  }
+}
+
+.euros-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  padding: 32px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+  min-height: 200px;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+  }
+
+  &__empty {
+    text-align: center;
+    color: var(--cobalt);
+    margin: 0;
+    padding: 40px 0;
+  }
+}
+
+.country-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(217, 181, 130, 0.1);
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--deep-navy);
+    text-align: center;
+  }
+
+  &__years {
+    font-size: 12px;
+    color: var(--cobalt);
+    font-weight: 500;
+  }
 }
