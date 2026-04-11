@@ -15,7 +15,9 @@
           class="sidebar__nav-item"
         >
           <div class="sidebar__nav-icon">
-            @if (item.imgUrl) {
+            @if (item.country) {
+              <app-country-flag [country]="item.country" [size]="30" />
+            } @else if (item.imgUrl) {
               <img [src]="item.imgUrl" [alt]="item.label" />
             } @else {
               <i [class]="item.icon"></i>
