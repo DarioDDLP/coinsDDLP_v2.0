@@ -1,0 +1,14 @@
+.euros-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  pointer-events: none;
+}
+
+.euros-content {
+  min-height: 100vh;
+}
