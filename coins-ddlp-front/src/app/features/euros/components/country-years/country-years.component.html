@@ -10,7 +10,7 @@
   @if (yearGroups().length > 0) {
     <div class="year-grid">
       @for (group of yearGroups(); track group.year) {
-        <div class="year-card">
+        <div class="year-card" [routerLink]="['/euros', country(), group.year]">
           <span class="year-card__year">{{ group.year }}</span>
           <div class="year-card__details">
             <span class="year-card__regular">{{ group.regular }} {{ literals.regular }}</span>

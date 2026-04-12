@@ -16,8 +16,15 @@ export class SupabaseService {
   private loading = inject(LoadingService);
 
   getTable<T extends { id: string }>(tableName: TableName): Observable<T[]> {
+    return this.getTableWhere<T>(tableName, (query) => query);
+  }
+
+  getTableWhere<T extends { id: string }>(
+    tableName: TableName,
+    filterFn: (query: any) => any
+  ): Observable<T[]> {
     return new Observable(observer => {
-      // Cargar todos los datos con paginación
+      // Cargar todos los datos con paginación y filtros (sin tiempo real)
       const loadAllData = async () => {
         this.loading.showLoading();
 
@@ -28,10 +35,8 @@ export class SupabaseService {
           let hasMore = true;
 
           while (hasMore) {
-            const { data, error } = await this.supabase
-              .from(tableName)
-              .select('*')
-              .range(offset, offset + pageSize - 1);
+            const baseQuery = this.supabase.from(tableName).select('*');
+            const { data, error } = await filterFn(baseQuery).range(offset, offset + pageSize - 1);
 
             if (error) {
               observer.error(error);
@@ -43,6 +48,9 @@ export class SupabaseService {
             } else {
               allData = [...allData, ...(data as T[])];
               offset += pageSize;
+              if (data.length < pageSize) {
+                hasMore = false;
+              }
             }
           }
 
@@ -54,27 +62,9 @@ export class SupabaseService {
 
       loadAllData();
 
-      // Suscribirse a cambios en tiempo real
-      const channel = this.supabase
-        .channel(`${tableName}-changes`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: tableName,
-          },
-          () => {
-            // Cuando hay cambios, recargar todos los datos
-            loadAllData();
-          }
-        )
-        .subscribe();
-
-      // Cleanup: desuscribirse cuando se complete
-      return () => {
-        channel.unsubscribe();
-      };
+      // No se suscribe a cambios en tiempo real — optimizar para lecturas
+      // Los cambios (create/update/delete) se manejan en sus respectivos métodos
+      return () => {};
     });
   }
 

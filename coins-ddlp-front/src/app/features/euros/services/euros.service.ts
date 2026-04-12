@@ -13,6 +13,18 @@ export class EurosService implements IEurosRepository {
     return this.supabase.getTable<EuroCoin>(TABLES.euro);
   }
 
+  getByCountry(country: string): Observable<EuroCoin[]> {
+    return this.supabase.getTableWhere<EuroCoin>(TABLES.euro, (query) =>
+      query.eq('country', country)
+    );
+  }
+
+  getByCountryAndYear(country: string, year: number): Observable<EuroCoin[]> {
+    return this.supabase.getTableWhere<EuroCoin>(TABLES.euro, (query) =>
+      query.eq('country', country).eq('year', year)
+    );
+  }
+
   getById(id: string): Observable<EuroCoin | null> {
     return new Observable(observer => {
       this.getAll().subscribe(coins => {

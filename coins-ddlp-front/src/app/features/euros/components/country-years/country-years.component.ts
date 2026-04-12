@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
@@ -16,7 +15,7 @@ interface YearGroup {
 @Component({
   selector: 'app-country-years',
   standalone: true,
-  imports: [CommonModule, CollectionLayoutComponent],
+  imports: [CommonModule, RouterLink, CollectionLayoutComponent],
   templateUrl: './country-years.component.html',
   styleUrl: './country-years.component.scss',
 })
@@ -27,21 +26,26 @@ export class CountryYearsComponent implements OnInit {
   readonly literals = LITERALS.euros;
 
   readonly country = signal('');
-  private allCoins = toSignal(this.eurosService.getAll(), { initialValue: [] });
   readonly searchQuery = signal('');
+
+  private countryCoins = signal<any[]>([]);
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.country.set(params['country'] || '');
+      const currentCountry = params['country'] || '';
+      this.country.set(currentCountry);
+
+      if (currentCountry) {
+        this.eurosService.getByCountry(currentCountry).subscribe(coins => {
+          this.countryCoins.set(coins);
+        });
+      }
     });
   }
 
   readonly yearGroups = computed(() => {
-    const coins = this.allCoins();
-    const currentCountry = this.country();
+    const coins = this.countryCoins();
     const queryRaw = this.searchQuery().trim();
-
-    if (!currentCountry) return [];
 
     // Normalizar query (minúsculas + sin acentos)
     const query = queryRaw
@@ -49,20 +53,18 @@ export class CountryYearsComponent implements OnInit {
       .normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '');
 
-    // Filtrar por país y agrupar por año
+    // Agrupar por año (datos ya vienen filtrados por país desde Supabase)
     const grouped = new Map<number, { count: number; regular: number; commemorative: number }>();
 
     coins.forEach(coin => {
-      if (coin.country === currentCountry) {
-        const existing = grouped.get(coin.year) ?? { count: 0, regular: 0, commemorative: 0 };
-        existing.count++;
-        if (coin.commemorative) {
-          existing.commemorative++;
-        } else {
-          existing.regular++;
-        }
-        grouped.set(coin.year, existing);
+      const existing = grouped.get(coin.year) ?? { count: 0, regular: 0, commemorative: 0 };
+      existing.count++;
+      if (coin.commemorative) {
+        existing.commemorative++;
+      } else {
+        existing.regular++;
       }
+      grouped.set(coin.year, existing);
     });
 
     // Convertir a array y filtrar por búsqueda

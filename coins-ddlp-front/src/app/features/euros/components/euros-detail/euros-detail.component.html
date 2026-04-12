@@ -1,0 +1,33 @@
+<app-collection-layout
+  [title]="title()"
+  [country]="country()"
+  [backLink]="backLink()"
+  [backLabel]="literals.back"
+  [searchPlaceholder]="literals.searchCoins"
+  [searchValue]="''"
+>
+  @if (coins().length > 0) {
+    <p-table [value]="coins()" [tableStyle]="{ 'min-width': '50rem' }">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ literals.colFaceValue }}</th>
+          <th>Descripción</th>
+          <th>{{ literals.colMint }}</th>
+          <th>{{ literals.colConservation }}</th>
+          <th>{{ literals.colUnits }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-coin>
+        <tr>
+          <td>{{ coin.faceValue }}</td>
+          <td>{{ coin.description }}</td>
+          <td>{{ coin.mint ?? '—' }}</td>
+          <td><app-coin-badge [code]="coin.conservation" /></td>
+          <td>{{ coin.uds }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  } @else {
+    <p class="empty-msg">{{ literals.emptySearch }}</p>
+  }
+</app-collection-layout>
