@@ -1,6 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
 import { EurosService } from '../../services/euros.service';
@@ -15,7 +16,7 @@ interface CountryGroup {
 @Component({
   selector: 'app-euros-list',
   standalone: true,
-  imports: [CommonModule, CountryFlagComponent, SearchInputComponent],
+  imports: [CommonModule, RouterLink, CountryFlagComponent, SearchInputComponent],
   templateUrl: './euros-list.component.html',
   styleUrl: './euros-list.component.scss',
 })

@@ -14,7 +14,7 @@
     @if (countryGroups().length > 0) {
       <div class="euros-card__grid">
         @for (group of countryGroups(); track group.country) {
-          <div class="country-card">
+          <div class="country-card" [routerLink]="['/euros', group.country]">
             <app-country-flag [country]="group.country" [size]="64" />
             <span class="country-card__name">{{ group.country }}</span>
             <span class="country-card__years">

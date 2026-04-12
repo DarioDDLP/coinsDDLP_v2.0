@@ -1,0 +1,36 @@
+<div class="euros-bg"></div>
+
+<div class="euros-content">
+  <div class="euros-header">
+    <div class="euros-header__back-row">
+      <a class="euros-header__back" [routerLink]="['/euros']">← {{ literals.back }}</a>
+      <div class="euros-header__title-row">
+        <app-country-flag [country]="country()" [size]="32" />
+        <h1 class="euros-header__title">{{ country() }}</h1>
+      </div>
+    </div>
+    <app-search-input
+      [placeholder]="literals.searchYears"
+      [value]="searchQuery()"
+      (valueChange)="onSearch($event)"
+    />
+  </div>
+
+  <div class="euros-card">
+    @if (yearGroups().length > 0) {
+      <div class="euros-card__grid">
+        @for (group of yearGroups(); track group.year) {
+          <div class="year-card">
+            <span class="year-card__year">{{ group.year }}</span>
+            <div class="year-card__details">
+              <span class="year-card__regular">{{ group.regular }} {{ literals.regular }}</span>
+              <span class="year-card__commemorative">{{ group.commemorative }} {{ literals.commemorative }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="euros-card__empty">{{ literals.emptySearch }}</p>
+    }
+  </div>
+</div>

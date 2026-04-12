@@ -14,6 +14,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'euros/:country',
+    loadComponent: () =>
+      import('./features/euros/components/country-years/country-years.component').then(
+        (m) => m.CountryYearsComponent
+      ),
+  },
+  {
     path: 'euros/:id',
     loadComponent: () =>
       import('./features/euros/components/euros-detail/euros-detail.component').then(
