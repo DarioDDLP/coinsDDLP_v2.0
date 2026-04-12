@@ -29,7 +29,13 @@ export class EurosListComponent {
 
   readonly countryGroups = computed(() => {
     const coins = this.allCoins();
-    const query = this.searchQuery().toLowerCase().trim();
+    const queryRaw = this.searchQuery().trim();
+
+    // Normalizar query (minúsculas + sin acentos)
+    const query = queryRaw
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
 
     console.log(`📊 Total de monedas cargadas: ${coins.length}`);
 
@@ -56,9 +62,14 @@ export class EurosListComponent {
     console.log(`🌍 Países encontrados: ${result.length}`, result.map(r => r.country).sort());
 
     if (query) {
-      result = result.filter(group =>
-        group.country.toLowerCase().includes(query)
-      );
+      result = result.filter(group => {
+        // Normalizar país (minúsculas + sin acentos)
+        const normalizedCountry = group.country
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '');
+        return normalizedCountry.includes(query);
+      });
     }
 
     // Ordenar alfabéticamente
