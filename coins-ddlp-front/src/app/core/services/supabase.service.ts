@@ -3,6 +3,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Observable } from 'rxjs';
 import { SUPABASE_CLIENT } from '../../app.config';
 import { TableName } from '../../shared/constants/collections.const';
+import { LoadingService } from './loading.service';
 
 /**
  * Servicio genérico de acceso a Supabase PostgreSQL.
@@ -12,36 +13,43 @@ import { TableName } from '../../shared/constants/collections.const';
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private supabase = inject(SUPABASE_CLIENT);
+  private loading = inject(LoadingService);
 
   getTable<T extends { id: string }>(tableName: TableName): Observable<T[]> {
     return new Observable(observer => {
       // Cargar todos los datos con paginación
       const loadAllData = async () => {
-        let allData: T[] = [];
-        let offset = 0;
-        const pageSize = 1000;
-        let hasMore = true;
+        this.loading.showLoading();
 
-        while (hasMore) {
-          const { data, error } = await this.supabase
-            .from(tableName)
-            .select('*')
-            .range(offset, offset + pageSize - 1);
+        try {
+          let allData: T[] = [];
+          let offset = 0;
+          const pageSize = 1000;
+          let hasMore = true;
 
-          if (error) {
-            observer.error(error);
-            return;
+          while (hasMore) {
+            const { data, error } = await this.supabase
+              .from(tableName)
+              .select('*')
+              .range(offset, offset + pageSize - 1);
+
+            if (error) {
+              observer.error(error);
+              return;
+            }
+
+            if (!data || data.length === 0) {
+              hasMore = false;
+            } else {
+              allData = [...allData, ...(data as T[])];
+              offset += pageSize;
+            }
           }
 
-          if (!data || data.length === 0) {
-            hasMore = false;
-          } else {
-            allData = [...allData, ...(data as T[])];
-            offset += pageSize;
-          }
+          observer.next(allData);
+        } finally {
+          this.loading.hideLoading();
         }
-
-        observer.next(allData);
       };
 
       loadAllData();
