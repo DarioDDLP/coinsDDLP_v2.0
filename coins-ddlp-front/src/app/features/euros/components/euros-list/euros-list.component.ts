@@ -31,6 +31,8 @@ export class EurosListComponent {
     const coins = this.allCoins();
     const query = this.searchQuery().toLowerCase().trim();
 
+    console.log(`📊 Total de monedas cargadas: ${coins.length}`);
+
     // Agrupar por país y calcular min/max year
     const grouped = new Map<string, { minYear: number; maxYear: number }>();
 
@@ -50,6 +52,8 @@ export class EurosListComponent {
       minYear,
       maxYear,
     }));
+
+    console.log(`🌍 Países encontrados: ${result.length}`, result.map(r => r.country).sort());
 
     if (query) {
       result = result.filter(group =>

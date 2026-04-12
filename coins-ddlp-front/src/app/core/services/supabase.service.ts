@@ -15,17 +15,36 @@ export class SupabaseService {
 
   getTable<T extends { id: string }>(tableName: TableName): Observable<T[]> {
     return new Observable(observer => {
-      // Carga inicial
-      this.supabase
-        .from(tableName)
-        .select('*')
-        .then(({ data, error }) => {
+      // Cargar todos los datos con paginación
+      const loadAllData = async () => {
+        let allData: T[] = [];
+        let offset = 0;
+        const pageSize = 1000;
+        let hasMore = true;
+
+        while (hasMore) {
+          const { data, error } = await this.supabase
+            .from(tableName)
+            .select('*')
+            .range(offset, offset + pageSize - 1);
+
           if (error) {
             observer.error(error);
             return;
           }
-          observer.next((data || []) as T[]);
-        });
+
+          if (!data || data.length === 0) {
+            hasMore = false;
+          } else {
+            allData = [...allData, ...(data as T[])];
+            offset += pageSize;
+          }
+        }
+
+        observer.next(allData);
+      };
+
+      loadAllData();
 
       // Suscribirse a cambios en tiempo real
       const channel = this.supabase
@@ -39,14 +58,7 @@ export class SupabaseService {
           },
           () => {
             // Cuando hay cambios, recargar todos los datos
-            this.supabase
-              .from(tableName)
-              .select('*')
-              .then(({ data, error }) => {
-                if (!error && data) {
-                  observer.next(data as T[]);
-                }
-              });
+            loadAllData();
           }
         )
         .subscribe();
