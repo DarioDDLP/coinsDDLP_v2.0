@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { FirestoreService } from '../../../core/services/firestore.service';
+import { SupabaseService } from '../../../core/services/supabase.service';
 import { EuroCoin } from '../../../shared/interfaces/euro-coin.interface';
 import { IEurosRepository } from '../../../shared/interfaces/euros-repository.interface';
-import { COLLECTIONS } from '../../../shared/constants/collections.const';
+import { TABLES } from '../../../shared/constants/collections.const';
 
 @Injectable({ providedIn: 'root' })
 export class EurosService implements IEurosRepository {
-  constructor(private firestore: FirestoreService) {}
+  constructor(private supabase: SupabaseService) {}
 
   getAll(): Observable<EuroCoin[]> {
-    return this.firestore.getCollection<EuroCoin>(COLLECTIONS.euros);
+    return this.supabase.getTable<EuroCoin>(TABLES.euro);
   }
 
   getById(id: string): Observable<EuroCoin | null> {
@@ -24,14 +24,14 @@ export class EurosService implements IEurosRepository {
   }
 
   async create(coin: Omit<EuroCoin, 'id'>): Promise<string> {
-    return this.firestore.add(COLLECTIONS.euros, coin);
+    return this.supabase.add(TABLES.euro, coin);
   }
 
   async update(id: string, data: Partial<EuroCoin>): Promise<void> {
-    return this.firestore.update(COLLECTIONS.euros, id, data);
+    return this.supabase.update(TABLES.euro, id, data);
   }
 
   async remove(id: string): Promise<void> {
-    return this.firestore.remove(COLLECTIONS.euros, id);
+    return this.supabase.remove(TABLES.euro, id);
   }
 }

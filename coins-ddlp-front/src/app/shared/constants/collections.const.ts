@@ -1,5 +1,9 @@
-export const COLLECTIONS = {
-  euros: 'euro',
+export const TABLES = {
+  euro: 'euro',
 } as const;
 
-export type CollectionName = (typeof COLLECTIONS)[keyof typeof COLLECTIONS];
+export type TableName = (typeof TABLES)[keyof typeof TABLES];
+
+// Mantener compatibilidad hacia atrás (si es necesario)
+export const COLLECTIONS = TABLES;
+export type CollectionName = TableName;

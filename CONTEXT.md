@@ -19,11 +19,11 @@ Aplicación web para la **gestión de una colección personal de monedas**. Perm
 | Capa | Tecnología | Notas |
 |------|-----------|-------|
 | Frontend | **Angular 21** | Standalone components, Signals, control flow moderno (`@if`, `@for`) |
-| Backend / DB | **Firebase Firestore** | NoSQL, tiempo real |
-| Autenticación | **Firebase Auth** | Login con email/password |
+| Backend / DB | **Supabase PostgreSQL** | SQL, tiempo real nativo (postgres_changes), sin límite de operaciones |
+| Autenticación | **Supabase Auth** | Login con email/password, integrado en PostgreSQL |
 | UI Components | **PrimeNG (última versión)** | Modales, toasts, tablas, dropdowns, spinners |
 | Estilos | **SCSS** | Global theming + estilos por componente |
-| Hosting | **Firebase Hosting** (opcional) | |
+| Hosting | **Firebase Hosting** (opcional) o **Vercel/Netlify** | |
 
 ### Características Angular 21 a usar obligatoriamente
 - `signal()`, `computed()`, `effect()` — NO usar `BehaviorSubject` para estado local
@@ -62,23 +62,23 @@ Aplicación web para la **gestión de una colección personal de monedas**. Perm
 
 ---
 
-## Estructura de datos (Firestore)
+## Estructura de datos (Supabase PostgreSQL)
 
-### Colección: `euro`
+### Tabla: `euro`
 ```typescript
 interface EuroCoin {
-  id: string;           // ID de Firestore
-  year: string;
+  id: string;           // UUID texto (Supabase)
+  year: integer;
   country: string;
   mint?: string;        // Ceca (identificador de la casa de moneda)
   faceValue: string;    // "1 Céntimo", "2 Euros", etc.
   description: string;  // Descripción / gobernante
-  uds: string;          // Unidades en posesión ("0" = no tengo)
+  uds: integer;         // Unidades en posesión (0 = no tengo)
   conservation?: string;// Estado: FDC | SC | EBC | MBC | BC | RC | MC | ND
-  commemorative?: string;
+  commemorative?: boolean;
+  circulation: boolean; // true = moneda de circulación, false = coleccionista/conmemorativa
   idNum: string;        // ID en catálogo Numista
   observations?: string;
-  circulation: boolean;  // true = moneda de circulación, false = coleccionista/conmemorativa
 }
 ```
 
@@ -253,36 +253,28 @@ shared   NO importa de core ni de features.
 
 ---
 
-## Firebase
+## Supabase
 
-### Proyecto Firebase
-- **Project ID:** `coinsddlp-back` *(reutilizar el existente o crear uno nuevo)*
-- **Auth:** Email/Password habilitado
-- **Firestore:** Colección `euro` con los documentos de monedas
+### Proyecto Supabase
+- **URL:** `https://uvkvagoipxgagyupxoqd.supabase.co`
+- **Anon Key:** Guardada en `src/environments/environment.ts`
+- **Auth:** Email/Password habilitado en Supabase Auth
+- **PostgreSQL:** Tabla `euro` con 9.552 documentos migrables de Firestore
 
 ### Configuración en `app.config.ts`
 ```typescript
-import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { getAuth, provideAuth } from '@angular/fire/auth';
-import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { environment } from '../environments/environment';
 
-const firebaseConfig = {
-  // ← Rellenar con credenciales reales del proyecto Firebase
-  apiKey: '...',
-  authDomain: '...',
-  projectId: 'coinsddlp-back',
-  storageBucket: '...',
-  messagingSenderId: '...',
-  appId: '...',
-};
+export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-client');
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore()),
-    provideRouter(routes),
-    provideAnimationsAsync(),
+    // ...
+    {
+      provide: SUPABASE_CLIENT,
+      useFactory: () => createClient(environment.supabase.url, environment.supabase.anonKey),
+    },
   ],
 };
 ```
@@ -330,48 +322,43 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-08
+> **Última actualización:** 2026-04-12
 
-### Implementado
-- [x] Fichero de contexto CONTEXT.md creado
-- [x] Hook de actualización automática configurado (`.claude/settings.json`)
+### Implementado ✅
+- [x] Fichero de contexto CONTEXT.md creado y actualizado
 - [x] Proyecto Angular 21 inicializado (v21.2.7, standalone, SCSS, sin SSR)
 - [x] Estructura de carpetas creada (core, features, shared con subcarpetas completas)
-- [x] Firebase JS SDK instalado (sin @angular/fire — incompatible con Angular 21)
+- [x] Supabase JS SDK instalado (`@supabase/supabase-js`)
 - [x] PrimeNG 21 + @primeng/themes instalados
 - [x] @angular/animations instalado (requerido por provideAnimationsAsync)
 - [x] Interfaces: `EuroCoin`, `ConservationState`, `AppUser`, `IAuthService`, `IEurosRepository`
-- [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `COLLECTIONS`
+- [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `TABLES`
 - [x] Helper: `normalizeCountryName`, `getFlagPath`
 - [x] Pipe: `EuroValuePipe` (standalone)
-- [x] `AuthService` — signal + onAuthStateChanged, lazy getAuth()
-- [x] `FirestoreService` — genérico, tipado, lazy getFirestore(), CollectionName type
-- [x] `app.config.ts` — initializeApp() Firebase + provideRouter + provideAnimationsAsync + providePrimeNG (tema Aura)
+- [x] `AuthService` — signal + Supabase Auth (onAuthStateChange)
+- [x] `SupabaseService` — genérico, tipado, soporte para tiempo real (postgres_changes)
+- [x] `app.config.ts` — createClient(Supabase) + SUPABASE_CLIENT InjectionToken + provideRouter + providePrimeNG
 - [x] `app.routes.ts` — rutas raíz con lazy loading, redirect `/` → `/euros`, wildcard → `/euros`
 - [x] Layout raíz — `app.ts` con SidebarComponent + router-outlet, fondo en body (global)
 - [x] `SidebarComponent` — glassmorphism, azul marino #1e3a5f, items desde sidebar.config.ts con LITERALS
 - [x] Assets en `public/assets/` (background.jpg, logo, banderas, iconos)
-- [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars (cobalt, gold-tan, cream, deep-navy, midnight)
-- [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts), CSS vars de tamaño, peso, line-height y letter-spacing
-- [x] Sidebar estilado con degradado cream → gold-tan → cream, divisor deep-navy, hover/activo gold-tan
-- [x] Shared component: `coin-badge` — badge de estado de conservación con SCSS puro (sin PrimeNG). Colores de estado añadidos a `_variables.scss` como SCSS vars.
-- [x] Shared component: `country-flag` — imagen circular configurable via `[size]` input (default 32px), fallback si imagen no existe. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()`.
-- [ ] Shared component: loading-spinner ← **SIGUIENTE PASO**
-- [ ] `euros.service.ts` implementando IEurosRepository
-- [ ] Auth guard
-- [ ] Euros list + detail
-- [ ] Sección conmemorativas, pesetas, estadísticas, ubicación
+- [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars
+- [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts)
+- [x] Shared component: `coin-badge` — badge de conservación con SCSS puro
+- [x] Shared component: `country-flag` — imagen circular configurable
+- [x] `euros.service.ts` implementando IEurosRepository (usa SupabaseService)
+- [x] **Migración Firebase → Supabase completada** — 9.552 documentos importados sin duplicados
+- [x] **Firebase completamente removido** — desinstalado npm, sin referencias en código
+- [x] **Tiempo real Supabase funcional** — postgres_changes para sincronización en vivo
 
 ### Pendiente / Próximos pasos
 1. **Shared component** — loading-spinner
-2. **`CountryFlagComponent` en sidebar** — integrar la bandera del país seleccionado en la navegación lateral
-3. **Login/Logout** — botones en sidebar + login-dialog
-3. **`AppErrorHandler`** — ErrorHandler global en `core/services/`, registrado en `app.config.ts`. Captura errores no controlados de Firestore y runtime. Preparado para conectar a Sentry en el futuro.
-4. **`euros.service.ts`** — implementa IEurosRepository usando FirestoreService
-5. **Auth guard** — funcional con inject(AuthService)
-6. **Euros list + detail** — componentes de la feature
-7. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
-8. **Módulo admin** — gestión de usuarios con guard de rol (custom claim Firebase)
+2. **Auth guard** — protección de rutas con Supabase Auth
+3. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
+4. **Euros list + detail** — componentes de la feature (ya usa SupabaseService)
+5. **Crear usuario de prueba** en Supabase Auth para testear
+6. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+7. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
 
 ---
 
@@ -388,6 +375,7 @@ ng build --configuration production
 | 2026-04-07 | Tipografía Montserrat (Google Fonts) con variables CSS de tamaño, peso, line-height y letter-spacing en _typography.scss. |
 | 2026-04-08 | `CoinBadgeComponent` — badge de estado de conservación con SCSS puro (sin PrimeNG). Decisión: usar SCSS vars en lugar de CSS custom properties para colores estáticos. Colores de estado añadidos a `_variables.scss`. |
 | 2026-04-08 | `CountryFlagComponent` — imagen circular configurable via `[size]` input, fallback `(error)`. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()` en normalización. |
+| 2026-04-12 | **Migración completa Firebase → Supabase**: 1) AuthService adaptado a Supabase Auth. 2) FirestoreService reemplazado por SupabaseService (tiempo real con postgres_changes). 3) 9.552 de 10.452 documentos migrantes a PostgreSQL sin duplicados. 4) Firebase completamente removido (78 paquetes npm desinstalados). 5) App compilando y cargando datos correctamente. |
 
 ---
 
