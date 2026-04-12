@@ -1,30 +1,22 @@
-<div class="euros-bg"></div>
-
-<div class="euros-content">
-  <div class="euros-header">
-    <h1 class="euros-header__title">{{ literals.countriesTitle }}</h1>
-    <app-search-input
-      [placeholder]="literals.searchCountries"
-      [value]="searchQuery()"
-      (valueChange)="onSearch($event)"
-    />
-  </div>
-
-  <div class="euros-card">
-    @if (countryGroups().length > 0) {
-      <div class="euros-card__grid">
-        @for (group of countryGroups(); track group.country) {
-          <div class="country-card" [routerLink]="['/euros', group.country]">
-            <app-country-flag [country]="group.country" [size]="64" />
-            <span class="country-card__name">{{ group.country }}</span>
-            <span class="country-card__years">
-              {{ group.minYear }} — {{ group.maxYear }}
-            </span>
-          </div>
-        }
-      </div>
-    } @else {
-      <p class="euros-card__empty">{{ literals.emptySearch }}</p>
-    }
-  </div>
-</div>
+<app-collection-layout
+  [title]="literals.countriesTitle"
+  [searchPlaceholder]="literals.searchCountries"
+  [searchValue]="searchQuery()"
+  (searchChange)="onSearch($event)"
+>
+  @if (countryGroups().length > 0) {
+    <div class="country-grid">
+      @for (group of countryGroups(); track group.country) {
+        <div class="country-card" [routerLink]="['/euros', group.country]">
+          <app-country-flag [country]="group.country" [size]="64" />
+          <span class="country-card__name">{{ group.country }}</span>
+          <span class="country-card__years">
+            {{ group.minYear }} — {{ group.maxYear }}
+          </span>
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-msg">{{ literals.emptySearch }}</p>
+  }
+</app-collection-layout>

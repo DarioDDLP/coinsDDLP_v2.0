@@ -1,0 +1,26 @@
+<div class="collection-bg"></div>
+
+<div class="collection-content">
+  <div class="collection-header">
+    @if (backLink) {
+      <div class="collection-header__back-row">
+        <a class="collection-header__back" [routerLink]="backLink">← {{ backLabel }}</a>
+        <div class="collection-header__title-row">
+          @if (country) { <app-country-flag [country]="country" [size]="32" /> }
+          <h1 class="collection-header__title">{{ title }}</h1>
+        </div>
+      </div>
+    } @else {
+      <h1 class="collection-header__title">{{ title }}</h1>
+    }
+    <app-search-input
+      [placeholder]="searchPlaceholder"
+      [value]="searchValue"
+      (valueChange)="onSearch($event)"
+    />
+  </div>
+
+  <div class="collection-card">
+    <ng-content />
+  </div>
+</div>

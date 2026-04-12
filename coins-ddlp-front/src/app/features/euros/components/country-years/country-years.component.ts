@@ -1,9 +1,8 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
-import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
-import { SearchInputComponent } from '../../../../shared/components/search-input/search-input.component';
+import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
 import { LITERALS } from '../../../../shared/constants/literals';
 
@@ -17,7 +16,7 @@ interface YearGroup {
 @Component({
   selector: 'app-country-years',
   standalone: true,
-  imports: [CommonModule, RouterLink, CountryFlagComponent, SearchInputComponent],
+  imports: [CommonModule, CollectionLayoutComponent],
   templateUrl: './country-years.component.html',
   styleUrl: './country-years.component.scss',
 })
