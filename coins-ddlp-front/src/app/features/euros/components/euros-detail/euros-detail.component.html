@@ -12,18 +12,18 @@
         <tr>
           <th>{{ literals.colFaceValue }}</th>
           <th>Descripción</th>
-          <th>{{ literals.colMint }}</th>
-          <th>{{ literals.colConservation }}</th>
-          <th>{{ literals.colUnits }}</th>
+          @if (hasMint()) { <th>{{ literals.colMint }}</th> }
+          <th style="text-align: center">{{ literals.colConservation }}</th>
+          <th style="text-align: center">{{ literals.colUnits }}</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-coin>
         <tr>
           <td>{{ coin.faceValue }}</td>
           <td>{{ coin.description }}</td>
-          <td>{{ coin.mint ?? '—' }}</td>
-          <td><app-coin-badge [code]="coin.conservation" /></td>
-          <td>{{ coin.uds }}</td>
+          @if (hasMint()) { <td>{{ coin.mint ?? '—' }}</td> }
+          <td style="text-align: center"><app-coin-badge [code]="coin.conservation" /></td>
+          <td style="text-align: center">{{ coin.uds }}</td>
         </tr>
       </ng-template>
     </p-table>

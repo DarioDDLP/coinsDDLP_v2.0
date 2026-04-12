@@ -45,6 +45,8 @@ export class EurosDetailComponent implements OnInit {
     return this.yearCoins();
   });
 
+  readonly hasMint = computed(() => this.yearCoins().some(c => c.mint));
+
   readonly title = computed(() => {
     const currentYear = this.year();
     return currentYear ? currentYear.toString() : '';
