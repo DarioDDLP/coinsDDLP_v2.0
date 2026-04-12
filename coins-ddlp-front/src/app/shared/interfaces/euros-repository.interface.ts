@@ -2,7 +2,7 @@ import { Observable } from 'rxjs';
 import { EuroCoin } from './euro-coin.interface';
 
 export interface IEurosRepository {
-  getAll(): Observable<EuroCoin[]>;
+  getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]>;
   getById(id: string): Observable<EuroCoin | null>;
   create(coin: Omit<EuroCoin, 'id'>): Promise<string>;
   update(id: string, data: Partial<EuroCoin>): Promise<void>;

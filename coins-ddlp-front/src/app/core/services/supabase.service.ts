@@ -19,9 +19,10 @@ export class SupabaseService {
     return this.getTableWhere<T>(tableName, (query) => query);
   }
 
-  getTableWhere<T extends { id: string }>(
+  getTableWhere<T>(
     tableName: TableName,
-    filterFn: (query: any) => any
+    filterFn: (query: any) => any,
+    fields = '*'
   ): Observable<T[]> {
     return new Observable(observer => {
       // Cargar todos los datos con paginación y filtros (sin tiempo real)
@@ -35,7 +36,7 @@ export class SupabaseService {
           let hasMore = true;
 
           while (hasMore) {
-            const baseQuery = this.supabase.from(tableName).select('*');
+            const baseQuery = this.supabase.from(tableName).select(fields);
             const { data, error } = await filterFn(baseQuery).range(offset, offset + pageSize - 1);
 
             if (error) {

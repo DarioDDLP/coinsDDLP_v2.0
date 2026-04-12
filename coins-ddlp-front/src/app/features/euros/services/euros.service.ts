@@ -9,27 +9,36 @@ import { TABLES } from '../../../shared/constants/collections.const';
 export class EurosService implements IEurosRepository {
   constructor(private supabase: SupabaseService) {}
 
-  getAll(): Observable<EuroCoin[]> {
-    return this.supabase.getTable<EuroCoin>(TABLES.euro);
+  getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]> {
+    return this.supabase.getTableWhere<Pick<EuroCoin, 'country' | 'year'>>(
+      TABLES.euro,
+      (query) => query,
+      'country,year'
+    );
   }
 
-  getByCountry(country: string): Observable<EuroCoin[]> {
-    return this.supabase.getTableWhere<EuroCoin>(TABLES.euro, (query) =>
-      query.eq('country', country)
+  getByCountry(country: string): Observable<Pick<EuroCoin, 'year' | 'commemorative'>[]> {
+    return this.supabase.getTableWhere<Pick<EuroCoin, 'year' | 'commemorative'>>(
+      TABLES.euro,
+      (query) => query.eq('country', country),
+      'year,commemorative'
     );
   }
 
   getByCountryAndYear(country: string, year: number): Observable<EuroCoin[]> {
-    return this.supabase.getTableWhere<EuroCoin>(TABLES.euro, (query) =>
-      query.eq('country', country).eq('year', year)
+    return this.supabase.getTableWhere<EuroCoin>(
+      TABLES.euro,
+      (query) => query.eq('country', country).eq('year', year)
     );
   }
 
   getById(id: string): Observable<EuroCoin | null> {
     return new Observable(observer => {
-      this.getAll().subscribe(coins => {
-        const coin = coins.find(c => c.id === id) || null;
-        observer.next(coin);
+      this.supabase.getTableWhere<EuroCoin>(
+        TABLES.euro,
+        (query) => query.eq('id', id)
+      ).subscribe(coins => {
+        observer.next(coins[0] ?? null);
         observer.complete();
       });
     });
