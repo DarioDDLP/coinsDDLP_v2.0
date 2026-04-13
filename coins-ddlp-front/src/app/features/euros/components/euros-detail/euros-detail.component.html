@@ -17,15 +17,17 @@
           @if (hasMint()) { <th>{{ literals.colMint }}</th> }
           <th style="text-align: center">{{ literals.colConservation }}</th>
           <th style="text-align: center">{{ literals.colUnits }}</th>
+          <th style="text-align: center"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-coin>
-        <tr>
+        <tr [class.row--non-circulating]="!coin.circulation">
           <td>{{ coin.faceValue }}</td>
           <td>{{ coin.description }}</td>
           @if (hasMint()) { <td>{{ coin.mint ?? '—' }}</td> }
           <td style="text-align: center"><app-coin-badge [code]="coin.conservation" /></td>
-          <td style="text-align: center">{{ coin.uds }}</td>
+          <td style="text-align: center"><app-unit-badge [uds]="coin.uds" /></td>
+          <td style="text-align: center"><i class="pi pi-pencil edit-icon"></i></td>
         </tr>
       </ng-template>
     </p-table>

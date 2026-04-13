@@ -1,0 +1,15 @@
+@use '../../../../styles/variables' as v;
+
+.unit-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+
+  &--success { background: v.$state-success-bg; color: v.$state-success-text; }
+  &--info    { background: v.$state-info-bg;     color: v.$state-info-text; }
+  &--danger  { background: v.$state-danger-bg;   color: v.$state-danger-text; }
+}

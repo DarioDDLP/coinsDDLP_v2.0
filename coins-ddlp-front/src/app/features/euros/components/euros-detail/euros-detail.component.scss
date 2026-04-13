@@ -3,10 +3,26 @@
   color: var(--cream);
 }
 
+:host ::ng-deep .p-datatable-tbody > tr.row--non-circulating > td {
+  background: rgba(217, 181, 130, 0.25);
+}
+
 :host ::ng-deep .p-datatable-tbody > tr > td {
   color: var(--cobalt);
 }
 
+
+.edit-icon {
+  color: var(--cobalt);
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
 
 .empty-msg {
   text-align: center;

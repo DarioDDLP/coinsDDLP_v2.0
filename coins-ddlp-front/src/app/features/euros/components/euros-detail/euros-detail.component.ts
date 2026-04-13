@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
+import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
@@ -12,7 +13,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 @Component({
   selector: 'app-euros-detail',
   standalone: true,
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent, UnitBadgeComponent],
   templateUrl: './euros-detail.component.html',
   styleUrl: './euros-detail.component.scss',
 })
