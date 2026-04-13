@@ -5,9 +5,10 @@
   [backLabel]="literals.back"
   [searchPlaceholder]="literals.searchCoins"
   [searchValue]="''"
+  cardBackground="#ffffff"
 >
   @if (coins().length > 0) {
-    <p-table [value]="coins()" [tableStyle]="{ 'min-width': '50rem' }">
+    <p-table [value]="coins()" [tableStyle]="{ 'min-width': '50rem' }" [stripedRows]="true">
       <ng-template pTemplate="header">
         <tr>
           <th>{{ literals.colFaceValue }}</th>

@@ -1,3 +1,13 @@
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: var(--cobalt);
+  color: var(--cream);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  color: var(--cobalt);
+}
+
+
 .empty-msg {
   text-align: center;
   color: var(--cobalt);

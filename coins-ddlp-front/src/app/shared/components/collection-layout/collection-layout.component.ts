@@ -18,6 +18,7 @@ export class CollectionLayoutComponent {
   @Input() backLink: string[] | undefined;
   @Input() backLabel = '';
   @Input() country: string | undefined;
+  @Input() cardBackground = 'rgba(255, 245, 232,)';
 
   @Output() searchChange = new EventEmitter<string>();
 
