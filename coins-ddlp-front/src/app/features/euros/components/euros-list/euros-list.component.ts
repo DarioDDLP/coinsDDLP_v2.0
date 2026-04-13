@@ -6,6 +6,7 @@ import { CountryFlagComponent } from '../../../../shared/components/country-flag
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
 interface CountryGroup {
   country: string;
@@ -32,11 +33,7 @@ export class EurosListComponent {
     const coins = this.allCoins();
     const queryRaw = this.searchQuery().trim();
 
-    // Normalizar query (minúsculas + sin acentos)
-    const query = queryRaw
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+    const query = normalizeString(queryRaw);
 
     console.log(`📊 Total de monedas cargadas: ${coins.length}`);
 
@@ -63,14 +60,7 @@ export class EurosListComponent {
     console.log(`🌍 Países encontrados: ${result.length}`, result.map(r => r.country).sort());
 
     if (query) {
-      result = result.filter(group => {
-        // Normalizar país (minúsculas + sin acentos)
-        const normalizedCountry = group.country
-          .toLowerCase()
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '');
-        return normalizedCountry.includes(query);
-      });
+      result = result.filter(group => normalizeString(group.country).includes(query));
     }
 
     // Ordenar alfabéticamente

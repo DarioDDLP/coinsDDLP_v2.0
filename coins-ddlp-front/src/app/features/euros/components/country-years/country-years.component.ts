@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
 interface YearGroup {
   year: number;
@@ -47,11 +48,7 @@ export class CountryYearsComponent implements OnInit {
     const coins = this.countryCoins();
     const queryRaw = this.searchQuery().trim();
 
-    // Normalizar query (minúsculas + sin acentos)
-    const query = queryRaw
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '');
+    const query = normalizeString(queryRaw);
 
     // Agrupar por año (datos ya vienen filtrados por país desde Supabase)
     const grouped = new Map<number, { count: number; regular: number; commemorative: number }>();

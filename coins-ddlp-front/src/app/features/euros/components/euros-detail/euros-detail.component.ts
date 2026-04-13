@@ -7,6 +7,7 @@ import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coi
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
 @Component({
   selector: 'app-euros-detail',
@@ -24,6 +25,7 @@ export class EurosDetailComponent implements OnInit {
   readonly country = signal('');
   readonly year = signal<number | null>(null);
   private yearCoins = signal<EuroCoin[]>([]);
+  readonly searchQuery = signal('');
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -42,7 +44,12 @@ export class EurosDetailComponent implements OnInit {
   }
 
   readonly coins = computed<EuroCoin[]>(() => {
-    return this.yearCoins();
+    const query = normalizeString(this.searchQuery());
+    if (!query) return this.yearCoins();
+    return this.yearCoins().filter(c =>
+      normalizeString(c.faceValue).includes(query) ||
+      normalizeString(c.description).includes(query)
+    );
   });
 
   readonly hasMint = computed(() => this.yearCoins().some(c => c.mint));
@@ -58,6 +65,6 @@ export class EurosDetailComponent implements OnInit {
   });
 
   onSearch(query: string): void {
-    // Búsqueda no implementada por ahora en tabla de detalle
+    this.searchQuery.set(query);
   }
 }

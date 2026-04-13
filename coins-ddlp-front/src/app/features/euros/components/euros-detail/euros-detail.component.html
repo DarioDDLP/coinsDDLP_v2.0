@@ -4,8 +4,9 @@
   [backLink]="backLink()"
   [backLabel]="literals.back"
   [searchPlaceholder]="literals.searchCoins"
-  [searchValue]="''"
+  [searchValue]="searchQuery()"
   cardBackground="#ffffff"
+  (searchChange)="onSearch($event)"
 >
   @if (coins().length > 0) {
     <p-table [value]="coins()" [tableStyle]="{ 'min-width': '50rem' }" [stripedRows]="true">
