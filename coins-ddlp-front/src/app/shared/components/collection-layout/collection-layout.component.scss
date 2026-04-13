@@ -25,13 +25,14 @@
   &__back-row {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 16px;
   }
 
   &__back {
     text-decoration: none;
     color: var(--cream);
-    font-size: 14px;
+    font-size: 20px;
     font-weight: 600;
     cursor: pointer;
     transition: color 0.15s;
@@ -50,7 +51,7 @@
 
   &__title {
     margin: 0;
-    font-size: 28px;
+    font-size: 40px;
     font-weight: 700;
     color: var(--cream);
   }

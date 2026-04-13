@@ -4,9 +4,9 @@
   <div class="collection-header">
     @if (backLink) {
       <div class="collection-header__back-row">
-        <a class="collection-header__back" [routerLink]="backLink">← {{ backLabel }}</a>
+        <app-button [label]="'← ' + backLabel" variant="tertiary" (clicked)="onBack()" />
         <div class="collection-header__title-row">
-          @if (country) { <app-country-flag [country]="country" [size]="32" /> }
+          @if (country) { <app-country-flag [country]="country" [size]="52" /> }
           <h1 class="collection-header__title">{{ title }}</h1>
         </div>
       </div>
