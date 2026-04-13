@@ -322,7 +322,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-12
+> **Última actualización:** 2026-04-13
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -333,7 +333,7 @@ ng build --configuration production
 - [x] @angular/animations instalado (requerido por provideAnimationsAsync)
 - [x] Interfaces: `EuroCoin`, `ConservationState`, `AppUser`, `IAuthService`, `IEurosRepository`
 - [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `TABLES`
-- [x] Helper: `normalizeCountryName`, `getFlagPath`
+- [x] Helper: `normalizeCountryName`, `getFlagPath`, `normalizeString` (genérica, usada en los 3 buscadores)
 - [x] Pipe: `EuroValuePipe` (standalone)
 - [x] `AuthService` — signal + Supabase Auth (onAuthStateChange)
 - [x] `SupabaseService` — genérico, tipado, soporte para tiempo real (postgres_changes)
@@ -346,19 +346,22 @@ ng build --configuration production
 - [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts)
 - [x] Shared component: `coin-badge` — badge de conservación con SCSS puro
 - [x] Shared component: `country-flag` — imagen circular configurable
+- [x] Shared component: `unit-badge` — badge de unidades: rojo (0), verde (1), azul (2+)
+- [x] Shared component: `button` — variantes primary, secondary, tertiary, danger, ghost
+- [x] Shared component: `collection-layout` — input `cardBackground` configurable, botón volver con `app-button` tertiary, bandera y título a la derecha
 - [x] `euros.service.ts` implementando IEurosRepository (usa SupabaseService)
 - [x] **Migración Firebase → Supabase completada** — 9.552 documentos importados sin duplicados
 - [x] **Firebase completamente removido** — desinstalado npm, sin referencias en código
 - [x] **Tiempo real Supabase funcional** — postgres_changes para sincronización en vivo
+- [x] **euros-detail** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan
 
 ### Pendiente / Próximos pasos
-1. **Shared component** — loading-spinner
-2. **Auth guard** — protección de rutas con Supabase Auth
-3. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
-4. **Euros list + detail** — componentes de la feature (ya usa SupabaseService)
-5. **Crear usuario de prueba** en Supabase Auth para testear
-6. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
-7. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
+1. **Auth guard** — protección de rutas con Supabase Auth
+2. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
+3. **Icono edición euros-detail** — abrir modal de edición (requiere auth)
+4. **Crear usuario de prueba** en Supabase Auth para testear
+5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+6. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
 
 ---
 
@@ -376,6 +379,7 @@ ng build --configuration production
 | 2026-04-08 | `CoinBadgeComponent` — badge de estado de conservación con SCSS puro (sin PrimeNG). Decisión: usar SCSS vars en lugar de CSS custom properties para colores estáticos. Colores de estado añadidos a `_variables.scss`. |
 | 2026-04-08 | `CountryFlagComponent` — imagen circular configurable via `[size]` input, fallback `(error)`. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()` en normalización. |
 | 2026-04-12 | **Migración completa Firebase → Supabase**: 1) AuthService adaptado a Supabase Auth. 2) FirestoreService reemplazado por SupabaseService (tiempo real con postgres_changes). 3) 9.552 de 10.452 documentos migrantes a PostgreSQL sin duplicados. 4) Firebase completamente removido (78 paquetes npm desinstalados). 5) App compilando y cargando datos correctamente. |
+| 2026-04-13 | **Mejoras visuales euros-detail**: tabla con card blanca, header deep-navy/cream, estriado, búsqueda funcional (faceValue + description con normalización de acentos), unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan. `normalizeString` extraída como helper genérico y usada en los 3 buscadores. Botón volver reemplazado por `app-button`. Nueva variante `tertiary` en ButtonComponent. Input `cardBackground` en CollectionLayoutComponent. |
 
 ---
 
