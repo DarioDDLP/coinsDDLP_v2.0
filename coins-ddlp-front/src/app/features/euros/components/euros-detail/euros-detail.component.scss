@@ -12,6 +12,15 @@
 }
 
 
+:host ::ng-deep .p-datatable-tbody > tr.row--clickable {
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover > td {
+    filter: brightness(0.96);
+  }
+}
+
 .edit-icon {
   color: var(--cobalt);
   cursor: pointer;

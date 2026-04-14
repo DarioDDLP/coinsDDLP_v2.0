@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
@@ -20,6 +20,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 export class EurosDetailComponent implements OnInit {
   private eurosService = inject(EurosService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   readonly literals = LITERALS.euros;
 
@@ -68,5 +69,9 @@ export class EurosDetailComponent implements OnInit {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+  }
+
+  onCoinClick(coin: EuroCoin): void {
+    this.router.navigate(['/euros', this.country(), this.year(), coin.id]);
   }
 }

@@ -21,7 +21,7 @@
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-coin>
-        <tr [class.row--non-circulating]="!coin.circulation">
+        <tr [class.row--non-circulating]="!coin.circulation" (click)="onCoinClick(coin)" class="row--clickable">
           <td>{{ coin.faceValue }}</td>
           <td>{{ coin.description }}</td>
           @if (hasMint()) { <td>{{ coin.mint ?? '—' }}</td> }

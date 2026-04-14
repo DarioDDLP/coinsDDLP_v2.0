@@ -75,6 +75,27 @@ export const LITERALS = {
     estadisticas: 'Estadísticas',
   },
 
+  coinDetail: {
+    labelIssuer: 'Emisor',
+    labelType: 'Tipo',
+    labelYears: 'Años',
+    labelComposition: 'Composición',
+    labelWeight: 'Peso',
+    labelDiameter: 'Diámetro',
+    labelThickness: 'Grosor',
+    labelShape: 'Forma',
+    labelTechnique: 'Técnica',
+    labelReferences: 'Referencias',
+    labelObverse: 'Anverso',
+    labelReverse: 'Reverso',
+    labelFeatures: 'Características',
+    labelObservations: 'Observaciones',
+    labelNoObservations: 'Sin observaciones',
+    labelMoreInfo: 'Más información en Numista',
+    loadingNumista: 'Cargando datos de Numista...',
+    errorNumista: 'No se pudieron cargar los datos de Numista',
+  },
+
   conmemorativas: {
     title: 'Monedas Conmemorativas',
   },

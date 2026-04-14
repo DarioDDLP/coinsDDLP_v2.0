@@ -21,6 +21,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'euros/:country/:year/:id',
+    loadComponent: () =>
+      import('./features/euros/components/coin-detail/coin-detail.component').then(
+        (m) => m.CoinDetailComponent
+      ),
+  },
+  {
     path: 'euros/:country',
     loadComponent: () =>
       import('./features/euros/components/country-years/country-years.component').then(
