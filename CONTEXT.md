@@ -322,7 +322,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-13
+> **Última actualización:** 2026-04-14
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -353,15 +353,23 @@ ng build --configuration production
 - [x] **Migración Firebase → Supabase completada** — 5.441 documentos importados desde archivo de exportación, sin duplicados
 - [x] **Firebase completamente removido** — desinstalado npm, sin referencias en código
 - [x] **Tiempo real Supabase funcional** — postgres_changes para sincronización en vivo
-- [x] **euros-detail** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan
+- [x] **euros-detail** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan, leyenda de no circulantes
+- [x] **coin-detail** — vista de detalle de moneda individual. Usa `collection-layout`. Carga datos de Supabase + Numista API via Edge Function proxy. Muestra imágenes anverso/reverso/canto, características técnicas (features box cream) y observaciones
+- [x] **NumistaService** — proxy via Supabase Edge Function `numista-proxy` (sin CORS, sin JWT). Expone signal `remaining()` con peticiones restantes del mes
+- [x] **numista-proxy Edge Function** — desplegada en Supabase. Llama a Numista server-side, registra cada llamada en tabla `numista_usage`, devuelve `X-Numista-Remaining` en header
+- [x] **Contador Numista en sidebar** — muestra "Numista X / 2000" cuando hay datos disponibles
+- [x] **collection-layout** — buscador ahora opcional (solo se renderiza si se pasa `searchPlaceholder`)
+- [x] **provideHttpClient()** añadido a `app.config.ts`
+- [x] Ruta `/euros/:country/:year/:id` — navega al detalle de moneda al hacer click en fila de euros-detail
 
 ### Pendiente / Próximos pasos
-1. **Auth guard** — protección de rutas con Supabase Auth
-2. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
-3. **Icono edición euros-detail** — abrir modal de edición (requiere auth)
-4. **Crear usuario de prueba** en Supabase Auth para testear
-5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
-6. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
+1. **Ajustes visuales coin-detail** — en progreso
+2. **Auth guard** — protección de rutas con Supabase Auth
+3. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
+4. **Icono edición euros-detail** — abrir modal de edición (requiere auth)
+5. **Crear usuario de prueba** en Supabase Auth para testear
+6. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+7. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
 
 ---
 
@@ -380,6 +388,7 @@ ng build --configuration production
 | 2026-04-08 | `CountryFlagComponent` — imagen circular configurable via `[size]` input, fallback `(error)`. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()` en normalización. |
 | 2026-04-12 | **Migración completa Firebase → Supabase**: 1) AuthService adaptado a Supabase Auth. 2) FirestoreService reemplazado por SupabaseService (tiempo real con postgres_changes). 3) Migración rehecha desde archivo de exportación: 5.441 documentos a PostgreSQL sin duplicados. 4) Firebase completamente removido (78 paquetes npm desinstalados). 5) App compilando y cargando datos correctamente. |
 | 2026-04-13 | **Mejoras visuales euros-detail**: tabla con card blanca, header deep-navy/cream, estriado, búsqueda funcional (faceValue + description con normalización de acentos), unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan. `normalizeString` extraída como helper genérico y usada en los 3 buscadores. Botón volver reemplazado por `app-button`. Nueva variante `tertiary` en ButtonComponent. Input `cardBackground` en CollectionLayoutComponent. |
+| 2026-04-14 | **coin-detail**: vista de detalle de moneda con integración Numista via Supabase Edge Function proxy. Datos de Supabase + Numista combinados. Usa `collection-layout` como wrapper. Leyenda de no circulantes en euros-detail. Contador de peticiones Numista en sidebar (signal `remaining()` + tabla `numista_usage`). Buscador opcional en `collection-layout`. `provideHttpClient()` añadido. |
 
 ---
 
