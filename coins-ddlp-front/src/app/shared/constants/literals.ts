@@ -67,6 +67,7 @@ export const LITERALS = {
 
   sidebar: {
     sectionLabel: 'Colecciones',
+    numistaRemaining: 'Numista',
     logoAlt: 'coinsDDLP logo',
     euros: 'Euro',
     conmemorativas: 'Conmemorativas',

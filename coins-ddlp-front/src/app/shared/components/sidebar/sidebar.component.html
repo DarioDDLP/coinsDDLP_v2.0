@@ -30,6 +30,12 @@
   </ul>
 
   <div class="sidebar__footer">
+    @if (numistaService.remaining() !== null) {
+      <div class="sidebar__numista">
+        <span class="sidebar__numista-label">{{ literals.numistaRemaining }}</span>
+        <span class="sidebar__numista-count">{{ numistaService.remaining() }} / 2000</span>
+      </div>
+    }
     <app-button
       label="Iniciar sesión"
       icon="pi pi-sign-in"
