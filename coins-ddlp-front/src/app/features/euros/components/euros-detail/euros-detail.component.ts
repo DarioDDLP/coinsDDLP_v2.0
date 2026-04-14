@@ -54,6 +54,7 @@ export class EurosDetailComponent implements OnInit {
   });
 
   readonly hasMint = computed(() => this.yearCoins().some(c => c.mint));
+  readonly hasNonCirculating = computed(() => this.coins().some(c => !c.circulation));
 
   readonly title = computed(() => {
     const currentYear = this.year();

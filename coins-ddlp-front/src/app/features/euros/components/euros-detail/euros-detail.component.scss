@@ -24,6 +24,26 @@
   }
 }
 
+.non-circulating-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--cobalt);
+  opacity: 0.7;
+
+  &__swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(217, 181, 130, 0.25);
+    border: 1px solid rgba(217, 181, 130, 0.6);
+    flex-shrink: 0;
+  }
+}
+
 .empty-msg {
   text-align: center;
   color: var(--cobalt);

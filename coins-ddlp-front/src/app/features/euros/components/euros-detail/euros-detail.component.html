@@ -31,6 +31,12 @@
         </tr>
       </ng-template>
     </p-table>
+    @if (hasNonCirculating()) {
+      <span class="non-circulating-legend">
+        <span class="non-circulating-legend__swatch"></span>
+        {{ literals.nonCirculatingLegend }}
+      </span>
+    }
   } @else {
     <p class="empty-msg">{{ literals.emptySearch }}</p>
   }

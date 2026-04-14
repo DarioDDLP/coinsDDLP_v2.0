@@ -62,6 +62,7 @@ export const LITERALS = {
     unitsLabel: 'Unidades',
     conservationLabel: 'Estado de conservación',
     noObservations: 'Sin observaciones',
+    nonCirculatingLegend: 'Monedas sombreadas: no circulantes',
   },
 
   sidebar: {
