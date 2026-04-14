@@ -10,12 +10,13 @@ import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/uni
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
+import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
   standalone: true,
-  imports: [CoinBadgeComponent, UnitBadgeComponent, CountryFlagComponent, ButtonComponent, LoadingSpinnerComponent],
+  imports: [CoinBadgeComponent, UnitBadgeComponent, CountryFlagComponent, ButtonComponent, LoadingSpinnerComponent, CollectionLayoutComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',
 })
@@ -55,6 +56,12 @@ export class CoinDetailComponent implements OnInit {
     return (this.numista()?.references ?? [])
       .map(r => `${r.catalogue.code} ${r.number}`)
       .join(' · ');
+  });
+
+  readonly backLink = computed(() => {
+    const country = this.route.snapshot.paramMap.get('country') ?? '';
+    const year = this.route.snapshot.paramMap.get('year') ?? '';
+    return ['/euros', country, year];
   });
 
   ngOnInit(): void {

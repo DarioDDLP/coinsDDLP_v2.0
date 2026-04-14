@@ -13,11 +13,13 @@
     } @else {
       <h1 class="collection-header__title">{{ title }}</h1>
     }
-    <app-search-input
-      [placeholder]="searchPlaceholder"
-      [value]="searchValue"
-      (valueChange)="onSearch($event)"
-    />
+    @if (searchPlaceholder) {
+      <app-search-input
+        [placeholder]="searchPlaceholder"
+        [value]="searchValue"
+        (valueChange)="onSearch($event)"
+      />
+    }
   </div>
 
   <div class="collection-card" [style.background]="cardBackground">

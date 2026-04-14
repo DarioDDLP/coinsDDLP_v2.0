@@ -1,161 +1,157 @@
 @if (loadingService.isLoading()) {
   <app-loading-spinner />
 } @else if (coin()) {
-  <div class="detail-wrapper">
-    <div class="detail-card">
-
-      <!-- Volver -->
-      <div class="detail-back">
-        <app-button [label]="'← ' + sharedLiterals.back" variant="tertiary" (clicked)="goBack()" />
+  <app-collection-layout
+    [title]="coinTitle() || coin()!.faceValue"
+    [country]="coin()!.country"
+    [backLink]="backLink()"
+    [backLabel]="sharedLiterals.back"
+    cardBackground="#ffffff"
+  >
+    <!-- Header de la moneda -->
+    <div class="detail-header">
+      <div class="detail-header__titles">
+        @if (coinSubtitle()) {
+          <span class="detail-header__subtitle">{{ coinSubtitle() }}</span>
+        }
+        <span class="detail-header__meta">
+          {{ coin()!.year }}
+          @if (coin()!.mint) { · {{ coin()!.mint }} }
+        </span>
       </div>
-
-      <!-- Header -->
-      <div class="detail-header">
-        <app-country-flag [country]="coin()!.country" [size]="64" />
-        <div class="detail-header__titles">
-          <h1 class="detail-header__title">{{ coinTitle() || coin()!.faceValue }}</h1>
-          @if (coinSubtitle()) {
-            <span class="detail-header__subtitle">{{ coinSubtitle() }}</span>
-          }
-          <span class="detail-header__meta">
-            {{ coin()!.year }}
-            @if (coin()!.mint) { · {{ coin()!.mint }} }
-          </span>
-        </div>
-        <div class="detail-header__badges">
-          <app-coin-badge [code]="coin()!.conservation" />
-          <app-unit-badge [uds]="coin()!.uds" />
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div class="detail-body">
-
-        <!-- Columna izquierda: imágenes y descripciones -->
-        <div class="detail-left">
-          @if (numista()) {
-            <div class="coin-images">
-              @if (numista()!.obverse?.thumbnail) {
-                <div class="coin-img-box">
-                  <img [src]="numista()!.obverse!.thumbnail" alt="Anverso" />
-                </div>
-              }
-              @if (numista()!.reverse?.thumbnail) {
-                <div class="coin-img-box">
-                  <img [src]="numista()!.reverse!.thumbnail" alt="Reverso" />
-                </div>
-              }
-            </div>
-
-            @if (numista()!.edge?.thumbnail) {
-              <div class="coin-images coin-images--edge">
-                <div class="coin-img-box coin-img-box--edge">
-                  <img [src]="numista()!.edge!.thumbnail" alt="Canto" />
-                </div>
-              </div>
-            }
-
-            @if (numista()!.obverse?.description) {
-              <div class="coin-description">
-                <span class="coin-description__label">{{ literals.labelObverse }}</span>
-                <p class="coin-description__text">{{ numista()!.obverse!.description }}</p>
-              </div>
-            }
-
-            @if (numista()!.reverse?.description) {
-              <div class="coin-description">
-                <span class="coin-description__label">{{ literals.labelReverse }}</span>
-                <p class="coin-description__text">{{ numista()!.reverse!.description }}</p>
-              </div>
-            }
-
-            <a class="numista-link" [href]="numista()!.url" target="_blank" rel="noopener">
-              {{ literals.labelMoreInfo }} ↗
-            </a>
-          } @else if (numistaError()) {
-            <p class="numista-error">{{ literals.errorNumista }}</p>
-          }
-        </div>
-
-        <!-- Columna derecha: características + observaciones -->
-        <div class="detail-right">
-          @if (numista()) {
-            <div class="features-box">
-              <div class="features-box__title">{{ literals.labelFeatures }}</div>
-              <div class="features-list">
-                @if (numista()!.issuer.name) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelIssuer }}</span>
-                    <span class="feature-row__value">{{ numista()!.issuer.name }}</span>
-                  </div>
-                }
-                @if (numista()!.type) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelType }}</span>
-                    <span class="feature-row__value">{{ numista()!.type }}</span>
-                  </div>
-                }
-                @if (numista()!.min_year) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelYears }}</span>
-                    <span class="feature-row__value">{{ numista()!.min_year }}–{{ numista()!.max_year }}</span>
-                  </div>
-                }
-                @if (numista()!.composition?.text) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelComposition }}</span>
-                    <span class="feature-row__value">{{ numista()!.composition!.text }}</span>
-                  </div>
-                }
-                @if (numista()!.weight) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelWeight }}</span>
-                    <span class="feature-row__value">{{ numista()!.weight }} g</span>
-                  </div>
-                }
-                @if (numista()!.size) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelDiameter }}</span>
-                    <span class="feature-row__value">{{ numista()!.size }} mm</span>
-                  </div>
-                }
-                @if (numista()!.thickness) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelThickness }}</span>
-                    <span class="feature-row__value">{{ numista()!.thickness }} mm</span>
-                  </div>
-                }
-                @if (numista()!.shape) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelShape }}</span>
-                    <span class="feature-row__value">{{ numista()!.shape }}</span>
-                  </div>
-                }
-                @if (techniqueText()) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelTechnique }}</span>
-                    <span class="feature-row__value">{{ techniqueText() }}</span>
-                  </div>
-                }
-                @if (references()) {
-                  <div class="feature-row">
-                    <span class="feature-row__label">{{ literals.labelReferences }}</span>
-                    <span class="feature-row__value">{{ references() }}</span>
-                  </div>
-                }
-              </div>
-            </div>
-          }
-
-          <div class="observations">
-            <span class="observations__label">{{ literals.labelObservations }}</span>
-            <p class="observations__text">
-              {{ coin()!.observations || literals.labelNoObservations }}
-            </p>
-          </div>
-        </div>
-
+      <div class="detail-header__badges">
+        <app-coin-badge [code]="coin()!.conservation" />
+        <app-unit-badge [uds]="coin()!.uds" />
       </div>
     </div>
-  </div>
+
+    <!-- Body -->
+    <div class="detail-body">
+
+      <!-- Columna izquierda: imágenes y descripciones -->
+      <div class="detail-left">
+        @if (numista()) {
+          <div class="coin-images">
+            @if (numista()!.obverse?.thumbnail) {
+              <div class="coin-img-box">
+                <img [src]="numista()!.obverse!.thumbnail" alt="Anverso" />
+              </div>
+            }
+            @if (numista()!.reverse?.thumbnail) {
+              <div class="coin-img-box">
+                <img [src]="numista()!.reverse!.thumbnail" alt="Reverso" />
+              </div>
+            }
+          </div>
+
+          @if (numista()!.edge?.thumbnail) {
+            <div class="coin-images coin-images--edge">
+              <div class="coin-img-box coin-img-box--edge">
+                <img [src]="numista()!.edge!.thumbnail" alt="Canto" />
+              </div>
+            </div>
+          }
+
+          @if (numista()!.obverse?.description) {
+            <div class="coin-description">
+              <span class="coin-description__label">{{ literals.labelObverse }}</span>
+              <p class="coin-description__text">{{ numista()!.obverse!.description }}</p>
+            </div>
+          }
+
+          @if (numista()!.reverse?.description) {
+            <div class="coin-description">
+              <span class="coin-description__label">{{ literals.labelReverse }}</span>
+              <p class="coin-description__text">{{ numista()!.reverse!.description }}</p>
+            </div>
+          }
+
+          <a class="numista-link" [href]="numista()!.url" target="_blank" rel="noopener">
+            {{ literals.labelMoreInfo }} ↗
+          </a>
+        } @else if (numistaError()) {
+          <p class="numista-error">{{ literals.errorNumista }}</p>
+        }
+      </div>
+
+      <!-- Columna derecha: características + observaciones -->
+      <div class="detail-right">
+        @if (numista()) {
+          <div class="features-box">
+            <div class="features-box__title">{{ literals.labelFeatures }}</div>
+            <div class="features-list">
+              @if (numista()!.issuer.name) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelIssuer }}</span>
+                  <span class="feature-row__value">{{ numista()!.issuer.name }}</span>
+                </div>
+              }
+              @if (numista()!.type) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelType }}</span>
+                  <span class="feature-row__value">{{ numista()!.type }}</span>
+                </div>
+              }
+              @if (numista()!.min_year) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelYears }}</span>
+                  <span class="feature-row__value">{{ numista()!.min_year }}–{{ numista()!.max_year }}</span>
+                </div>
+              }
+              @if (numista()!.composition?.text) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelComposition }}</span>
+                  <span class="feature-row__value">{{ numista()!.composition!.text }}</span>
+                </div>
+              }
+              @if (numista()!.weight) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelWeight }}</span>
+                  <span class="feature-row__value">{{ numista()!.weight }} g</span>
+                </div>
+              }
+              @if (numista()!.size) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelDiameter }}</span>
+                  <span class="feature-row__value">{{ numista()!.size }} mm</span>
+                </div>
+              }
+              @if (numista()!.thickness) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelThickness }}</span>
+                  <span class="feature-row__value">{{ numista()!.thickness }} mm</span>
+                </div>
+              }
+              @if (numista()!.shape) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelShape }}</span>
+                  <span class="feature-row__value">{{ numista()!.shape }}</span>
+                </div>
+              }
+              @if (techniqueText()) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelTechnique }}</span>
+                  <span class="feature-row__value">{{ techniqueText() }}</span>
+                </div>
+              }
+              @if (references()) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelReferences }}</span>
+                  <span class="feature-row__value">{{ references() }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="observations">
+          <span class="observations__label">{{ literals.labelObservations }}</span>
+          <p class="observations__text">
+            {{ coin()!.observations || literals.labelNoObservations }}
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </app-collection-layout>
 }

@@ -1,25 +1,3 @@
-.detail-wrapper {
-  display: flex;
-  justify-content: center;
-  padding: 24px 16px;
-}
-
-.detail-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
-  padding: 28px;
-  width: 60%;
-
-  @media (max-width: 1500px) { width: 90%; }
-  @media (max-width: 576px)  { width: 98%; padding: 16px; }
-}
-
-// --- Back ---
-.detail-back {
-  margin-bottom: 20px;
-}
-
 // --- Header ---
 .detail-header {
   display: flex;
