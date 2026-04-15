@@ -12,4 +12,6 @@
   &--success { background: v.$state-success-bg; color: v.$state-success-text; }
   &--info    { background: v.$state-info-bg;     color: v.$state-info-text; }
   &--danger  { background: v.$state-danger-bg;   color: v.$state-danger-text; }
+
+  &--md { font-size: 14px; padding: 4px 12px; }
 }

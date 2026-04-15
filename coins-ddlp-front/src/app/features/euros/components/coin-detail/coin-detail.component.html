@@ -2,26 +2,24 @@
   <app-loading-spinner />
 } @else if (coin()) {
   <app-collection-layout
-    [title]="coinTitle() || coin()!.faceValue"
+    [title]="coin()!.faceValue"
     [country]="coin()!.country"
     [backLink]="backLink()"
     [backLabel]="sharedLiterals.back"
     cardBackground="#ffffff"
+    [cardOpacity]="0.95"
   >
     <!-- Header de la moneda -->
     <div class="detail-header">
       <div class="detail-header__titles">
-        @if (coinSubtitle()) {
-          <span class="detail-header__subtitle">{{ coinSubtitle() }}</span>
+        @if (numista()?.title) {
+          <span class="detail-header__numista-title">{{ numista()!.title }}</span>
         }
-        <span class="detail-header__meta">
-          {{ coin()!.year }}
-          @if (coin()!.mint) { · {{ coin()!.mint }} }
-        </span>
+
       </div>
       <div class="detail-header__badges">
-        <app-coin-badge [code]="coin()!.conservation" />
-        <app-unit-badge [uds]="coin()!.uds" />
+        <app-coin-badge [code]="coin()!.conservation" size="md" />
+        <app-unit-badge [uds]="coin()!.uds" size="md" />
       </div>
     </div>
 

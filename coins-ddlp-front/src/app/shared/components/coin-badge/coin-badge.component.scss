@@ -14,4 +14,6 @@
   &--warn      { background: v.$state-warn-bg;       color: v.$state-warn-text; }
   &--danger    { background: v.$state-danger-bg;     color: v.$state-danger-text; }
   &--secondary { background: v.$state-secondary-bg;  color: v.$state-secondary-text; }
+
+  &--md { font-size: 14px; padding: 4px 12px; }
 }

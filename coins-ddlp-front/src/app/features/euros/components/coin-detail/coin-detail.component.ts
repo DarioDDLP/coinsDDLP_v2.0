@@ -34,18 +34,6 @@ export class CoinDetailComponent implements OnInit {
   readonly numista = signal<NumistaCoin | null>(null);
   readonly numistaError = signal(false);
 
-  readonly coinTitle = computed(() => {
-    const title = this.numista()?.title ?? '';
-    const parenIdx = title.indexOf('(');
-    return parenIdx > -1 ? title.slice(0, parenIdx).trim() : title;
-  });
-
-  readonly coinSubtitle = computed(() => {
-    const title = this.numista()?.title ?? '';
-    const parenIdx = title.indexOf('(');
-    return parenIdx > -1 ? title.slice(parenIdx + 1, -1).trim() : '';
-  });
-
   readonly techniqueText = computed(() => {
     const raw = this.numista()?.technique?.text ?? '';
     const match = raw.match(/>([^<]+)</);

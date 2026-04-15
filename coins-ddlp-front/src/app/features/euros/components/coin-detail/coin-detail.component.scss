@@ -28,17 +28,13 @@
     line-height: 1.2;
   }
 
-  &__subtitle {
-    font-size: 14px;
-    color: var(--cobalt);
-    opacity: 0.75;
-  }
+  &__numista-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--deep-navy);
+    line-height: 1.2;
 
-  &__meta {
-    font-size: 13px;
-    color: var(--cobalt);
-    opacity: 0.6;
-    margin-top: 2px;
+    @media (max-width: 576px) { font-size: 18px; }
   }
 
   &__badges {
@@ -83,6 +79,7 @@
 .coin-img-box {
   width: 180px;
   height: 180px;
+  border-radius: 8px;
 
   img {
     width: 100%;

@@ -8,6 +8,7 @@ import { Component, computed, input } from '@angular/core';
 })
 export class UnitBadgeComponent {
   readonly uds = input.required<number>();
+  readonly size = input<'sm' | 'md'>('sm');
 
   readonly severity = computed(() => {
     const u = this.uds();

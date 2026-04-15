@@ -9,6 +9,7 @@ import { CONSERVATION_MAP } from '../../constants/conservation-states.const';
 })
 export class CoinBadgeComponent {
   readonly code = input.required<string>();
+  readonly size = input<'sm' | 'md'>('sm');
 
   readonly state = computed(() => CONSERVATION_MAP.get(this.code()) ?? CONSERVATION_MAP.get('ND')!);
 }

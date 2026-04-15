@@ -21,6 +21,7 @@ export class CollectionLayoutComponent {
   @Input() backLabel = '';
   @Input() country: string | undefined;
   @Input() cardBackground = 'rgba(255, 245, 232,)';
+  @Input() cardOpacity = 1;
 
   @Output() searchChange = new EventEmitter<string>();
 
