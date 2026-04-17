@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
+import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
@@ -28,8 +29,9 @@ export class CountryYearsComponent implements OnInit {
 
   readonly country = signal('');
   readonly searchQuery = signal('');
+  readonly isReady = signal(false);
 
-  private countryCoins = signal<any[]>([]);
+  private countryCoins = signal<Pick<EuroCoin, 'year' | 'commemorative'>[]>([]);
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -37,10 +39,16 @@ export class CountryYearsComponent implements OnInit {
       this.country.set(currentCountry);
 
       if (currentCountry) {
-        this.eurosService.getByCountry(currentCountry).subscribe(coins => {
-          this.countryCoins.set(coins);
-        });
+        this.loadYears(currentCountry);
       }
+    });
+  }
+
+  private loadYears(country: string): void {
+    this.isReady.set(false);
+    this.eurosService.getByCountry(country).subscribe(coins => {
+      this.countryCoins.set(coins);
+      this.isReady.set(true);
     });
   }
 

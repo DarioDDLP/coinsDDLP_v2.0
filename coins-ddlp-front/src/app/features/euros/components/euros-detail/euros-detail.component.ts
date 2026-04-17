@@ -29,6 +29,7 @@ export class EurosDetailComponent implements OnInit {
   readonly year = signal<number | null>(null);
   private yearCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal('');
+  readonly isReady = signal(false);
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -39,10 +40,16 @@ export class EurosDetailComponent implements OnInit {
       this.year.set(currentYear);
 
       if (currentCountry && currentYear !== null) {
-        this.eurosService.getByCountryAndYear(currentCountry, currentYear).subscribe(coins => {
-          this.yearCoins.set([...coins].sort(sortByFaceValue));
-        });
+        this.loadCoins(currentCountry, currentYear);
       }
+    });
+  }
+
+  private loadCoins(country: string, year: number): void {
+    this.isReady.set(false);
+    this.eurosService.getByCountryAndYear(country, year).subscribe(coins => {
+      this.yearCoins.set([...coins].sort(sortByFaceValue));
+      this.isReady.set(true);
     });
   }
 

@@ -1,3 +1,4 @@
+@if (isReady()) {
 <app-collection-layout
   [title]="country()"
   [country]="country()"
@@ -23,3 +24,4 @@
     <p class="empty-msg">{{ literals.emptySearch }}</p>
   }
 </app-collection-layout>
+}

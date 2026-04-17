@@ -1,10 +1,10 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
+import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
@@ -21,13 +21,25 @@ interface CountryGroup {
   templateUrl: './euros-list.component.html',
   styleUrl: './euros-list.component.scss',
 })
-export class EurosListComponent {
+export class EurosListComponent implements OnInit {
   private eurosService = inject(EurosService);
 
   readonly literals = LITERALS.euros;
 
-  private allCoins = toSignal(this.eurosService.getAll(), { initialValue: [] });
+  private allCoins = signal<Pick<EuroCoin, 'country' | 'year'>[]>([]);
   readonly searchQuery = signal('');
+  readonly isReady = signal(false);
+
+  ngOnInit(): void {
+    this.loadCoins();
+  }
+
+  private loadCoins(): void {
+    this.eurosService.getAll().subscribe(coins => {
+      this.allCoins.set(coins);
+      this.isReady.set(true);
+    });
+  }
 
   readonly countryGroups = computed(() => {
     const coins = this.allCoins();
