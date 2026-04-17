@@ -2,13 +2,13 @@
   <div class="admin-users">
     <div class="admin-users__toolbar">
       <h2 class="admin-users__title">{{ literals.usersTitle }}</h2>
-      <app-button [label]="literals.newUser" icon="pi pi-plus" (clicked)="onEdit(null!)" />
+      <app-button [label]="literals.newUser" icon="pi pi-plus" (clicked)="onEdit(null)" />
     </div>
 
     <p-table
-      [value]="users()"
+      [value]="sortedUsers()"
       [tableStyle]="{ 'min-width': '600px' }"
-      styleClass="p-datatable-striped"
+      class="p-datatable-striped"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -23,11 +23,7 @@
           <td>{{ user.email }}</td>
           <td>{{ user.displayName ?? '—' }}</td>
           <td>
-            @if (user.role === 'admin') {
-              <p-tag [value]="literals.roleAdmin" severity="warn" />
-            } @else {
-              <p-tag [value]="literals.roleUser" severity="info" />
-            }
+            <app-role-badge [role]="user.role" />
           </td>
           <td class="admin-users__actions">
             <app-button
@@ -50,3 +46,10 @@
     </p-table>
   </div>
 }
+
+<app-admin-user-dialog
+  [visible]="dialogVisible()"
+  [user]="editingUser()"
+  (saved)="onDialogSaved()"
+  (closed)="onDialogClosed()"
+/>
