@@ -36,10 +36,32 @@
         <span class="sidebar__numista-count">{{ numistaService.remaining() }} / 2000</span>
       </div>
     }
-    <app-button
-      label="Iniciar sesión"
-      icon="pi pi-sign-in"
-      variant="ghost"
-    />
+
+    @if (authService.isLoggedIn()) {
+      <div class="sidebar__user">
+        <div class="sidebar__user-info">
+          <i class="pi pi-user sidebar__user-icon"></i>
+          <span class="sidebar__user-email">{{ authService.currentUser()?.email }}</span>
+          @if (authService.isAdmin()) {
+            <span class="sidebar__user-role">Admin</span>
+          }
+        </div>
+        <app-button
+          [label]="authLiterals.logoutButton"
+          icon="pi pi-sign-out"
+          variant="ghost"
+          (clicked)="logout()"
+        />
+      </div>
+    } @else {
+      <app-button
+        [label]="authLiterals.loginButton"
+        icon="pi pi-sign-in"
+        variant="ghost"
+        (clicked)="loginVisible.set(true)"
+      />
+    }
   </div>
 </nav>
+
+<app-login-dialog [visible]="loginVisible()" (closed)="loginVisible.set(false)" />

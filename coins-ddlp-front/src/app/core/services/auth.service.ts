@@ -1,42 +1,36 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject, signal, computed } from '@angular/core';
 import { IAuthService } from '../../shared/interfaces/auth-service.interface';
-import { AppUser } from '../../shared/interfaces/app-user.interface';
+import { AppUser, UserRole } from '../../shared/interfaces/app-user.interface';
 import { SUPABASE_CLIENT } from '../../app.config';
+import { User } from '@supabase/supabase-js';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService implements IAuthService {
   private supabase = inject(SUPABASE_CLIENT);
   readonly currentUser = signal<AppUser | null>(null);
+  readonly isLoggedIn = computed(() => this.currentUser() !== null);
+  readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
 
   constructor() {
-    // Cargar usuario actual al iniciar
     this.supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        this.currentUser.set({
-          uid: session.user.id,
-          email: session.user.email ?? null,
-        });
-      }
+      this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
     });
 
-    // Escuchar cambios de autenticación
-    this.supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
-        this.currentUser.set({
-          uid: session.user.id,
-          email: session.user.email ?? null,
-        });
-      } else {
-        this.currentUser.set(null);
-      }
+    this.supabase.auth.onAuthStateChange((_event, session) => {
+      this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
     });
   }
 
+  private mapUser(user: User): AppUser {
+    return {
+      uid: user.id,
+      email: user.email ?? null,
+      role: (user.app_metadata?.['role'] as UserRole) ?? null,
+    };
+  }
+
   async login(email: string, password: string): Promise<void> {
-    const { error } = await this.supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error } = await this.supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   }
 
