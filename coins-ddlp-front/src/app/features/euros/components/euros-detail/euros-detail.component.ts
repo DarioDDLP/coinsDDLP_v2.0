@@ -9,6 +9,7 @@ import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { sortByFaceValue } from '../../constants/face-value-order.const';
 
 @Component({
   selector: 'app-euros-detail',
@@ -39,7 +40,7 @@ export class EurosDetailComponent implements OnInit {
 
       if (currentCountry && currentYear !== null) {
         this.eurosService.getByCountryAndYear(currentCountry, currentYear).subscribe(coins => {
-          this.yearCoins.set(coins);
+          this.yearCoins.set([...coins].sort(sortByFaceValue));
         });
       }
     });
