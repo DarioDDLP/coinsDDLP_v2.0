@@ -1,11 +1,12 @@
 .admin-header {
-  margin-bottom: 24px;
+  margin-bottom: 40px;
+  padding: 0 5%;
 
   &__title {
     font-size: 25px;
     font-weight: 700;
-    color: #fff;
-    margin: 0 0 16px;
+    color: var(--cream);
+    margin: 0 0 28px;
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   }
 
