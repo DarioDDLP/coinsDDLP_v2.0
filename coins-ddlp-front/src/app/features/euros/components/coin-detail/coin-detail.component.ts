@@ -6,15 +6,14 @@ import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
 import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
 import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
-import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
-import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
   standalone: true,
-  imports: [CoinBadgeComponent, UnitBadgeComponent, CountryFlagComponent, ButtonComponent, CollectionLayoutComponent],
+  imports: [CoinBadgeComponent, UnitBadgeComponent, CollectionLayoutComponent, EmptyPanelComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',
 })
@@ -31,6 +30,7 @@ export class CoinDetailComponent implements OnInit {
   readonly numista = signal<NumistaCoin | null>(null);
   readonly numistaError = signal(false);
   readonly isReady = signal(false);
+  readonly hasError = signal(false);
 
   readonly techniqueText = computed(() => {
     const raw = this.numista()?.technique?.text ?? '';
@@ -55,21 +55,21 @@ export class CoinDetailComponent implements OnInit {
     const country = this.route.snapshot.paramMap.get('country')!;
     const year = this.route.snapshot.paramMap.get('year')!;
 
-    this.eurosService.getById(id).subscribe(coin => {
-      if (!coin) {
-        this.router.navigate(['/euros', country, year]);
-        return;
-      }
-      this.coin.set(coin);
+    this.eurosService.getById(id).subscribe({
+      next: coin => {
+        if (!coin) { this.router.navigate(['/euros', country, year]); return; }
+        this.coin.set(coin);
 
-      if (coin.idNum) {
-        this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
-          next: (data) => { this.numista.set(data); this.isReady.set(true); },
-          error: () => { this.numistaError.set(true); this.isReady.set(true); },
-        });
-      } else {
-        this.isReady.set(true);
-      }
+        if (coin.idNum) {
+          this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
+            next: (data) => { this.numista.set(data); this.isReady.set(true); },
+            error: () => { this.numistaError.set(true); this.isReady.set(true); },
+          });
+        } else {
+          this.isReady.set(true);
+        }
+      },
+      error: () => { this.hasError.set(true); this.isReady.set(true); },
     });
   }
 

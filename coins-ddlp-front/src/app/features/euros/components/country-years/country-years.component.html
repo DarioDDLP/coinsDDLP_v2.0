@@ -1,27 +1,37 @@
 @if (isReady()) {
-<app-collection-layout
-  [title]="country()"
-  [country]="country()"
-  [backLink]="['/euros']"
-  [backLabel]="literals.back"
-  [searchPlaceholder]="literals.searchYears"
-  [searchValue]="searchQuery()"
-  (searchChange)="onSearch($event)"
->
-  @if (yearGroups().length > 0) {
-    <div class="year-grid">
-      @for (group of yearGroups(); track group.year) {
-        <div class="year-card" [routerLink]="['/euros', country(), group.year]">
-          <span class="year-card__year">{{ group.year }}</span>
-          <div class="year-card__details">
-            <span class="year-card__regular">{{ group.regular }} {{ literals.regular }}</span>
-            <span class="year-card__commemorative">{{ group.commemorative }} {{ literals.commemorative }}</span>
-          </div>
-        </div>
-      }
-    </div>
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+      [retryLabel]="sharedLiterals.retry"
+      (retry)="loadYears(country())"
+    />
   } @else {
-    <p class="empty-msg">{{ literals.emptySearch }}</p>
+    <app-collection-layout
+      [title]="country()"
+      [country]="country()"
+      [backLink]="['/euros']"
+      [backLabel]="literals.back"
+      [searchPlaceholder]="literals.searchYears"
+      [searchValue]="searchQuery()"
+      (searchChange)="onSearch($event)"
+    >
+      @if (yearGroups().length > 0) {
+        <div class="year-grid">
+          @for (group of yearGroups(); track group.year) {
+            <div class="year-card" [routerLink]="['/euros', country(), group.year]">
+              <span class="year-card__year">{{ group.year }}</span>
+              <div class="year-card__details">
+                <span class="year-card__regular">{{ group.regular }} {{ literals.regular }}</span>
+                <span class="year-card__commemorative">{{ group.commemorative }} {{ literals.commemorative }}</span>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      }
+    </app-collection-layout>
   }
-</app-collection-layout>
 }

@@ -1,0 +1,10 @@
+<div class="empty-panel">
+  <i class="empty-panel__icon pi {{ icon() }}"></i>
+  <p class="empty-panel__title">{{ title() }}</p>
+  @if (message()) {
+    <p class="empty-panel__message">{{ message() }}</p>
+  }
+  @if (retryLabel()) {
+    <app-button [label]="retryLabel()" icon="pi pi-refresh" (clicked)="retry.emit()" />
+  }
+</div>

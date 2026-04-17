@@ -1,24 +1,34 @@
 @if (isReady()) {
-<app-collection-layout
-  [title]="literals.countriesTitle"
-  [searchPlaceholder]="literals.searchCountries"
-  [searchValue]="searchQuery()"
-  (searchChange)="onSearch($event)"
->
-  @if (countryGroups().length > 0) {
-    <div class="country-grid">
-      @for (group of countryGroups(); track group.country) {
-        <div class="country-card" [routerLink]="['/euros', group.country]">
-          <app-country-flag [country]="group.country" [size]="64" />
-          <span class="country-card__name">{{ group.country }}</span>
-          <span class="country-card__years">
-            {{ group.minYear }} — {{ group.maxYear }}
-          </span>
-        </div>
-      }
-    </div>
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+      [retryLabel]="sharedLiterals.retry"
+      (retry)="loadCoins()"
+    />
   } @else {
-    <p class="empty-msg">{{ literals.emptySearch }}</p>
+    <app-collection-layout
+      [title]="literals.countriesTitle"
+      [searchPlaceholder]="literals.searchCountries"
+      [searchValue]="searchQuery()"
+      (searchChange)="onSearch($event)"
+    >
+      @if (countryGroups().length > 0) {
+        <div class="country-grid">
+          @for (group of countryGroups(); track group.country) {
+            <div class="country-card" [routerLink]="['/euros', group.country]">
+              <app-country-flag [country]="group.country" [size]="64" />
+              <span class="country-card__name">{{ group.country }}</span>
+              <span class="country-card__years">
+                {{ group.minYear }} — {{ group.maxYear }}
+              </span>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      }
+    </app-collection-layout>
   }
-</app-collection-layout>
 }

@@ -1,4 +1,13 @@
 @if (isReady()) {
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+      [retryLabel]="sharedLiterals.retry"
+      (retry)="loadCoins(country(), year()!)"
+    />
+  } @else {
 <app-collection-layout
   [title]="title()"
   [country]="country()"
@@ -39,7 +48,8 @@
       </span>
     }
   } @else {
-    <p class="empty-msg">{{ literals.emptySearch }}</p>
+        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      }
+    </app-collection-layout>
   }
-</app-collection-layout>
 }

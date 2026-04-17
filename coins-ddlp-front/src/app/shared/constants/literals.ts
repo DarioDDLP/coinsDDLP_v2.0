@@ -2,6 +2,9 @@ export const LITERALS = {
   shared: {
     loading: 'Cargando...',
     error: 'Ha ocurrido un error inesperado',
+    errorLoad: 'Error al cargar los datos',
+    errorLoadMessage: 'Comprueba tu conexión e inténtalo de nuevo',
+    retry: 'Reintentar',
     confirm: 'Confirmar',
     cancel: 'Cancelar',
     save: 'Guardar',

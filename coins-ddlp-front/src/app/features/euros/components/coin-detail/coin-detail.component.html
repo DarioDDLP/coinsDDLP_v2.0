@@ -1,4 +1,11 @@
 @if (isReady()) {
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+    />
+  } @else {
 <app-collection-layout
   [title]="coin()!.faceValue"
   [country]="coin()!.country"
@@ -150,4 +157,5 @@
 
     </div>
 </app-collection-layout>
+  }
 }

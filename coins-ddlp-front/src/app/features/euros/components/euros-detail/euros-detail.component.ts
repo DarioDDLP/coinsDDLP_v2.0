@@ -5,6 +5,7 @@ import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
 import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
+import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
@@ -14,7 +15,7 @@ import { sortByFaceValue } from '../../constants/face-value-order.const';
 @Component({
   selector: 'app-euros-detail',
   standalone: true,
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent, UnitBadgeComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent, UnitBadgeComponent, EmptyPanelComponent],
   templateUrl: './euros-detail.component.html',
   styleUrl: './euros-detail.component.scss',
 })
@@ -24,6 +25,8 @@ export class EurosDetailComponent implements OnInit {
   private router = inject(Router);
 
   readonly literals = LITERALS.euros;
+  readonly sharedLiterals = LITERALS.shared;
+  readonly hasError = signal(false);
 
   readonly country = signal('');
   readonly year = signal<number | null>(null);
@@ -45,11 +48,12 @@ export class EurosDetailComponent implements OnInit {
     });
   }
 
-  private loadCoins(country: string, year: number): void {
+  loadCoins(country: string, year: number): void {
+    this.hasError.set(false);
     this.isReady.set(false);
-    this.eurosService.getByCountryAndYear(country, year).subscribe(coins => {
-      this.yearCoins.set([...coins].sort(sortByFaceValue));
-      this.isReady.set(true);
+    this.eurosService.getByCountryAndYear(country, year).subscribe({
+      next: coins => { this.yearCoins.set([...coins].sort(sortByFaceValue)); this.isReady.set(true); },
+      error: () => { this.hasError.set(true); this.isReady.set(true); },
     });
   }
 

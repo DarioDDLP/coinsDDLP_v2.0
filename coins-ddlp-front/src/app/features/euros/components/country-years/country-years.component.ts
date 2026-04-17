@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
+import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
@@ -17,7 +18,7 @@ interface YearGroup {
 @Component({
   selector: 'app-country-years',
   standalone: true,
-  imports: [CommonModule, RouterLink, CollectionLayoutComponent],
+  imports: [CommonModule, RouterLink, CollectionLayoutComponent, EmptyPanelComponent],
   templateUrl: './country-years.component.html',
   styleUrl: './country-years.component.scss',
 })
@@ -30,6 +31,9 @@ export class CountryYearsComponent implements OnInit {
   readonly country = signal('');
   readonly searchQuery = signal('');
   readonly isReady = signal(false);
+  readonly hasError = signal(false);
+
+  readonly sharedLiterals = LITERALS.shared;
 
   private countryCoins = signal<Pick<EuroCoin, 'year' | 'commemorative'>[]>([]);
 
@@ -44,11 +48,12 @@ export class CountryYearsComponent implements OnInit {
     });
   }
 
-  private loadYears(country: string): void {
+  loadYears(country: string): void {
+    this.hasError.set(false);
     this.isReady.set(false);
-    this.eurosService.getByCountry(country).subscribe(coins => {
-      this.countryCoins.set(coins);
-      this.isReady.set(true);
+    this.eurosService.getByCountry(country).subscribe({
+      next: coins => { this.countryCoins.set(coins); this.isReady.set(true); },
+      error: () => { this.hasError.set(true); this.isReady.set(true); },
     });
   }
 
