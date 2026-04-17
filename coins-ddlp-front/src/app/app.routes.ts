@@ -9,30 +9,9 @@ export const routes: Routes = [
   {
     path: 'euros',
     loadComponent: () =>
-      import('./features/euros/components/euros-list/euros-list.component').then(
-        (m) => m.EurosListComponent
-      ),
-  },
-  {
-    path: 'euros/:country/:year',
-    loadComponent: () =>
-      import('./features/euros/components/euros-detail/euros-detail.component').then(
-        (m) => m.EurosDetailComponent
-      ),
-  },
-  {
-    path: 'euros/:country/:year/:id',
-    loadComponent: () =>
-      import('./features/euros/components/coin-detail/coin-detail.component').then(
-        (m) => m.CoinDetailComponent
-      ),
-  },
-  {
-    path: 'euros/:country',
-    loadComponent: () =>
-      import('./features/euros/components/country-years/country-years.component').then(
-        (m) => m.CountryYearsComponent
-      ),
+      import('./features/euros/euros.component').then((m) => m.EurosComponent),
+    loadChildren: () =>
+      import('./features/euros/euros.routes').then((m) => m.eurosRoutes),
   },
   {
     path: 'conmemorativas',
