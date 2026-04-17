@@ -132,8 +132,9 @@ src/
 │   ├── features/                          # Cada feature es un módulo vertical autocontenido
 │   │   ├── euros/
 │   │   │   ├── components/
-│   │   │   │   ├── euros-list/            # Listado con búsqueda y filtros
-│   │   │   │   └── euros-detail/          # Detalle + modal de edición
+│   │   │   │   ├── euros-countries/       # Listado de países con búsqueda
+│   │   │   │   ├── euros-years/           # Años de un país con búsqueda
+│   │   │   │   └── euros-year-coins/      # Monedas de un país/año con tabla
 │   │   │   ├── services/
 │   │   │   │   └── euros.service.ts       # Lógica de negocio de euros (usa FirestoreService)
 │   │   │   └── euros.routes.ts            # Rutas lazy de la feature
@@ -353,7 +354,7 @@ ng build --configuration production
 - [x] **Migración Firebase → Supabase completada** — 5.441 documentos importados desde archivo de exportación, sin duplicados
 - [x] **Firebase completamente removido** — desinstalado npm, sin referencias en código
 - [x] **Tiempo real Supabase funcional** — postgres_changes para sincronización en vivo
-- [x] **euros-detail** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan, leyenda de no circulantes
+- [x] **euros-year-coins** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan, leyenda de no circulantes
 - [x] **coin-detail** — vista de detalle de moneda individual. Usa `collection-layout`. Carga datos de Supabase + Numista API via Edge Function proxy. Muestra imágenes anverso/reverso/canto, características técnicas (features box cream) y observaciones
 - [x] **NumistaService** — proxy via Supabase Edge Function `numista-proxy` (sin CORS, sin JWT). Expone signal `remaining()` con peticiones restantes del mes
 - [x] **numista-proxy Edge Function** — desplegada en Supabase. Llama a Numista server-side, registra cada llamada en tabla `numista_usage`, devuelve `X-Numista-Remaining` en header

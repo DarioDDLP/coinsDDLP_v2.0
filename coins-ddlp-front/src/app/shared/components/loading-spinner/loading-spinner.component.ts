@@ -4,7 +4,6 @@ import { LITERALS } from '../../constants/literals';
 
 @Component({
   selector: 'app-loading-spinner',
-  standalone: true,
   imports: [ProgressSpinnerModule],
   templateUrl: './loading-spinner.component.html',
   styleUrl: './loading-spinner.component.scss',

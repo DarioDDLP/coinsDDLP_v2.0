@@ -7,7 +7,6 @@ import { ButtonComponent } from '../button/button.component';
 
 @Component({
   selector: 'app-collection-layout',
-  standalone: true,
   imports: [CommonModule, SearchInputComponent, CountryFlagComponent, ButtonComponent],
   templateUrl: './collection-layout.component.html',
   styleUrl: './collection-layout.component.scss',

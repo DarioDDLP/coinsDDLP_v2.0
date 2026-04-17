@@ -16,13 +16,12 @@ interface CountryGroup {
 }
 
 @Component({
-  selector: 'app-euros-list',
-  standalone: true,
+  selector: 'app-euros-countries',
   imports: [CommonModule, RouterLink, CountryFlagComponent, CollectionLayoutComponent, EmptyPanelComponent],
-  templateUrl: './euros-list.component.html',
-  styleUrl: './euros-list.component.scss',
+  templateUrl: './euros-countries.component.html',
+  styleUrl: './euros-countries.component.scss',
 })
-export class EurosListComponent implements OnInit {
+export class EurosCountriesComponent implements OnInit {
   private eurosService = inject(EurosService);
 
   readonly literals = LITERALS.euros;

@@ -8,7 +8,6 @@ import { NumistaService } from '../../../core/services/numista.service';
 
 @Component({
   selector: 'app-sidebar',
-  standalone: true,
   imports: [RouterLink, RouterLinkActive, CountryFlagComponent, ButtonComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',

@@ -3,7 +3,6 @@ import { getFlagPath } from '../../helpers/normalize-strings.helper';
 
 @Component({
   selector: 'app-country-flag',
-  standalone: true,
   templateUrl: './country-flag.component.html',
   styleUrl: './country-flag.component.scss',
 })

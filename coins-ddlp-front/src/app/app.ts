@@ -6,7 +6,6 @@ import { LoadingService } from './core/services/loading.service';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [RouterOutlet, SidebarComponent, LoadingSpinnerComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss',

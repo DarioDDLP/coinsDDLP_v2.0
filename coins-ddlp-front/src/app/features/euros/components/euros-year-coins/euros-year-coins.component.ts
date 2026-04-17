@@ -13,13 +13,12 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 
 @Component({
-  selector: 'app-euros-detail',
-  standalone: true,
+  selector: 'app-euros-year-coins',
   imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent, UnitBadgeComponent, EmptyPanelComponent],
-  templateUrl: './euros-detail.component.html',
-  styleUrl: './euros-detail.component.scss',
+  templateUrl: './euros-year-coins.component.html',
+  styleUrl: './euros-year-coins.component.scss',
 })
-export class EurosDetailComponent implements OnInit {
+export class EurosYearCoinsComponent implements OnInit {
   private eurosService = inject(EurosService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);

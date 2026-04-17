@@ -3,7 +3,6 @@ import { CONSERVATION_MAP } from '../../constants/conservation-states.const';
 
 @Component({
   selector: 'app-coin-badge',
-  standalone: true,
   templateUrl: './coin-badge.component.html',
   styleUrl: './coin-badge.component.scss',
 })

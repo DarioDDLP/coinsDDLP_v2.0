@@ -12,7 +12,6 @@ import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
-  standalone: true,
   imports: [CoinBadgeComponent, UnitBadgeComponent, CollectionLayoutComponent, EmptyPanelComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',

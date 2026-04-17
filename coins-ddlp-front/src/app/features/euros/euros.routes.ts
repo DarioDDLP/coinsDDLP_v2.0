@@ -4,22 +4,22 @@ export const eurosRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/euros-list/euros-list.component').then(
-        (m) => m.EurosListComponent
+      import('./components/euros-countries/euros-countries.component').then(
+        (m) => m.EurosCountriesComponent
       ),
   },
   {
     path: ':country',
     loadComponent: () =>
-      import('./components/country-years/country-years.component').then(
-        (m) => m.CountryYearsComponent
+      import('./components/euros-years/euros-years.component').then(
+        (m) => m.EurosYearsComponent
       ),
   },
   {
     path: ':country/:year',
     loadComponent: () =>
-      import('./components/euros-detail/euros-detail.component').then(
-        (m) => m.EurosDetailComponent
+      import('./components/euros-year-coins/euros-year-coins.component').then(
+        (m) => m.EurosYearCoinsComponent
       ),
   },
   {

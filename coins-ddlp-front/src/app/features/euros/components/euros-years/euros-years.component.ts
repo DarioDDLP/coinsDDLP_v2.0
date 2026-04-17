@@ -16,13 +16,12 @@ interface YearGroup {
 }
 
 @Component({
-  selector: 'app-country-years',
-  standalone: true,
+  selector: 'app-euros-years',
   imports: [CommonModule, RouterLink, CollectionLayoutComponent, EmptyPanelComponent],
-  templateUrl: './country-years.component.html',
-  styleUrl: './country-years.component.scss',
+  templateUrl: './euros-years.component.html',
+  styleUrl: './euros-years.component.scss',
 })
-export class CountryYearsComponent implements OnInit {
+export class EurosYearsComponent implements OnInit {
   private eurosService = inject(EurosService);
   private route = inject(ActivatedRoute);
 
