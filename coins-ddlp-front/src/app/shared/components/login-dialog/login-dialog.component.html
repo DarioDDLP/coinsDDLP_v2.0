@@ -2,49 +2,69 @@
   [visible]="visible()"
   (onHide)="onHide()"
   [modal]="true"
-  [header]="literals.loginTitle"
+  [header]="header()"
   [style]="{ width: '380px' }"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
 >
-  <div class="login-form">
-    <div class="login-form__field">
-      <label class="login-form__label">{{ literals.emailLabel }}</label>
-      <input
-        pInputText
-        type="email"
-        [value]="email()"
-        (input)="email.set($any($event.target).value)"
-        [placeholder]="literals.emailPlaceholder"
-        autocomplete="email"
-        class="login-form__input"
-      />
+  @if (mode() === 'logout') {
+    <div class="login-form">
+      <p class="login-form__confirm-message">{{ literals.logoutConfirm }}</p>
+      <div class="login-form__actions login-form__actions--spread">
+        <app-button
+          [label]="sharedLiterals.cancel"
+          variant="primary"
+          (clicked)="onHide()"
+        />
+        <app-button
+          [label]="sharedLiterals.confirm"
+          variant="danger"
+          (clicked)="onConfirmLogout()"
+        />
+      </div>
     </div>
+  } @else {
+    <div class="login-form">
+      <div class="login-form__field">
+        <label class="login-form__label">{{ literals.emailLabel }}</label>
+        <input
+          pInputText
+          type="email"
+          [value]="email()"
+          (input)="email.set($any($event.target).value)"
+          [placeholder]="literals.emailPlaceholder"
+          autocomplete="email"
+          class="login-form__input"
+        />
+      </div>
 
-    <div class="login-form__field">
-      <label class="login-form__label">{{ literals.passwordLabel }}</label>
-      <input
-        pInputText
-        type="password"
-        [value]="password()"
-        (input)="password.set($any($event.target).value)"
-        [placeholder]="literals.passwordPlaceholder"
-        autocomplete="current-password"
-        class="login-form__input"
-        (keydown.enter)="onSubmit()"
-      />
+      <div class="login-form__field">
+        <label class="login-form__label">{{ literals.passwordLabel }}</label>
+        <input
+          pInputText
+          type="password"
+          [value]="password()"
+          (input)="password.set($any($event.target).value)"
+          [placeholder]="literals.passwordPlaceholder"
+          autocomplete="current-password"
+          class="login-form__input"
+          (keydown.enter)="onSubmit()"
+        />
+      </div>
+
+      @if (errorMessage()) {
+        <p class="login-form__error">{{ errorMessage() }}</p>
+      }
+
+      <div class="login-form__actions">
+        <app-button
+          [label]="literals.loginButton"
+          [loading]="loading()"
+          [disabled]="!email() || !password()"
+          (clicked)="onSubmit()"
+        />
+      </div>
     </div>
-
-    @if (errorMessage()) {
-      <p class="login-form__error">{{ errorMessage() }}</p>
-    }
-
-    <app-button
-      [label]="literals.loginButton"
-      [loading]="loading()"
-      [disabled]="!email() || !password()"
-      (clicked)="onSubmit()"
-    />
-  </div>
+  }
 </p-dialog>

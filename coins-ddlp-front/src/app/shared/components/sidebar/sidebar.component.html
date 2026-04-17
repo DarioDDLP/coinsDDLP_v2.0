@@ -51,7 +51,7 @@
             [label]="authLiterals.logoutButton"
             icon="pi pi-sign-out"
             variant="ghost"
-            (clicked)="logout()"
+            (clicked)="openLogoutConfirm()"
           />
         </div>
       </div>
@@ -60,10 +60,10 @@
         [label]="authLiterals.loginButton"
         icon="pi pi-sign-in"
         variant="ghost"
-        (clicked)="loginVisible.set(true)"
+        (clicked)="openLogin()"
       />
     }
   </div>
 </nav>
 
-<app-login-dialog [visible]="loginVisible()" (closed)="loginVisible.set(false)" />
+<app-login-dialog [visible]="loginVisible()" [mode]="dialogMode()" (closed)="loginVisible.set(false)" />

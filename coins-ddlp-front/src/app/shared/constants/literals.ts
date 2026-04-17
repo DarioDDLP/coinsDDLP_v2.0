@@ -15,6 +15,9 @@ export const LITERALS = {
     search: 'Buscar',
     noResults: 'No se encontraron resultados',
     all: 'Todas',
+    toastSuccess: 'Éxito',
+    toastError: 'Error',
+    toastInfo: 'Información',
   },
 
   auth: {
@@ -25,9 +28,10 @@ export const LITERALS = {
     emailPlaceholder: 'correo@ejemplo.com',
     passwordLabel: 'Contraseña',
     passwordPlaceholder: '••••••••',
+    logoutConfirm: '¿Seguro que quieres cerrar sesión?',
     loginSuccess: 'Sesión iniciada correctamente',
     loginError: 'Email o contraseña incorrectos',
-    logoutSuccess: 'Sesión cerrada',
+    logoutSuccess: 'Sesión cerrada correctamente',
   },
 
   euros: {

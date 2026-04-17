@@ -1,10 +1,11 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '../button/button.component';
 import { LITERALS } from '../../constants/literals';
+import { TOAST_MESSAGES } from '../../constants/toast-messages.const';
 
 @Component({
   selector: 'app-login-dialog',
@@ -17,27 +18,39 @@ export class LoginDialogComponent {
   private messageService = inject(MessageService);
 
   visible = input<boolean>(false);
+  mode = input<'login' | 'logout'>('login');
   closed = output<void>();
 
   readonly literals = LITERALS.auth;
+  readonly sharedLiterals = LITERALS.shared;
 
   readonly email = signal('');
   readonly password = signal('');
   readonly loading = signal(false);
   readonly errorMessage = signal('');
 
+  readonly header = computed(() =>
+    this.mode() === 'logout' ? this.literals.logoutButton : this.literals.loginTitle
+  );
+
   async onSubmit(): Promise<void> {
     this.errorMessage.set('');
     this.loading.set(true);
     try {
       await this.authService.login(this.email(), this.password());
-      this.messageService.add({ severity: 'success', summary: this.literals.loginSuccess, life: 3000 });
+      this.messageService.add({ ...TOAST_MESSAGES.auth.loginSuccess, life: 3000 });
       this.close();
     } catch {
       this.errorMessage.set(this.literals.loginError);
     } finally {
       this.loading.set(false);
     }
+  }
+
+  async onConfirmLogout(): Promise<void> {
+    await this.authService.logout();
+    this.messageService.add({ ...TOAST_MESSAGES.auth.logoutSuccess, life: 3000 });
+    this.close();
   }
 
   onHide(): void {

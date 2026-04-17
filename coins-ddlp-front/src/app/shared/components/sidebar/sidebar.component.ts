@@ -1,6 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { MessageService } from 'primeng/api';
 import { SIDEBAR_ITEMS, SidebarItem } from './sidebar.config';
 import { LITERALS } from '../../constants/literals';
 import { CountryFlagComponent } from '../country-flag/country-flag.component';
@@ -21,12 +20,17 @@ export class SidebarComponent {
   readonly authLiterals = LITERALS.auth;
   readonly numistaService = inject(NumistaService);
   readonly authService = inject(AuthService);
-  private messageService = inject(MessageService);
 
   readonly loginVisible = signal(false);
+  readonly dialogMode = signal<'login' | 'logout'>('login');
 
-  async logout(): Promise<void> {
-    await this.authService.logout();
-    this.messageService.add({ severity: 'info', summary: this.authLiterals.logoutSuccess, life: 3000 });
+  openLogin(): void {
+    this.dialogMode.set('login');
+    this.loginVisible.set(true);
+  }
+
+  openLogoutConfirm(): void {
+    this.dialogMode.set('logout');
+    this.loginVisible.set(true);
   }
 }
