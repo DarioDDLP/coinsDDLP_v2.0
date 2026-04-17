@@ -3,9 +3,10 @@ import { LITERALS } from '../../constants/literals';
 export interface SidebarItem {
   label: string;
   routerLink: string;
-  country?: string;  // Usa CountryFlagComponent (circular, normalizado)
-  imgUrl?: string;   // Imagen genérica (monedas, iconos personalizados)
-  icon?: string;     // PrimeIcons
+  country?: string;
+  imgUrl?: string;
+  icon?: string;
+  adminOnly?: boolean;
 }
 
 export const SIDEBAR_ITEMS: SidebarItem[] = [
@@ -14,4 +15,5 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   { label: LITERALS.sidebar.pesetas, routerLink: '/pesetas', country: 'españa' },
   { label: LITERALS.sidebar.estadisticas, routerLink: '/estadisticas', icon: 'pi pi-chart-bar' },
   { label: LITERALS.sidebar.ubicacion, routerLink: '/ubicacion', icon: 'pi pi-map-marker' },
+  { label: LITERALS.sidebar.admin, routerLink: '/admin', icon: 'pi pi-shield', adminOnly: true },
 ];

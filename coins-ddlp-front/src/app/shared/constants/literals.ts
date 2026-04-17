@@ -81,6 +81,7 @@ export const LITERALS = {
     pesetas: 'Peseta',
     ubicacion: 'Ubicación',
     estadisticas: 'Estadísticas',
+    admin: 'Administración',
   },
 
   coinDetail: {
@@ -102,6 +103,26 @@ export const LITERALS = {
     labelMoreInfo: 'Más información en Numista',
     loadingNumista: 'Cargando datos de Numista...',
     errorNumista: 'No se pudieron cargar los datos de Numista',
+  },
+
+  admin: {
+    title: 'Administración',
+    navUsers: 'Usuarios',
+    usersTitle: 'Gestión de usuarios',
+    colEmail: 'Email',
+    colName: 'Nombre',
+    colRole: 'Rol',
+    colActions: 'Acciones',
+    newUser: 'Nuevo usuario',
+    editUser: 'Editar usuario',
+    deleteUser: 'Eliminar usuario',
+    deleteConfirm: '¿Seguro que quieres eliminar este usuario?',
+    roleAdmin: 'Admin',
+    roleUser: 'Usuario',
+    saveSuccess: 'Usuario guardado correctamente',
+    saveError: 'Error al guardar el usuario',
+    deleteSuccess: 'Usuario eliminado correctamente',
+    deleteError: 'Error al eliminar el usuario',
   },
 
   conmemorativas: {

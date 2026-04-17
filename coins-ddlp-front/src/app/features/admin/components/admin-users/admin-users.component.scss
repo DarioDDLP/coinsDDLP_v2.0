@@ -1,0 +1,29 @@
+.admin-users {
+  width: 60%;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+  padding: 24px;
+
+  &__toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--deep-navy);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 1500px) { .admin-users { width: 90%; } }
+@media (max-width: 900px)  { .admin-users { width: 98%; } }

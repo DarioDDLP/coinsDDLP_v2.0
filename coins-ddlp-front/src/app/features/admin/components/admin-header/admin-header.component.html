@@ -1,0 +1,15 @@
+<div class="admin-header">
+  <h1 class="admin-header__title">{{ title }}</h1>
+  <nav class="admin-header__nav">
+    @for (item of items; track item.routerLink) {
+      <a
+        [routerLink]="item.routerLink"
+        routerLinkActive="admin-header__nav-item--active"
+        class="admin-header__nav-item"
+      >
+        <i [class]="item.icon"></i>
+        <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</div>

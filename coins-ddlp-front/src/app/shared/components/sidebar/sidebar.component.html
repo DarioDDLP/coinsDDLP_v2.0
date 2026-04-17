@@ -8,24 +8,26 @@
 
   <ul class="sidebar__nav">
     @for (item of items; track item.routerLink) {
-      <li>
-        <a
-          [routerLink]="item.routerLink"
-          routerLinkActive="sidebar__nav-item--active"
-          class="sidebar__nav-item"
-        >
-          <div class="sidebar__nav-icon">
-            @if (item.country) {
-              <app-country-flag [country]="item.country" [size]="30" />
-            } @else if (item.imgUrl) {
-              <img [src]="item.imgUrl" [alt]="item.label" />
-            } @else {
-              <i [class]="item.icon"></i>
-            }
-          </div>
-          <span>{{ item.label }}</span>
-        </a>
-      </li>
+      @if (!item.adminOnly || authService.isAdmin()) {
+        <li>
+          <a
+            [routerLink]="item.routerLink"
+            routerLinkActive="sidebar__nav-item--active"
+            class="sidebar__nav-item"
+          >
+            <div class="sidebar__nav-icon">
+              @if (item.country) {
+                <app-country-flag [country]="item.country" [size]="30" />
+              } @else if (item.imgUrl) {
+                <img [src]="item.imgUrl" [alt]="item.label" />
+              } @else {
+                <i [class]="item.icon"></i>
+              }
+            </div>
+            <span>{{ item.label }}</span>
+          </a>
+        </li>
+      }
     }
   </ul>
 

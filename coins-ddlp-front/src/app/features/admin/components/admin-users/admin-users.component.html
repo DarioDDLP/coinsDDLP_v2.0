@@ -1,0 +1,52 @@
+@if (isReady()) {
+  <div class="admin-users">
+    <div class="admin-users__toolbar">
+      <h2 class="admin-users__title">{{ literals.usersTitle }}</h2>
+      <app-button [label]="literals.newUser" icon="pi pi-plus" (clicked)="onEdit(null!)" />
+    </div>
+
+    <p-table
+      [value]="users()"
+      [tableStyle]="{ 'min-width': '600px' }"
+      styleClass="p-datatable-striped"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>{{ literals.colEmail }}</th>
+          <th>{{ literals.colName }}</th>
+          <th>{{ literals.colRole }}</th>
+          <th>{{ literals.colActions }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-user>
+        <tr>
+          <td>{{ user.email }}</td>
+          <td>{{ user.displayName ?? '—' }}</td>
+          <td>
+            @if (user.role === 'admin') {
+              <p-tag [value]="literals.roleAdmin" severity="warn" />
+            } @else {
+              <p-tag [value]="literals.roleUser" severity="info" />
+            }
+          </td>
+          <td class="admin-users__actions">
+            <app-button
+              icon="pi pi-pencil"
+              variant="ghost"
+              [pTooltip]="literals.editUser"
+              tooltipPosition="top"
+              (clicked)="onEdit(user)"
+            />
+            <app-button
+              icon="pi pi-trash"
+              variant="danger"
+              [pTooltip]="literals.deleteUser"
+              tooltipPosition="top"
+              (clicked)="onDelete(user)"
+            />
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+}
