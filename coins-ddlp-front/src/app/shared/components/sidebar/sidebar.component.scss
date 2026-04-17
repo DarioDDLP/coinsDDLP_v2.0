@@ -138,6 +138,11 @@
       flex: 1;
     }
 
+    &-actions {
+      display: flex;
+      justify-content: center;
+    }
+
     &-role {
       font-size: 9px;
       font-weight: 700;

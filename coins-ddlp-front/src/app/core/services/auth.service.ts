@@ -25,6 +25,7 @@ export class AuthService implements IAuthService {
     return {
       uid: user.id,
       email: user.email ?? null,
+      displayName: user.user_metadata?.['full_name'] ?? null,
       role: (user.app_metadata?.['role'] as UserRole) ?? null,
     };
   }

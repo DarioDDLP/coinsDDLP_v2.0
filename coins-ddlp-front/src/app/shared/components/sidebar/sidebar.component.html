@@ -41,17 +41,19 @@
       <div class="sidebar__user">
         <div class="sidebar__user-info">
           <i class="pi pi-user sidebar__user-icon"></i>
-          <span class="sidebar__user-email">{{ authService.currentUser()?.email }}</span>
+          <span class="sidebar__user-email">{{ authService.currentUser()?.displayName ?? authService.currentUser()?.email }}</span>
           @if (authService.isAdmin()) {
             <span class="sidebar__user-role">Admin</span>
           }
         </div>
-        <app-button
-          [label]="authLiterals.logoutButton"
-          icon="pi pi-sign-out"
-          variant="ghost"
-          (clicked)="logout()"
-        />
+        <div class="sidebar__user-actions">
+          <app-button
+            [label]="authLiterals.logoutButton"
+            icon="pi pi-sign-out"
+            variant="ghost"
+            (clicked)="logout()"
+          />
+        </div>
       </div>
     } @else {
       <app-button
