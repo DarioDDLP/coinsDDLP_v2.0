@@ -366,14 +366,12 @@ ng build --configuration production
 - [x] **EurosComponent** — layout padre del módulo euros con fondo `background.jpg` en `:host`; rutas hijas en `euros.routes.ts`
 - [x] **isReady signal** — todos los componentes del módulo euros esperan a tener datos antes de renderizar (sin card en blanco durante la carga)
 - [x] **EmptyPanelComponent** — componente shared para estados de error y vacío: card cremosa, icono, título, mensaje y botón reintentar opcional
+- [x] **Sistema de autenticación completo** — AppUser con `role`, `AuthService` con `isLoggedIn`/`isAdmin` computed(), `authGuard`/`adminGuard` funcionales, `LoginDialogComponent` (email/password, error inline, toast), `SidebarComponent` con login/logout y badge Admin. Usuario admin asignado vía Supabase Admin API.
 
 ### Pendiente / Próximos pasos
-1. **Auth guard** — protección de rutas con Supabase Auth
-2. **Login/Logout** — botones en sidebar + login-dialog (con Supabase Auth)
-3. **Icono edición euros-detail** — abrir modal de edición (requiere auth)
-4. **Crear usuario de prueba** en Supabase Auth para testear
-5. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
-6. **Módulo admin** — gestión de usuarios con Supabase Auth custom claims
+1. **Icono edición euros-detail** — abrir modal de edición (ya con auth funcional)
+2. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
+3. **Panel admin** — gestión de usuarios vía Edge Function (serviceRoleKey no puede ir en frontend)
 
 ---
 
@@ -393,6 +391,7 @@ ng build --configuration production
 | 2026-04-12 | **Migración completa Firebase → Supabase**: 1) AuthService adaptado a Supabase Auth. 2) FirestoreService reemplazado por SupabaseService (tiempo real con postgres_changes). 3) Migración rehecha desde archivo de exportación: 5.441 documentos a PostgreSQL sin duplicados. 4) Firebase completamente removido (78 paquetes npm desinstalados). 5) App compilando y cargando datos correctamente. |
 | 2026-04-13 | **Mejoras visuales euros-detail**: tabla con card blanca, header deep-navy/cream, estriado, búsqueda funcional (faceValue + description con normalización de acentos), unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan. `normalizeString` extraída como helper genérico y usada en los 3 buscadores. Botón volver reemplazado por `app-button`. Nueva variante `tertiary` en ButtonComponent. Input `cardBackground` en CollectionLayoutComponent. |
 | 2026-04-14 | **coin-detail**: vista de detalle de moneda con integración Numista via Supabase Edge Function proxy. Datos de Supabase + Numista combinados. Usa `collection-layout` como wrapper. Leyenda de no circulantes en euros-detail. Contador de peticiones Numista en sidebar (signal `remaining()` + tabla `numista_usage`). Buscador opcional en `collection-layout`. `provideHttpClient()` añadido. |
+| 2026-04-17 | **Sistema auth completo**: AppUser con role, AuthService con isLoggedIn/isAdmin como computed() desde JWT app_metadata, authGuard/adminGuard funcionales, LoginDialogComponent, SidebarComponent con login/logout/badge Admin. Rol admin asignado a cdariopex@gmail.com vía Supabase Admin API. |
 | 2026-04-17 | **Refactor spinner**: `LoadingService.withLoading()` operador RxJS, spinner centralizado en feature services, `SupabaseService` limpio, `observer.complete()` añadido, color mensaje spinner corregido. **EurosComponent** como layout padre del módulo con fondo propio. **isReady** en todos los componentes del módulo. **EmptyPanelComponent** para errores y estados vacíos con card cremosa y botón reintentar. |
 
 ---
