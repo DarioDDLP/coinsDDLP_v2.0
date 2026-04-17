@@ -3,17 +3,10 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { Observable } from 'rxjs';
 import { SUPABASE_CLIENT } from '../../app.config';
 import { TableName } from '../../shared/constants/collections.const';
-import { LoadingService } from './loading.service';
 
-/**
- * Servicio genérico de acceso a Supabase PostgreSQL.
- * Responsabilidad única: comunicación con la base de datos.
- * No contiene lógica de negocio.
- */
 @Injectable({ providedIn: 'root' })
 export class SupabaseService {
   private supabase = inject(SUPABASE_CLIENT);
-  private loading = inject(LoadingService);
 
   getTable<T extends { id: string }>(tableName: TableName): Observable<T[]> {
     return this.getTableWhere<T>(tableName, (query) => query);
@@ -25,10 +18,7 @@ export class SupabaseService {
     fields = '*'
   ): Observable<T[]> {
     return new Observable(observer => {
-      // Cargar todos los datos con paginación y filtros (sin tiempo real)
       const loadAllData = async () => {
-        this.loading.showLoading();
-
         try {
           let allData: T[] = [];
           let offset = 0;
@@ -56,15 +46,13 @@ export class SupabaseService {
           }
 
           observer.next(allData);
-        } finally {
-          this.loading.hideLoading();
+          observer.complete();
+        } catch (error) {
+          observer.error(error);
         }
       };
 
       loadAllData();
-
-      // No se suscribe a cambios en tiempo real — optimizar para lecturas
-      // Los cambios (create/update/delete) se manejan en sus respectivos métodos
       return () => {};
     });
   }

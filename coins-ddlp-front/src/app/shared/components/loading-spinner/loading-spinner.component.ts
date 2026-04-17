@@ -1,5 +1,6 @@
 import { Component, input } from '@angular/core';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { LITERALS } from '../../constants/literals';
 
 @Component({
   selector: 'app-loading-spinner',
@@ -9,5 +10,5 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
   styleUrl: './loading-spinner.component.scss',
 })
 export class LoadingSpinnerComponent {
-  readonly message = input<string>('Cargando...');
+  readonly message = input<string>(LITERALS.shared.loading);
 }

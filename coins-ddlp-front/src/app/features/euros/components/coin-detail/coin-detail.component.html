@@ -1,14 +1,12 @@
-@if (loadingService.isLoading()) {
-  <app-loading-spinner />
-} @else if (coin()) {
-  <app-collection-layout
-    [title]="coin()!.faceValue"
-    [country]="coin()!.country"
-    [backLink]="backLink()"
-    [backLabel]="sharedLiterals.back"
-    cardBackground="#ffffff"
-    [cardOpacity]="0.95"
-  >
+@if (isReady()) {
+<app-collection-layout
+  [title]="coin()!.faceValue"
+  [country]="coin()!.country"
+  [backLink]="backLink()"
+  [backLabel]="sharedLiterals.back"
+  cardBackground="#ffffff"
+  [cardOpacity]="0.95"
+>
     <!-- Header de la moneda -->
     <div class="detail-header">
       <div class="detail-header__titles">
@@ -151,5 +149,5 @@
       </div>
 
     </div>
-  </app-collection-layout>
+</app-collection-layout>
 }

@@ -2,21 +2,19 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
-import { LoadingService } from '../../../../core/services/loading.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
 import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
 import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
   standalone: true,
-  imports: [CoinBadgeComponent, UnitBadgeComponent, CountryFlagComponent, ButtonComponent, LoadingSpinnerComponent, CollectionLayoutComponent],
+  imports: [CoinBadgeComponent, UnitBadgeComponent, CountryFlagComponent, ButtonComponent, CollectionLayoutComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',
 })
@@ -25,7 +23,6 @@ export class CoinDetailComponent implements OnInit {
   private router = inject(Router);
   private eurosService = inject(EurosService);
   private numistaService = inject(NumistaService);
-  readonly loadingService = inject(LoadingService);
 
   readonly literals = LITERALS.coinDetail;
   readonly sharedLiterals = LITERALS.shared;
@@ -33,6 +30,7 @@ export class CoinDetailComponent implements OnInit {
   readonly coin = signal<EuroCoin | null>(null);
   readonly numista = signal<NumistaCoin | null>(null);
   readonly numistaError = signal(false);
+  readonly isReady = signal(false);
 
   readonly techniqueText = computed(() => {
     const raw = this.numista()?.technique?.text ?? '';
@@ -57,13 +55,8 @@ export class CoinDetailComponent implements OnInit {
     const country = this.route.snapshot.paramMap.get('country')!;
     const year = this.route.snapshot.paramMap.get('year')!;
 
-    // Ocupamos el contador antes de empezar para que el spinner
-    // no se apague entre la llamada a Supabase y la de Numista
-    this.loadingService.showLoading();
-
     this.eurosService.getById(id).subscribe(coin => {
       if (!coin) {
-        this.loadingService.hideLoading();
         this.router.navigate(['/euros', country, year]);
         return;
       }
@@ -71,17 +64,11 @@ export class CoinDetailComponent implements OnInit {
 
       if (coin.idNum) {
         this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
-          next: (data) => {
-            this.numista.set(data);
-            this.loadingService.hideLoading();
-          },
-          error: () => {
-            this.numistaError.set(true);
-            this.loadingService.hideLoading();
-          },
+          next: (data) => { this.numista.set(data); this.isReady.set(true); },
+          error: () => { this.numistaError.set(true); this.isReady.set(true); },
         });
       } else {
-        this.loadingService.hideLoading();
+        this.isReady.set(true);
       }
     });
   }

@@ -1,9 +1,6 @@
 import { Injectable, signal } from '@angular/core';
+import { defer, finalize, MonoTypeOperatorFunction } from 'rxjs';
 
-/**
- * Servicio global para gestionar el estado de carga de la aplicación.
- * Usado por componentes para mostrar/ocultar spinner mientras hay peticiones.
- */
 @Injectable({ providedIn: 'root' })
 export class LoadingService {
   readonly isLoading = signal(false);
@@ -19,5 +16,13 @@ export class LoadingService {
     if (this.loadingCount === 0) {
       this.isLoading.set(false);
     }
+  }
+
+  // defer: showLoading corre al suscribirse, no al construir el pipe
+  withLoading<T>(): MonoTypeOperatorFunction<T> {
+    return (source) => defer(() => {
+      this.showLoading();
+      return source.pipe(finalize(() => this.hideLoading()));
+    });
   }
 }

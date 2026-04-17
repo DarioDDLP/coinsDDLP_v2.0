@@ -3,10 +3,12 @@ import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { NumistaCoin } from '../../shared/interfaces/numista-coin.interface';
+import { LoadingService } from './loading.service';
 
 @Injectable({ providedIn: 'root' })
 export class NumistaService {
   private http = inject(HttpClient);
+  private loading = inject(LoadingService);
 
   readonly remaining = signal<number | null>(null);
 
@@ -19,7 +21,8 @@ export class NumistaService {
         const remaining = response.headers.get('X-Numista-Remaining');
         if (remaining !== null) this.remaining.set(+remaining);
       }),
-      map(response => response.body!)
+      map(response => response.body!),
+      this.loading.withLoading()
     );
   }
 }
