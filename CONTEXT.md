@@ -323,7 +323,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-17
+> **Última actualización:** 2026-04-17 (sesión 2)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -367,11 +367,14 @@ ng build --configuration production
 - [x] **isReady signal** — todos los componentes del módulo euros esperan a tener datos antes de renderizar (sin card en blanco durante la carga)
 - [x] **EmptyPanelComponent** — componente shared para estados de error y vacío: card cremosa, icono, título, mensaje y botón reintentar opcional
 - [x] **Sistema de autenticación completo** — AppUser con `role` y `displayName`, `AuthService` con `isLoggedIn`/`isAdmin` computed(), `authGuard`/`adminGuard` funcionales, `LoginDialogComponent` (email/password, error inline, toast), `SidebarComponent` con login/logout, badge Admin y displayName con fallback a email. Usuario admin asignado vía Supabase Admin API.
+- [x] **Toasts** — posición `top-right`, `summary` desde `LITERALS.shared` (Éxito/Error/Información), `detail` con el mensaje. Todas las llamadas usan `TOAST_MESSAGES`.
+- [x] **LoginDialogComponent modo logout** — `mode` input `'login' | 'logout'`. En modo logout muestra confirmación con botones Cancelar (primary, izquierda) y Confirmar (danger, derecha). `header` como `computed()`.
+- [x] **Módulo admin completo** — `AdminComponent` (padre con fondo + `effect()` redirect a `/euros` al cerrar sesión), `AdminHeaderComponent` (título + nav desde `admin-header.config.ts`), `AdminUsersComponent` (tabla de usuarios), `AdminService` (JWT via `withAuth()`), Edge Function `admin-users` (list/create/update/delete, verifica rol admin en JWT, deployada con `--no-verify-jwt`). Sidebar muestra item Admin solo si `isAdmin()`.
 
 ### Pendiente / Próximos pasos
 1. **Icono edición euros-detail** — abrir modal de edición (ya con auth funcional)
-2. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
-3. **Panel admin** — gestión de usuarios vía Edge Function (serviceRoleKey no puede ir en frontend)
+2. **Modal crear/editar usuario en admin** — `admin-user-dialog` con formulario
+3. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
 
 ---
 
@@ -393,6 +396,8 @@ ng build --configuration production
 | 2026-04-14 | **coin-detail**: vista de detalle de moneda con integración Numista via Supabase Edge Function proxy. Datos de Supabase + Numista combinados. Usa `collection-layout` como wrapper. Leyenda de no circulantes en euros-detail. Contador de peticiones Numista en sidebar (signal `remaining()` + tabla `numista_usage`). Buscador opcional en `collection-layout`. `provideHttpClient()` añadido. |
 | 2026-04-17 | **Sistema auth completo**: AppUser con role y displayName (user_metadata.full_name), AuthService con isLoggedIn/isAdmin como computed() desde JWT, authGuard/adminGuard funcionales, LoginDialogComponent, SidebarComponent con login/logout/badge Admin/displayName con fallback a email. Botón logout centrado. Rol admin asignado vía Supabase Admin API. |
 | 2026-04-17 | **Refactor spinner**: `LoadingService.withLoading()` operador RxJS, spinner centralizado en feature services, `SupabaseService` limpio, `observer.complete()` añadido, color mensaje spinner corregido. **EurosComponent** como layout padre del módulo con fondo propio. **isReady** en todos los componentes del módulo. **EmptyPanelComponent** para errores y estados vacíos con card cremosa y botón reintentar. |
+| 2026-04-17 | **UX toasts y login/logout**: toasts movidos a `top-right` con summary/detail desde LITERALS. `LoginDialogComponent` refactorizado con `mode` input para reutilizar como confirmación de logout. Botón entrar alineado a la derecha. Separación `margin-top` en acciones. |
+| 2026-04-17 | **Módulo admin**: `AdminComponent` + `AdminHeaderComponent` + `AdminUsersComponent` + `AdminService` + Edge Function `admin-users`. Nav del admin desde `admin-header.config.ts`. Redirect a `/euros` al cerrar sesión via `effect()`. Sidebar filtra item admin con flag `adminOnly`. |
 
 ---
 
