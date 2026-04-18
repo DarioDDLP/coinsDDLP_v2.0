@@ -14,15 +14,15 @@
         <tr>
           <th>{{ literals.colEmail }}</th>
           <th>{{ literals.colName }}</th>
-          <th>{{ literals.colRole }}</th>
-          <th>{{ literals.colActions }}</th>
+          <th style="text-align: center">{{ literals.colRole }}</th>
+          <th style="text-align: center">{{ literals.colActions }}</th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-row>
         <tr>
           <td>{{ row.user.email }}</td>
           <td>{{ row.user.displayName ?? '—' }}</td>
-          <td>
+          <td style="text-align: center">
             <app-badge [label]="row.roleBadge.label" [severity]="row.roleBadge.severity" />
           </td>
           <td class="admin-users__actions">

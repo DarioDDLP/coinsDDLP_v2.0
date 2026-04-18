@@ -27,8 +27,16 @@
 
   &__actions {
     display: flex;
+    justify-content: center;
     gap: 4px;
   }
+}
+
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: var(--deep-navy);
+  color: var(--cream);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 @media (max-width: 900px) { .admin-users { width: 98%; } }
