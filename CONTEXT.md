@@ -323,7 +323,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-17 (sesión 2)
+> **Última actualización:** 2026-04-19 (sesión 3)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -369,10 +369,16 @@ ng build --configuration production
 - [x] **Toasts** — posición `top-right`, `summary` desde `LITERALS.shared` (Éxito/Error/Información), `detail` con el mensaje. Todas las llamadas usan `TOAST_MESSAGES`.
 - [x] **LoginDialogComponent modo logout** — `mode` input `'login' | 'logout'`. En modo logout muestra confirmación con botones Cancelar (primary, izquierda) y Confirmar (danger, derecha). `header` como `computed()`.
 - [x] **Módulo admin completo** — `AdminComponent` (padre con fondo + `effect()` redirect a `/euros` al cerrar sesión), `AdminHeaderComponent` (título + nav desde `admin-header.config.ts`), `AdminUsersComponent` (tabla de usuarios), `AdminService` (JWT via `withAuth()`), Edge Function `admin-users` (list/create/update/delete, verifica rol admin en JWT, deployada con `--no-verify-jwt`). Sidebar muestra item Admin solo si `isAdmin()`.
+- [x] **Flujo forgot password** — `LoginDialogComponent` ampliado con vista `'forgot'`: campo email + botón "Enviar enlace" (`supabase.auth.resetPasswordForEmail`). Link "¿Olvidaste tu contraseña?" en la vista login. Confirmación inline tras envío.
+- [x] **RecoveryPasswordDialogComponent** — modal global en `AppComponent`. Se activa con signal `isRecoveryMode` en `AuthService` al detectar evento `PASSWORD_RECOVERY` en `onAuthStateChange`. Formulario nueva contraseña + confirmar. Llama a `supabase.auth.updateUser({ password })`. Sin botón cerrar (`[closable]="false"`).
+- [x] **Redirect a /euros tras logout** — `LoginDialogComponent` navega a `/euros` después de confirmar cierre de sesión.
+- [x] **Admin tabla usuarios** — cabecera deep-navy/cream, columnas Rol y Acciones centradas, fondo `background-admin.png`.
+- [x] **Eliminar usuario** — `AdminUserDialogComponent` con modo `'delete'`: confirmación Cancelar/Confirmar. `AdminUsersComponent` con signal `dialogMode` (`'edit' | 'delete'`). Llama a Edge Function DELETE.
+- [x] **euros-year-coins botón añadir unidades** — icono `pi-plus-circle` ghost, solo visible para admin (`isAdmin()`). `stopPropagation` en `td` para no disparar navegación al detalle. Sin funcionalidad aún.
 
 ### Pendiente / Próximos pasos
-1. **Icono edición euros-detail** — abrir modal de edición (ya con auth funcional)
-2. **Modal crear/editar usuario en admin** — `admin-user-dialog` con formulario
+1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
+2. **Modal añadir/editar unidades en euros-year-coins** — implementar funcionalidad del botón `pi-plus-circle`
 3. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
 
 ---
@@ -399,6 +405,9 @@ ng build --configuration production
 | 2026-04-17 | **Módulo admin**: `AdminComponent` + `AdminHeaderComponent` + `AdminUsersComponent` + `AdminService` + Edge Function `admin-users`. Nav del admin desde `admin-header.config.ts`. Redirect a `/euros` al cerrar sesión via `effect()`. Sidebar filtra item admin con flag `adminOnly`. |
 | 2026-04-18 | **GlobalErrorHandler**: `core/services/global-error-handler.service.ts` implementa `ErrorHandler` de Angular. Registrado en `app.config.ts`. Extrae mensaje real del error (status 0 → conexión, body.error, body.message, e.message, fallback genérico). Todos los componentes inyectan `ErrorHandler` y llaman `handleError(e)` en `error:` callbacks y `catch` blocks. Patrón documentado en CONTEXT.md como obligatorio para nuevos módulos. |
 | 2026-04-18 | **Unificación de badges**: `coin-badge`, `role-badge` y `unit-badge` reemplazados por un único `BadgeComponent` (presentación pura: label, severity, size, tooltip). Mapeo extraído a `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`). Tipo `Severity` en `shared/interfaces/severity.interface.ts`. Consumidores (`coin-detail`, `euros-year-coins`, `admin-users`) precomputan `BadgeData` en signals para no llamar funciones desde template. |
+| 2026-04-19 | **Flujo forgot/recovery password**: `LoginDialogComponent` con vista `'forgot'` (signal interno `view`), `RecoveryPasswordDialogComponent` global en `AppComponent`, `AuthService` con `isRecoveryMode`, `resetPassword()` y `updatePassword()`. Redirect a `/euros` tras logout. |
+| 2026-04-19 | **Admin tabla**: cabecera deep-navy/cream, columnas centradas, fondo `background-admin.png`. Eliminar usuario con confirmación via modo `'delete'` en `AdminUserDialogComponent`. |
+| 2026-04-19 | **euros-year-coins**: botón `pi-plus-circle` ghost solo para admin. `stopPropagation` en `td` para evitar navegación al detalle. Sin funcionalidad aún. |
 
 ---
 
