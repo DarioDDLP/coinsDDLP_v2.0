@@ -1,4 +1,4 @@
-import { ApplicationConfig, InjectionToken, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, ErrorHandler, InjectionToken, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
@@ -9,12 +9,14 @@ import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { environment } from '../environments/environment';
+import { GlobalErrorHandler } from './core/services/global-error-handler.service';
 
 export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-client');
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
+    { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
     provideRouter(routes),
     provideHttpClient(),

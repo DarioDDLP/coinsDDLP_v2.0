@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
@@ -20,6 +20,7 @@ import { ROLE_OPTIONS } from './admin-user-dialog.config';
 export class AdminUserDialogComponent {
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
+  private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
   user = input<AppUser | null>(null);
@@ -74,7 +75,8 @@ export class AdminUserDialogComponent {
         this.saved.emit();
         this.close();
       },
-      error: () => {
+      error: (e) => {
+        this.errorHandler.handleError(e);
         this.errorMessage.set(this.literals.saveError);
         this.loading.set(false);
       },

@@ -397,6 +397,7 @@ ng build --configuration production
 | 2026-04-17 | **Refactor spinner**: `LoadingService.withLoading()` operador RxJS, spinner centralizado en feature services, `SupabaseService` limpio, `observer.complete()` añadido, color mensaje spinner corregido. **EurosComponent** como layout padre del módulo con fondo propio. **isReady** en todos los componentes del módulo. **EmptyPanelComponent** para errores y estados vacíos con card cremosa y botón reintentar. |
 | 2026-04-17 | **UX toasts y login/logout**: toasts movidos a `top-right` con summary/detail desde LITERALS. `LoginDialogComponent` refactorizado con `mode` input para reutilizar como confirmación de logout. Botón entrar alineado a la derecha. Separación `margin-top` en acciones. |
 | 2026-04-17 | **Módulo admin**: `AdminComponent` + `AdminHeaderComponent` + `AdminUsersComponent` + `AdminService` + Edge Function `admin-users`. Nav del admin desde `admin-header.config.ts`. Redirect a `/euros` al cerrar sesión via `effect()`. Sidebar filtra item admin con flag `adminOnly`. |
+| 2026-04-18 | **GlobalErrorHandler**: `core/services/global-error-handler.service.ts` implementa `ErrorHandler` de Angular. Registrado en `app.config.ts`. Extrae mensaje real del error (status 0 → conexión, body.error, body.message, e.message, fallback genérico). Todos los componentes inyectan `ErrorHandler` y llaman `handleError(e)` en `error:` callbacks y `catch` blocks. Patrón documentado en CONTEXT.md como obligatorio para nuevos módulos. |
 | 2026-04-18 | **Unificación de badges**: `coin-badge`, `role-badge` y `unit-badge` reemplazados por un único `BadgeComponent` (presentación pura: label, severity, size, tooltip). Mapeo extraído a `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`). Tipo `Severity` en `shared/interfaces/severity.interface.ts`. Consumidores (`coin-detail`, `euros-year-coins`, `admin-users`) precomputan `BadgeData` en signals para no llamar funciones desde template. |
 
 ---
@@ -426,6 +427,36 @@ ng build --configuration production
 ### Imágenes
 - Banderas: normalizar nombre del país → buscar en `/assets/flags/{nombre-normalizado}.png`
 - Conservación ND: valor por defecto cuando `uds === '0'`
+
+### Manejo de errores — patrón obligatorio
+
+Todo componente que haga llamadas asíncronas (Observable o Promise) debe:
+
+1. **Inyectar `ErrorHandler`** de `@angular/core`:
+   ```ts
+   private errorHandler = inject(ErrorHandler);
+   ```
+
+2. **En callbacks `error:` de `subscribe`** — llamar a `handleError` antes de actualizar estado local:
+   ```ts
+   error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); }
+   ```
+
+3. **En bloques `catch` de `async/await`** — ídem:
+   ```ts
+   } catch (e) { this.errorHandler.handleError(e); /* estado local */ }
+   ```
+
+El `GlobalErrorHandler` (`core/services/global-error-handler.service.ts`) extrae el mensaje del error con esta prioridad:
+- Status 0 → "Comprueba tu conexión e inténtalo de nuevo"
+- `error.error.message` → body JSON de HttpErrorResponse (Supabase REST estándar)
+- `error.error.error` → body de nuestras Edge Functions (`{ error: "mensaje" }`)
+- `error.message` → `Error` JS / `PostgrestError` del SDK
+- Fallback → "Ha ocurrido un error inesperado"
+
+Los servicios **nunca** muestran toasts ni llaman a `ErrorHandler` — esa responsabilidad es siempre del componente.
+
+---
 
 ### Lo que NO se hace (anti-patterns prohibidos)
 - `*ngIf` / `*ngFor` → usar `@if` / `@for`

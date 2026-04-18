@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
@@ -16,6 +16,7 @@ import { TOAST_MESSAGES } from '../../constants/toast-messages.const';
 export class LoginDialogComponent {
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
+  private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
   mode = input<'login' | 'logout'>('login');
@@ -40,7 +41,8 @@ export class LoginDialogComponent {
       await this.authService.login(this.email(), this.password());
       this.messageService.add({ ...TOAST_MESSAGES.auth.loginSuccess, life: 3000 });
       this.close();
-    } catch {
+    } catch (e) {
+      this.errorHandler.handleError(e);
       this.errorMessage.set(this.literals.loginError);
     } finally {
       this.loading.set(false);

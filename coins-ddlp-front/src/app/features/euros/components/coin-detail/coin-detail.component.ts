@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
@@ -21,6 +21,7 @@ export class CoinDetailComponent implements OnInit {
   private router = inject(Router);
   private eurosService = inject(EurosService);
   private numistaService = inject(NumistaService);
+  private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.coinDetail;
   readonly sharedLiterals = LITERALS.shared;
@@ -65,13 +66,13 @@ export class CoinDetailComponent implements OnInit {
         if (coin.idNum) {
           this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
             next: (data) => { this.numista.set(data); this.isReady.set(true); },
-            error: () => { this.numistaError.set(true); this.isReady.set(true); },
+            error: (e) => { this.errorHandler.handleError(e); this.numistaError.set(true); this.isReady.set(true); },
           });
         } else {
           this.isReady.set(true);
         }
       },
-      error: () => { this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -22,6 +22,7 @@ export class EurosYearCoinsComponent implements OnInit {
   private eurosService = inject(EurosService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
@@ -52,7 +53,7 @@ export class EurosYearCoinsComponent implements OnInit {
     this.isReady.set(false);
     this.eurosService.getByCountryAndYear(country, year).subscribe({
       next: coins => { this.yearCoins.set([...coins].sort(sortByFaceValue)); this.isReady.set(true); },
-      error: () => { this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { TooltipModule } from 'primeng/tooltip';
@@ -21,6 +21,7 @@ export class AdminUsersComponent implements OnInit {
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
   private loadingService = inject(LoadingService);
+  private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.admin;
 
@@ -51,7 +52,8 @@ export class AdminUsersComponent implements OnInit {
           this.users.set(users);
           this.isReady.set(true);
         },
-        error: () => {
+        error: (e) => {
+          this.errorHandler.handleError(e);
           this.isReady.set(true);
         },
       });

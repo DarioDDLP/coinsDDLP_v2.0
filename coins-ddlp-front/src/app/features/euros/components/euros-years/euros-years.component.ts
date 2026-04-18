@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
@@ -24,6 +24,7 @@ interface YearGroup {
 export class EurosYearsComponent implements OnInit {
   private eurosService = inject(EurosService);
   private route = inject(ActivatedRoute);
+  private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.euros;
 
@@ -52,7 +53,7 @@ export class EurosYearsComponent implements OnInit {
     this.isReady.set(false);
     this.eurosService.getByCountry(country).subscribe({
       next: coins => { this.countryCoins.set(coins); this.isReady.set(true); },
-      error: () => { this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
     });
   }
 

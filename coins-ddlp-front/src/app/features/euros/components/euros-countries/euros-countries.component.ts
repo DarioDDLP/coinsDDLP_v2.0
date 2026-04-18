@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
@@ -23,6 +23,7 @@ interface CountryGroup {
 })
 export class EurosCountriesComponent implements OnInit {
   private eurosService = inject(EurosService);
+  private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.euros;
 
@@ -42,7 +43,7 @@ export class EurosCountriesComponent implements OnInit {
     this.isReady.set(false);
     this.eurosService.getAll().subscribe({
       next: coins => { this.allCoins.set(coins); this.isReady.set(true); },
-      error: () => { this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
     });
   }
 
