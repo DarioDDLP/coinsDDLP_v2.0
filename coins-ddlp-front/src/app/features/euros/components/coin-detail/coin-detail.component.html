@@ -23,8 +23,17 @@
 
       </div>
       <div class="detail-header__badges">
-        <app-coin-badge [code]="coin()!.conservation" size="md" />
-        <app-unit-badge [uds]="coin()!.uds" size="md" />
+        <app-badge
+          [label]="conservationBadge().label"
+          [severity]="conservationBadge().severity"
+          [tooltip]="conservationBadge().tooltip"
+          size="md"
+        />
+        <app-badge
+          [label]="udsBadge().label"
+          [severity]="udsBadge().severity"
+          size="md"
+        />
       </div>
     </div>
 

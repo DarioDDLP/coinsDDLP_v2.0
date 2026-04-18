@@ -345,9 +345,8 @@ ng build --configuration production
 - [x] Assets en `public/assets/` (background.jpg, logo, banderas, iconos)
 - [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars
 - [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts)
-- [x] Shared component: `coin-badge` — badge de conservación con SCSS puro
+- [x] Shared component: `badge` — píldora genérica (label, severity, size, tooltip). Sustituye a `coin-badge`, `role-badge` y `unit-badge`. Mapeo en `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`)
 - [x] Shared component: `country-flag` — imagen circular configurable
-- [x] Shared component: `unit-badge` — badge de unidades: rojo (0), verde (1), azul (2+)
 - [x] Shared component: `button` — variantes primary, secondary, tertiary, danger, ghost
 - [x] Shared component: `collection-layout` — input `cardBackground` configurable, botón volver con `app-button` tertiary, bandera y título a la derecha
 - [x] `euros.service.ts` implementando IEurosRepository (usa SupabaseService)
@@ -398,6 +397,7 @@ ng build --configuration production
 | 2026-04-17 | **Refactor spinner**: `LoadingService.withLoading()` operador RxJS, spinner centralizado en feature services, `SupabaseService` limpio, `observer.complete()` añadido, color mensaje spinner corregido. **EurosComponent** como layout padre del módulo con fondo propio. **isReady** en todos los componentes del módulo. **EmptyPanelComponent** para errores y estados vacíos con card cremosa y botón reintentar. |
 | 2026-04-17 | **UX toasts y login/logout**: toasts movidos a `top-right` con summary/detail desde LITERALS. `LoginDialogComponent` refactorizado con `mode` input para reutilizar como confirmación de logout. Botón entrar alineado a la derecha. Separación `margin-top` en acciones. |
 | 2026-04-17 | **Módulo admin**: `AdminComponent` + `AdminHeaderComponent` + `AdminUsersComponent` + `AdminService` + Edge Function `admin-users`. Nav del admin desde `admin-header.config.ts`. Redirect a `/euros` al cerrar sesión via `effect()`. Sidebar filtra item admin con flag `adminOnly`. |
+| 2026-04-18 | **Unificación de badges**: `coin-badge`, `role-badge` y `unit-badge` reemplazados por un único `BadgeComponent` (presentación pura: label, severity, size, tooltip). Mapeo extraído a `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`). Tipo `Severity` en `shared/interfaces/severity.interface.ts`. Consumidores (`coin-detail`, `euros-year-coins`, `admin-users`) precomputan `BadgeData` en signals para no llamar funciones desde template. |
 
 ---
 

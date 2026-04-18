@@ -1,0 +1,17 @@
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+
+  &--success   { background: var(--state-success-bg);   color: var(--state-success-text); }
+  &--info      { background: var(--state-info-bg);      color: var(--state-info-text); }
+  &--warn      { background: var(--state-warn-bg);      color: var(--state-warn-text); }
+  &--danger    { background: var(--state-danger-bg);    color: var(--state-danger-text); }
+  &--secondary { background: var(--state-secondary-bg); color: var(--state-secondary-text); }
+
+  &--md { font-size: 14px; padding: 4px 12px; }
+}

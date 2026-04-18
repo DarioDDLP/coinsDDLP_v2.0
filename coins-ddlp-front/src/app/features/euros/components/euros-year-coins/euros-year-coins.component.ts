@@ -3,18 +3,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
-import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
-import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 
 @Component({
   selector: 'app-euros-year-coins',
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, CoinBadgeComponent, UnitBadgeComponent, EmptyPanelComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
 })
@@ -64,6 +64,14 @@ export class EurosYearCoinsComponent implements OnInit {
       normalizeString(c.description).includes(query)
     );
   });
+
+  readonly coinRows = computed(() =>
+    this.coins().map(coin => ({
+      coin,
+      conservationBadge: getConservationBadge(coin.conservation),
+      udsBadge: getUdsBadge(coin.uds),
+    }))
+  );
 
   readonly hasMint = computed(() => this.yearCoins().some(c => c.mint));
   readonly hasNonCirculating = computed(() => this.coins().some(c => !c.circulation));

@@ -1,6 +1,8 @@
+import { Severity } from './severity.interface';
+
 export interface ConservationState {
   code: string;
   name: string;
   description: string;
-  severity: 'success' | 'info' | 'warn' | 'danger' | 'secondary';
+  severity: Severity;
 }

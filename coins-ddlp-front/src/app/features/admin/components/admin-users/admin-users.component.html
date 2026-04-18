@@ -6,7 +6,7 @@
     </div>
 
     <p-table
-      [value]="sortedUsers()"
+      [value]="userRows()"
       [tableStyle]="{ 'min-width': '600px' }"
       class="p-datatable-striped"
     >
@@ -18,12 +18,12 @@
           <th>{{ literals.colActions }}</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-user>
+      <ng-template pTemplate="body" let-row>
         <tr>
-          <td>{{ user.email }}</td>
-          <td>{{ user.displayName ?? '—' }}</td>
+          <td>{{ row.user.email }}</td>
+          <td>{{ row.user.displayName ?? '—' }}</td>
           <td>
-            <app-role-badge [role]="user.role" />
+            <app-badge [label]="row.roleBadge.label" [severity]="row.roleBadge.severity" />
           </td>
           <td class="admin-users__actions">
             <app-button
@@ -31,14 +31,14 @@
               variant="ghost"
               [pTooltip]="literals.editUser"
               tooltipPosition="top"
-              (clicked)="onEdit(user)"
+              (clicked)="onEdit(row.user)"
             />
             <app-button
               icon="pi pi-trash"
               variant="danger"
               [pTooltip]="literals.deleteUser"
               tooltipPosition="top"
-              (clicked)="onDelete(user)"
+              (clicked)="onDelete(row.user)"
             />
           </td>
         </tr>

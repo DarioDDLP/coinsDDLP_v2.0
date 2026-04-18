@@ -4,15 +4,15 @@ import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
-import { CoinBadgeComponent } from '../../../../shared/components/coin-badge/coin-badge.component';
-import { UnitBadgeComponent } from '../../../../shared/components/unit-badge/unit-badge.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
-  imports: [CoinBadgeComponent, UnitBadgeComponent, CollectionLayoutComponent, EmptyPanelComponent],
+  imports: [BadgeComponent, CollectionLayoutComponent, EmptyPanelComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',
 })
@@ -42,6 +42,9 @@ export class CoinDetailComponent implements OnInit {
       .map(r => `${r.catalogue.code} ${r.number}`)
       .join(' · ');
   });
+
+  readonly conservationBadge = computed(() => getConservationBadge(this.coin()?.conservation));
+  readonly udsBadge = computed(() => getUdsBadge(this.coin()?.uds ?? 0));
 
   readonly backLink = computed(() => {
     const country = this.route.snapshot.paramMap.get('country') ?? '';
