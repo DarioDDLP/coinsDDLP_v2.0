@@ -38,6 +38,7 @@ export class AdminUsersComponent implements OnInit {
   );
   readonly isReady = signal(false);
   readonly dialogVisible = signal(false);
+  readonly dialogMode = signal<'edit' | 'delete'>('edit');
   readonly editingUser = signal<AppUser | null>(null);
 
   ngOnInit(): void {
@@ -60,6 +61,13 @@ export class AdminUsersComponent implements OnInit {
   }
 
   protected onEdit(user: AppUser | null): void {
+    this.dialogMode.set('edit');
+    this.editingUser.set(user);
+    this.dialogVisible.set(true);
+  }
+
+  protected onDelete(user: AppUser): void {
+    this.dialogMode.set('delete');
     this.editingUser.set(user);
     this.dialogVisible.set(true);
   }
@@ -72,9 +80,5 @@ export class AdminUsersComponent implements OnInit {
   protected onDialogClosed(): void {
     this.dialogVisible.set(false);
     this.editingUser.set(null);
-  }
-
-  protected onDelete(user: AppUser): void {
-    // TODO: confirmación y borrado
   }
 }

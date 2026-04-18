@@ -9,70 +9,90 @@
   [closable]="true"
 >
   <div class="user-form">
-    @if (!isEditMode()) {
+    @if (isDeleteMode()) {
+      <p class="user-form__confirm-message">{{ literals.deleteConfirm }}</p>
+      @if (errorMessage()) {
+        <p class="user-form__error">{{ errorMessage() }}</p>
+      }
+      <div class="user-form__actions user-form__actions--spread">
+        <app-button
+          [label]="sharedLiterals.cancel"
+          variant="primary"
+          (clicked)="onHide()"
+        />
+        <app-button
+          [label]="sharedLiterals.confirm"
+          variant="danger"
+          [loading]="loading()"
+          (clicked)="onConfirmDelete()"
+        />
+      </div>
+    } @else {
+      @if (!isEditMode()) {
+        <div class="user-form__field">
+          <label class="user-form__label">{{ authLiterals.emailLabel }}</label>
+          <input
+            pInputText
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            [placeholder]="authLiterals.emailPlaceholder"
+            autocomplete="off"
+            class="user-form__input"
+          />
+        </div>
+
+        <div class="user-form__field">
+          <label class="user-form__label">{{ authLiterals.passwordLabel }}</label>
+          <input
+            pInputText
+            type="password"
+            [value]="password()"
+            (input)="password.set($any($event.target).value)"
+            [placeholder]="authLiterals.passwordPlaceholder"
+            autocomplete="new-password"
+            class="user-form__input"
+          />
+        </div>
+      }
+
       <div class="user-form__field">
-        <label class="user-form__label">{{ authLiterals.emailLabel }}</label>
+        <label class="user-form__label">{{ literals.nameLabel }}</label>
         <input
           pInputText
-          type="email"
-          [value]="email()"
-          (input)="email.set($any($event.target).value)"
-          [placeholder]="authLiterals.emailPlaceholder"
+          type="text"
+          [value]="displayName()"
+          (input)="displayName.set($any($event.target).value)"
+          [placeholder]="literals.namePlaceholder"
           autocomplete="off"
           class="user-form__input"
         />
       </div>
 
       <div class="user-form__field">
-        <label class="user-form__label">{{ authLiterals.passwordLabel }}</label>
-        <input
-          pInputText
-          type="password"
-          [value]="password()"
-          (input)="password.set($any($event.target).value)"
-          [placeholder]="authLiterals.passwordPlaceholder"
-          autocomplete="new-password"
+        <label class="user-form__label">{{ literals.roleLabel }}</label>
+        <p-select
+          [options]="roleOptions"
+          [ngModel]="role()"
+          (ngModelChange)="role.set($event)"
+          optionLabel="label"
+          optionValue="value"
           class="user-form__input"
         />
       </div>
+
+      @if (errorMessage()) {
+        <p class="user-form__error">{{ errorMessage() }}</p>
+      }
+
+      <div class="user-form__actions">
+        <app-button
+          [label]="sharedLiterals.save"
+          [loading]="loading()"
+          [disabled]="!canSubmit()"
+          (clicked)="onSubmit()"
+        />
+      </div>
     }
-
-    <div class="user-form__field">
-      <label class="user-form__label">{{ literals.nameLabel }}</label>
-      <input
-        pInputText
-        type="text"
-        [value]="displayName()"
-        (input)="displayName.set($any($event.target).value)"
-        [placeholder]="literals.namePlaceholder"
-        autocomplete="off"
-        class="user-form__input"
-      />
-    </div>
-
-    <div class="user-form__field">
-      <label class="user-form__label">{{ literals.roleLabel }}</label>
-      <p-select
-        [options]="roleOptions"
-        [ngModel]="role()"
-        (ngModelChange)="role.set($event)"
-        optionLabel="label"
-        optionValue="value"
-        class="user-form__input"
-      />
-    </div>
-
-    @if (errorMessage()) {
-      <p class="user-form__error">{{ errorMessage() }}</p>
-    }
-
-    <div class="user-form__actions">
-      <app-button
-        [label]="sharedLiterals.save"
-        [loading]="loading()"
-        [disabled]="!canSubmit()"
-        (clicked)="onSubmit()"
-      />
-    </div>
   </div>
 </p-dialog>

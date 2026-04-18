@@ -49,6 +49,7 @@
 
 <app-admin-user-dialog
   [visible]="dialogVisible()"
+  [mode]="dialogMode()"
   [user]="editingUser()"
   (saved)="onDialogSaved()"
   (closed)="onDialogClosed()"
