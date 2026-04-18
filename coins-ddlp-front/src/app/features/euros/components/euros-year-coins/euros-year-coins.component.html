@@ -48,7 +48,11 @@
               [severity]="row.udsBadge.severity"
             />
           </td>
-          <td style="text-align: center"><i class="pi pi-pencil edit-icon"></i></td>
+          <td style="text-align: center" (click)="$event.stopPropagation()">
+            @if (authService.isAdmin()) {
+              <app-button icon="pi pi-plus-circle" variant="ghost" />
+            }
+          </td>
         </tr>
       </ng-template>
     </p-table>

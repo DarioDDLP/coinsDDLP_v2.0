@@ -4,8 +4,10 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { EurosService } from '../../services/euros.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
@@ -14,7 +16,7 @@ import { sortByFaceValue } from '../../constants/face-value-order.const';
 
 @Component({
   selector: 'app-euros-year-coins',
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent],
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
 })
@@ -23,6 +25,7 @@ export class EurosYearCoinsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
+  readonly authService = inject(AuthService);
 
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
