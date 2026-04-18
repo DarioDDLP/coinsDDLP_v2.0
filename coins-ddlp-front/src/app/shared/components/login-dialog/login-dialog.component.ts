@@ -1,4 +1,4 @@
-import { Component, computed, ErrorHandler, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
@@ -29,10 +29,20 @@ export class LoginDialogComponent {
   readonly password = signal('');
   readonly loading = signal(false);
   readonly errorMessage = signal('');
+  readonly resetSent = signal(false);
+  readonly view = signal<'login' | 'logout' | 'forgot'>('login');
 
-  readonly header = computed(() =>
-    this.mode() === 'logout' ? this.literals.logoutButton : this.literals.loginTitle
-  );
+  readonly header = computed(() => {
+    if (this.view() === 'logout') return this.literals.logoutButton;
+    if (this.view() === 'forgot') return this.literals.forgotTitle;
+    return this.literals.loginTitle;
+  });
+
+  constructor() {
+    effect(() => {
+      this.view.set(this.mode() as 'login' | 'logout');
+    });
+  }
 
   async onSubmit(): Promise<void> {
     this.errorMessage.set('');
@@ -55,6 +65,20 @@ export class LoginDialogComponent {
     this.close();
   }
 
+  async onResetPassword(): Promise<void> {
+    this.errorMessage.set('');
+    this.loading.set(true);
+    try {
+      await this.authService.resetPassword(this.email());
+      this.resetSent.set(true);
+    } catch (e) {
+      this.errorHandler.handleError(e);
+      this.errorMessage.set(this.literals.resetError);
+    } finally {
+      this.loading.set(false);
+    }
+  }
+
   onHide(): void {
     this.close();
   }
@@ -63,6 +87,8 @@ export class LoginDialogComponent {
     this.email.set('');
     this.password.set('');
     this.errorMessage.set('');
+    this.resetSent.set(false);
+    this.view.set('login');
     this.closed.emit();
   }
 }

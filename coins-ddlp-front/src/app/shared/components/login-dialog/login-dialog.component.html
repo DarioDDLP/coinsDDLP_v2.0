@@ -8,7 +8,7 @@
   [resizable]="false"
   [closable]="true"
 >
-  @if (mode() === 'logout') {
+  @if (view() === 'logout') {
     <div class="login-form">
       <p class="login-form__confirm-message">{{ literals.logoutConfirm }}</p>
       <div class="login-form__actions login-form__actions--spread">
@@ -23,6 +23,50 @@
           (clicked)="onConfirmLogout()"
         />
       </div>
+    </div>
+  } @else if (view() === 'forgot') {
+    <div class="login-form">
+      @if (resetSent()) {
+        <p class="login-form__confirm-message">{{ literals.resetSent }}</p>
+        <div class="login-form__actions">
+          <app-button
+            [label]="literals.backToLogin"
+            variant="secondary"
+            (clicked)="view.set('login')"
+          />
+        </div>
+      } @else {
+        <div class="login-form__field">
+          <label class="login-form__label">{{ literals.emailLabel }}</label>
+          <input
+            pInputText
+            type="email"
+            [value]="email()"
+            (input)="email.set($any($event.target).value)"
+            [placeholder]="literals.emailPlaceholder"
+            autocomplete="email"
+            class="login-form__input"
+          />
+        </div>
+
+        @if (errorMessage()) {
+          <p class="login-form__error">{{ errorMessage() }}</p>
+        }
+
+        <div class="login-form__actions login-form__actions--spread">
+          <app-button
+            [label]="literals.backToLogin"
+            variant="secondary"
+            (clicked)="view.set('login')"
+          />
+          <app-button
+            [label]="literals.resetButton"
+            [loading]="loading()"
+            [disabled]="!email()"
+            (clicked)="onResetPassword()"
+          />
+        </div>
+      }
     </div>
   } @else {
     <div class="login-form">
@@ -57,7 +101,10 @@
         <p class="login-form__error">{{ errorMessage() }}</p>
       }
 
-      <div class="login-form__actions">
+      <div class="login-form__actions login-form__actions--forgot">
+        <button class="login-form__forgot-link" type="button" (click)="view.set('forgot')">
+          {{ literals.forgotPassword }}
+        </button>
         <app-button
           [label]="literals.loginButton"
           [loading]="loading()"

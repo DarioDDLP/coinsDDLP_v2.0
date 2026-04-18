@@ -10,14 +10,19 @@ export class AuthService implements IAuthService {
   readonly currentUser = signal<AppUser | null>(null);
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
   readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
+  readonly isRecoveryMode = signal(false);
 
   constructor() {
     this.supabase.auth.getSession().then(({ data: { session } }) => {
       this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
     });
 
-    this.supabase.auth.onAuthStateChange((_event, session) => {
-      this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
+    this.supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        this.isRecoveryMode.set(true);
+      } else {
+        this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
+      }
     });
   }
 
@@ -38,5 +43,16 @@ export class AuthService implements IAuthService {
   async logout(): Promise<void> {
     const { error } = await this.supabase.auth.signOut();
     if (error) throw error;
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    const { error } = await this.supabase.auth.resetPasswordForEmail(email);
+    if (error) throw error;
+  }
+
+  async updatePassword(newPassword: string): Promise<void> {
+    const { error } = await this.supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+    this.isRecoveryMode.set(false);
   }
 }

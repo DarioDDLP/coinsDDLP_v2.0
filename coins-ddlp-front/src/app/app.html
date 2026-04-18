@@ -9,3 +9,8 @@
 <div class="main-content">
   <router-outlet />
 </div>
+
+<app-recovery-password-dialog
+  [visible]="authService.isRecoveryMode()"
+  (closed)="authService.isRecoveryMode.set(false)"
+/>

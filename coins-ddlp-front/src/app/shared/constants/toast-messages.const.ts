@@ -14,8 +14,9 @@ export const TOAST_MESSAGES = {
     deleteError:   { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.admin.deleteError   },
   },
   auth: {
-    loginSuccess:  { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.auth.loginSuccess  },
-    loginError:    { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.auth.loginError    },
-    logoutSuccess: { severity: 'info',    summary: LITERALS.shared.toastInfo,    detail: LITERALS.auth.logoutSuccess },
+    loginSuccess:    { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.auth.loginSuccess    },
+    loginError:      { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.auth.loginError      },
+    logoutSuccess:   { severity: 'info',    summary: LITERALS.shared.toastInfo,    detail: LITERALS.auth.logoutSuccess   },
+    recoverySuccess: { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.auth.recoverySuccess },
   },
 } as const;
