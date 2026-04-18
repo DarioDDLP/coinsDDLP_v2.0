@@ -1,4 +1,5 @@
 import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
 import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
@@ -17,6 +18,7 @@ export class LoginDialogComponent {
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
+  private router = inject(Router);
 
   visible = input<boolean>(false);
   mode = input<'login' | 'logout'>('login');
@@ -63,6 +65,7 @@ export class LoginDialogComponent {
     await this.authService.logout();
     this.messageService.add({ ...TOAST_MESSAGES.auth.logoutSuccess, life: 3000 });
     this.close();
+    this.router.navigate(['/euros']);
   }
 
   async onResetPassword(): Promise<void> {
