@@ -323,7 +323,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-19 (sesión 3)
+> **Última actualización:** 2026-04-19 (sesión 4)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -375,11 +375,15 @@ ng build --configuration production
 - [x] **Admin tabla usuarios** — cabecera deep-navy/cream, columnas Rol y Acciones centradas, fondo `background-admin.png`.
 - [x] **Eliminar usuario** — `AdminUserDialogComponent` con modo `'delete'`: confirmación Cancelar/Confirmar. `AdminUsersComponent` con signal `dialogMode` (`'edit' | 'delete'`). Llama a Edge Function DELETE.
 - [x] **euros-year-coins botón añadir unidades** — icono `pi-plus-circle` ghost, solo visible para admin (`isAdmin()`). `stopPropagation` en `td` para no disparar navegación al detalle. Sin funcionalidad aún.
+- [x] **Shared component: `text-input`** — input nativo con SCSS propio (sin PrimeNG). Label integrado, tipos text/email/password/number, inputs `min`/`max`, outputs `valueChange` y `enterPressed`. `--placeholder` añadido a `_variables.scss`. Refactoriza `login-dialog`, `recovery-password-dialog` y `admin-user-dialog`.
+- [x] **Shared component: `select`** — envuelve `p-select` con API propia (`label`, `value`, `options`, `placeholder`, `disabled`, `valueChange`). Estilos del panel/opciones configurados via `definePreset` en `app.config.ts` (tokens `root`, `option`, `overlay`). `appendTo="body"` para evitar cierre al hacer scroll dentro del panel en dialogs. Refactoriza `admin-user-dialog`.
+- [x] **`definePreset` en `app.config.ts`** — personaliza tokens del componente `select` de PrimeNG (border cobalt, focus gold-tan, opciones cream/cobalt/deep-navy). Colores en hex (las CSS vars no son resolvibles en tiempo de compilación).
+- [x] **`CoinUdsDialogComponent`** — modal para editar `uds` y `conservation` desde `euros-year-coins`. `app-text-input` (type=number, min=0) + `app-select` con `CONSERVATION_OPTIONS`. Llama a `eurosService.update()`, toast, recarga tabla. `effect()` sincroniza valores al abrir.
+- [x] **Tooltip en `app-button` y `app-badge`** — input `tooltip` con `pTooltip` interno. `TooltipModule` importado en el propio componente shared. Eliminado de los componentes padre (admin-users, euros-year-coins). Corregido "null" en badge sin tooltip.
 
 ### Pendiente / Próximos pasos
 1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-2. **Modal añadir/editar unidades en euros-year-coins** — implementar funcionalidad del botón `pi-plus-circle`
-3. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
+2. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
 
 ---
 
@@ -408,6 +412,9 @@ ng build --configuration production
 | 2026-04-19 | **Flujo forgot/recovery password**: `LoginDialogComponent` con vista `'forgot'` (signal interno `view`), `RecoveryPasswordDialogComponent` global en `AppComponent`, `AuthService` con `isRecoveryMode`, `resetPassword()` y `updatePassword()`. Redirect a `/euros` tras logout. |
 | 2026-04-19 | **Admin tabla**: cabecera deep-navy/cream, columnas centradas, fondo `background-admin.png`. Eliminar usuario con confirmación via modo `'delete'` en `AdminUserDialogComponent`. |
 | 2026-04-19 | **euros-year-coins**: botón `pi-plus-circle` ghost solo para admin. `stopPropagation` en `td` para evitar navegación al detalle. Sin funcionalidad aún. |
+| 2026-04-19 | **Shared components `text-input` y `select`**: creados desde cero con SCSS propio. `text-input` soporta text/email/password/number con min/max. `select` envuelve `p-select` con `definePreset` para tokens de tema y `appendTo="body"`. Refactorizados `login-dialog`, `recovery-password-dialog` y `admin-user-dialog`. |
+| 2026-04-19 | **`CoinUdsDialogComponent`**: modal para editar uds y estado de conservación desde euros-year-coins. Usa `app-text-input` (number) y `app-select` con `CONSERVATION_OPTIONS`. |
+| 2026-04-19 | **Tooltip internalizado**: `app-button` y `app-badge` gestionan `pTooltip` internamente via input `tooltip`. Eliminado `TooltipModule` de componentes padre. |
 
 ---
 
