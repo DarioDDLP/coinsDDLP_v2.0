@@ -1,0 +1,13 @@
+@if (label()) {
+  <label class="select__label">{{ label() }}</label>
+}
+<p-select
+  [options]="options()"
+  [ngModel]="value()"
+  (ngModelChange)="valueChange.emit($event)"
+  optionLabel="label"
+  optionValue="value"
+  [placeholder]="placeholder()"
+  [disabled]="disabled()"
+  [style]="{ width: '100%' }"
+/>

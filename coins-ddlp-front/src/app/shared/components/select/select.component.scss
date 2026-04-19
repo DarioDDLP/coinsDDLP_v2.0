@@ -1,0 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.select {
+  &__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--deep-navy);
+  }
+}
