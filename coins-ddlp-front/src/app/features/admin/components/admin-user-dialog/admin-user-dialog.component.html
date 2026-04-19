@@ -57,17 +57,12 @@
         (valueChange)="displayName.set($event)"
       />
 
-      <div class="user-form__field">
-        <label class="user-form__label">{{ literals.roleLabel }}</label>
-        <p-select
-          [options]="roleOptions"
-          [ngModel]="role()"
-          (ngModelChange)="role.set($event)"
-          optionLabel="label"
-          optionValue="value"
-          class="user-form__select"
-        />
-      </div>
+      <app-select
+        [label]="literals.roleLabel"
+        [value]="role()"
+        [options]="roleOptions"
+        (valueChange)="role.set($any($event))"
+      />
 
       @if (errorMessage()) {
         <p class="user-form__error">{{ errorMessage() }}</p>
