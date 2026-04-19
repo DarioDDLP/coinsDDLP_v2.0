@@ -1,9 +1,11 @@
 import { Component, input, output } from '@angular/core';
+import { TooltipModule } from 'primeng/tooltip';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger' | 'ghost';
 
 @Component({
   selector: 'app-button',
+  imports: [TooltipModule],
   templateUrl: './button.component.html',
   styleUrl: './button.component.scss',
 })
@@ -14,6 +16,7 @@ export class ButtonComponent {
   disabled = input<boolean>(false);
   loading  = input<boolean>(false);
   type     = input<'button' | 'submit'>('button');
+  tooltip  = input<string>('');
 
   clicked = output<void>();
 

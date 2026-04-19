@@ -1,6 +1,7 @@
 <span
   class="badge badge--{{ severity() }} badge--{{ size() }}"
-  [title]="tooltip() ?? null"
+  [pTooltip]="tooltip() || ''"
+  tooltipPosition="top"
 >
   {{ label() }}
 </span>

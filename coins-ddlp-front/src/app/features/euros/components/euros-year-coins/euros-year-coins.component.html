@@ -50,7 +50,7 @@
           </td>
           <td style="text-align: center" (click)="$event.stopPropagation()">
             @if (authService.isAdmin()) {
-              <app-button icon="pi pi-plus-circle" variant="ghost" (clicked)="onEditUnits(row.coin)" />
+              <app-button icon="pi pi-plus-circle" variant="ghost" [tooltip]="literals.editCoin" (clicked)="onEditUnits(row.coin)" />
             }
           </td>
         </tr>

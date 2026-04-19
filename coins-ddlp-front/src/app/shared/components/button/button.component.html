@@ -2,6 +2,8 @@
   [type]="type()"
   [class]="'btn btn--' + variant()"
   [disabled]="disabled() || loading()"
+  [pTooltip]="tooltip()"
+  tooltipPosition="top"
   (click)="onClick()"
 >
   @if (loading()) {

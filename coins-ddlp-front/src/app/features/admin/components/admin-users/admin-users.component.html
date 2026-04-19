@@ -29,15 +29,13 @@
             <app-button
               icon="pi pi-pencil"
               variant="ghost"
-              [pTooltip]="literals.editUser"
-              tooltipPosition="top"
+              [tooltip]="literals.editUser"
               (clicked)="onEdit(row.user)"
             />
             <app-button
               icon="pi pi-trash"
               variant="danger"
-              [pTooltip]="literals.deleteUser"
-              tooltipPosition="top"
+              [tooltip]="literals.deleteUser"
               (clicked)="onDelete(row.user)"
             />
           </td>

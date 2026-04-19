@@ -1,7 +1,6 @@
 import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
-import { TooltipModule } from 'primeng/tooltip';
 import { AdminService } from '../../services/admin.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AdminUserDialogComponent } from '../admin-user-dialog/admin-user-dialog.component';
@@ -13,7 +12,7 @@ import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [TableModule, TooltipModule, ButtonComponent, AdminUserDialogComponent, BadgeComponent],
+  imports: [TableModule, ButtonComponent, AdminUserDialogComponent, BadgeComponent],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss',
 })
