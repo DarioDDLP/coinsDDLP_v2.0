@@ -1,0 +1,39 @@
+<p-dialog
+  [visible]="visible()"
+  (onHide)="onHide()"
+  [modal]="true"
+  [header]="literals.editCoin"
+  [style]="{ width: '380px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+>
+  <div class="uds-form">
+    <app-text-input
+      [label]="literals.unitsLabel"
+      [value]="uds().toString()"
+      type="number"
+      [min]="0"
+      (valueChange)="uds.set(+$event)"
+    />
+
+    <app-select
+      [label]="literals.conservationLabel"
+      [value]="conservation()"
+      [options]="conservationOptions"
+      (valueChange)="conservation.set($any($event))"
+    />
+
+    @if (errorMessage()) {
+      <p class="uds-form__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="uds-form__actions">
+      <app-button
+        [label]="sharedLiterals.save"
+        [loading]="loading()"
+        (clicked)="onSubmit()"
+      />
+    </div>
+  </div>
+</p-dialog>

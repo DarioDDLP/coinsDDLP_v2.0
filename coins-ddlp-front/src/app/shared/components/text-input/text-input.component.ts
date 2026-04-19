@@ -1,6 +1,6 @@
 import { Component, input, output } from '@angular/core';
 
-export type TextInputType = 'text' | 'email' | 'password';
+export type TextInputType = 'text' | 'email' | 'password' | 'number';
 
 @Component({
   selector: 'app-text-input',
@@ -14,6 +14,8 @@ export class TextInputComponent {
   placeholder  = input<string>('');
   autocomplete = input<string>('off');
   disabled     = input<boolean>(false);
+  min          = input<number | null>(null);
+  max          = input<number | null>(null);
 
   valueChange  = output<string>();
   enterPressed = output<void>();

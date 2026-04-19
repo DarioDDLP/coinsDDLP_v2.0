@@ -13,10 +13,11 @@ import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
+import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 
 @Component({
   selector: 'app-euros-year-coins',
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, CoinUdsDialogComponent],
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
 })
@@ -36,6 +37,8 @@ export class EurosYearCoinsComponent implements OnInit {
   private yearCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal('');
   readonly isReady = signal(false);
+  readonly dialogVisible  = signal(false);
+  readonly selectedCoin   = signal<EuroCoin | null>(null);
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -96,5 +99,19 @@ export class EurosYearCoinsComponent implements OnInit {
 
   onCoinClick(coin: EuroCoin): void {
     this.router.navigate(['/euros', this.country(), this.year(), coin.id]);
+  }
+
+  onEditUnits(coin: EuroCoin): void {
+    this.selectedCoin.set(coin);
+    this.dialogVisible.set(true);
+  }
+
+  onDialogSaved(): void {
+    this.loadCoins(this.country(), this.year()!);
+  }
+
+  onDialogClosed(): void {
+    this.dialogVisible.set(false);
+    this.selectedCoin.set(null);
   }
 }

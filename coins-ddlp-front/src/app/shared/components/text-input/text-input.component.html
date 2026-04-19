@@ -8,6 +8,8 @@
   [placeholder]="placeholder()"
   [autocomplete]="autocomplete()"
   [disabled]="disabled()"
+  [attr.min]="min()"
+  [attr.max]="max()"
   (input)="onInput($event)"
   (keydown.enter)="onEnter()"
 />

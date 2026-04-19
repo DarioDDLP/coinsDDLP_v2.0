@@ -1,0 +1,22 @@
+.uds-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px 0 4px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+
+  &__error {
+    font-size: 13px;
+    color: var(--state-danger-text);
+    margin: 0;
+    padding: 8px 12px;
+    background: rgba(239, 68, 68, 0.08);
+    border-radius: 6px;
+    border-left: 3px solid var(--state-danger-text);
+  }
+}
