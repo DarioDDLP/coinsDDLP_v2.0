@@ -29,45 +29,33 @@
       </div>
     } @else {
       @if (!isEditMode()) {
-        <div class="user-form__field">
-          <label class="user-form__label">{{ authLiterals.emailLabel }}</label>
-          <input
-            pInputText
-            type="email"
-            [value]="email()"
-            (input)="email.set($any($event.target).value)"
-            [placeholder]="authLiterals.emailPlaceholder"
-            autocomplete="off"
-            class="user-form__input"
-          />
-        </div>
+        <app-text-input
+          [label]="authLiterals.emailLabel"
+          [value]="email()"
+          type="email"
+          [placeholder]="authLiterals.emailPlaceholder"
+          autocomplete="off"
+          (valueChange)="email.set($event)"
+        />
 
-        <div class="user-form__field">
-          <label class="user-form__label">{{ authLiterals.passwordLabel }}</label>
-          <input
-            pInputText
-            type="password"
-            [value]="password()"
-            (input)="password.set($any($event.target).value)"
-            [placeholder]="authLiterals.passwordPlaceholder"
-            autocomplete="new-password"
-            class="user-form__input"
-          />
-        </div>
+        <app-text-input
+          [label]="authLiterals.passwordLabel"
+          [value]="password()"
+          type="password"
+          [placeholder]="authLiterals.passwordPlaceholder"
+          autocomplete="new-password"
+          (valueChange)="password.set($event)"
+        />
       }
 
-      <div class="user-form__field">
-        <label class="user-form__label">{{ literals.nameLabel }}</label>
-        <input
-          pInputText
-          type="text"
-          [value]="displayName()"
-          (input)="displayName.set($any($event.target).value)"
-          [placeholder]="literals.namePlaceholder"
-          autocomplete="off"
-          class="user-form__input"
-        />
-      </div>
+      <app-text-input
+        [label]="literals.nameLabel"
+        [value]="displayName()"
+        type="text"
+        [placeholder]="literals.namePlaceholder"
+        autocomplete="off"
+        (valueChange)="displayName.set($event)"
+      />
 
       <div class="user-form__field">
         <label class="user-form__label">{{ literals.roleLabel }}</label>
@@ -77,7 +65,7 @@
           (ngModelChange)="role.set($event)"
           optionLabel="label"
           optionValue="value"
-          class="user-form__input"
+          class="user-form__select"
         />
       </div>
 

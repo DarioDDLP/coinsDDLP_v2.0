@@ -1,15 +1,15 @@
 import { Component, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '../button/button.component';
+import { TextInputComponent } from '../text-input/text-input.component';
 import { LITERALS } from '../../constants/literals';
 import { TOAST_MESSAGES } from '../../constants/toast-messages.const';
 
 @Component({
   selector: 'app-recovery-password-dialog',
-  imports: [Dialog, InputText, ButtonComponent],
+  imports: [Dialog, ButtonComponent, TextInputComponent],
   templateUrl: './recovery-password-dialog.component.html',
   styleUrl: './recovery-password-dialog.component.scss',
 })

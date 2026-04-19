@@ -1,11 +1,11 @@
 import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Dialog } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
 import { Select } from 'primeng/select';
 import { MessageService } from 'primeng/api';
 import { AdminService } from '../../services/admin.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
@@ -13,7 +13,7 @@ import { ROLE_OPTIONS } from './admin-user-dialog.config';
 
 @Component({
   selector: 'app-admin-user-dialog',
-  imports: [Dialog, InputText, Select, FormsModule, ButtonComponent],
+  imports: [Dialog, Select, FormsModule, ButtonComponent, TextInputComponent],
   templateUrl: './admin-user-dialog.component.html',
   styleUrl: './admin-user-dialog.component.scss',
 })

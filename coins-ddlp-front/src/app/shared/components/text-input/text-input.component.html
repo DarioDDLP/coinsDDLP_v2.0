@@ -1,0 +1,13 @@
+@if (label()) {
+  <label class="text-input__label">{{ label() }}</label>
+}
+<input
+  class="text-input__input"
+  [type]="type()"
+  [value]="value()"
+  [placeholder]="placeholder()"
+  [autocomplete]="autocomplete()"
+  [disabled]="disabled()"
+  (input)="onInput($event)"
+  (keydown.enter)="onEnter()"
+/>

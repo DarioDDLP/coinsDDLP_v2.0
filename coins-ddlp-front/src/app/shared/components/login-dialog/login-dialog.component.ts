@@ -1,16 +1,16 @@
 import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
-import { InputText } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../../core/services/auth.service';
 import { ButtonComponent } from '../button/button.component';
+import { TextInputComponent } from '../text-input/text-input.component';
 import { LITERALS } from '../../constants/literals';
 import { TOAST_MESSAGES } from '../../constants/toast-messages.const';
 
 @Component({
   selector: 'app-login-dialog',
-  imports: [Dialog, InputText, ButtonComponent],
+  imports: [Dialog, ButtonComponent, TextInputComponent],
   templateUrl: './login-dialog.component.html',
   styleUrl: './login-dialog.component.scss',
 })
