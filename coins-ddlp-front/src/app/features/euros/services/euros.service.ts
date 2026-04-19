@@ -27,6 +27,13 @@ export class EurosService implements IEurosRepository {
     ).pipe(this.loading.withLoading());
   }
 
+  getAllByCountry(country: string): Observable<EuroCoin[]> {
+    return this.supabase.getTableWhere<EuroCoin>(
+      TABLES.euro,
+      (query) => query.eq('country', country)
+    ).pipe(this.loading.withLoading());
+  }
+
   getByCountryAndYear(country: string, year: number): Observable<EuroCoin[]> {
     return this.supabase.getTableWhere<EuroCoin>(
       TABLES.euro,

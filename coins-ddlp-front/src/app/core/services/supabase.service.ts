@@ -27,7 +27,7 @@ export class SupabaseService {
 
           while (hasMore) {
             const baseQuery = this.supabase.from(tableName).select(fields);
-            const { data, error } = await filterFn(baseQuery).range(offset, offset + pageSize - 1);
+            const { data, error } = await filterFn(baseQuery).order('id', { ascending: true }).range(offset, offset + pageSize - 1);
 
             if (error) {
               observer.error(error);

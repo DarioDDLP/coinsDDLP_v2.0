@@ -57,6 +57,10 @@ export class EurosYearsComponent implements OnInit {
     });
   }
 
+  readonly totalCount = computed(() => this.countryCoins().length);
+  readonly totalRegular = computed(() => this.countryCoins().filter(c => !c.commemorative).length);
+  readonly totalCommemorative = computed(() => this.countryCoins().filter(c => c.commemorative).length);
+
   readonly yearGroups = computed(() => {
     const coins = this.countryCoins();
     const queryRaw = this.searchQuery().trim();

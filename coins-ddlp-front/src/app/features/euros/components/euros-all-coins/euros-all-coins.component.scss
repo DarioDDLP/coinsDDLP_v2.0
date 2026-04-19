@@ -1,0 +1,49 @@
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: var(--deep-navy);
+  color: var(--cream);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr.year-group-header > td {
+  background: var(--cobalt);
+  color: var(--cream);
+  font-weight: 700;
+  font-size: 15px;
+  padding: 8px 16px;
+}
+
+:host ::ng-deep .p-datatable-tbody > tr.row--non-circulating > td {
+  background: rgba(217, 181, 130, 0.25);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  color: var(--cobalt);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr.row--clickable {
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover > td {
+    filter: brightness(0.96);
+  }
+}
+
+.non-circulating-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--cobalt);
+  opacity: 0.7;
+
+  &__swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    background: rgba(217, 181, 130, 0.25);
+    border: 1px solid rgba(217, 181, 130, 0.6);
+    flex-shrink: 0;
+  }
+}

@@ -19,6 +19,15 @@
     >
       @if (yearGroups().length > 0) {
         <div class="year-grid">
+          @if (totalCount() > 0) {
+            <div class="year-card year-card--all" [routerLink]="['/euros', country(), 'all']">
+              <span class="year-card__year">{{ literals.filterAll }}</span>
+              <div class="year-card__details">
+                <span class="year-card__regular">{{ totalRegular() }} {{ literals.regular }}</span>
+                <span class="year-card__commemorative">{{ totalCommemorative() }} {{ literals.commemorative }}</span>
+              </div>
+            </div>
+          }
           @for (group of yearGroups(); track group.year) {
             <div class="year-card" [routerLink]="['/euros', country(), group.year]">
               <span class="year-card__year">{{ group.year }}</span>

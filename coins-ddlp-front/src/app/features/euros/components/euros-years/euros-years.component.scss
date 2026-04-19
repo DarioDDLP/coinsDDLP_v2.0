@@ -50,4 +50,13 @@
     color: var(--gold-tan);
     font-weight: 500;
   }
+
+  &--all {
+    border: 2px solid var(--cobalt);
+
+    .year-card__year {
+      font-size: 20px;
+      letter-spacing: 0.5px;
+    }
+  }
 }
