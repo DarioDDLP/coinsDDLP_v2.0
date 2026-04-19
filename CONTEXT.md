@@ -380,6 +380,11 @@ ng build --configuration production
 - [x] **`definePreset` en `app.config.ts`** — personaliza tokens del componente `select` de PrimeNG (border cobalt, focus gold-tan, opciones cream/cobalt/deep-navy). Colores en hex (las CSS vars no son resolvibles en tiempo de compilación).
 - [x] **`CoinUdsDialogComponent`** — modal para editar `uds` y `conservation` desde `euros-year-coins`. `app-text-input` (type=number, min=0) + `app-select` con `CONSERVATION_OPTIONS`. Llama a `eurosService.update()`, toast, recarga tabla. `effect()` sincroniza valores al abrir.
 - [x] **Tooltip en `app-button` y `app-badge`** — input `tooltip` con `pTooltip` interno. `TooltipModule` importado en el propio componente shared. Eliminado de los componentes padre (admin-users, euros-year-coins). Corregido "null" en badge sin tooltip.
+- [x] **Shared component: `textarea`** — textarea nativo estilizado, mismo SCSS que `text-input`. Inputs: `label`, `value`, `placeholder`, `rows` (default 3), `disabled`. Output: `valueChange`.
+- [x] **`CoinUdsDialogComponent` ampliado** — edita también `observations` via `app-textarea`. Los tres campos (uds, conservation, observations) se guardan en un único `eurosService.update()`.
+- [x] **Vista "Todas" (`EurosAllCoinsComponent`)** — muestra todas las monedas de un país agrupadas por año. Ruta `/euros/:country/all` añadida en `euros.routes.ts` antes de `:country/:year`. Card "Todas" aparece en el mismo `year-grid` que las cards de año. Tabla `p-table` con `rowGroupMode="subheader"` y `groupRowsBy="year"`, ordenada por año ASC + valor facial. Mismo dialog de edición que `euros-year-coins`.
+- [x] **Back navigation desde "Todas"** — `onCoinClick` navega a `/euros/:country/all/:id` (no al año real). `coin-detail` construye el backLink con el param `:year` de la URL, que en este caso es `'all'`, devolviendo correctamente a la vista "Todas".
+- [x] **Paginación `SupabaseService` corregida** — añadido `.order('id', { ascending: true })` en el while-loop de `getTableWhere` para garantizar orden determinista entre páginas y evitar resultados vacíos en páginas > 1.
 
 ### Pendiente / Próximos pasos
 1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
@@ -415,6 +420,8 @@ ng build --configuration production
 | 2026-04-19 | **Shared components `text-input` y `select`**: creados desde cero con SCSS propio. `text-input` soporta text/email/password/number con min/max. `select` envuelve `p-select` con `definePreset` para tokens de tema y `appendTo="body"`. Refactorizados `login-dialog`, `recovery-password-dialog` y `admin-user-dialog`. |
 | 2026-04-19 | **`CoinUdsDialogComponent`**: modal para editar uds y estado de conservación desde euros-year-coins. Usa `app-text-input` (number) y `app-select` con `CONSERVATION_OPTIONS`. |
 | 2026-04-19 | **Tooltip internalizado**: `app-button` y `app-badge` gestionan `pTooltip` internamente via input `tooltip`. Eliminado `TooltipModule` de componentes padre. |
+| 2026-04-19 | **`app-textarea`**: nuevo shared component nativo estilizado. `CoinUdsDialogComponent` ampliado para editar también `observations`. |
+| 2026-04-19 | **Vista "Todas" (`EurosAllCoinsComponent`)**: tabla con `rowGroupMode="subheader"` agrupada por año. Ruta `/euros/:country/all` antes de `:country/:year`. Card "Todas" en el mismo grid que los años. Back navigation desde detalle corregida navegando a `/euros/:country/all/:id`. Paginación `SupabaseService` corregida con `ORDER BY id`. |
 
 ---
 
