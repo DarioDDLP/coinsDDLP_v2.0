@@ -24,6 +24,13 @@
       (valueChange)="conservation.set($any($event))"
     />
 
+    <app-textarea
+      [label]="literals.observationsLabel"
+      [value]="observations()"
+      [placeholder]="literals.observationsPlaceholder"
+      (valueChange)="observations.set($event)"
+    />
+
     @if (errorMessage()) {
       <p class="uds-form__error">{{ errorMessage() }}</p>
     }

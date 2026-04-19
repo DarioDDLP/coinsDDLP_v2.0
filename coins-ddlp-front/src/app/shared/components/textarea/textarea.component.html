@@ -1,0 +1,11 @@
+@if (label()) {
+  <label class="textarea__label">{{ label() }}</label>
+}
+<textarea
+  class="textarea__control"
+  [value]="value()"
+  [placeholder]="placeholder()"
+  [rows]="rows()"
+  [disabled]="disabled()"
+  (input)="onInput($event)"
+></textarea>
