@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TextareaComponent } from '../../../../shared/components/textarea/textarea.component';
+import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { ConservationCode, EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
@@ -13,7 +14,7 @@ import { CONSERVATION_OPTIONS } from './coin-uds-dialog.config';
 
 @Component({
   selector: 'app-coin-uds-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, TextareaComponent],
+  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, TextareaComponent, ToggleComponent],
   templateUrl: './coin-uds-dialog.component.html',
   styleUrl: './coin-uds-dialog.component.scss',
 })
@@ -35,6 +36,7 @@ export class CoinUdsDialogComponent {
   readonly uds          = signal(0);
   readonly conservation = signal<ConservationCode>('ND');
   readonly observations = signal('');
+  readonly circulation  = signal(true);
   readonly loading      = signal(false);
   readonly errorMessage = signal('');
 
@@ -44,6 +46,7 @@ export class CoinUdsDialogComponent {
       this.uds.set(c?.uds ?? 0);
       this.conservation.set(c?.conservation ?? 'ND');
       this.observations.set(c?.observations ?? '');
+      this.circulation.set(c?.circulation ?? true);
       this.errorMessage.set('');
     });
   }
@@ -59,6 +62,7 @@ export class CoinUdsDialogComponent {
         uds: this.uds(),
         conservation: this.conservation(),
         observations: this.observations(),
+        circulation: this.circulation(),
       });
       this.messageService.add({ ...TOAST_MESSAGES.euros.saveSuccess, life: 3000 });
       this.saved.emit();

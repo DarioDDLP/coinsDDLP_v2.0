@@ -83,6 +83,7 @@ export const LITERALS = {
     observationsPlaceholder: 'Notas sobre esta moneda...',
     unitsLabel: 'Unidades',
     conservationLabel: 'Estado de conservación',
+    circulationLabel: 'Circulante',
     noObservations: 'Sin observaciones',
     nonCirculatingLegend: 'Monedas sombreadas: no circulantes',
   },

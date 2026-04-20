@@ -31,6 +31,12 @@
       (valueChange)="observations.set($event)"
     />
 
+    <app-toggle
+      [label]="literals.circulationLabel"
+      [value]="circulation()"
+      (valueChange)="circulation.set($event)"
+    />
+
     @if (errorMessage()) {
       <p class="uds-form__error">{{ errorMessage() }}</p>
     }

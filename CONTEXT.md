@@ -385,6 +385,8 @@ ng build --configuration production
 - [x] **Vista "Todas" (`EurosAllCoinsComponent`)** — muestra todas las monedas de un país agrupadas por año. Ruta `/euros/:country/all` añadida en `euros.routes.ts` antes de `:country/:year`. Card "Todas" aparece en el mismo `year-grid` que las cards de año. Tabla `p-table` con `rowGroupMode="subheader"` y `groupRowsBy="year"`, ordenada por año ASC + valor facial. Mismo dialog de edición que `euros-year-coins`.
 - [x] **Back navigation desde "Todas"** — `onCoinClick` navega a `/euros/:country/all/:id` (no al año real). `coin-detail` construye el backLink con el param `:year` de la URL, que en este caso es `'all'`, devolviendo correctamente a la vista "Todas".
 - [x] **Paginación `SupabaseService` corregida** — añadido `.order('id', { ascending: true })` en el while-loop de `getTableWhere` para garantizar orden determinista entre páginas y evitar resultados vacíos en páginas > 1.
+- [x] **Shared component: `toggle`** — envuelve `p-toggleswitch` de PrimeNG. Inputs: `label`, `value`, `disabled`. Output: `valueChange`. Layout horizontal: label izquierda, switch derecha.
+- [x] **`CoinUdsDialogComponent` ampliado** — edita también `circulation` (boolean) via `app-toggle`. El campo se sincroniza en el `effect()` y se guarda junto al resto de campos.
 
 ### Pendiente / Próximos pasos
 1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
@@ -422,6 +424,7 @@ ng build --configuration production
 | 2026-04-19 | **Tooltip internalizado**: `app-button` y `app-badge` gestionan `pTooltip` internamente via input `tooltip`. Eliminado `TooltipModule` de componentes padre. |
 | 2026-04-19 | **`app-textarea`**: nuevo shared component nativo estilizado. `CoinUdsDialogComponent` ampliado para editar también `observations`. |
 | 2026-04-19 | **Vista "Todas" (`EurosAllCoinsComponent`)**: tabla con `rowGroupMode="subheader"` agrupada por año. Ruta `/euros/:country/all` antes de `:country/:year`. Card "Todas" en el mismo grid que los años. Back navigation desde detalle corregida navegando a `/euros/:country/all/:id`. Paginación `SupabaseService` corregida con `ORDER BY id`. |
+| 2026-04-20 | **Shared component `app-toggle`**: envuelve `p-toggleswitch`. `CoinUdsDialogComponent` ampliado con campo `circulation` (boolean) via `app-toggle`. |
 
 ---
 

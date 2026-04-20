@@ -1,0 +1,10 @@
+<div class="toggle">
+  @if (label()) {
+    <span class="toggle__label">{{ label() }}</span>
+  }
+  <p-toggleswitch
+    [ngModel]="value()"
+    (ngModelChange)="valueChange.emit($event)"
+    [disabled]="disabled()"
+  />
+</div>
