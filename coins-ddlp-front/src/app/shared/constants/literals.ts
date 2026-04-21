@@ -120,6 +120,16 @@ export const LITERALS = {
     labelMoreInfo: 'Más información en Numista',
     loadingNumista: 'Cargando datos de Numista...',
     errorNumista: 'No se pudieron cargar los datos de Numista',
+    labelNoImages: 'Imágenes no disponibles',
+    labelBasicData: 'Datos básicos',
+    labelYear: 'Año',
+    labelCountry: 'País',
+    labelFaceValue: 'Valor facial',
+    labelDescription: 'Descripción',
+    labelMint: 'Ceca',
+    labelCirculation: 'Circulante',
+    labelYes: 'Sí',
+    labelNo: 'No',
   },
 
   admin: {

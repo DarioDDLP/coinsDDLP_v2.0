@@ -129,6 +129,28 @@
   font-style: italic;
 }
 
+.coin-img-placeholder {
+  width: 180px;
+  height: 180px;
+  border-radius: 8px;
+  background: #f4f4f4;
+  border: 2px dashed #d0d0d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #c0c0c0;
+
+  i { font-size: 48px; }
+}
+
+.numista-no-id {
+  margin: 0;
+  font-size: 13px;
+  color: var(--cobalt);
+  font-style: italic;
+  opacity: 0.6;
+}
+
 // --- Right column ---
 .detail-right {
   width: 50%;

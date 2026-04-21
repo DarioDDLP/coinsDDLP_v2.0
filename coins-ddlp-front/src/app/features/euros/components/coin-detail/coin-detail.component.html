@@ -83,6 +83,12 @@
           </a>
         } @else if (numistaError()) {
           <p class="numista-error">{{ literals.errorNumista }}</p>
+        } @else {
+          <div class="coin-images">
+            <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
+            <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
+          </div>
+          <p class="numista-no-id">{{ literals.labelNoImages }}</p>
         }
       </div>
 
@@ -152,6 +158,38 @@
                   <span class="feature-row__value">{{ references() }}</span>
                 </div>
               }
+            </div>
+          </div>
+        } @else {
+          <div class="features-box">
+            <div class="features-box__title">{{ literals.labelBasicData }}</div>
+            <div class="features-list">
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelYear }}</span>
+                <span class="feature-row__value">{{ coin()!.year }}</span>
+              </div>
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelCountry }}</span>
+                <span class="feature-row__value">{{ coin()!.country }}</span>
+              </div>
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelFaceValue }}</span>
+                <span class="feature-row__value">{{ coin()!.faceValue }}</span>
+              </div>
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelDescription }}</span>
+                <span class="feature-row__value">{{ coin()!.description }}</span>
+              </div>
+              @if (coin()!.mint) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelMint }}</span>
+                  <span class="feature-row__value">{{ coin()!.mint }}</span>
+                </div>
+              }
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelCirculation }}</span>
+                <span class="feature-row__value">{{ coin()!.circulation ? literals.labelYes : literals.labelNo }}</span>
+              </div>
             </div>
           </div>
         }
