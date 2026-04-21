@@ -1,0 +1,17 @@
+<div class="buttons-header">
+  <h1 class="buttons-header__title">{{ title() }}</h1>
+  @if (items().length > 0) {
+    <nav class="buttons-header__nav">
+      @for (item of items(); track item.routerLink) {
+        <a
+          [routerLink]="item.routerLink"
+          routerLinkActive="buttons-header__nav-item--active"
+          class="buttons-header__nav-item"
+        >
+          <i [class]="item.icon"></i>
+          <span>{{ item.label }}</span>
+        </a>
+      }
+    </nav>
+  }
+</div>

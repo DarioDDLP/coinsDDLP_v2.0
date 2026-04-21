@@ -1,7 +1,3 @@
-export interface ToolsNavItem {
-  label: string;
-  routerLink: string;
-  icon: string;
-}
+import { NavItem } from '../../../../shared/components/buttons-header/buttons-header.component';
 
-export const TOOLS_NAV_ITEMS: ToolsNavItem[] = [];
+export const TOOLS_NAV_ITEMS: NavItem[] = [];
