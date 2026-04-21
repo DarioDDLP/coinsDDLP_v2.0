@@ -1,0 +1,16 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background-image: url('/assets/background-admin.png');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.tools {
+  padding: 32px 0;
+
+  &__content {
+    width: 100%;
+  }
+}

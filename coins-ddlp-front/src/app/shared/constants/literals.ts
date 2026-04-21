@@ -99,6 +99,7 @@ export const LITERALS = {
     ubicacion: 'Ubicación',
     estadisticas: 'Estadísticas',
     admin: 'Administración',
+    tools: 'Herramientas',
   },
 
   coinDetail: {
@@ -155,6 +156,31 @@ export const LITERALS = {
     saveError: 'Error al guardar el usuario',
     deleteSuccess: 'Usuario eliminado correctamente',
     deleteError: 'Error al eliminar el usuario',
+  },
+
+  herramientas: {
+    title: 'Herramientas',
+    navMonedas: 'Monedas',
+    monedasTitle: 'Catálogo de monedas',
+    search: 'Buscar por valor, descripción o país...',
+    editCoin: 'Editar datos del catálogo',
+    colCountry: 'País',
+    colYear: 'Año',
+    colFaceValue: 'Valor',
+    colDescription: 'Descripción',
+    colCommemorative: 'Conm.',
+    colIdNum: 'ID Numista',
+    colActions: 'Acciones',
+    labelCountry: 'País',
+    labelYear: 'Año',
+    labelFaceValue: 'Valor facial',
+    labelDescription: 'Descripción',
+    labelMint: 'Ceca',
+    labelCommemorative: 'Conmemorativa',
+    labelCirculation: 'Circulante',
+    labelIdNum: 'ID Numista',
+    saveSuccess: 'Moneda actualizada correctamente',
+    saveError: 'Error al actualizar la moneda',
   },
 
   conmemorativas: {

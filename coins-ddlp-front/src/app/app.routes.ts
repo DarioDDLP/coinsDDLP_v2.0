@@ -51,6 +51,14 @@ export const routes: Routes = [
       import('./features/admin/admin.routes').then((m) => m.adminRoutes),
   },
   {
+    path: 'herramientas',
+    canActivate: [adminGuard],
+    loadComponent: () =>
+      import('./features/tools/tools.component').then((m) => m.ToolsComponent),
+    loadChildren: () =>
+      import('./features/tools/tools.routes').then((m) => m.toolsRoutes),
+  },
+  {
     path: '**',
     redirectTo: 'euros',
   },

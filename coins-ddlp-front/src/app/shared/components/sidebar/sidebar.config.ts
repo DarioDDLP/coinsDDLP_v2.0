@@ -16,4 +16,5 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
   { label: LITERALS.sidebar.estadisticas, routerLink: '/estadisticas', icon: 'pi pi-chart-bar' },
   { label: LITERALS.sidebar.ubicacion, routerLink: '/ubicacion', icon: 'pi pi-map-marker' },
   { label: LITERALS.sidebar.admin, routerLink: '/admin', icon: 'pi pi-shield', adminOnly: true },
+  { label: LITERALS.sidebar.tools, routerLink: '/herramientas', icon: 'pi pi-wrench', adminOnly: true },
 ];
