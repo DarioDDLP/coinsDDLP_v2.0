@@ -84,6 +84,7 @@ export const LITERALS = {
     unitsLabel: 'Unidades',
     conservationLabel: 'Estado de conservación',
     circulationLabel: 'Circulante',
+    idNumLabel: 'ID Numista',
     noObservations: 'Sin observaciones',
     nonCirculatingLegend: 'Monedas sombreadas: no circulantes',
   },

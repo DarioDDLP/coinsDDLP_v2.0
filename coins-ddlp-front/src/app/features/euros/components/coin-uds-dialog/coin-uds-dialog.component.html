@@ -37,6 +37,13 @@
       (valueChange)="circulation.set($event)"
     />
 
+    <app-text-input
+      [label]="literals.idNumLabel"
+      [value]="idNum()"
+      type="text"
+      (valueChange)="idNum.set($event)"
+    />
+
     @if (errorMessage()) {
       <p class="uds-form__error">{{ errorMessage() }}</p>
     }
