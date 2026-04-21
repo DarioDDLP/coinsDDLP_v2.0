@@ -323,7 +323,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-19 (sesión 4)
+> **Última actualización:** 2026-04-21 (sesión 5)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -387,10 +387,17 @@ ng build --configuration production
 - [x] **Paginación `SupabaseService` corregida** — añadido `.order('id', { ascending: true })` en el while-loop de `getTableWhere` para garantizar orden determinista entre páginas y evitar resultados vacíos en páginas > 1.
 - [x] **Shared component: `toggle`** — envuelve `p-toggleswitch` de PrimeNG. Inputs: `label`, `value`, `disabled`. Output: `valueChange`. Layout horizontal: label izquierda, switch derecha.
 - [x] **`CoinUdsDialogComponent` ampliado** — edita también `circulation` (boolean) via `app-toggle`. El campo se sincroniza en el `effect()` y se guarda junto al resto de campos.
+- [x] **Vista global `EurosGlobalCoinsComponent` eliminada** — descartada por decisión de diseño. Rutas `all` y `all/:id` y card "Todas" en euros-countries eliminadas.
+- [x] **`CoinUdsDialogComponent` campo `idNum`** — texto editable para ID de Numista. Sincronizado en `effect()`, guardado junto al resto.
+- [x] **`coin-detail` fallback sin idNum** — izquierda: dos placeholders grises (`pi-image`, borde punteado) + texto "Imágenes no disponibles". Derecha: `features-box` cremosa con datos de Supabase (año, país, valor facial, descripción, ceca, circulante).
+- [x] **Shared component `ButtonsHeaderComponent`** — `shared/components/buttons-header/`. Inputs: `title` (required), `items` (`NavItem[]`). Reemplaza los headers específicos de admin y tools. `NavItem` interface exportada desde el componente.
+- [x] **Módulo Tools** — `features/tools/`, ruta `/herramientas`, guard `adminGuard`, fondo `background-tools.png`. Item "Herramientas" en sidebar (adminOnly, `pi-wrench`). Redirect automático a `/herramientas/añadir-euro`. Naming: código en inglés (`tools/`, `ToolsComponent`), path URL en español (`/herramientas`).
+- [x] **Tools: Añadir moneda euro (scaffold)** — nav item "Añadir moneda euro" (`pi-plus-circle`) en `/herramientas/añadir-euro`. `ToolsAddEuroComponent` creado como placeholder vacío.
 
 ### Pendiente / Próximos pasos
-1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-2. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación (cada una con su propio componente padre de módulo y fondo)
+1. **Tools: Añadir moneda euro** — implementar formulario completo en `ToolsAddEuroComponent`
+2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
+3. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
 
 ---
 
@@ -425,6 +432,10 @@ ng build --configuration production
 | 2026-04-19 | **`app-textarea`**: nuevo shared component nativo estilizado. `CoinUdsDialogComponent` ampliado para editar también `observations`. |
 | 2026-04-19 | **Vista "Todas" (`EurosAllCoinsComponent`)**: tabla con `rowGroupMode="subheader"` agrupada por año. Ruta `/euros/:country/all` antes de `:country/:year`. Card "Todas" en el mismo grid que los años. Back navigation desde detalle corregida navegando a `/euros/:country/all/:id`. Paginación `SupabaseService` corregida con `ORDER BY id`. |
 | 2026-04-20 | **Shared component `app-toggle`**: envuelve `p-toggleswitch`. `CoinUdsDialogComponent` ampliado con campo `circulation` (boolean) via `app-toggle`. |
+| 2026-04-21 | **Vista global eliminada**: `EurosGlobalCoinsComponent` descartada por decisión de diseño. Rutas `all`/`all/:id` y card "Todas" en euros-countries eliminadas. |
+| 2026-04-21 | **`CoinUdsDialogComponent`**: campo `idNum` añadido. Fallback en `coin-detail` para monedas sin idNum: placeholders grises izquierda + features-box con datos Supabase derecha. |
+| 2026-04-21 | **`ButtonsHeaderComponent`**: shared component genérico que unifica admin-header y tools-header. `NavItem` interface exportada. Admin refactorizado para usarlo. |
+| 2026-04-21 | **Módulo Tools**: `features/tools/` en ruta `/herramientas` con adminGuard. Nav item "Añadir moneda euro" → `/herramientas/añadir-euro`. `ToolsAddEuroComponent` placeholder creado. |
 
 ---
 
