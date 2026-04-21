@@ -161,6 +161,7 @@ export const LITERALS = {
   herramientas: {
     title: 'Herramientas',
     navMonedas: 'Monedas',
+    navAddEuro: 'Añadir moneda euro',
     monedasTitle: 'Catálogo de monedas',
     search: 'Buscar por valor, descripción o país...',
     editCoin: 'Editar datos del catálogo',
