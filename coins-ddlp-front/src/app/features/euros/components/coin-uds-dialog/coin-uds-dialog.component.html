@@ -25,6 +25,12 @@
     />
 
     <app-textarea
+      [label]="literals.descriptionLabel"
+      [value]="description()"
+      (valueChange)="description.set($event)"
+    />
+
+    <app-textarea
       [label]="literals.observationsLabel"
       [value]="observations()"
       [placeholder]="literals.observationsPlaceholder"

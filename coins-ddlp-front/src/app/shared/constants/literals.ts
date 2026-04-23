@@ -85,6 +85,7 @@ export const LITERALS = {
     conservationLabel: 'Estado de conservación',
     circulationLabel: 'Circulante',
     idNumLabel: 'ID Numista',
+    descriptionLabel: 'Descripción',
     noObservations: 'Sin observaciones',
     nonCirculatingLegend: 'Monedas sombreadas: no circulantes',
   },

@@ -38,6 +38,7 @@ export class CoinUdsDialogComponent {
   readonly observations = signal('');
   readonly circulation  = signal(true);
   readonly idNum        = signal('');
+  readonly description  = signal('');
   readonly loading      = signal(false);
   readonly errorMessage = signal('');
 
@@ -49,6 +50,7 @@ export class CoinUdsDialogComponent {
       this.observations.set(c?.observations ?? '');
       this.circulation.set(c?.circulation ?? true);
       this.idNum.set(c?.idNum ?? '');
+      this.description.set(c?.description ?? '');
       this.errorMessage.set('');
     });
   }
@@ -66,6 +68,7 @@ export class CoinUdsDialogComponent {
         observations: this.observations(),
         circulation: this.circulation(),
         idNum: this.idNum(),
+        description: this.description(),
       });
       this.messageService.add({ ...TOAST_MESSAGES.euros.saveSuccess, life: 3000 });
       this.saved.emit();
