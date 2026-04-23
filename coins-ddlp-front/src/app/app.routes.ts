@@ -17,9 +17,9 @@ export const routes: Routes = [
   {
     path: 'conmemorativas',
     loadComponent: () =>
-      import(
-        './features/conmemorativas/components/conmemorativas-list/conmemorativas-list.component'
-      ).then((m) => m.ConmemorativasListComponent),
+      import('./features/conmemorativas/conmemorativas.component').then(
+        (m) => m.ConmemorativasComponent
+      ),
   },
   {
     path: 'pesetas',

@@ -140,10 +140,11 @@ src/
 │   │   │   └── euros.routes.ts            # Rutas lazy de la feature
 │   │   ├── conmemorativas/
 │   │   │   ├── components/
-│   │   │   │   └── conmemorativas-list/
+│   │   │   │   └── conmemorativas-list/       # Lista agrupada por año, sin acciones
 │   │   │   ├── services/
-│   │   │   │   └── conmemorativas.service.ts
-│   │   │   └── conmemorativas.routes.ts
+│   │   │   │   └── conmemorativas.service.ts  # getAll() filtrando commemorative=true
+│   │   │   ├── conmemorativas.component.ts    # Shell del módulo (sin router-outlet)
+│   │   │   └── conmemorativas.component.html  # Renderiza <app-conmemorativas-list />
 │   │   ├── pesetas/
 │   │   │   ├── components/
 │   │   │   │   └── pesetas-list/
@@ -323,7 +324,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-21 (sesión 5)
+> **Última actualización:** 2026-04-23 (sesión 6)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -392,12 +393,17 @@ ng build --configuration production
 - [x] **`coin-detail` fallback sin idNum** — izquierda: dos placeholders grises (`pi-image`, borde punteado) + texto "Imágenes no disponibles". Derecha: `features-box` cremosa con datos de Supabase (año, país, valor facial, descripción, ceca, circulante).
 - [x] **Shared component `ButtonsHeaderComponent`** — `shared/components/buttons-header/`. Inputs: `title` (required), `items` (`NavItem[]`). Reemplaza los headers específicos de admin y tools. `NavItem` interface exportada desde el componente.
 - [x] **Módulo Tools** — `features/tools/`, ruta `/herramientas`, guard `adminGuard`, fondo `background-tools.png`. Item "Herramientas" en sidebar (adminOnly, `pi-wrench`). Redirect automático a `/herramientas/añadir-euro`. Naming: código en inglés (`tools/`, `ToolsComponent`), path URL en español (`/herramientas`).
-- [x] **Tools: Añadir moneda euro (scaffold)** — nav item "Añadir moneda euro" (`pi-plus-circle`) en `/herramientas/añadir-euro`. `ToolsAddEuroComponent` creado como placeholder vacío.
+- [x] **Tools: Añadir moneda euro** — formulario completo con 11 campos. Ceca habilitada solo si país=Alemania. Si uds=0, estado forzado a ND. Constantes en `tools.config.ts`.
+- [x] **Tools: Añadir año (`ToolsAddYearComponent`)** — copia tirada de monedas corrientes de año origen a año destino con uds=0.
+- [x] **Shared `ConfirmDialogComponent`** — presentacional genérico para confirmaciones. Reemplaza el modo delete de `AdminUserDialogComponent` y el componente específico de borrado de monedas.
+- [x] **euros-year-coins: eliminar moneda** — botón trash (danger) admin-only, confirmación via `ConfirmDialogComponent`, toast y recarga.
+- [x] **Sort por ceca** — `sortByFaceValue` usa ceca como criterio primario para agrupar monedas alemanas correctamente.
+- [x] **`CoinUdsDialogComponent` campo `description`** — textarea entre conservación y observaciones, sincronizado en `effect()`.
+- [x] **Módulo Conmemorativas** — `ConmemorativasComponent` (shell, fondo `background-2c.jpg`) + `ConmemorativasListComponent` (solo lectura, agrupado por año asc, ordenado por país, tabla con anchos fijos). `ConmemorativasService.getAll()` filtra `commemorative=true`. Sin rutas hijas.
 
 ### Pendiente / Próximos pasos
-1. **Tools: Añadir moneda euro** — implementar formulario completo en `ToolsAddEuroComponent`
-2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-3. **Secciones restantes** — conmemorativas, pesetas, estadísticas, ubicación
+1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
+2. **Secciones restantes** — pesetas, estadísticas, ubicación
 
 ---
 
@@ -436,6 +442,12 @@ ng build --configuration production
 | 2026-04-21 | **`CoinUdsDialogComponent`**: campo `idNum` añadido. Fallback en `coin-detail` para monedas sin idNum: placeholders grises izquierda + features-box con datos Supabase derecha. |
 | 2026-04-21 | **`ButtonsHeaderComponent`**: shared component genérico que unifica admin-header y tools-header. `NavItem` interface exportada. Admin refactorizado para usarlo. |
 | 2026-04-21 | **Módulo Tools**: `features/tools/` en ruta `/herramientas` con adminGuard. Nav item "Añadir moneda euro" → `/herramientas/añadir-euro`. `ToolsAddEuroComponent` placeholder creado. |
+| 2026-04-21 | **Tools: Añadir moneda euro**: formulario completo con 11 campos (año, valor, país, descripción, ceca, ID Numista, uds, estado, circulante, observaciones). Campo ceca: habilitado solo si país=Alemania, desplegable con 5 cecas (A/D/F/G/J), obligatorio en ese caso. Si uds=0, estado forzado a ND. `ToolsAddYearComponent`: copia tirada de monedas corrientes de un año origen a un año destino (uds=0). Constantes centralizadas en `tools.config.ts` (STANDARD_FACE_VALUES, FACE_VALUE_OPTIONS, CONSERVATION_OPTIONS, MINT_OPTIONS_GERMANY, TOOLS_NAV_ITEMS). `tools-header.config.ts` eliminado. |
+| 2026-04-21 | **Shared `ConfirmDialogComponent`**: componente presentacional genérico para confirmaciones. Inputs: `visible`, `header`, `message`, `confirmLabel`, `loading`. Outputs: `confirmed`, `closed`. Reemplaza CoinDeleteDialogComponent y el modo delete de AdminUserDialogComponent. `euros-year-coins` y `admin-users` lo usan con lógica en el padre. |
+| 2026-04-21 | **euros-year-coins: eliminar moneda**: botón `pi-trash` (danger) en acciones de fila (admin only). Confirma via `ConfirmDialogComponent`, llama a `eurosService.remove()`, recarga tabla. |
+| 2026-04-21 | **Sort por ceca**: `sortByFaceValue` en `face-value-order.const.ts` usa ceca como criterio primario y valor facial como secundario. Soluciona el orden de monedas alemanas con 5 cecas. |
+| 2026-04-23 | **`CoinUdsDialogComponent` campo `description`**: `app-textarea` para descripción añadido entre conservación y observaciones. Signal `description` sincronizado en `effect()` y guardado en `eurosService.update()`. Literal `descriptionLabel` añadido a `LITERALS.euros`. |
+| 2026-04-23 | **Módulo Conmemorativas**: `ConmemorativasComponent` (shell sin router-outlet, fondo `background-2c.jpg`) renderiza `ConmemorativasListComponent` directamente. `ConmemorativasService.getAll()` filtra `commemorative=true`. Lista agrupa por año (asc), ordena por país dentro de cada año. Buscador por país/descripción. Tabla con `table-layout: fixed` y anchos fijos en Estado (110px) y Uds. (80px) para alineación consistente entre grupos. Solo lectura, sin acciones de edición ni borrado. |
 
 ---
 

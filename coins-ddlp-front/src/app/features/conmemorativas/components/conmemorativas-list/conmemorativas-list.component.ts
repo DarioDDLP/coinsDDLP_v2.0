@@ -1,7 +1,88 @@
-import { Component } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
+import { TableModule } from 'primeng/table';
+import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ConmemorativasService } from '../../services/conmemorativas.service';
+import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
+import { LITERALS } from '../../../../shared/constants/literals';
+import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
+
+interface CoinRow {
+  coin: EuroCoin;
+  conservationBadge: ReturnType<typeof getConservationBadge>;
+  udsBadge: ReturnType<typeof getUdsBadge>;
+}
+
+interface YearGroup {
+  year: number;
+  rows: CoinRow[];
+}
 
 @Component({
   selector: 'app-conmemorativas-list',
-  template: `<p>conmemorativas — TODO</p>`,
+  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
+  templateUrl: './conmemorativas-list.component.html',
+  styleUrl: './conmemorativas-list.component.scss',
 })
-export class ConmemorativasListComponent {}
+export class ConmemorativasListComponent implements OnInit {
+  private service      = inject(ConmemorativasService);
+  private errorHandler = inject(ErrorHandler);
+
+  readonly literals       = LITERALS.conmemorativas;
+  readonly sharedLiterals = LITERALS.shared;
+
+  private allCoins    = signal<EuroCoin[]>([]);
+  readonly searchQuery = signal('');
+  readonly isReady     = signal(false);
+  readonly hasError    = signal(false);
+
+  ngOnInit(): void {
+    this.loadCoins();
+  }
+
+  loadCoins(): void {
+    this.hasError.set(false);
+    this.isReady.set(false);
+    this.service.getAll().subscribe({
+      next: coins => { this.allCoins.set(coins); this.isReady.set(true); },
+      error: (e)  => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+    });
+  }
+
+  readonly groupedCoins = computed<YearGroup[]>(() => {
+    const query = normalizeString(this.searchQuery());
+    const filtered = this.allCoins().filter(c =>
+      !query ||
+      normalizeString(c.country).includes(query) ||
+      normalizeString(c.description).includes(query)
+    );
+
+    const byYear = new Map<number, EuroCoin[]>();
+    for (const coin of filtered) {
+      const group = byYear.get(coin.year) ?? [];
+      group.push(coin);
+      byYear.set(coin.year, group);
+    }
+
+    return [...byYear.entries()]
+      .sort(([a], [b]) => a - b)
+      .map(([year, coins]) => ({
+        year,
+        rows: [...coins]
+          .sort((a, b) => a.country.localeCompare(b.country))
+          .map(coin => ({
+            coin,
+            conservationBadge: getConservationBadge(coin.conservation),
+            udsBadge: getUdsBadge(coin.uds),
+          })),
+      }));
+  });
+
+  readonly isEmpty = computed(() => this.groupedCoins().length === 0);
+
+  onSearch(query: string): void {
+    this.searchQuery.set(query);
+  }
+}

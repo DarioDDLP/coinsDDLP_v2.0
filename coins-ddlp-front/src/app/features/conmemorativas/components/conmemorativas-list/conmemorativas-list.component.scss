@@ -1,0 +1,19 @@
+.year-header {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--deep-navy);
+  margin: 24px 0 8px;
+
+  &:first-of-type {
+    margin-top: 0;
+  }
+}
+
+:host ::ng-deep .p-datatable-thead > tr > th {
+  background: var(--deep-navy);
+  color: var(--cream);
+}
+
+:host ::ng-deep .p-datatable-tbody > tr > td {
+  color: var(--cobalt);
+}

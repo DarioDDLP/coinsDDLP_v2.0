@@ -205,7 +205,13 @@ export const LITERALS = {
   },
 
   conmemorativas: {
-    title: 'Monedas Conmemorativas',
+    title: 'Conmemorativas',
+    search: 'Buscar por país o descripción...',
+    colCountry: 'País',
+    colDescription: 'Descripción',
+    colConservation: 'Estado',
+    colUnits: 'Uds.',
+    emptySearch: 'No se encontraron resultados',
   },
 
   pesetas: {
