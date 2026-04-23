@@ -1,1 +1,96 @@
-<p>Añadir moneda euro</p>
+<div class="add-euro">
+  <div class="add-euro__card">
+    <div class="add-euro__grid">
+      <div class="add-euro__col">
+        <app-select
+          [label]="L.labelCountry"
+          [value]="country()"
+          [options]="countryOptions()"
+          [placeholder]="L.placeholderCountry"
+          (valueChange)="country.set($event)"
+        />
+        <app-select
+          [label]="L.labelFaceValue"
+          [value]="faceValue()"
+          [options]="faceValueOptions"
+          [placeholder]="L.placeholderFaceValue"
+          (valueChange)="faceValue.set($event)"
+        />
+        <app-text-input
+          [label]="L.labelUds"
+          [value]="uds().toString()"
+          type="number"
+          [min]="0"
+          (valueChange)="uds.set(+$event)"
+        />
+        <app-select
+          [label]="L.labelMint"
+          [value]="mint()"
+          [options]="mintOptions"
+          [placeholder]="L.placeholderMint"
+          [disabled]="!isMintRequired()"
+          (valueChange)="mint.set($event)"
+        />
+        <app-toggle
+          [label]="L.labelCommemorative"
+          [value]="commemorative()"
+          (valueChange)="commemorative.set($event)"
+        />
+      </div>
+
+      <div class="add-euro__col">
+        <app-text-input
+          [label]="L.labelYear"
+          [value]="year() > 0 ? year().toString() : ''"
+          type="number"
+          [min]="1900"
+          [max]="2100"
+          (valueChange)="year.set(+$event)"
+        />
+        <app-text-input
+          [label]="L.labelDescription"
+          [value]="description()"
+          (valueChange)="description.set($event)"
+        />
+        <app-select
+          [label]="L.labelConservation"
+          [value]="conservation()"
+          [options]="availableConservationOptions()"
+          [placeholder]="L.placeholderConservation"
+          [disabled]="isConservationLocked()"
+          (valueChange)="conservation.set($any($event))"
+        />
+        <app-text-input
+          [label]="L.labelIdNum"
+          [value]="idNum()"
+          (valueChange)="idNum.set($event)"
+        />
+        <app-toggle
+          [label]="L.labelCirculation"
+          [value]="circulation()"
+          (valueChange)="circulation.set($event)"
+        />
+      </div>
+    </div>
+
+    <app-textarea
+      [label]="L.labelObservations"
+      [value]="observations()"
+      [placeholder]="L.observationsPlaceholder"
+      (valueChange)="observations.set($event)"
+    />
+
+    @if (errorMessage()) {
+      <p class="add-euro__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="add-euro__actions">
+      <app-button
+        [label]="L.addButton"
+        [loading]="loading()"
+        [disabled]="!isValid()"
+        (clicked)="onSubmit()"
+      />
+    </div>
+  </div>
+</div>

@@ -1,0 +1,41 @@
+.add-euro {
+  padding: 24px 48px;
+  display: flex;
+  justify-content: center;
+
+  &__card {
+    background: var(--cream);
+    border-radius: 10px;
+    padding: 32px;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 860px;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 40px;
+    margin-bottom: 16px;
+  }
+
+  &__col {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__error {
+    font-size: 14px;
+    color: var(--danger);
+    margin: 12px 0 0;
+    border-left: 3px solid var(--danger);
+    padding-left: 8px;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+}

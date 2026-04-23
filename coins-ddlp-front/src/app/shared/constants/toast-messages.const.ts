@@ -19,4 +19,8 @@ export const TOAST_MESSAGES = {
     logoutSuccess:   { severity: 'info',    summary: LITERALS.shared.toastInfo,    detail: LITERALS.auth.logoutSuccess   },
     recoverySuccess: { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.auth.recoverySuccess },
   },
+  herramientas: {
+    addSuccess: { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.herramientas.addSuccess },
+    addError:   { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.herramientas.addError   },
+  },
 } as const;
