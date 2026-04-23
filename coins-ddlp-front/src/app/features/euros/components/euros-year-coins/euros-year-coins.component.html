@@ -50,7 +50,10 @@
           </td>
           <td style="text-align: center" (click)="$event.stopPropagation()">
             @if (authService.isAdmin()) {
-              <app-button icon="pi pi-plus-circle" variant="ghost" [tooltip]="literals.editCoin" (clicked)="onEditUnits(row.coin)" />
+              <div class="row-actions">
+                <app-button icon="pi pi-plus-circle" variant="ghost" [tooltip]="literals.editCoin" (clicked)="onEditUnits(row.coin)" />
+                <app-button icon="pi pi-trash" variant="danger" [tooltip]="literals.deleteCoin" (clicked)="onDeleteCoin(row.coin)" />
+              </div>
             }
           </td>
         </tr>
@@ -74,4 +77,13 @@
   [coin]="selectedCoin()"
   (saved)="onDialogSaved()"
   (closed)="onDialogClosed()"
+/>
+
+<app-confirm-dialog
+  [visible]="deleteDialogVisible()"
+  [header]="literals.deleteCoin"
+  [message]="literals.deleteConfirm"
+  [loading]="deleteLoading()"
+  (confirmed)="onConfirmDelete()"
+  (closed)="onDeleteDialogClosed()"
 />

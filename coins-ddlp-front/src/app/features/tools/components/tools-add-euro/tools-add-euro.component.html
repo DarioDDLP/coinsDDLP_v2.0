@@ -3,36 +3,36 @@
     <div class="add-euro__grid">
       <div class="add-euro__col">
         <app-select
-          [label]="L.labelCountry"
+          [label]="literals.labelCountry"
           [value]="country()"
           [options]="countryOptions()"
-          [placeholder]="L.placeholderCountry"
+          [placeholder]="literals.placeholderCountry"
           (valueChange)="country.set($event)"
         />
         <app-select
-          [label]="L.labelFaceValue"
+          [label]="literals.labelFaceValue"
           [value]="faceValue()"
           [options]="faceValueOptions"
-          [placeholder]="L.placeholderFaceValue"
+          [placeholder]="literals.placeholderFaceValue"
           (valueChange)="faceValue.set($event)"
         />
         <app-text-input
-          [label]="L.labelUds"
+          [label]="literals.labelUds"
           [value]="uds().toString()"
           type="number"
           [min]="0"
           (valueChange)="uds.set(+$event)"
         />
         <app-select
-          [label]="L.labelMint"
+          [label]="literals.labelMint"
           [value]="mint()"
           [options]="mintOptions"
-          [placeholder]="L.placeholderMint"
+          [placeholder]="literals.placeholderMint"
           [disabled]="!isMintRequired()"
           (valueChange)="mint.set($event)"
         />
         <app-toggle
-          [label]="L.labelCommemorative"
+          [label]="literals.labelCommemorative"
           [value]="commemorative()"
           (valueChange)="commemorative.set($event)"
         />
@@ -40,7 +40,7 @@
 
       <div class="add-euro__col">
         <app-text-input
-          [label]="L.labelYear"
+          [label]="literals.labelYear"
           [value]="year() > 0 ? year().toString() : ''"
           type="number"
           [min]="1900"
@@ -48,25 +48,25 @@
           (valueChange)="year.set(+$event)"
         />
         <app-text-input
-          [label]="L.labelDescription"
+          [label]="literals.labelDescription"
           [value]="description()"
           (valueChange)="description.set($event)"
         />
         <app-select
-          [label]="L.labelConservation"
+          [label]="literals.labelConservation"
           [value]="conservation()"
           [options]="availableConservationOptions()"
-          [placeholder]="L.placeholderConservation"
+          [placeholder]="literals.placeholderConservation"
           [disabled]="isConservationLocked()"
           (valueChange)="conservation.set($any($event))"
         />
         <app-text-input
-          [label]="L.labelIdNum"
+          [label]="literals.labelIdNum"
           [value]="idNum()"
           (valueChange)="idNum.set($event)"
         />
         <app-toggle
-          [label]="L.labelCirculation"
+          [label]="literals.labelCirculation"
           [value]="circulation()"
           (valueChange)="circulation.set($event)"
         />
@@ -74,9 +74,9 @@
     </div>
 
     <app-textarea
-      [label]="L.labelObservations"
+      [label]="literals.labelObservations"
       [value]="observations()"
-      [placeholder]="L.observationsPlaceholder"
+      [placeholder]="literals.observationsPlaceholder"
       (valueChange)="observations.set($event)"
     />
 
@@ -86,7 +86,7 @@
 
     <div class="add-euro__actions">
       <app-button
-        [label]="L.addButton"
+        [label]="literals.addButton"
         [loading]="loading()"
         [disabled]="!isValid()"
         (clicked)="onSubmit()"

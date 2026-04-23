@@ -13,20 +13,24 @@ import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
+import { MessageService } from 'primeng/api';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 
 @Component({
   selector: 'app-euros-year-coins',
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, CoinUdsDialogComponent],
+  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, CoinUdsDialogComponent, ConfirmDialogComponent],
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
 })
 export class EurosYearCoinsComponent implements OnInit {
-  private eurosService = inject(EurosService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private errorHandler = inject(ErrorHandler);
-  readonly authService = inject(AuthService);
+  private eurosService   = inject(EurosService);
+  private messageService = inject(MessageService);
+  private route          = inject(ActivatedRoute);
+  private router         = inject(Router);
+  private errorHandler   = inject(ErrorHandler);
+  readonly authService   = inject(AuthService);
 
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
@@ -37,8 +41,11 @@ export class EurosYearCoinsComponent implements OnInit {
   private yearCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal('');
   readonly isReady = signal(false);
-  readonly dialogVisible  = signal(false);
-  readonly selectedCoin   = signal<EuroCoin | null>(null);
+  readonly dialogVisible        = signal(false);
+  readonly selectedCoin         = signal<EuroCoin | null>(null);
+  readonly deleteDialogVisible  = signal(false);
+  readonly selectedDeleteCoin   = signal<EuroCoin | null>(null);
+  readonly deleteLoading        = signal(false);
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -113,5 +120,31 @@ export class EurosYearCoinsComponent implements OnInit {
   onDialogClosed(): void {
     this.dialogVisible.set(false);
     this.selectedCoin.set(null);
+  }
+
+  onDeleteCoin(coin: EuroCoin): void {
+    this.selectedDeleteCoin.set(coin);
+    this.deleteDialogVisible.set(true);
+  }
+
+  async onConfirmDelete(): Promise<void> {
+    const coin = this.selectedDeleteCoin();
+    if (!coin) return;
+    this.deleteLoading.set(true);
+    try {
+      await this.eurosService.remove(coin.id);
+      this.messageService.add({ ...TOAST_MESSAGES.euros.deleteSuccess, life: 3000 });
+      this.onDeleteDialogClosed();
+      this.loadCoins(this.country(), this.year()!);
+    } catch (e) {
+      this.errorHandler.handleError(e);
+    } finally {
+      this.deleteLoading.set(false);
+    }
+  }
+
+  onDeleteDialogClosed(): void {
+    this.deleteDialogVisible.set(false);
+    this.selectedDeleteCoin.set(null);
   }
 }

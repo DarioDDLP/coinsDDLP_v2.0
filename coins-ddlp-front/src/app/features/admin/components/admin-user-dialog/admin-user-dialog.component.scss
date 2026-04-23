@@ -4,20 +4,10 @@
   gap: 20px;
   padding: 8px 0 4px;
 
-  &__confirm-message {
-    margin: 0;
-    font-size: 15px;
-    color: var(--deep-navy);
-  }
-
   &__actions {
     display: flex;
     justify-content: flex-end;
     margin-top: 4px;
-
-    &--spread {
-      justify-content: space-between;
-    }
   }
 
   &__error {

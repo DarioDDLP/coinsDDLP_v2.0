@@ -4,15 +4,17 @@ import { TableModule } from 'primeng/table';
 import { AdminService } from '../../services/admin.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AdminUserDialogComponent } from '../admin-user-dialog/admin-user-dialog.component';
+import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { LoadingService } from '../../../../core/services/loading.service';
 import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [TableModule, ButtonComponent, AdminUserDialogComponent, BadgeComponent],
+  imports: [TableModule, ButtonComponent, AdminUserDialogComponent, ConfirmDialogComponent, BadgeComponent],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss',
 })
@@ -35,10 +37,12 @@ export class AdminUsersComponent implements OnInit {
       })
       .map(user => ({ user, roleBadge: getRoleBadge(user.role) }))
   );
-  readonly isReady = signal(false);
-  readonly dialogVisible = signal(false);
-  readonly dialogMode = signal<'edit' | 'delete'>('edit');
-  readonly editingUser = signal<AppUser | null>(null);
+  readonly isReady             = signal(false);
+  readonly dialogVisible       = signal(false);
+  readonly editingUser         = signal<AppUser | null>(null);
+  readonly deleteDialogVisible = signal(false);
+  readonly deletingUser        = signal<AppUser | null>(null);
+  readonly deleteLoading       = signal(false);
 
   ngOnInit(): void {
     this.loadUsers();
@@ -60,15 +64,31 @@ export class AdminUsersComponent implements OnInit {
   }
 
   protected onEdit(user: AppUser | null): void {
-    this.dialogMode.set('edit');
     this.editingUser.set(user);
     this.dialogVisible.set(true);
   }
 
   protected onDelete(user: AppUser): void {
-    this.dialogMode.set('delete');
-    this.editingUser.set(user);
-    this.dialogVisible.set(true);
+    this.deletingUser.set(user);
+    this.deleteDialogVisible.set(true);
+  }
+
+  protected onConfirmDelete(): void {
+    const user = this.deletingUser();
+    if (!user) return;
+    this.deleteLoading.set(true);
+    this.adminService.deleteUser(user.uid).subscribe({
+      next: () => {
+        this.messageService.add({ ...TOAST_MESSAGES.admin.deleteSuccess, life: 3000 });
+        this.deleteLoading.set(false);
+        this.onDeleteDialogClosed();
+        this.loadUsers();
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.deleteLoading.set(false);
+      },
+    });
   }
 
   protected onDialogSaved(): void {
@@ -79,5 +99,10 @@ export class AdminUsersComponent implements OnInit {
   protected onDialogClosed(): void {
     this.dialogVisible.set(false);
     this.editingUser.set(null);
+  }
+
+  protected onDeleteDialogClosed(): void {
+    this.deleteDialogVisible.set(false);
+    this.deletingUser.set(null);
   }
 }

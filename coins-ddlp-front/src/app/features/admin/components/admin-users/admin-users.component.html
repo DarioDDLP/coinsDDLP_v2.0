@@ -47,8 +47,16 @@
 
 <app-admin-user-dialog
   [visible]="dialogVisible()"
-  [mode]="dialogMode()"
   [user]="editingUser()"
   (saved)="onDialogSaved()"
   (closed)="onDialogClosed()"
+/>
+
+<app-confirm-dialog
+  [visible]="deleteDialogVisible()"
+  [header]="literals.deleteUser"
+  [message]="literals.deleteConfirm"
+  [loading]="deleteLoading()"
+  (confirmed)="onConfirmDelete()"
+  (closed)="onDeleteDialogClosed()"
 />

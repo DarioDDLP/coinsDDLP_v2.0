@@ -9,73 +9,53 @@
   [closable]="true"
 >
   <div class="user-form">
-    @if (isDeleteMode()) {
-      <p class="user-form__confirm-message">{{ literals.deleteConfirm }}</p>
-      @if (errorMessage()) {
-        <p class="user-form__error">{{ errorMessage() }}</p>
-      }
-      <div class="user-form__actions user-form__actions--spread">
-        <app-button
-          [label]="sharedLiterals.cancel"
-          variant="primary"
-          (clicked)="onHide()"
-        />
-        <app-button
-          [label]="sharedLiterals.confirm"
-          variant="danger"
-          [loading]="loading()"
-          (clicked)="onConfirmDelete()"
-        />
-      </div>
-    } @else {
-      @if (!isEditMode()) {
-        <app-text-input
-          [label]="authLiterals.emailLabel"
-          [value]="email()"
-          type="email"
-          [placeholder]="authLiterals.emailPlaceholder"
-          autocomplete="off"
-          (valueChange)="email.set($event)"
-        />
-
-        <app-text-input
-          [label]="authLiterals.passwordLabel"
-          [value]="password()"
-          type="password"
-          [placeholder]="authLiterals.passwordPlaceholder"
-          autocomplete="new-password"
-          (valueChange)="password.set($event)"
-        />
-      }
+    @if (!isEditMode()) {
+      <app-text-input
+        [label]="authLiterals.emailLabel"
+        [value]="email()"
+        type="email"
+        [placeholder]="authLiterals.emailPlaceholder"
+        autocomplete="off"
+        (valueChange)="email.set($event)"
+      />
 
       <app-text-input
-        [label]="literals.nameLabel"
-        [value]="displayName()"
-        type="text"
-        [placeholder]="literals.namePlaceholder"
-        autocomplete="off"
-        (valueChange)="displayName.set($event)"
+        [label]="authLiterals.passwordLabel"
+        [value]="password()"
+        type="password"
+        [placeholder]="authLiterals.passwordPlaceholder"
+        autocomplete="new-password"
+        (valueChange)="password.set($event)"
       />
-
-      <app-select
-        [label]="literals.roleLabel"
-        [value]="role()"
-        [options]="roleOptions"
-        (valueChange)="role.set($any($event))"
-      />
-
-      @if (errorMessage()) {
-        <p class="user-form__error">{{ errorMessage() }}</p>
-      }
-
-      <div class="user-form__actions">
-        <app-button
-          [label]="sharedLiterals.save"
-          [loading]="loading()"
-          [disabled]="!canSubmit()"
-          (clicked)="onSubmit()"
-        />
-      </div>
     }
+
+    <app-text-input
+      [label]="literals.nameLabel"
+      [value]="displayName()"
+      type="text"
+      [placeholder]="literals.namePlaceholder"
+      autocomplete="off"
+      (valueChange)="displayName.set($event)"
+    />
+
+    <app-select
+      [label]="literals.roleLabel"
+      [value]="role()"
+      [options]="roleOptions"
+      (valueChange)="role.set($any($event))"
+    />
+
+    @if (errorMessage()) {
+      <p class="user-form__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="user-form__actions">
+      <app-button
+        [label]="sharedLiterals.save"
+        [loading]="loading()"
+        [disabled]="!canSubmit()"
+        (clicked)="onSubmit()"
+      />
+    </div>
   </div>
 </p-dialog>

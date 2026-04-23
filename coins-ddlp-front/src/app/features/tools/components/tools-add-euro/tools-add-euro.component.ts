@@ -22,7 +22,7 @@ export class ToolsAddEuroComponent {
   private messageService = inject(MessageService);
   private errorHandler   = inject(ErrorHandler);
 
-  readonly L                   = LITERALS.herramientas;
+  readonly literals = LITERALS.herramientas;
   readonly faceValueOptions    = FACE_VALUE_OPTIONS;
   readonly conservationOptions = CONSERVATION_OPTIONS;
   readonly mintOptions         = MINT_OPTIONS_GERMANY;
@@ -105,7 +105,7 @@ export class ToolsAddEuroComponent {
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.L.addError);
+      this.errorMessage.set(this.literals.addError);
     } finally {
       this.loading.set(false);
     }

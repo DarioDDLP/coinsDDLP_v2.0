@@ -22,8 +22,7 @@ export class AdminUserDialogComponent {
   private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
-  mode = input<'edit' | 'delete'>('edit');
-  user = input<AppUser | null>(null);
+  user    = input<AppUser | null>(null);
 
   saved = output<void>();
   closed = output<void>();
@@ -40,11 +39,9 @@ export class AdminUserDialogComponent {
   readonly errorMessage = signal('');
 
   readonly isEditMode = computed(() => !!this.user());
-  readonly isDeleteMode = computed(() => this.mode() === 'delete');
-  readonly header = computed(() => {
-    if (this.isDeleteMode()) return this.literals.deleteUser;
-    return this.isEditMode() ? this.literals.editTitle : this.literals.createTitle;
-  });
+  readonly header = computed(() =>
+    this.isEditMode() ? this.literals.editTitle : this.literals.createTitle
+  );
   readonly canSubmit = computed(() =>
     this.isEditMode() || (!!this.email() && !!this.password())
   );
@@ -80,23 +77,6 @@ export class AdminUserDialogComponent {
       error: (e) => {
         this.errorHandler.handleError(e);
         this.errorMessage.set(this.literals.saveError);
-        this.loading.set(false);
-      },
-    });
-  }
-
-  onConfirmDelete(): void {
-    this.loading.set(true);
-    this.adminService.deleteUser(this.user()!.uid).subscribe({
-      next: () => {
-        this.messageService.add({ ...TOAST_MESSAGES.admin.deleteSuccess, life: 3000 });
-        this.loading.set(false);
-        this.saved.emit();
-        this.close();
-      },
-      error: (e) => {
-        this.errorHandler.handleError(e);
-        this.errorMessage.set(this.literals.deleteError);
         this.loading.set(false);
       },
     });

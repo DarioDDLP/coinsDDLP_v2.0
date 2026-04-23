@@ -1,0 +1,18 @@
+<p-dialog
+  [visible]="visible()"
+  (onHide)="closed.emit()"
+  [modal]="true"
+  [header]="header()"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+>
+  <div class="confirm-dialog">
+    <p class="confirm-dialog__message">{{ message() }}</p>
+    <div class="confirm-dialog__actions">
+      <app-button [label]="cancelLabel" variant="primary" (clicked)="closed.emit()" />
+      <app-button [label]="confirmLabel()" variant="danger" [loading]="loading()" (clicked)="confirmed.emit()" />
+    </div>
+  </div>
+</p-dialog>
