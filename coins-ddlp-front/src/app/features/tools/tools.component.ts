@@ -2,7 +2,7 @@ import { Component, effect, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ButtonsHeaderComponent } from '../../shared/components/buttons-header/buttons-header.component';
 import { AuthService } from '../../core/services/auth.service';
-import { TOOLS_NAV_ITEMS } from './components/tools-header/tools-header.config';
+import { TOOLS_NAV_ITEMS } from './tools.config';
 import { LITERALS } from '../../shared/constants/literals';
 
 @Component({

@@ -1,0 +1,42 @@
+<div class="add-year">
+  <div class="add-year__card">
+    <div class="add-year__form">
+      <app-select
+        [label]="literals.labelCountry"
+        [value]="country()"
+        [options]="countryOptions()"
+        [placeholder]="literals.placeholderCountry"
+        (valueChange)="country.set($event)"
+      />
+      <app-select
+        [label]="literals.labelSourceYear"
+        [value]="sourceYear() > 0 ? sourceYear().toString() : ''"
+        [options]="yearOptions()"
+        [placeholder]="literals.placeholderSourceYear"
+        [disabled]="!country()"
+        (valueChange)="sourceYear.set(+$event)"
+      />
+      <app-text-input
+        [label]="literals.labelTargetYear"
+        [value]="targetYear() > 0 ? targetYear().toString() : ''"
+        type="number"
+        [min]="1900"
+        [max]="2100"
+        (valueChange)="targetYear.set(+$event)"
+      />
+    </div>
+
+    @if (errorMessage()) {
+      <p class="add-year__error">{{ errorMessage() }}</p>
+    }
+
+    <div class="add-year__actions">
+      <app-button
+        [label]="literals.tiradaButton"
+        [loading]="loading()"
+        [disabled]="!isValid()"
+        (clicked)="onSubmit()"
+      />
+    </div>
+  </div>
+</div>

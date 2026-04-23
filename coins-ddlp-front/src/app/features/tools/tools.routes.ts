@@ -13,4 +13,11 @@ export const toolsRoutes: Routes = [
         (m) => m.ToolsAddEuroComponent
       ),
   },
+  {
+    path: 'añadir-año',
+    loadComponent: () =>
+      import('./components/tools-add-year/tools-add-year.component').then(
+        (m) => m.ToolsAddYearComponent
+      ),
+  },
 ];

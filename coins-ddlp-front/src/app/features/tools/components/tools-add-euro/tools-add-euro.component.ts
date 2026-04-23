@@ -9,7 +9,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { ConservationCode } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { CONSERVATION_OPTIONS, FACE_VALUE_OPTIONS, MINT_OPTIONS_GERMANY } from './tools-add-euro.config';
+import { CONSERVATION_OPTIONS, FACE_VALUE_OPTIONS, MINT_OPTIONS_GERMANY } from '../../tools.config';
 
 @Component({
   selector: 'app-tools-add-euro',

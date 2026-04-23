@@ -20,7 +20,8 @@ export const TOAST_MESSAGES = {
     recoverySuccess: { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.auth.recoverySuccess },
   },
   herramientas: {
-    addSuccess: { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.herramientas.addSuccess },
-    addError:   { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.herramientas.addError   },
+    addSuccess:   { severity: 'success', summary: LITERALS.shared.toastSuccess, detail: LITERALS.herramientas.addSuccess   },
+    addError:     { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.herramientas.addError     },
+    tiradaError:  { severity: 'error',   summary: LITERALS.shared.toastError,   detail: LITERALS.herramientas.tiradaError  },
   },
 } as const;
