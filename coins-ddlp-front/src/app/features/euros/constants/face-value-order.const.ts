@@ -13,6 +13,8 @@ export const FACE_VALUE_ORDER: Record<string, number> = {
 };
 
 export function sortByFaceValue(a: EuroCoin, b: EuroCoin): number {
+  const mintCompare = (a.mint ?? '').localeCompare(b.mint ?? '');
+  if (mintCompare !== 0) return mintCompare;
   const aOrder = FACE_VALUE_ORDER[normalizeString(a.faceValue)] ?? 99;
   const bOrder = FACE_VALUE_ORDER[normalizeString(b.faceValue)] ?? 99;
   if (aOrder !== bOrder) return aOrder - bOrder;
