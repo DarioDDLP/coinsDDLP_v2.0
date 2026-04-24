@@ -71,7 +71,13 @@ export class ConmemorativasListComponent implements OnInit {
       .map(([year, coins]) => ({
         year,
         rows: [...coins]
-          .sort((a, b) => a.country.localeCompare(b.country))
+          .sort((a, b) => {
+            const country = a.country.localeCompare(b.country);
+            if (country !== 0) return country;
+            const mint = (a.mint ?? '').localeCompare(b.mint ?? '');
+            if (mint !== 0) return mint;
+            return a.description.localeCompare(b.description);
+          })
           .map(coin => ({
             coin,
             conservationBadge: getConservationBadge(coin.conservation),

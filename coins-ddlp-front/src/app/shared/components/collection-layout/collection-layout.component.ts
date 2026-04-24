@@ -21,6 +21,7 @@ export class CollectionLayoutComponent {
   @Input() country: string | undefined;
   @Input() cardBackground = 'rgba(255, 245, 232,)';
   @Input() cardOpacity = 1;
+  @Input() maxWidth = '1200px';
 
   @Output() searchChange = new EventEmitter<string>();
 
