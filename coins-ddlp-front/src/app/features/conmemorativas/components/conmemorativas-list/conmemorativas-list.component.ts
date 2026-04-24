@@ -8,11 +8,33 @@ import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
+import {
+  ALBUM_POSITIONS_PER_ROW,
+  ALBUM_POSITIONS_PER_PAGE,
+  ALBUM_POSITIONS_PER_ALBUM,
+} from '../../conmemorativas.config';
+
+interface AlbumLocation {
+  album: number;
+  page: number;
+  position: string;
+}
 
 interface CoinRow {
   coin: EuroCoin;
   conservationBadge: ReturnType<typeof getConservationBadge>;
   udsBadge: ReturnType<typeof getUdsBadge>;
+  location: AlbumLocation;
+}
+
+function computeLocation(index: number): AlbumLocation {
+  const album      = Math.floor(index / ALBUM_POSITIONS_PER_ALBUM) + 1;
+  const withinAlbum = index % ALBUM_POSITIONS_PER_ALBUM;
+  const page       = Math.floor(withinAlbum / ALBUM_POSITIONS_PER_PAGE) + 1;
+  const withinPage  = withinAlbum % ALBUM_POSITIONS_PER_PAGE;
+  const row        = Math.floor(withinPage / ALBUM_POSITIONS_PER_ROW) + 1;
+  const col        = (withinPage % ALBUM_POSITIONS_PER_ROW) + 1;
+  return { album, page, position: `${row}.${col}` };
 }
 
 interface YearGroup {
@@ -66,6 +88,8 @@ export class ConmemorativasListComponent implements OnInit {
       byYear.set(coin.year, group);
     }
 
+    let globalIndex = 0;
+
     return [...byYear.entries()]
       .sort(([a], [b]) => a - b)
       .map(([year, coins]) => ({
@@ -82,6 +106,7 @@ export class ConmemorativasListComponent implements OnInit {
             coin,
             conservationBadge: getConservationBadge(coin.conservation),
             udsBadge: getUdsBadge(coin.uds),
+            location: computeLocation(globalIndex++),
           })),
       }));
   });

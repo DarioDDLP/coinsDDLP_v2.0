@@ -29,6 +29,7 @@
                 <th style="width: 180px">{{ literals.colCountry }}</th>
                 <th style="width: 150px">{{ literals.colMint }}</th>
                 <th>{{ literals.colDescription }}</th>
+                <th style="width: 130px; text-align: center">{{ literals.colLocation }}</th>
                 <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
                 <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
               </tr>
@@ -38,6 +39,9 @@
                 <td>{{ row.coin.country }}</td>
                 <td>{{ row.coin.mint ?? '—' }}</td>
                 <td class="clip">{{ row.coin.description }}</td>
+                <td style="text-align: center; white-space: nowrap">
+                  {{ row.location.album }} / {{ row.location.page }} / {{ row.location.position }}
+                </td>
                 <td style="text-align: center">
                   <app-badge
                     [label]="row.conservationBadge.label"

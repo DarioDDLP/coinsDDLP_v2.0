@@ -210,6 +210,7 @@ export const LITERALS = {
     colCountry: 'País',
     colMint: 'Ceca',
     colDescription: 'Descripción',
+    colLocation: 'Álb / H / Pos',
     colConservation: 'Estado',
     colUnits: 'Uds.',
     emptySearch: 'No se encontraron resultados',
