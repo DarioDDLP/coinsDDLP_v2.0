@@ -4,6 +4,7 @@ import { CollectionLayoutComponent } from '../../../../shared/components/collect
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { ConmemorativasService } from '../../services/conmemorativas.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
@@ -51,6 +52,9 @@ interface YearGroup {
 export class ConmemorativasListComponent implements OnInit {
   private service      = inject(ConmemorativasService);
   private errorHandler = inject(ErrorHandler);
+  private authService  = inject(AuthService);
+
+  readonly isAdmin = this.authService.isAdmin;
 
   readonly literals       = LITERALS.conmemorativas;
   readonly sharedLiterals = LITERALS.shared;
