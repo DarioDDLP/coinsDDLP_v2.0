@@ -48,6 +48,9 @@ export class CoinDetailComponent implements OnInit {
   readonly udsBadge = computed(() => getUdsBadge(this.coin()?.uds ?? 0));
 
   readonly backLink = computed(() => {
+    if (this.route.snapshot.queryParamMap.get('from') === 'conmemorativas') {
+      return ['/conmemorativas'];
+    }
     const country = this.route.snapshot.paramMap.get('country') ?? '';
     const year = this.route.snapshot.paramMap.get('year') ?? '';
     return ['/euros', country, year];
@@ -77,8 +80,6 @@ export class CoinDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    const country = this.route.snapshot.paramMap.get('country')!;
-    const year = this.route.snapshot.paramMap.get('year')!;
-    this.router.navigate(['/euros', country, year]);
+    this.router.navigate(this.backLink());
   }
 }

@@ -18,6 +18,15 @@
   color: var(--cobalt);
 }
 
+:host ::ng-deep .p-datatable-tbody > tr.row--clickable {
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover > td {
+    filter: brightness(0.96);
+  }
+}
+
 .clip {
   max-width: 0;
   overflow: hidden;

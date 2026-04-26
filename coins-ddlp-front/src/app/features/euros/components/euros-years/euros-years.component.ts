@@ -7,6 +7,7 @@ import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 
 interface YearGroup {
   year: number;
@@ -43,6 +44,7 @@ export class EurosYearsComponent implements OnInit {
       this.country.set(currentCountry);
 
       if (currentCountry) {
+        this.searchQuery.set(restoreSearchQuery(`euros-years-${currentCountry}`));
         this.loadYears(currentCountry);
       }
     });
@@ -104,5 +106,6 @@ export class EurosYearsComponent implements OnInit {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+    saveSearchQuery(`euros-years-${this.country()}`, query);
   }
 }

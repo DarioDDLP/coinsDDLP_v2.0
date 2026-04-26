@@ -8,6 +8,7 @@ import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 
 interface CountryGroup {
   country: string;
@@ -35,6 +36,7 @@ export class EurosCountriesComponent implements OnInit {
   readonly sharedLiterals = LITERALS.shared;
 
   ngOnInit(): void {
+    this.searchQuery.set(restoreSearchQuery('euros-countries'));
     this.loadCoins();
   }
 
@@ -89,6 +91,7 @@ export class EurosCountriesComponent implements OnInit {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+    saveSearchQuery('euros-countries', query);
   }
 }
 

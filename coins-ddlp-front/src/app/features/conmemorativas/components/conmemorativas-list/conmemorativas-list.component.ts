@@ -1,4 +1,5 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -8,6 +9,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import {
   ALBUM_POSITIONS_PER_ROW,
@@ -51,6 +53,7 @@ interface YearGroup {
 })
 export class ConmemorativasListComponent implements OnInit {
   private service      = inject(ConmemorativasService);
+  private router       = inject(Router);
   private errorHandler = inject(ErrorHandler);
   private authService  = inject(AuthService);
 
@@ -65,6 +68,7 @@ export class ConmemorativasListComponent implements OnInit {
   readonly hasError    = signal(false);
 
   ngOnInit(): void {
+    this.searchQuery.set(restoreSearchQuery('conmemorativas'));
     this.loadCoins();
   }
 
@@ -119,5 +123,12 @@ export class ConmemorativasListComponent implements OnInit {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+    saveSearchQuery('conmemorativas', query);
+  }
+
+  onCoinClick(coin: EuroCoin): void {
+    this.router.navigate(['/euros', coin.country, coin.year, coin.id], {
+      queryParams: { from: 'conmemorativas' },
+    });
   }
 }

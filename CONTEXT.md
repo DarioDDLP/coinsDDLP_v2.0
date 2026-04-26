@@ -400,6 +400,9 @@ ng build --configuration production
 - [x] **Sort por ceca** — `sortByFaceValue` usa ceca como criterio primario para agrupar monedas alemanas correctamente.
 - [x] **`CoinUdsDialogComponent` campo `description`** — textarea entre conservación y observaciones, sincronizado en `effect()`.
 - [x] **Módulo Conmemorativas** — `ConmemorativasComponent` (shell, fondo `background-2c.jpg`) + `ConmemorativasListComponent` (solo lectura, agrupado por año asc, ordenado por país, tabla con anchos fijos). `ConmemorativasService.getAll()` filtra `commemorative=true`. Sin rutas hijas.
+- [x] **euros-year-coins: truncar descripción** — columna descripción con `max-width: 0 + overflow: hidden + text-overflow: ellipsis` y `width: 100%` en el `th` para ocupar todo el espacio disponible. Valor facial con `white-space: nowrap` para no partirse.
+- [x] **Helper `search-state.helper.ts`** — `saveSearchQuery(key, query)` / `restoreSearchQuery(key)` sobre `sessionStorage`. Persiste el buscador al navegar hacia atrás (sobrevive a F5). Aplicado a: `euros-countries` (clave `euros-countries`), `euros-years` (`euros-years-${country}`), `euros-year-coins` (`euros-year-coins-${country}-${year}`), `euros-all-coins` (`euros-all-${country}`), `conmemorativas-list` (`conmemorativas`).
+- [x] **Conmemorativas: link a detalle** — filas clickables que navegan a `/euros/:country/:year/:id?from=conmemorativas`. `coin-detail` detecta el query param `from=conmemorativas` y ajusta el `backLink` a `/conmemorativas`. `goBack()` refactorizado para usar el mismo `backLink` computed.
 
 ### Pendiente / Próximos pasos
 1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista (reset diario ~medianoche UTC): `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado completo en `scripts/pending-idnum-2026-04-24.md`.
@@ -454,6 +457,9 @@ ng build --configuration production
 | 2026-04-24 | **Script `match-numista-ids-regular.mjs`** (nuevo): agrupa monedas no conmemorativas por (país, faceValue, descripción), busca en Numista por (issuer, minYear) con caché. Auto-assign si hay 1 candidato tras filtrar por denominación (`parseCents`). Year-span winner para múltiples candidatos (regular > conmemorativa). Prefix matching en similitud ("alberto"~"albert"). Bulgaria añadida al mapa de issuers. Resultado: 4425 monedas con idNum asignado (247 tipos). |
 | 2026-04-24 | **idNum completado para todos los regulares**: los 415 tipos restantes tras el script se asignaron manualmente país por país. Todos los regulares (~4840 monedas) tienen idNum. |
 | 2026-04-24 | **Generado `scripts/pending-idnum-2026-04-24.md`**: listado completo de las 370 monedas conmemorativas que aún no tienen idNum (para asignación manual desde la app). |
+| 2026-04-26 | **euros-year-coins: truncar descripción con ellipsis**: `td` con `max-width:0 + overflow:hidden + text-overflow:ellipsis`; `th` descripción con `width:100%` para columna codiciosa; faceValue con `white-space:nowrap`. |
+| 2026-04-26 | **Helper `search-state.helper.ts`**: `saveSearchQuery`/`restoreSearchQuery` sobre `sessionStorage`. Persiste buscador al navegar hacia atrás (sobrevive F5). Aplicado a los 5 componentes con buscador. |
+| 2026-04-26 | **Conmemorativas: link a detalle**: filas clickables → `/euros/:country/:year/:id?from=conmemorativas`. `coin-detail` ajusta `backLink` a `/conmemorativas` cuando detecta `from=conmemorativas`. `goBack()` unificado con `backLink()`. |
 
 ---
 

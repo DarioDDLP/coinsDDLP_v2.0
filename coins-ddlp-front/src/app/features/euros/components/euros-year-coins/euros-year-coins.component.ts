@@ -11,6 +11,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { MessageService } from 'primeng/api';
@@ -56,6 +57,7 @@ export class EurosYearCoinsComponent implements OnInit {
       this.year.set(currentYear);
 
       if (currentCountry && currentYear !== null) {
+        this.searchQuery.set(restoreSearchQuery(`euros-year-coins-${currentCountry}-${currentYear}`));
         this.loadCoins(currentCountry, currentYear);
       }
     });
@@ -102,6 +104,7 @@ export class EurosYearCoinsComponent implements OnInit {
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
+    saveSearchQuery(`euros-year-coins-${this.country()}-${this.year()}`, query);
   }
 
   onCoinClick(coin: EuroCoin): void {

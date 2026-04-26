@@ -12,6 +12,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 
@@ -44,7 +45,10 @@ export class EurosAllCoinsComponent implements OnInit {
     this.route.params.subscribe(params => {
       const currentCountry = params['country'] || '';
       this.country.set(currentCountry);
-      if (currentCountry) this.loadCoins(currentCountry);
+      if (currentCountry) {
+        this.searchQuery.set(restoreSearchQuery(`euros-all-${currentCountry}`));
+        this.loadCoins(currentCountry);
+      }
     });
   }
 
@@ -82,7 +86,10 @@ export class EurosAllCoinsComponent implements OnInit {
   readonly hasNonCirculating = computed(() => this.coinRows().some(r => !r.coin.circulation));
   readonly backLink = computed(() => ['/euros', this.country()]);
 
-  onSearch(query: string): void { this.searchQuery.set(query); }
+  onSearch(query: string): void {
+    this.searchQuery.set(query);
+    saveSearchQuery(`euros-all-${this.country()}`, query);
+  }
 
   onCoinClick(coin: EuroCoin): void {
     this.router.navigate(['/euros', this.country(), 'all', coin.id]);

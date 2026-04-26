@@ -35,7 +35,7 @@
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-row>
-              <tr>
+              <tr class="row--clickable" (click)="onCoinClick(row.coin)">
                 <td>{{ row.coin.country }}</td>
                 <td>{{ row.coin.mint ?? '—' }}</td>
                 <td class="clip">{{ row.coin.description }}</td>
