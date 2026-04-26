@@ -324,7 +324,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-23 (sesión 6)
+> **Última actualización:** 2026-04-24 (sesión 7)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -402,8 +402,9 @@ ng build --configuration production
 - [x] **Módulo Conmemorativas** — `ConmemorativasComponent` (shell, fondo `background-2c.jpg`) + `ConmemorativasListComponent` (solo lectura, agrupado por año asc, ordenado por país, tabla con anchos fijos). `ConmemorativasService.getAll()` filtra `commemorative=true`. Sin rutas hijas.
 
 ### Pendiente / Próximos pasos
-1. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-2. **Secciones restantes** — pesetas, estadísticas, ubicación
+1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista (reset diario ~medianoche UTC): `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado completo en `scripts/pending-idnum-2026-04-24.md`.
+2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
+3. **Secciones restantes** — pesetas, estadísticas, ubicación
 
 ---
 
@@ -448,6 +449,11 @@ ng build --configuration production
 | 2026-04-21 | **Sort por ceca**: `sortByFaceValue` en `face-value-order.const.ts` usa ceca como criterio primario y valor facial como secundario. Soluciona el orden de monedas alemanas con 5 cecas. |
 | 2026-04-23 | **`CoinUdsDialogComponent` campo `description`**: `app-textarea` para descripción añadido entre conservación y observaciones. Signal `description` sincronizado en `effect()` y guardado en `eurosService.update()`. Literal `descriptionLabel` añadido a `LITERALS.euros`. |
 | 2026-04-23 | **Módulo Conmemorativas**: `ConmemorativasComponent` (shell sin router-outlet, fondo `background-2c.jpg`) renderiza `ConmemorativasListComponent` directamente. `ConmemorativasService.getAll()` filtra `commemorative=true`. Lista agrupa por año (asc), ordena por país dentro de cada año. Buscador por país/descripción. Tabla con `table-layout: fixed` y anchos fijos en Estado (110px) y Uds. (80px) para alineación consistente entre grupos. Solo lectura, sin acciones de edición ni borrado. |
+| 2026-04-24 | **Conmemorativas — mejoras UI**: columna Ceca añadida (150px, siempre visible). Ordenación: país → ceca → descripción. `maxWidth="1400px"` en `app-collection-layout` via nuevo `@Input() maxWidth`. Columna Álb/H/Pos (álbum-hoja-posición) calculada desde índice global de ordenación, visible solo para admins (`isAdmin()`). Config en `conmemorativas.config.ts`: 160 pos/álbum, 8 hojas, 5 filas × 4 cols. |
+| 2026-04-24 | **Script `match-numista-ids.mjs`**: añadida paginación Supabase para superar límite de 1000 filas. |
+| 2026-04-24 | **Script `match-numista-ids-regular.mjs`** (nuevo): agrupa monedas no conmemorativas por (país, faceValue, descripción), busca en Numista por (issuer, minYear) con caché. Auto-assign si hay 1 candidato tras filtrar por denominación (`parseCents`). Year-span winner para múltiples candidatos (regular > conmemorativa). Prefix matching en similitud ("alberto"~"albert"). Bulgaria añadida al mapa de issuers. Resultado: 4425 monedas con idNum asignado (247 tipos). |
+| 2026-04-24 | **idNum completado para todos los regulares**: los 415 tipos restantes tras el script se asignaron manualmente país por país. Todos los regulares (~4840 monedas) tienen idNum. |
+| 2026-04-24 | **Generado `scripts/pending-idnum-2026-04-24.md`**: listado completo de las 370 monedas conmemorativas que aún no tienen idNum (para asignación manual desde la app). |
 
 ---
 

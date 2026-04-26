@@ -22,8 +22,8 @@
     <p-table [value]="coinRows()" [tableStyle]="{ 'min-width': '50rem' }" [stripedRows]="true">
       <ng-template pTemplate="header">
         <tr>
-          <th>{{ literals.colFaceValue }}</th>
-          <th>Descripción</th>
+          <th style="white-space: nowrap">{{ literals.colFaceValue }}</th>
+          <th style="width: 100%">Descripción</th>
           @if (hasMint()) { <th>{{ literals.colMint }}</th> }
           <th style="text-align: center">{{ literals.colConservation }}</th>
           <th style="text-align: center">{{ literals.colUnits }}</th>
@@ -32,8 +32,8 @@
       </ng-template>
       <ng-template pTemplate="body" let-row>
         <tr [class.row--non-circulating]="!row.coin.circulation" (click)="onCoinClick(row.coin)" class="row--clickable">
-          <td>{{ row.coin.faceValue }}</td>
-          <td>{{ row.coin.description }}</td>
+          <td style="white-space: nowrap">{{ row.coin.faceValue }}</td>
+          <td class="td--description">{{ row.coin.description }}</td>
           @if (hasMint()) { <td>{{ row.coin.mint ?? '—' }}</td> }
           <td style="text-align: center">
             <app-badge
