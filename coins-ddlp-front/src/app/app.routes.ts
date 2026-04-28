@@ -25,6 +25,8 @@ export const routes: Routes = [
     path: 'pesetas',
     loadComponent: () =>
       import('./features/pesetas/pesetas.component').then((m) => m.PesetasComponent),
+    loadChildren: () =>
+      import('./features/pesetas/pesetas.routes').then((m) => m.pesetasRoutes),
   },
   {
     path: 'estadisticas',

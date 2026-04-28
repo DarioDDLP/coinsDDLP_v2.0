@@ -1,0 +1,43 @@
+.denomination-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.denomination-card--all {
+  border: 2px solid var(--gold-tan);
+}
+
+.denomination-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: rgba(217, 181, 130, 0.15);
+  }
+
+  &__value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--deep-navy);
+    text-align: center;
+  }
+
+  &__years {
+    font-size: 12px;
+    color: var(--cobalt);
+    font-weight: 500;
+  }
+
+  &__count {
+    font-size: 12px;
+    color: var(--gold-tan);
+    font-weight: 600;
+  }
+}

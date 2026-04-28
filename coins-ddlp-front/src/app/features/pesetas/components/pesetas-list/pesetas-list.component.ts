@@ -1,5 +1,5 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -17,79 +17,73 @@ interface PesetaRow {
   udsBadge: ReturnType<typeof getUdsBadge>;
 }
 
-interface DenominationGroup {
-  faceValueLabel: string;
-  faceValueESP: number;
-  rows: PesetaRow[];
-}
-
 @Component({
   selector: 'app-pesetas-list',
-  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent, DecimalPipe],
+  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
   templateUrl: './pesetas-list.component.html',
   styleUrl: './pesetas-list.component.scss',
 })
 export class PesetasListComponent implements OnInit {
   private service      = inject(PesetasService);
+  private route        = inject(ActivatedRoute);
   private errorHandler = inject(ErrorHandler);
 
   readonly literals       = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
 
+  readonly faceValue   = signal('');
   private allPesetas   = signal<Peseta[]>([]);
   readonly searchQuery  = signal('');
   readonly isReady      = signal(false);
   readonly hasError     = signal(false);
 
+  readonly backLink = ['/pesetas'];
+
   ngOnInit(): void {
-    this.searchQuery.set(restoreSearchQuery('pesetas'));
-    this.loadPesetas();
+    this.route.params.subscribe(params => {
+      const faceValue = params['faceValue'] ?? '';
+      this.faceValue.set(faceValue);
+      this.searchQuery.set(restoreSearchQuery(`pesetas-${faceValue}`));
+      this.loadPesetas();
+    });
   }
 
   loadPesetas(): void {
     this.hasError.set(false);
     this.isReady.set(false);
     this.service.getAll().subscribe({
-      next: pesetas => { this.allPesetas.set(pesetas); this.isReady.set(true); },
-      error: (e)    => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      next: pesetas => {
+        const fv = this.faceValue();
+        this.allPesetas.set(
+          [...pesetas.filter(p => p.peseta_type.faceValueLabel === fv)]
+            .sort((a, b) => a.mintYear - b.mintYear)
+        );
+        this.isReady.set(true);
+      },
+      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
     });
   }
 
-  readonly groupedPesetas = computed<DenominationGroup[]>(() => {
+  readonly rows = computed<PesetaRow[]>(() => {
     const query = normalizeString(this.searchQuery());
-    const filtered = this.allPesetas().filter(p =>
-      !query ||
-      normalizeString(p.peseta_type.faceValueLabel).includes(query) ||
-      normalizeString(p.peseta_type.title).includes(query)
-    );
-
-    const byDenomination = new Map<string, { faceValueESP: number; pesetas: Peseta[] }>();
-    for (const p of filtered) {
-      const key = p.peseta_type.faceValueLabel;
-      const entry = byDenomination.get(key) ?? { faceValueESP: p.peseta_type.faceValueESP ?? 0, pesetas: [] };
-      entry.pesetas.push(p);
-      byDenomination.set(key, entry);
-    }
-
-    return [...byDenomination.entries()]
-      .sort(([, a], [, b]) => a.faceValueESP - b.faceValueESP)
-      .map(([faceValueLabel, { faceValueESP, pesetas }]) => ({
-        faceValueLabel,
-        faceValueESP,
-        rows: [...pesetas]
-          .sort((a, b) => a.mintYear - b.mintYear)
-          .map(peseta => ({
-            peseta,
-            conservationBadge: getConservationBadge(peseta.conservation),
-            udsBadge: getUdsBadge(peseta.uds),
-          })),
+    return this.allPesetas()
+      .filter(p =>
+        !query ||
+        normalizeString(p.peseta_type.title).includes(query) ||
+        normalizeString(p.label).includes(query) ||
+        p.mintYear.toString().includes(query)
+      )
+      .map(peseta => ({
+        peseta,
+        conservationBadge: getConservationBadge(peseta.conservation),
+        udsBadge: getUdsBadge(peseta.uds),
       }));
   });
 
-  readonly isEmpty = computed(() => this.groupedPesetas().length === 0);
+  readonly isEmpty = computed(() => this.rows().length === 0);
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
-    saveSearchQuery('pesetas', query);
+    saveSearchQuery(`pesetas-${this.faceValue()}`, query);
   }
 }

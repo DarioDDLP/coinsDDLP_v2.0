@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { PesetasListComponent } from './components/pesetas-list/pesetas-list.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-pesetas',
-  imports: [PesetasListComponent],
+  imports: [RouterOutlet],
   templateUrl: './pesetas.component.html',
   styleUrl: './pesetas.component.scss',
 })

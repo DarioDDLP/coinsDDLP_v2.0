@@ -1,0 +1,38 @@
+@if (isReady()) {
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+      [retryLabel]="sharedLiterals.retry"
+      (retry)="ngOnInit()"
+    />
+  } @else {
+    <app-collection-layout
+      [title]="literals.denominationsTitle"
+      [searchPlaceholder]="literals.searchDenominations"
+      [searchValue]="searchQuery()"
+      maxWidth="1000px"
+      (searchChange)="onSearch($event)"
+    >
+      @if (!isEmpty()) {
+        <div class="denomination-grid">
+          <div class="denomination-card denomination-card--all" [routerLink]="['/pesetas', 'all']">
+            <span class="denomination-card__value">{{ literals.allLabel }}</span>
+            <span class="denomination-card__years">{{ totals().minYear }} — {{ totals().maxYear }}</span>
+            <span class="denomination-card__count">{{ totals().owned }} / {{ totals().total }}</span>
+          </div>
+          @for (card of denominationCards(); track card.faceValueLabel) {
+            <div class="denomination-card" [routerLink]="['/pesetas', card.faceValueLabel]">
+              <span class="denomination-card__value">{{ card.faceValueLabel }}</span>
+              <span class="denomination-card__years">{{ card.minYear }} — {{ card.maxYear }}</span>
+              <span class="denomination-card__count">{{ card.owned }} / {{ card.total }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      }
+    </app-collection-layout>
+  }
+}
