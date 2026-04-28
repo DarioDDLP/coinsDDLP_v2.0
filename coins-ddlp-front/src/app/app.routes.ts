@@ -24,9 +24,7 @@ export const routes: Routes = [
   {
     path: 'pesetas',
     loadComponent: () =>
-      import('./features/pesetas/components/pesetas-list/pesetas-list.component').then(
-        (m) => m.PesetasListComponent
-      ),
+      import('./features/pesetas/pesetas.component').then((m) => m.PesetasComponent),
   },
   {
     path: 'estadisticas',

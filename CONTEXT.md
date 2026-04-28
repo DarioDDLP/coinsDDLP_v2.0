@@ -82,6 +82,53 @@ interface EuroCoin {
 }
 ```
 
+### Tabla: `peseta_type` (pendiente de crear)
+
+Datos scrapeados de Numista (187 tipos de pesetas circulantes 1868–2001). Fichero fuente: `pesetas_circulantes.json` en la raíz del proyecto.
+
+```typescript
+interface PesetaType {
+  idNum: number;            // ID en catálogo Numista
+  title: string;            // "5 Pesetas - Francisco Franco"
+  minYear: number;
+  maxYear: number;
+  category: string;         // "Monedas circulantes normales" | "circulantes conmemorativas"
+  faceValueESP: number;     // Valor facial numérico (en pesetas)
+  faceValueLabel: string;   // "5 pesetas"
+  composition: string;
+  weightG: number | null;
+  diameterMm: number | null;
+  shape: string;
+  edge: string;
+  orientation: string;
+  ruler: string | null;
+  demonetized: string | null;
+  kmRef: string | null;
+  mint: string | null;
+  comments: string | null;
+  imageObverse: string;
+  imageReverse: string;
+  imageEdge: string;        // URL vacía si no disponible
+  engraverObverse: string | null;
+  engraverReverse: string | null;
+  descriptionObverse: string | null;
+  descriptionReverse: string | null;
+  edgeDescription: string | null;
+  mintingYears: MintingYear[];  // JSONB — años individuales de acuñación
+}
+
+interface MintingYear {
+  label: string;       // "1957 (1958) 🟌" — texto tal como aparece en Numista
+  designYear: number;  // Año del diseño (puede diferir del año de acuñación)
+  mintYear: number;    // Año real de acuñación
+  mintage: number | null;
+}
+```
+
+**Estadísticas del JSON (2026-04-27):** 187 tipos, 692 entradas de mintingYears, 187/187 descripciones anverso/reverso, 158/187 descripciones de canto, 133/187 comentarios, 1/187 fotos de canto.
+
+**Numista currency ID peseta:** `cu=142` (descubierto en `id="c_espagne142"` del HTML de la página de catálogo).
+
 ### Estados de conservación
 | Código | Nombre | Color PrimeNG |
 |--------|--------|---------------|
@@ -324,7 +371,7 @@ ng build --configuration production
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-24 (sesión 7)
+> **Última actualización:** 2026-04-27 (sesión 8)
 
 ### Implementado ✅
 - [x] Fichero de contexto CONTEXT.md creado y actualizado
@@ -407,7 +454,9 @@ ng build --configuration production
 ### Pendiente / Próximos pasos
 1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista (reset diario ~medianoche UTC): `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado completo en `scripts/pending-idnum-2026-04-24.md`.
 2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-3. **Secciones restantes** — pesetas, estadísticas, ubicación
+3. **Importar `pesetas_circulantes.json` a Supabase** — diseñar tabla `peseta_type` (o con tabla hija `peseta_type_minting` para los años de acuñación) e importar los 187 tipos
+4. **Módulo Angular de pesetas** — construir la feature `pesetas/` usando los datos importados
+5. **Secciones restantes** — estadísticas, ubicación
 
 ---
 
@@ -460,6 +509,7 @@ ng build --configuration production
 | 2026-04-26 | **euros-year-coins: truncar descripción con ellipsis**: `td` con `max-width:0 + overflow:hidden + text-overflow:ellipsis`; `th` descripción con `width:100%` para columna codiciosa; faceValue con `white-space:nowrap`. |
 | 2026-04-26 | **Helper `search-state.helper.ts`**: `saveSearchQuery`/`restoreSearchQuery` sobre `sessionStorage`. Persiste buscador al navegar hacia atrás (sobrevive F5). Aplicado a los 5 componentes con buscador. |
 | 2026-04-26 | **Conmemorativas: link a detalle**: filas clickables → `/euros/:country/:year/:id?from=conmemorativas`. `coin-detail` ajusta `backLink` a `/conmemorativas` cuando detecta `from=conmemorativas`. `goBack()` unificado con `backLink()`. |
+| 2026-04-27 | **Scraping pesetas circulantes de Numista**: script Python iterativo que extrae los 187 tipos de pesetas circulantes españolas (1868–2001) del catálogo Numista. 4 pasadas acumulativas: (1) listado básico, (2) características técnicas + imágenes anverso/reverso, (3) imágenes canto/descripciones/comentarios/años de acuñación. Resultado en `pesetas_circulantes.json`. Técnica: urllib.request + gzip, parsing regex HTML, paginación (?p=N), currency `cu=142`. Manejo especial de monedas estrelladas (año diseño ≠ año acuñación). 692 entradas de mintingYears en total. |
 
 ---
 

@@ -1,0 +1,62 @@
+@if (isReady()) {
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+      [retryLabel]="sharedLiterals.retry"
+      (retry)="loadPesetas()"
+    />
+  } @else {
+    <app-collection-layout
+      [title]="literals.title"
+      [searchPlaceholder]="literals.search"
+      [searchValue]="searchQuery()"
+      cardBackground="#ffffff"
+      maxWidth="1400px"
+      (searchChange)="onSearch($event)"
+    >
+      @if (!isEmpty()) {
+        @for (group of groupedPesetas(); track group.faceValueLabel) {
+          <h2 class="denomination-header">{{ group.faceValueLabel }}</h2>
+          <p-table
+            [value]="group.rows"
+            [tableStyle]="{ width: '100%', 'table-layout': 'fixed' }"
+            [stripedRows]="true"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th style="width: 110px">{{ literals.colYear }}</th>
+                <th>{{ literals.colTitle }}</th>
+                <th style="width: 130px; text-align: right">{{ literals.colMintage }}</th>
+                <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
+                <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>{{ row.peseta.label }}</td>
+                <td class="clip">{{ row.peseta.peseta_type.title }}</td>
+                <td style="text-align: right">
+                  {{ row.peseta.mintage !== null ? (row.peseta.mintage | number) : '—' }}
+                </td>
+                <td style="text-align: center">
+                  <app-badge
+                    [label]="row.conservationBadge.label"
+                    [severity]="row.conservationBadge.severity"
+                    [tooltip]="row.conservationBadge.tooltip"
+                  />
+                </td>
+                <td style="text-align: center">
+                  <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
+      } @else {
+        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      }
+    </app-collection-layout>
+  }
+}

@@ -218,6 +218,13 @@ export const LITERALS = {
 
   pesetas: {
     title: 'Colección Pesetas',
+    search: 'Buscar por valor o título...',
+    colYear: 'Año',
+    colTitle: 'Título',
+    colMintage: 'Tirada',
+    colConservation: 'Estado',
+    colUnits: 'Uds.',
+    emptySearch: 'No se encontraron resultados',
   },
 
   estadisticas: {
