@@ -1,5 +1,5 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -26,6 +26,7 @@ interface PesetaRow {
 export class PesetasListComponent implements OnInit {
   private service      = inject(PesetasService);
   private route        = inject(ActivatedRoute);
+  private router       = inject(Router);
   private errorHandler = inject(ErrorHandler);
 
   readonly literals       = LITERALS.pesetas;
@@ -85,5 +86,9 @@ export class PesetasListComponent implements OnInit {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery(`pesetas-${this.faceValue()}`, query);
+  }
+
+  onCoinClick(peseta: Peseta): void {
+    this.router.navigate(['/pesetas', this.faceValue(), peseta.id]);
   }
 }

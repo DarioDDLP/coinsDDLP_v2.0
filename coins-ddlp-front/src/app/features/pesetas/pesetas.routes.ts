@@ -16,6 +16,13 @@ export const pesetasRoutes: Routes = [
       ),
   },
   {
+    path: ':faceValue/:id',
+    loadComponent: () =>
+      import('./components/peseta-detail/peseta-detail.component').then(
+        (m) => m.PesetaDetailComponent
+      ),
+  },
+  {
     path: ':faceValue',
     loadComponent: () =>
       import('./components/pesetas-list/pesetas-list.component').then(

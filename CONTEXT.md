@@ -274,34 +274,6 @@ shared   NO importa de core ni de features.
 
 ---
 
-## Funcionalidades
-
-### Modo público (sin login)
-- [x] Ver listado de monedas euro con búsqueda y filtros
-- [x] Ver detalle de cada moneda
-- [x] Filtrar por: país, año, valor facial, conmemorativa, estado de posesión
-- [ ] Ver estadísticas de la colección (totales, por país, por valor)
-- [ ] Ver sección de pesetas
-- [ ] Ver sección de conmemorativas
-- [ ] Ver ubicación física
-
-### Modo edición (con login)
-- [ ] Login con email/password via Firebase Auth
-- [ ] Añadir nueva moneda (modal con formulario)
-- [ ] Editar moneda (modal): estado conservación, unidades, observaciones
-- [ ] Borrar moneda (confirmación con modal)
-- [ ] Logout
-
-### Módulo de administración (solo admins)
-- [ ] Acceso restringido con guard de rol admin (custom claim en Firebase Auth)
-- [ ] Listar todos los usuarios registrados
-- [ ] Dar de alta nuevos usuarios
-- [ ] Editar usuarios (email, nombre, rol)
-- [ ] Eliminar usuarios
-- [ ] Ruta protegida: `/admin/usuarios`
-
----
-
 ## Supabase
 
 ### Proyecto Supabase
@@ -330,186 +302,27 @@ export const appConfig: ApplicationConfig = {
 
 ---
 
-## PrimeNG — Componentes previstos
-
-| Componente PrimeNG | Uso |
-|-------------------|-----|
-| `p-table` / `p-datatable` | Listado de monedas |
-| `p-dialog` | Modal de edición / añadir moneda |
-| `p-confirmDialog` | Confirmación de borrado |
-| `p-toast` | Notificaciones de éxito/error |
-| `p-tag` | Badge de estado de conservación |
-| `p-progressSpinner` | Loading state |
-| `p-inputText` | Búsqueda |
-| `p-dropdown` / `p-select` | Filtros y selección de estado |
-| `p-inputNumber` | Número de unidades |
-| `p-textarea` | Observaciones |
-| `p-button` | Acciones |
-| `p-tooltip` | Hints informativos |
-| `p-sidebar` / `p-menu` | Navegación lateral |
-
----
-
-## Comandos del proyecto
-
-```bash
-# Crear proyecto (desde coinsDDLP_v2.0/)
-ng new coins-ddlp-front --standalone --style=scss --routing
-
-# Instalar dependencias
-npm install @angular/fire firebase
-npm install primeng primeicons
-
-# Servidor de desarrollo
-ng serve
-
-# Build producción
-ng build --configuration production
-```
-
----
-
 ## Estado actual
 
-> **Última actualización:** 2026-04-27 (sesión 8)
-
-### Implementado ✅
-- [x] Fichero de contexto CONTEXT.md creado y actualizado
-- [x] Proyecto Angular 21 inicializado (v21.2.7, standalone, SCSS, sin SSR)
-- [x] Estructura de carpetas creada (core, features, shared con subcarpetas completas)
-- [x] Supabase JS SDK instalado (`@supabase/supabase-js`)
-- [x] PrimeNG 21 + @primeng/themes instalados
-- [x] @angular/animations instalado (requerido por provideAnimationsAsync)
-- [x] Interfaces: `EuroCoin`, `ConservationState`, `AppUser`, `IAuthService`, `IEurosRepository`
-- [x] Constantes: `LITERALS`, `CONSERVATION_STATES`, `CONSERVATION_MAP`, `TOAST_MESSAGES`, `TABLES`
-- [x] Helper: `normalizeCountryName`, `getFlagPath`, `normalizeString` (genérica, usada en los 3 buscadores)
-- [x] Pipe: `EuroValuePipe` (standalone)
-- [x] `AuthService` — signal + Supabase Auth (onAuthStateChange)
-- [x] `SupabaseService` — genérico, tipado, soporte para tiempo real (postgres_changes)
-- [x] `app.config.ts` — createClient(Supabase) + SUPABASE_CLIENT InjectionToken + provideRouter + providePrimeNG
-- [x] `app.routes.ts` — rutas raíz con lazy loading, redirect `/` → `/euros`, wildcard → `/euros`
-- [x] Layout raíz — `app.ts` con SidebarComponent + router-outlet, fondo en body (global)
-- [x] `SidebarComponent` — glassmorphism, azul marino #1e3a5f, items desde sidebar.config.ts con LITERALS
-- [x] Assets en `public/assets/` (background.jpg, logo, banderas, iconos)
-- [x] Paleta de colores en `src/styles/_variables.scss` — CSS vars + SCSS vars
-- [x] Tipografía en `src/styles/_typography.scss` — Montserrat (Google Fonts)
-- [x] Shared component: `badge` — píldora genérica (label, severity, size, tooltip). Sustituye a `coin-badge`, `role-badge` y `unit-badge`. Mapeo en `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`)
-- [x] Shared component: `country-flag` — imagen circular configurable
-- [x] Shared component: `button` — variantes primary, secondary, tertiary, danger, ghost
-- [x] Shared component: `collection-layout` — input `cardBackground` configurable, botón volver con `app-button` tertiary, bandera y título a la derecha
-- [x] `euros.service.ts` implementando IEurosRepository (usa SupabaseService)
-- [x] **Migración Firebase → Supabase completada** — 5.441 documentos importados desde archivo de exportación, sin duplicados
-- [x] **Firebase completamente removido** — desinstalado npm, sin referencias en código
-- [x] **Tiempo real Supabase funcional** — postgres_changes para sincronización en vivo
-- [x] **euros-year-coins** — tabla con header deep-navy/cream, estriado, card blanca, búsqueda por faceValue/description, unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan, leyenda de no circulantes
-- [x] **coin-detail** — vista de detalle de moneda individual. Usa `collection-layout`. Carga datos de Supabase + Numista API via Edge Function proxy. Muestra imágenes anverso/reverso/canto, características técnicas (features box cream) y observaciones
-- [x] **NumistaService** — proxy via Supabase Edge Function `numista-proxy` (sin CORS, sin JWT). Expone signal `remaining()` con peticiones restantes del mes
-- [x] **numista-proxy Edge Function** — desplegada en Supabase. Llama a Numista server-side, registra cada llamada en tabla `numista_usage`, devuelve `X-Numista-Remaining` en header
-- [x] **Contador Numista en sidebar** — muestra "Numista X / 2000" cuando hay datos disponibles
-- [x] **collection-layout** — buscador opcional, fondo eliminado (responsabilidad del módulo padre)
-- [x] **provideHttpClient()** añadido a `app.config.ts`
-- [x] Ruta `/euros/:country/:year/:id` — navega al detalle de moneda al hacer click en fila de euros-detail
-- [x] **Sistema de spinner refactorizado** — `LoadingService.withLoading()` operador RxJS; activado en `EurosService` y `NumistaService`; `SupabaseService` limpio (solo datos); `observer.complete()` añadido
-- [x] **EurosComponent** — layout padre del módulo euros con fondo `background.jpg` en `:host`; rutas hijas en `euros.routes.ts`
-- [x] **isReady signal** — todos los componentes del módulo euros esperan a tener datos antes de renderizar (sin card en blanco durante la carga)
-- [x] **EmptyPanelComponent** — componente shared para estados de error y vacío: card cremosa, icono, título, mensaje y botón reintentar opcional
-- [x] **Sistema de autenticación completo** — AppUser con `role` y `displayName`, `AuthService` con `isLoggedIn`/`isAdmin` computed(), `authGuard`/`adminGuard` funcionales, `LoginDialogComponent` (email/password, error inline, toast), `SidebarComponent` con login/logout, badge Admin y displayName con fallback a email. Usuario admin asignado vía Supabase Admin API.
-- [x] **Toasts** — posición `top-right`, `summary` desde `LITERALS.shared` (Éxito/Error/Información), `detail` con el mensaje. Todas las llamadas usan `TOAST_MESSAGES`.
-- [x] **LoginDialogComponent modo logout** — `mode` input `'login' | 'logout'`. En modo logout muestra confirmación con botones Cancelar (primary, izquierda) y Confirmar (danger, derecha). `header` como `computed()`.
-- [x] **Módulo admin completo** — `AdminComponent` (padre con fondo + `effect()` redirect a `/euros` al cerrar sesión), `AdminHeaderComponent` (título + nav desde `admin-header.config.ts`), `AdminUsersComponent` (tabla de usuarios), `AdminService` (JWT via `withAuth()`), Edge Function `admin-users` (list/create/update/delete, verifica rol admin en JWT, deployada con `--no-verify-jwt`). Sidebar muestra item Admin solo si `isAdmin()`.
-- [x] **Flujo forgot password** — `LoginDialogComponent` ampliado con vista `'forgot'`: campo email + botón "Enviar enlace" (`supabase.auth.resetPasswordForEmail`). Link "¿Olvidaste tu contraseña?" en la vista login. Confirmación inline tras envío.
-- [x] **RecoveryPasswordDialogComponent** — modal global en `AppComponent`. Se activa con signal `isRecoveryMode` en `AuthService` al detectar evento `PASSWORD_RECOVERY` en `onAuthStateChange`. Formulario nueva contraseña + confirmar. Llama a `supabase.auth.updateUser({ password })`. Sin botón cerrar (`[closable]="false"`).
-- [x] **Redirect a /euros tras logout** — `LoginDialogComponent` navega a `/euros` después de confirmar cierre de sesión.
-- [x] **Admin tabla usuarios** — cabecera deep-navy/cream, columnas Rol y Acciones centradas, fondo `background-admin.png`.
-- [x] **Eliminar usuario** — `AdminUserDialogComponent` con modo `'delete'`: confirmación Cancelar/Confirmar. `AdminUsersComponent` con signal `dialogMode` (`'edit' | 'delete'`). Llama a Edge Function DELETE.
-- [x] **euros-year-coins botón añadir unidades** — icono `pi-plus-circle` ghost, solo visible para admin (`isAdmin()`). `stopPropagation` en `td` para no disparar navegación al detalle. Sin funcionalidad aún.
-- [x] **Shared component: `text-input`** — input nativo con SCSS propio (sin PrimeNG). Label integrado, tipos text/email/password/number, inputs `min`/`max`, outputs `valueChange` y `enterPressed`. `--placeholder` añadido a `_variables.scss`. Refactoriza `login-dialog`, `recovery-password-dialog` y `admin-user-dialog`.
-- [x] **Shared component: `select`** — envuelve `p-select` con API propia (`label`, `value`, `options`, `placeholder`, `disabled`, `valueChange`). Estilos del panel/opciones configurados via `definePreset` en `app.config.ts` (tokens `root`, `option`, `overlay`). `appendTo="body"` para evitar cierre al hacer scroll dentro del panel en dialogs. Refactoriza `admin-user-dialog`.
-- [x] **`definePreset` en `app.config.ts`** — personaliza tokens del componente `select` de PrimeNG (border cobalt, focus gold-tan, opciones cream/cobalt/deep-navy). Colores en hex (las CSS vars no son resolvibles en tiempo de compilación).
-- [x] **`CoinUdsDialogComponent`** — modal para editar `uds` y `conservation` desde `euros-year-coins`. `app-text-input` (type=number, min=0) + `app-select` con `CONSERVATION_OPTIONS`. Llama a `eurosService.update()`, toast, recarga tabla. `effect()` sincroniza valores al abrir.
-- [x] **Tooltip en `app-button` y `app-badge`** — input `tooltip` con `pTooltip` interno. `TooltipModule` importado en el propio componente shared. Eliminado de los componentes padre (admin-users, euros-year-coins). Corregido "null" en badge sin tooltip.
-- [x] **Shared component: `textarea`** — textarea nativo estilizado, mismo SCSS que `text-input`. Inputs: `label`, `value`, `placeholder`, `rows` (default 3), `disabled`. Output: `valueChange`.
-- [x] **`CoinUdsDialogComponent` ampliado** — edita también `observations` via `app-textarea`. Los tres campos (uds, conservation, observations) se guardan en un único `eurosService.update()`.
-- [x] **Vista "Todas" (`EurosAllCoinsComponent`)** — muestra todas las monedas de un país agrupadas por año. Ruta `/euros/:country/all` añadida en `euros.routes.ts` antes de `:country/:year`. Card "Todas" aparece en el mismo `year-grid` que las cards de año. Tabla `p-table` con `rowGroupMode="subheader"` y `groupRowsBy="year"`, ordenada por año ASC + valor facial. Mismo dialog de edición que `euros-year-coins`.
-- [x] **Back navigation desde "Todas"** — `onCoinClick` navega a `/euros/:country/all/:id` (no al año real). `coin-detail` construye el backLink con el param `:year` de la URL, que en este caso es `'all'`, devolviendo correctamente a la vista "Todas".
-- [x] **Paginación `SupabaseService` corregida** — añadido `.order('id', { ascending: true })` en el while-loop de `getTableWhere` para garantizar orden determinista entre páginas y evitar resultados vacíos en páginas > 1.
-- [x] **Shared component: `toggle`** — envuelve `p-toggleswitch` de PrimeNG. Inputs: `label`, `value`, `disabled`. Output: `valueChange`. Layout horizontal: label izquierda, switch derecha.
-- [x] **`CoinUdsDialogComponent` ampliado** — edita también `circulation` (boolean) via `app-toggle`. El campo se sincroniza en el `effect()` y se guarda junto al resto de campos.
-- [x] **Vista global `EurosGlobalCoinsComponent` eliminada** — descartada por decisión de diseño. Rutas `all` y `all/:id` y card "Todas" en euros-countries eliminadas.
-- [x] **`CoinUdsDialogComponent` campo `idNum`** — texto editable para ID de Numista. Sincronizado en `effect()`, guardado junto al resto.
-- [x] **`coin-detail` fallback sin idNum** — izquierda: dos placeholders grises (`pi-image`, borde punteado) + texto "Imágenes no disponibles". Derecha: `features-box` cremosa con datos de Supabase (año, país, valor facial, descripción, ceca, circulante).
-- [x] **Shared component `ButtonsHeaderComponent`** — `shared/components/buttons-header/`. Inputs: `title` (required), `items` (`NavItem[]`). Reemplaza los headers específicos de admin y tools. `NavItem` interface exportada desde el componente.
-- [x] **Módulo Tools** — `features/tools/`, ruta `/herramientas`, guard `adminGuard`, fondo `background-tools.png`. Item "Herramientas" en sidebar (adminOnly, `pi-wrench`). Redirect automático a `/herramientas/añadir-euro`. Naming: código en inglés (`tools/`, `ToolsComponent`), path URL en español (`/herramientas`).
-- [x] **Tools: Añadir moneda euro** — formulario completo con 11 campos. Ceca habilitada solo si país=Alemania. Si uds=0, estado forzado a ND. Constantes en `tools.config.ts`.
-- [x] **Tools: Añadir año (`ToolsAddYearComponent`)** — copia tirada de monedas corrientes de año origen a año destino con uds=0.
-- [x] **Shared `ConfirmDialogComponent`** — presentacional genérico para confirmaciones. Reemplaza el modo delete de `AdminUserDialogComponent` y el componente específico de borrado de monedas.
-- [x] **euros-year-coins: eliminar moneda** — botón trash (danger) admin-only, confirmación via `ConfirmDialogComponent`, toast y recarga.
-- [x] **Sort por ceca** — `sortByFaceValue` usa ceca como criterio primario para agrupar monedas alemanas correctamente.
-- [x] **`CoinUdsDialogComponent` campo `description`** — textarea entre conservación y observaciones, sincronizado en `effect()`.
-- [x] **Módulo Conmemorativas** — `ConmemorativasComponent` (shell, fondo `background-2c.jpg`) + `ConmemorativasListComponent` (solo lectura, agrupado por año asc, ordenado por país, tabla con anchos fijos). `ConmemorativasService.getAll()` filtra `commemorative=true`. Sin rutas hijas.
-- [x] **euros-year-coins: truncar descripción** — columna descripción con `max-width: 0 + overflow: hidden + text-overflow: ellipsis` y `width: 100%` en el `th` para ocupar todo el espacio disponible. Valor facial con `white-space: nowrap` para no partirse.
-- [x] **Helper `search-state.helper.ts`** — `saveSearchQuery(key, query)` / `restoreSearchQuery(key)` sobre `sessionStorage`. Persiste el buscador al navegar hacia atrás (sobrevive a F5). Aplicado a: `euros-countries` (clave `euros-countries`), `euros-years` (`euros-years-${country}`), `euros-year-coins` (`euros-year-coins-${country}-${year}`), `euros-all-coins` (`euros-all-${country}`), `conmemorativas-list` (`conmemorativas`).
-- [x] **Conmemorativas: link a detalle** — filas clickables que navegan a `/euros/:country/:year/:id?from=conmemorativas`. `coin-detail` detecta el query param `from=conmemorativas` y ajusta el `backLink` a `/conmemorativas`. `goBack()` refactorizado para usar el mismo `backLink` computed.
+> **Última actualización:** 2026-04-30 (sesión 9)
 
 ### Pendiente / Próximos pasos
-1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista (reset diario ~medianoche UTC): `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado completo en `scripts/pending-idnum-2026-04-24.md`.
+1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista: `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado en `scripts/pending-idnum-2026-04-24.md`.
 2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-3. **Importar `pesetas_circulantes.json` a Supabase** — diseñar tabla `peseta_type` (o con tabla hija `peseta_type_minting` para los años de acuñación) e importar los 187 tipos
-4. **Módulo Angular de pesetas** — construir la feature `pesetas/` usando los datos importados
-5. **Secciones restantes** — estadísticas, ubicación
+3. **Secciones restantes** — estadísticas, ubicación
 
 ---
 
-## Log de implementación
+## Log de implementación (últimas sesiones)
 
 | Fecha | Cambio |
 |-------|--------|
-| 2026-04-06 | Proyecto iniciado. CONTEXT.md y hook creados. |
-| 2026-04-06 | Arquitectura refactorizada: SOLID explícito, carpeta `shared/components/` genéricos, `shared/constants/literals.ts`, regla de dependencias entre capas, anti-patterns prohibidos. |
-| 2026-04-06 | Proyecto Angular 21 creado. Firebase JS SDK + PrimeNG 21 instalados (@angular/fire incompatible con Angular 21). |
-| 2026-04-06 | Capa de fundación completa: interfaces, constantes, helpers, pipe, AuthService y FirestoreService. Decisiones: year/uds como number, ConservationCode union type, AppUser agnóstico de Firebase, Observable para lecturas / Promise para escrituras, lazy getters para Firebase, CollectionName type para evitar magic strings. |
-| 2026-04-07 | app.config.ts, app.routes.ts y layout raíz. SidebarComponent con glassmorphism y azul marino. Assets en public/assets/. @primeng/themes y @angular/animations instalados. Login es p-dialog, no ruta separada. |
-| 2026-04-07 | Paleta de colores definida (cobalt #2d3a7a, gold-tan #d9b582, cream #fff5e8, deep-navy #151465, midnight #040339). Sidebar con degradado y estilos coherentes con la paleta. |
-| 2026-04-07 | Tipografía Montserrat (Google Fonts) con variables CSS de tamaño, peso, line-height y letter-spacing en _typography.scss. |
-| 2026-04-08 | `CoinBadgeComponent` — badge de estado de conservación con SCSS puro (sin PrimeNG). Decisión: usar SCSS vars en lugar de CSS custom properties para colores estáticos. Colores de estado añadidos a `_variables.scss`. |
-| 2026-04-08 | `CountryFlagComponent` — imagen circular configurable via `[size]` input, fallback `(error)`. Helper `getFlagPath` corregido (sufijo `-flag.png`) y añadido `.trim()` en normalización. |
-| 2026-04-12 | **Migración completa Firebase → Supabase**: 1) AuthService adaptado a Supabase Auth. 2) FirestoreService reemplazado por SupabaseService (tiempo real con postgres_changes). 3) Migración rehecha desde archivo de exportación: 5.441 documentos a PostgreSQL sin duplicados. 4) Firebase completamente removido (78 paquetes npm desinstalados). 5) App compilando y cargando datos correctamente. |
-| 2026-04-13 | **Mejoras visuales euros-detail**: tabla con card blanca, header deep-navy/cream, estriado, búsqueda funcional (faceValue + description con normalización de acentos), unit-badge, icono edición (sin funcionalidad), filas no circulantes sombreadas en gold-tan. `normalizeString` extraída como helper genérico y usada en los 3 buscadores. Botón volver reemplazado por `app-button`. Nueva variante `tertiary` en ButtonComponent. Input `cardBackground` en CollectionLayoutComponent. |
-| 2026-04-14 | **coin-detail**: vista de detalle de moneda con integración Numista via Supabase Edge Function proxy. Datos de Supabase + Numista combinados. Usa `collection-layout` como wrapper. Leyenda de no circulantes en euros-detail. Contador de peticiones Numista en sidebar (signal `remaining()` + tabla `numista_usage`). Buscador opcional en `collection-layout`. `provideHttpClient()` añadido. |
-| 2026-04-17 | **Sistema auth completo**: AppUser con role y displayName (user_metadata.full_name), AuthService con isLoggedIn/isAdmin como computed() desde JWT, authGuard/adminGuard funcionales, LoginDialogComponent, SidebarComponent con login/logout/badge Admin/displayName con fallback a email. Botón logout centrado. Rol admin asignado vía Supabase Admin API. |
-| 2026-04-17 | **Refactor spinner**: `LoadingService.withLoading()` operador RxJS, spinner centralizado en feature services, `SupabaseService` limpio, `observer.complete()` añadido, color mensaje spinner corregido. **EurosComponent** como layout padre del módulo con fondo propio. **isReady** en todos los componentes del módulo. **EmptyPanelComponent** para errores y estados vacíos con card cremosa y botón reintentar. |
-| 2026-04-17 | **UX toasts y login/logout**: toasts movidos a `top-right` con summary/detail desde LITERALS. `LoginDialogComponent` refactorizado con `mode` input para reutilizar como confirmación de logout. Botón entrar alineado a la derecha. Separación `margin-top` en acciones. |
-| 2026-04-17 | **Módulo admin**: `AdminComponent` + `AdminHeaderComponent` + `AdminUsersComponent` + `AdminService` + Edge Function `admin-users`. Nav del admin desde `admin-header.config.ts`. Redirect a `/euros` al cerrar sesión via `effect()`. Sidebar filtra item admin con flag `adminOnly`. |
-| 2026-04-18 | **GlobalErrorHandler**: `core/services/global-error-handler.service.ts` implementa `ErrorHandler` de Angular. Registrado en `app.config.ts`. Extrae mensaje real del error (status 0 → conexión, body.error, body.message, e.message, fallback genérico). Todos los componentes inyectan `ErrorHandler` y llaman `handleError(e)` en `error:` callbacks y `catch` blocks. Patrón documentado en CONTEXT.md como obligatorio para nuevos módulos. |
-| 2026-04-18 | **Unificación de badges**: `coin-badge`, `role-badge` y `unit-badge` reemplazados por un único `BadgeComponent` (presentación pura: label, severity, size, tooltip). Mapeo extraído a `shared/helpers/badge.helpers.ts` (`getConservationBadge`, `getUdsBadge`, `getRoleBadge`). Tipo `Severity` en `shared/interfaces/severity.interface.ts`. Consumidores (`coin-detail`, `euros-year-coins`, `admin-users`) precomputan `BadgeData` en signals para no llamar funciones desde template. |
-| 2026-04-19 | **Flujo forgot/recovery password**: `LoginDialogComponent` con vista `'forgot'` (signal interno `view`), `RecoveryPasswordDialogComponent` global en `AppComponent`, `AuthService` con `isRecoveryMode`, `resetPassword()` y `updatePassword()`. Redirect a `/euros` tras logout. |
-| 2026-04-19 | **Admin tabla**: cabecera deep-navy/cream, columnas centradas, fondo `background-admin.png`. Eliminar usuario con confirmación via modo `'delete'` en `AdminUserDialogComponent`. |
-| 2026-04-19 | **euros-year-coins**: botón `pi-plus-circle` ghost solo para admin. `stopPropagation` en `td` para evitar navegación al detalle. Sin funcionalidad aún. |
-| 2026-04-19 | **Shared components `text-input` y `select`**: creados desde cero con SCSS propio. `text-input` soporta text/email/password/number con min/max. `select` envuelve `p-select` con `definePreset` para tokens de tema y `appendTo="body"`. Refactorizados `login-dialog`, `recovery-password-dialog` y `admin-user-dialog`. |
-| 2026-04-19 | **`CoinUdsDialogComponent`**: modal para editar uds y estado de conservación desde euros-year-coins. Usa `app-text-input` (number) y `app-select` con `CONSERVATION_OPTIONS`. |
-| 2026-04-19 | **Tooltip internalizado**: `app-button` y `app-badge` gestionan `pTooltip` internamente via input `tooltip`. Eliminado `TooltipModule` de componentes padre. |
-| 2026-04-19 | **`app-textarea`**: nuevo shared component nativo estilizado. `CoinUdsDialogComponent` ampliado para editar también `observations`. |
-| 2026-04-19 | **Vista "Todas" (`EurosAllCoinsComponent`)**: tabla con `rowGroupMode="subheader"` agrupada por año. Ruta `/euros/:country/all` antes de `:country/:year`. Card "Todas" en el mismo grid que los años. Back navigation desde detalle corregida navegando a `/euros/:country/all/:id`. Paginación `SupabaseService` corregida con `ORDER BY id`. |
-| 2026-04-20 | **Shared component `app-toggle`**: envuelve `p-toggleswitch`. `CoinUdsDialogComponent` ampliado con campo `circulation` (boolean) via `app-toggle`. |
-| 2026-04-21 | **Vista global eliminada**: `EurosGlobalCoinsComponent` descartada por decisión de diseño. Rutas `all`/`all/:id` y card "Todas" en euros-countries eliminadas. |
-| 2026-04-21 | **`CoinUdsDialogComponent`**: campo `idNum` añadido. Fallback en `coin-detail` para monedas sin idNum: placeholders grises izquierda + features-box con datos Supabase derecha. |
-| 2026-04-21 | **`ButtonsHeaderComponent`**: shared component genérico que unifica admin-header y tools-header. `NavItem` interface exportada. Admin refactorizado para usarlo. |
-| 2026-04-21 | **Módulo Tools**: `features/tools/` en ruta `/herramientas` con adminGuard. Nav item "Añadir moneda euro" → `/herramientas/añadir-euro`. `ToolsAddEuroComponent` placeholder creado. |
-| 2026-04-21 | **Tools: Añadir moneda euro**: formulario completo con 11 campos (año, valor, país, descripción, ceca, ID Numista, uds, estado, circulante, observaciones). Campo ceca: habilitado solo si país=Alemania, desplegable con 5 cecas (A/D/F/G/J), obligatorio en ese caso. Si uds=0, estado forzado a ND. `ToolsAddYearComponent`: copia tirada de monedas corrientes de un año origen a un año destino (uds=0). Constantes centralizadas en `tools.config.ts` (STANDARD_FACE_VALUES, FACE_VALUE_OPTIONS, CONSERVATION_OPTIONS, MINT_OPTIONS_GERMANY, TOOLS_NAV_ITEMS). `tools-header.config.ts` eliminado. |
-| 2026-04-21 | **Shared `ConfirmDialogComponent`**: componente presentacional genérico para confirmaciones. Inputs: `visible`, `header`, `message`, `confirmLabel`, `loading`. Outputs: `confirmed`, `closed`. Reemplaza CoinDeleteDialogComponent y el modo delete de AdminUserDialogComponent. `euros-year-coins` y `admin-users` lo usan con lógica en el padre. |
-| 2026-04-21 | **euros-year-coins: eliminar moneda**: botón `pi-trash` (danger) en acciones de fila (admin only). Confirma via `ConfirmDialogComponent`, llama a `eurosService.remove()`, recarga tabla. |
-| 2026-04-21 | **Sort por ceca**: `sortByFaceValue` en `face-value-order.const.ts` usa ceca como criterio primario y valor facial como secundario. Soluciona el orden de monedas alemanas con 5 cecas. |
-| 2026-04-23 | **`CoinUdsDialogComponent` campo `description`**: `app-textarea` para descripción añadido entre conservación y observaciones. Signal `description` sincronizado en `effect()` y guardado en `eurosService.update()`. Literal `descriptionLabel` añadido a `LITERALS.euros`. |
-| 2026-04-23 | **Módulo Conmemorativas**: `ConmemorativasComponent` (shell sin router-outlet, fondo `background-2c.jpg`) renderiza `ConmemorativasListComponent` directamente. `ConmemorativasService.getAll()` filtra `commemorative=true`. Lista agrupa por año (asc), ordena por país dentro de cada año. Buscador por país/descripción. Tabla con `table-layout: fixed` y anchos fijos en Estado (110px) y Uds. (80px) para alineación consistente entre grupos. Solo lectura, sin acciones de edición ni borrado. |
-| 2026-04-24 | **Conmemorativas — mejoras UI**: columna Ceca añadida (150px, siempre visible). Ordenación: país → ceca → descripción. `maxWidth="1400px"` en `app-collection-layout` via nuevo `@Input() maxWidth`. Columna Álb/H/Pos (álbum-hoja-posición) calculada desde índice global de ordenación, visible solo para admins (`isAdmin()`). Config en `conmemorativas.config.ts`: 160 pos/álbum, 8 hojas, 5 filas × 4 cols. |
-| 2026-04-24 | **Script `match-numista-ids.mjs`**: añadida paginación Supabase para superar límite de 1000 filas. |
-| 2026-04-24 | **Script `match-numista-ids-regular.mjs`** (nuevo): agrupa monedas no conmemorativas por (país, faceValue, descripción), busca en Numista por (issuer, minYear) con caché. Auto-assign si hay 1 candidato tras filtrar por denominación (`parseCents`). Year-span winner para múltiples candidatos (regular > conmemorativa). Prefix matching en similitud ("alberto"~"albert"). Bulgaria añadida al mapa de issuers. Resultado: 4425 monedas con idNum asignado (247 tipos). |
-| 2026-04-24 | **idNum completado para todos los regulares**: los 415 tipos restantes tras el script se asignaron manualmente país por país. Todos los regulares (~4840 monedas) tienen idNum. |
-| 2026-04-24 | **Generado `scripts/pending-idnum-2026-04-24.md`**: listado completo de las 370 monedas conmemorativas que aún no tienen idNum (para asignación manual desde la app). |
-| 2026-04-26 | **euros-year-coins: truncar descripción con ellipsis**: `td` con `max-width:0 + overflow:hidden + text-overflow:ellipsis`; `th` descripción con `width:100%` para columna codiciosa; faceValue con `white-space:nowrap`. |
-| 2026-04-26 | **Helper `search-state.helper.ts`**: `saveSearchQuery`/`restoreSearchQuery` sobre `sessionStorage`. Persiste buscador al navegar hacia atrás (sobrevive F5). Aplicado a los 5 componentes con buscador. |
-| 2026-04-26 | **Conmemorativas: link a detalle**: filas clickables → `/euros/:country/:year/:id?from=conmemorativas`. `coin-detail` ajusta `backLink` a `/conmemorativas` cuando detecta `from=conmemorativas`. `goBack()` unificado con `backLink()`. |
-| 2026-04-27 | **Scraping pesetas circulantes de Numista**: script Python iterativo que extrae los 187 tipos de pesetas circulantes españolas (1868–2001) del catálogo Numista. 4 pasadas acumulativas: (1) listado básico, (2) características técnicas + imágenes anverso/reverso, (3) imágenes canto/descripciones/comentarios/años de acuñación. Resultado en `pesetas_circulantes.json`. Técnica: urllib.request + gzip, parsing regex HTML, paginación (?p=N), currency `cu=142`. Manejo especial de monedas estrelladas (año diseño ≠ año acuñación). 692 entradas de mintingYears en total. |
+| 2026-04-23 | **Conmemorativas**: módulo completo (solo lectura), agrupado por año asc, ordenado por país. Columna Ceca (150px), columna Álb/H/Pos solo admin. `maxWidth` input en `collection-layout`. Config en `conmemorativas.config.ts`. |
+| 2026-04-24 | **Scripts Numista**: `match-numista-ids-regular.mjs` asignó idNum a 4425 monedas (247 tipos). Todos los regulares tienen idNum. 370 conmemorativas pendientes en `scripts/pending-idnum-2026-04-24.md`. |
+| 2026-04-26 | **UX listados**: ellipsis en columna descripción de euros-year-coins. `search-state.helper.ts` con `sessionStorage` para persistir buscadores al navegar atrás (5 componentes). Conmemorativas: filas clickables con `?from=conmemorativas`, `coin-detail` ajusta backLink. |
+| 2026-04-27 | **Scraping pesetas**: script Python extrajo 187 tipos de pesetas circulantes (1868–2001) de Numista → `pesetas_circulantes.json`. 692 entradas mintingYears. Numista currency ID peseta: `cu=142`. |
+| 2026-04-28 | **Módulo pesetas completo**: tablas `peseta_type` (187) y `peseta` (525) en Supabase. `PesetasService` con join. Rutas: denominaciones, todas agrupadas, lista por `:faceValue`. Búsqueda en todos los listados. |
+| 2026-04-30 | **Detalle peseta** (`PesetaDetailComponent`): ruta `/:faceValue/:id` antes de `/:faceValue`. `PesetasService.getById()`. Layout idéntico a `coin-detail` (imágenes, descripciones, features-box con 14 campos + tirada con `DecimalPipe`). Sin llamada Numista. Filas clickables en list y all. |
 
 ---
 

@@ -1,0 +1,208 @@
+@if (isReady()) {
+  @if (hasError()) {
+    <app-empty-panel
+      icon="pi-exclamation-circle"
+      [title]="sharedLiterals.errorLoad"
+      [message]="sharedLiterals.errorLoadMessage"
+    />
+  } @else {
+    <app-collection-layout
+      [title]="peseta()!.peseta_type.faceValueLabel"
+      country="España"
+      [backLink]="backLink()"
+      [backLabel]="sharedLiterals.back"
+      cardBackground="#ffffff"
+      [cardOpacity]="0.95"
+    >
+      <!-- Header -->
+      <div class="detail-header">
+        <div class="detail-header__titles">
+          <span class="detail-header__numista-title">{{ peseta()!.peseta_type.title }}</span>
+        </div>
+        <div class="detail-header__badges">
+          <app-badge
+            [label]="conservationBadge().label"
+            [severity]="conservationBadge().severity"
+            [tooltip]="conservationBadge().tooltip"
+            size="md"
+          />
+          <app-badge
+            [label]="udsBadge().label"
+            [severity]="udsBadge().severity"
+            size="md"
+          />
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="detail-body">
+
+        <!-- Columna izquierda: imágenes y descripciones -->
+        <div class="detail-left">
+          @if (peseta()!.peseta_type.imageObverse || peseta()!.peseta_type.imageReverse) {
+            <div class="coin-images">
+              @if (peseta()!.peseta_type.imageObverse) {
+                <div class="coin-img-box">
+                  <img [src]="peseta()!.peseta_type.imageObverse" alt="Anverso" />
+                </div>
+              }
+              @if (peseta()!.peseta_type.imageReverse) {
+                <div class="coin-img-box">
+                  <img [src]="peseta()!.peseta_type.imageReverse" alt="Reverso" />
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="coin-images">
+              <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
+              <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
+            </div>
+            <p class="numista-no-id">{{ literals.labelNoImages }}</p>
+          }
+
+          @if (peseta()!.peseta_type.imageEdge) {
+            <div class="coin-images coin-images--edge">
+              <div class="coin-img-box coin-img-box--edge">
+                <img [src]="peseta()!.peseta_type.imageEdge!" alt="Canto" />
+              </div>
+            </div>
+          }
+
+          @if (peseta()!.peseta_type.descriptionObverse) {
+            <div class="coin-description">
+              <span class="coin-description__label">{{ literals.labelObverse }}</span>
+              <p class="coin-description__text">{{ peseta()!.peseta_type.descriptionObverse }}</p>
+            </div>
+          }
+
+          @if (peseta()!.peseta_type.descriptionReverse) {
+            <div class="coin-description">
+              <span class="coin-description__label">{{ literals.labelReverse }}</span>
+              <p class="coin-description__text">{{ peseta()!.peseta_type.descriptionReverse }}</p>
+            </div>
+          }
+
+          @if (peseta()!.peseta_type.comments) {
+            <div class="coin-description">
+              <span class="coin-description__label">{{ literals.labelComments }}</span>
+              <p class="coin-description__text">{{ peseta()!.peseta_type.comments }}</p>
+            </div>
+          }
+
+          @if (numistaUrl()) {
+            <a class="numista-link" [href]="numistaUrl()!" target="_blank" rel="noopener">
+              {{ literals.labelMoreInfo }} ↗
+            </a>
+          }
+        </div>
+
+        <!-- Columna derecha: características + observaciones -->
+        <div class="detail-right">
+          <div class="features-box">
+            <div class="features-box__title">{{ literals.labelFeatures }}</div>
+            <div class="features-list">
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelFaceValue }}</span>
+                <span class="feature-row__value">{{ peseta()!.peseta_type.faceValueLabel }}</span>
+              </div>
+              <div class="feature-row">
+                <span class="feature-row__label">{{ literals.labelYears }}</span>
+                <span class="feature-row__value">{{ peseta()!.peseta_type.minYear }}–{{ peseta()!.peseta_type.maxYear }}</span>
+              </div>
+              @if (peseta()!.peseta_type.composition) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelComposition }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.composition }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.weightG) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelWeight }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.weightG }} g</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.diameterMm) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelDiameter }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.diameterMm }} mm</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.shape) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelShape }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.shape }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.edgeDescription) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelEdge }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.edgeDescription }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.orientation) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelOrientation }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.orientation }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.ruler) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelRuler }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.ruler }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.mint) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelMint }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.mint }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.demonetized) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelDemonetized }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.demonetized }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.kmRef) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelKmRef }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.kmRef }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.engraverObverse) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelEngraverObverse }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.engraverObverse }}</span>
+                </div>
+              }
+              @if (peseta()!.peseta_type.engraverReverse) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelEngraverReverse }}</span>
+                  <span class="feature-row__value">{{ peseta()!.peseta_type.engraverReverse }}</span>
+                </div>
+              }
+              <div class="feature-row feature-row--separator">
+                <span class="feature-row__label">{{ literals.labelMintYear }}</span>
+                <span class="feature-row__value">{{ peseta()!.label }}</span>
+              </div>
+              @if (peseta()!.mintage) {
+                <div class="feature-row">
+                  <span class="feature-row__label">{{ literals.labelMintage }}</span>
+                  <span class="feature-row__value">{{ peseta()!.mintage | number:'1.0-0' }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="observations">
+            <span class="observations__label">{{ literals.labelObservations }}</span>
+            <p class="observations__text">
+              {{ peseta()!.observations || literals.labelNoObservations }}
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </app-collection-layout>
+  }
+}

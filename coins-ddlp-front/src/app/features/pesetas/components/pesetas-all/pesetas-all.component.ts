@@ -1,4 +1,5 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -29,6 +30,7 @@ interface DenominationGroup {
 })
 export class PesetasAllComponent implements OnInit {
   private service      = inject(PesetasService);
+  private router       = inject(Router);
   private errorHandler = inject(ErrorHandler);
 
   readonly literals       = LITERALS.pesetas;
@@ -92,5 +94,9 @@ export class PesetasAllComponent implements OnInit {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery('pesetas-all', query);
+  }
+
+  onCoinClick(peseta: Peseta): void {
+    this.router.navigate(['/pesetas', peseta.peseta_type.faceValueLabel, peseta.id]);
   }
 }

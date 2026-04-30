@@ -33,7 +33,7 @@
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
-            <tr>
+            <tr class="clickable-row" (click)="onCoinClick(row.peseta)">
               <td>{{ row.peseta.label }}</td>
               <td class="clip">{{ row.peseta.peseta_type.title }}</td>
               <td style="text-align: center">
