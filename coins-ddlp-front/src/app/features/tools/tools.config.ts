@@ -1,5 +1,4 @@
 import { SelectOption } from '../../shared/components/select/select.component';
-import { CONSERVATION_STATES } from '../../shared/constants/conservation-states.const';
 import { NavItem } from '../../shared/components/buttons-header/buttons-header.component';
 import { LITERALS } from '../../shared/constants/literals';
 
@@ -13,11 +12,6 @@ export const FACE_VALUE_OPTIONS: SelectOption[] = [
   ...STANDARD_FACE_VALUES,
   '2 Euros C',
 ].map(v => ({ label: v, value: v }));
-
-export const CONSERVATION_OPTIONS: SelectOption[] = CONSERVATION_STATES.map(s => ({
-  label: `${s.code} — ${s.name}`,
-  value: s.code,
-}));
 
 export const MINT_OPTIONS_GERMANY: SelectOption[] = [
   { label: 'A — Berlín',    value: 'A' },

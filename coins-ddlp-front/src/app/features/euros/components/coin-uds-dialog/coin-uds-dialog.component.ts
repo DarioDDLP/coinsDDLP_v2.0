@@ -10,7 +10,7 @@ import { ToggleComponent } from '../../../../shared/components/toggle/toggle.com
 import { ConservationCode, EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { CONSERVATION_OPTIONS } from './coin-uds-dialog.config';
+import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 
 @Component({
   selector: 'app-coin-uds-dialog',
