@@ -18,6 +18,10 @@ export class PesetasService {
     ).pipe(this.loading.withLoading());
   }
 
+  async update(id: string, data: { uds: number; conservation: string | null; observations: string | null }): Promise<void> {
+    return this.supabase.update(TABLES.peseta, id, data);
+  }
+
   getById(id: string): Observable<Peseta | null> {
     return this.supabase.getTableWhere<Peseta>(
       TABLES.peseta,

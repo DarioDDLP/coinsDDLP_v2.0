@@ -15,7 +15,6 @@
       [searchPlaceholder]="literals.allSearch"
       [searchValue]="searchQuery()"
       cardBackground="#ffffff"
-      maxWidth="1000px"
       (searchChange)="onSearch($event)"
     >
       @if (!isEmpty()) {
@@ -23,21 +22,22 @@
           <h2 class="denomination-header">{{ group.faceValueLabel }}</h2>
           <p-table
             [value]="group.rows"
-            [tableStyle]="{ width: '100%', 'table-layout': 'fixed' }"
+            [tableStyle]="{ 'min-width': '50rem' }"
             [stripedRows]="true"
           >
             <ng-template pTemplate="header">
               <tr>
                 <th style="width: 110px">{{ literals.colYear }}</th>
                 <th>{{ literals.colTitle }}</th>
-                <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
-                <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
+                <th style="text-align: center">{{ literals.colConservation }}</th>
+                <th style="text-align: center">{{ literals.colUnits }}</th>
+                <th style="text-align: center"></th>
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-row>
               <tr class="clickable-row" (click)="onCoinClick(row.peseta)">
                 <td>{{ row.peseta.label }}</td>
-                <td class="clip">{{ row.peseta.peseta_type.title }}</td>
+                <td>{{ row.peseta.peseta_type.title }}</td>
                 <td style="text-align: center">
                   <app-badge
                     [label]="row.conservationBadge.label"
@@ -47,6 +47,11 @@
                 </td>
                 <td style="text-align: center">
                   <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
+                </td>
+                <td style="text-align: center" (click)="$event.stopPropagation()">
+                  @if (authService.isAdmin()) {
+                    <app-button icon="pi pi-pencil" variant="ghost" [tooltip]="literals.editCoin" (clicked)="onEdit(row.peseta)" />
+                  }
                 </td>
               </tr>
             </ng-template>
@@ -58,3 +63,10 @@
     </app-collection-layout>
   }
 }
+
+<app-peseta-edit-dialog
+  [visible]="dialogVisible()"
+  [peseta]="selectedPeseta()"
+  (saved)="onDialogSaved()"
+  (closed)="onDialogClosed()"
+/>

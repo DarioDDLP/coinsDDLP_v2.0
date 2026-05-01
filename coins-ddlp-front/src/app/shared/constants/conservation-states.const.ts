@@ -1,4 +1,5 @@
 import { ConservationState } from '../interfaces/conservation-state.interface';
+import { SelectOption } from '../components/select/select.component';
 
 export const CONSERVATION_STATES: ConservationState[] = [
   { code: 'ND',  name: 'No disponible',             description: 'Estado desconocido o no catalogado', severity: 'secondary' },
@@ -14,3 +15,8 @@ export const CONSERVATION_STATES: ConservationState[] = [
 export const CONSERVATION_MAP = new Map(
   CONSERVATION_STATES.map(s => [s.code, s])
 );
+
+export const CONSERVATION_OPTIONS: SelectOption[] = CONSERVATION_STATES.map(s => ({
+  label: `${s.code} — ${s.name}`,
+  value: s.code,
+}));

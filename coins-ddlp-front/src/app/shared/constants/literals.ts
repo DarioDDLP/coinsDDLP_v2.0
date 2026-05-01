@@ -230,6 +230,14 @@ export const LITERALS = {
     colConservation: 'Estado',
     colUnits: 'Uds.',
     emptySearch: 'No se encontraron resultados',
+    editCoin: 'Editar peseta',
+    saveSuccess: 'Peseta guardada correctamente',
+    saveError: 'Error al guardar la peseta',
+    unitsLabel: 'Unidades',
+    conservationLabel: 'Estado de conservación',
+    conservationPlaceholder: 'Selecciona estado',
+    observationsLabel: 'Observaciones',
+    observationsPlaceholder: 'Notas sobre esta peseta...',
   },
 
   pesetaDetail: {

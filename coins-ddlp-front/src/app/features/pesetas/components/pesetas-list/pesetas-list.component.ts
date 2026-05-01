@@ -3,13 +3,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { PesetasService } from '../../services/pesetas.service';
+import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
+import { PesetaEditDialogComponent } from '../peseta-edit-dialog/peseta-edit-dialog.component';
 
 interface PesetaRow {
   peseta: Peseta;
@@ -19,7 +22,7 @@ interface PesetaRow {
 
 @Component({
   selector: 'app-pesetas-list',
-  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
+  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, PesetaEditDialogComponent],
   templateUrl: './pesetas-list.component.html',
   styleUrl: './pesetas-list.component.scss',
 })
@@ -28,6 +31,7 @@ export class PesetasListComponent implements OnInit {
   private route        = inject(ActivatedRoute);
   private router       = inject(Router);
   private errorHandler = inject(ErrorHandler);
+  readonly authService = inject(AuthService);
 
   readonly literals       = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
@@ -37,6 +41,9 @@ export class PesetasListComponent implements OnInit {
   readonly searchQuery  = signal('');
   readonly isReady      = signal(false);
   readonly hasError     = signal(false);
+
+  readonly dialogVisible  = signal(false);
+  readonly selectedPeseta = signal<Peseta | null>(null);
 
   readonly backLink = ['/pesetas'];
 
@@ -90,5 +97,19 @@ export class PesetasListComponent implements OnInit {
 
   onCoinClick(peseta: Peseta): void {
     this.router.navigate(['/pesetas', this.faceValue(), peseta.id]);
+  }
+
+  onEdit(peseta: Peseta): void {
+    this.selectedPeseta.set(peseta);
+    this.dialogVisible.set(true);
+  }
+
+  onDialogSaved(): void {
+    this.loadPesetas();
+  }
+
+  onDialogClosed(): void {
+    this.dialogVisible.set(false);
+    this.selectedPeseta.set(null);
   }
 }

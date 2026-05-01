@@ -307,9 +307,7 @@ export const appConfig: ApplicationConfig = {
 > **Última actualización:** 2026-04-30 (sesión 9)
 
 ### Pendiente / Próximos pasos
-1. **idNum conmemorativas (370 pendientes)** — asignación manual desde la app o relanzar script cuando se recupere la cuota Numista: `DRY_RUN=false node scripts/match-numista-ids.mjs`. Listado en `scripts/pending-idnum-2026-04-24.md`.
-2. **Editar email usuario en admin** — campo email editable en `AdminUserDialogComponent` modo edición + actualizar `AdminService.updateUser()` y Edge Function PATCH
-3. **Secciones restantes** — estadísticas, ubicación
+1. **Secciones restantes** — estadísticas, ubicación
 
 ---
 

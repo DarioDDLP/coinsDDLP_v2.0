@@ -15,7 +15,7 @@
       [searchPlaceholder]="literals.search"
       [searchValue]="searchQuery()"
       cardBackground="#ffffff"
-      maxWidth="1000px"
+      maxWidth="1100px"
       (searchChange)="onSearch($event)"
     >
       @if (!isEmpty()) {
@@ -30,6 +30,7 @@
               <th>{{ literals.colTitle }}</th>
               <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
               <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
+              <th style="width: 60px; text-align: center"></th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
@@ -46,6 +47,18 @@
               <td style="text-align: center">
                 <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
               </td>
+              <td (click)="$event.stopPropagation()">
+                @if (authService.isAdmin()) {
+                  <div class="row-actions">
+                    <app-button
+                      icon="pi pi-pencil"
+                      variant="ghost"
+                      [tooltip]="literals.editCoin"
+                      (clicked)="onEdit(row.peseta)"
+                    />
+                  </div>
+                }
+              </td>
             </tr>
           </ng-template>
         </p-table>
@@ -55,3 +68,10 @@
     </app-collection-layout>
   }
 }
+
+<app-peseta-edit-dialog
+  [visible]="dialogVisible()"
+  [peseta]="selectedPeseta()"
+  (saved)="onDialogSaved()"
+  (closed)="onDialogClosed()"
+/>

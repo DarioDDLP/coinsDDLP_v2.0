@@ -25,4 +25,16 @@
   white-space: nowrap;
 }
 
-.clickable-row { cursor: pointer; }
+:host ::ng-deep .p-datatable-tbody > tr.clickable-row {
+  cursor: pointer;
+  transition: filter 0.15s;
+
+  &:hover > td {
+    filter: brightness(0.96);
+  }
+}
+
+.row-actions {
+  display: flex;
+  justify-content: center;
+}

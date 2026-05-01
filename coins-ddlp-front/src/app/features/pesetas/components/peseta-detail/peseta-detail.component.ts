@@ -33,7 +33,8 @@ export class PesetaDetailComponent implements OnInit {
 
   readonly backLink = computed(() => {
     const faceValue = this.route.snapshot.paramMap.get('faceValue') ?? '';
-    return ['/pesetas', faceValue];
+    const from      = this.route.snapshot.queryParamMap.get('from');
+    return from === 'all' ? ['/pesetas', 'all'] : ['/pesetas', faceValue];
   });
 
   readonly numistaUrl = computed(() => {

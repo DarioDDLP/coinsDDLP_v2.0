@@ -18,11 +18,11 @@
   color: var(--cobalt);
 }
 
-.clip {
-  max-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+:host ::ng-deep .p-datatable-tbody > tr.clickable-row {
+  cursor: pointer;
+  transition: filter 0.15s;
 
-.clickable-row { cursor: pointer; }
+  &:hover > td {
+    filter: brightness(0.96);
+  }
+}
