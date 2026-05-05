@@ -207,7 +207,7 @@ export const LITERALS = {
 
   conmemorativas: {
     title: 'Conmemorativas',
-    search: 'Buscar por país o descripción...',
+    search: 'Buscar por año, país o descripción...',
     colCountry: 'País',
     colMint: 'Ceca',
     colDescription: 'Descripción',

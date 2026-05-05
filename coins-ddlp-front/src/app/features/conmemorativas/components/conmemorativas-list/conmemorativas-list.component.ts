@@ -88,6 +88,7 @@ export class ConmemorativasListComponent implements OnInit {
     const query = normalizeString(this.searchQuery());
     const filtered = this.allCoins().filter(c =>
       !query ||
+      String(c.year).includes(query) ||
       normalizeString(c.country).includes(query) ||
       normalizeString(c.description).includes(query)
     );
