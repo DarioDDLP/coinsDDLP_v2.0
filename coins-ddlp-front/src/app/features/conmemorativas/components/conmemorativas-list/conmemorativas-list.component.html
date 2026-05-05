@@ -16,6 +16,14 @@
       maxWidth="1400px"
       (searchChange)="onSearch($event)"
     >
+      <span layout-actions>
+        <app-button
+          icon="pi pi-file-excel"
+          [label]="sharedLiterals.exportExcel"
+          variant="tertiary"
+          (clicked)="exportExcel()"
+        />
+      </span>
       @if (!isEmpty()) {
         @for (group of groupedCoins(); track group.year) {
           <h2 class="year-header">{{ group.year }}</h2>
@@ -29,7 +37,9 @@
                 <th style="width: 180px">{{ literals.colCountry }}</th>
                 <th style="width: 150px">{{ literals.colMint }}</th>
                 <th>{{ literals.colDescription }}</th>
-                @if (isAdmin()) { <th style="width: 130px; text-align: center">{{ literals.colLocation }}</th> }
+                @if (isAdmin()) {
+                  <th style="width: 130px; text-align: center">{{ literals.colLocation }}</th>
+                }
                 <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
                 <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
               </tr>

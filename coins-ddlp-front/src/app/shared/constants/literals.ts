@@ -18,6 +18,7 @@ export const LITERALS = {
     toastSuccess: 'Éxito',
     toastError: 'Error',
     toastInfo: 'Información',
+    exportExcel: 'Exportar Excel',
   },
 
   auth: {

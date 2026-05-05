@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { ConmemorativasService } from '../../services/conmemorativas.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -11,6 +12,7 @@ import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
+import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import {
   ALBUM_POSITIONS_PER_ROW,
   ALBUM_POSITIONS_PER_PAGE,
@@ -47,12 +49,13 @@ interface YearGroup {
 
 @Component({
   selector: 'app-conmemorativas-list',
-  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent],
+  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent, ButtonComponent],
   templateUrl: './conmemorativas-list.component.html',
   styleUrl: './conmemorativas-list.component.scss',
 })
 export class ConmemorativasListComponent implements OnInit {
   private service      = inject(ConmemorativasService);
+  private excelExport  = inject(ExcelExportService);
   private router       = inject(Router);
   private errorHandler = inject(ErrorHandler);
   private authService  = inject(AuthService);
@@ -130,5 +133,9 @@ export class ConmemorativasListComponent implements OnInit {
     this.router.navigate(['/euros', coin.country, coin.year, coin.id], {
       queryParams: { from: 'conmemorativas' },
     });
+  }
+
+  async exportExcel(): Promise<void> {
+    await this.excelExport.exportConmemorativas(this.groupedCoins(), this.isAdmin());
   }
 }

@@ -18,6 +18,7 @@ import { MessageService } from 'primeng/api';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
+import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 
 @Component({
   selector: 'app-euros-year-coins',
@@ -28,6 +29,7 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
 export class EurosYearCoinsComponent implements OnInit {
   private eurosService   = inject(EurosService);
   private messageService = inject(MessageService);
+  private excelExport    = inject(ExcelExportService);
   private route          = inject(ActivatedRoute);
   private router         = inject(Router);
   private errorHandler   = inject(ErrorHandler);
@@ -149,5 +151,9 @@ export class EurosYearCoinsComponent implements OnInit {
   onDeleteDialogClosed(): void {
     this.deleteDialogVisible.set(false);
     this.selectedDeleteCoin.set(null);
+  }
+
+  async exportExcel(): Promise<void> {
+    await this.excelExport.exportEurosYear(this.coins(), this.country(), this.year()!, this.hasMint());
   }
 }

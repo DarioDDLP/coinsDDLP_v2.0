@@ -12,11 +12,14 @@
       <h1 class="collection-header__title">{{ title }}</h1>
     }
     @if (searchPlaceholder) {
-      <app-search-input
-        [placeholder]="searchPlaceholder"
-        [value]="searchValue"
-        (valueChange)="onSearch($event)"
-      />
+      <div class="collection-header__search-row">
+        <app-search-input
+          [placeholder]="searchPlaceholder"
+          [value]="searchValue"
+          (valueChange)="onSearch($event)"
+        />
+        <ng-content select="[layout-actions]" />
+      </div>
     }
   </div>
 

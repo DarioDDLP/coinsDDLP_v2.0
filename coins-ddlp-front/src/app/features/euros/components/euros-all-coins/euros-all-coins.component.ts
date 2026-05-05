@@ -15,6 +15,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
+import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 
 @Component({
   selector: 'app-euros-all-coins',
@@ -24,6 +25,7 @@ import { sortByFaceValue } from '../../constants/face-value-order.const';
 })
 export class EurosAllCoinsComponent implements OnInit {
   private eurosService  = inject(EurosService);
+  private excelExport   = inject(ExcelExportService);
   private route         = inject(ActivatedRoute);
   private router        = inject(Router);
   private errorHandler  = inject(ErrorHandler);
@@ -105,5 +107,10 @@ export class EurosAllCoinsComponent implements OnInit {
   onDialogClosed(): void {
     this.dialogVisible.set(false);
     this.selectedCoin.set(null);
+  }
+
+  async exportExcel(): Promise<void> {
+    const coins = this.coinRows().map(r => r.coin);
+    await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint());
   }
 }

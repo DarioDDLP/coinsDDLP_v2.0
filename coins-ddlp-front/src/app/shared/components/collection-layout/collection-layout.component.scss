@@ -34,6 +34,16 @@
     }
   }
 
+  &__search-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    app-search-input {
+      flex: 1;
+    }
+  }
+
   &__title-row {
     display: flex;
     align-items: center;

@@ -304,7 +304,7 @@ export const appConfig: ApplicationConfig = {
 
 ## Estado actual
 
-> **Última actualización:** 2026-04-30 (sesión 9)
+> **Última actualización:** 2026-05-05 (sesión 10)
 
 ### Pendiente / Próximos pasos
 1. **Secciones restantes** — estadísticas, ubicación
@@ -321,6 +321,7 @@ export const appConfig: ApplicationConfig = {
 | 2026-04-27 | **Scraping pesetas**: script Python extrajo 187 tipos de pesetas circulantes (1868–2001) de Numista → `pesetas_circulantes.json`. 692 entradas mintingYears. Numista currency ID peseta: `cu=142`. |
 | 2026-04-28 | **Módulo pesetas completo**: tablas `peseta_type` (187) y `peseta` (525) en Supabase. `PesetasService` con join. Rutas: denominaciones, todas agrupadas, lista por `:faceValue`. Búsqueda en todos los listados. |
 | 2026-04-30 | **Detalle peseta** (`PesetaDetailComponent`): ruta `/:faceValue/:id` antes de `/:faceValue`. `PesetasService.getById()`. Layout idéntico a `coin-detail` (imágenes, descripciones, features-box con 14 campos + tirada con `DecimalPipe`). Sin llamada Numista. Filas clickables en list y all. |
+| 2026-05-05 | **Exportar Excel**: `ExcelExportService` en `shared/services/` con ExcelJS. Slot `[layout-actions]` en `CollectionLayoutComponent`. Botón "Exportar Excel" en `euros-year-coins`, `euros-all-coins` y `conmemorativas-list`. Cabeceras deep-navy con texto cream. Conmemorativas: una hoja por año. |
 
 ---
 
