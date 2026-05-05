@@ -306,6 +306,9 @@ export const appConfig: ApplicationConfig = {
 
 > **Última actualización:** 2026-05-05 (sesión 10)
 
+### URL de producción
+**https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
+
 ### Pendiente / Próximos pasos
 1. **Secciones restantes** — estadísticas, ubicación
 
