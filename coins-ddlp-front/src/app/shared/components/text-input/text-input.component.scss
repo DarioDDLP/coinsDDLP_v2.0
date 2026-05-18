@@ -26,7 +26,7 @@
     &:focus {
       outline: none;
       border-color: var(--gold-tan);
-      box-shadow: 0 0 0 3px rgba(217, 181, 130, 0.15);
+      box-shadow: 0 0 0 3px rgba(var(--gold-tan-rgb), 0.15);
     }
 
     &:disabled {

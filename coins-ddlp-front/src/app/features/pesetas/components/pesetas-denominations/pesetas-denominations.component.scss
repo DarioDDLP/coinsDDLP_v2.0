@@ -19,7 +19,7 @@
   transition: background-color 0.15s;
 
   &:hover {
-    background: rgba(217, 181, 130, 0.15);
+    background: rgba(var(--gold-tan-rgb), 0.15);
   }
 
   &__value {

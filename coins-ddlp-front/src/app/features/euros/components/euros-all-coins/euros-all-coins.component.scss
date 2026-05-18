@@ -12,7 +12,7 @@
 }
 
 :host ::ng-deep .p-datatable-tbody > tr.row--non-circulating > td {
-  background: rgba(217, 181, 130, 0.25);
+  background: rgba(var(--gold-tan-rgb), 0.25);
 }
 
 :host ::ng-deep .p-datatable-tbody > tr > td {
@@ -21,10 +21,13 @@
 
 :host ::ng-deep .p-datatable-tbody > tr.row--clickable {
   cursor: pointer;
-  transition: filter 0.15s;
+
+  > td {
+    transition: background-color 0.15s;
+  }
 
   &:hover > td {
-    filter: brightness(0.96);
+    background: rgba(var(--cobalt-rgb), 0.08);
   }
 }
 
@@ -42,8 +45,8 @@
     width: 14px;
     height: 14px;
     border-radius: 3px;
-    background: rgba(217, 181, 130, 0.25);
-    border: 1px solid rgba(217, 181, 130, 0.6);
+    background: rgba(var(--gold-tan-rgb), 0.25);
+    border: 1px solid rgba(var(--gold-tan-rgb), 0.6);
     flex-shrink: 0;
   }
 }
