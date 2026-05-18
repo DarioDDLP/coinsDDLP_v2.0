@@ -123,6 +123,8 @@ export const LITERALS = {
     labelMoreInfo: 'Más información en Numista',
     loadingNumista: 'Cargando datos de Numista...',
     errorNumista: 'No se pudieron cargar los datos de Numista',
+    errorNumistaQuota: 'Sin cuota de Numista',
+    labelNoIdNum: 'IdNum pendiente de actualizar',
     labelNoImages: 'Imágenes no disponibles',
     labelBasicData: 'Datos básicos',
     labelYear: 'Año',

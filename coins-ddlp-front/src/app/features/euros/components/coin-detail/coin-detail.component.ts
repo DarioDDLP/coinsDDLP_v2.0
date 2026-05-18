@@ -29,8 +29,15 @@ export class CoinDetailComponent implements OnInit {
   readonly coin = signal<EuroCoin | null>(null);
   readonly numista = signal<NumistaCoin | null>(null);
   readonly numistaError = signal(false);
+  readonly numistaQuotaError = signal(false);
   readonly isReady = signal(false);
   readonly hasError = signal(false);
+
+  readonly noNumistaMessage = computed(() => {
+    if (this.numistaQuotaError()) return this.literals.errorNumistaQuota;
+    if (this.numistaError()) return this.literals.errorNumista;
+    return this.literals.labelNoIdNum;
+  });
 
   readonly techniqueText = computed(() => {
     const raw = this.numista()?.technique?.text ?? '';
@@ -66,10 +73,15 @@ export class CoinDetailComponent implements OnInit {
         if (!coin) { this.router.navigate(['/euros', country, year]); return; }
         this.coin.set(coin);
 
-        if (coin.idNum) {
+        if (coin.idNum && coin.idNum !== '0') {
           this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
             next: (data) => { this.numista.set(data); this.isReady.set(true); },
-            error: (e) => { this.errorHandler.handleError(e); this.numistaError.set(true); this.isReady.set(true); },
+            error: (e) => {
+              this.errorHandler.handleError(e);
+              if (e?.status === 429) this.numistaQuotaError.set(true);
+              else this.numistaError.set(true);
+              this.isReady.set(true);
+            },
           });
         } else {
           this.isReady.set(true);

@@ -304,7 +304,7 @@ export const appConfig: ApplicationConfig = {
 
 ## Estado actual
 
-> **Última actualización:** 2026-05-05 (sesión 10)
+> **Última actualización:** 2026-05-18 (sesión 11)
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
@@ -326,6 +326,7 @@ export const appConfig: ApplicationConfig = {
 | 2026-04-30 | **Detalle peseta** (`PesetaDetailComponent`): ruta `/:faceValue/:id` antes de `/:faceValue`. `PesetasService.getById()`. Layout idéntico a `coin-detail` (imágenes, descripciones, features-box con 14 campos + tirada con `DecimalPipe`). Sin llamada Numista. Filas clickables en list y all. |
 | 2026-05-05 | **Exportar Excel**: `ExcelExportService` en `shared/services/` con ExcelJS. Slot `[layout-actions]` en `CollectionLayoutComponent`. Botón "Exportar Excel" en `euros-year-coins`, `euros-all-coins` y `conmemorativas-list`. Cabeceras deep-navy con texto cream. Conmemorativas: una hoja por año. |
 | 2026-05-05 | **Deploy a Vercel**: `vercel.json` con rewrite SPA. URL: https://coinsddlp.vercel.app. Vercel Analytics via script tag en `index.html`. Deploy automático en cada push a `main`. |
+| 2026-05-18 | **Seguridad — RLS**: migración `20260518000000_enable_rls.sql` activa Row-Level Security en `euro`, `peseta`, `peseta_type`. Políticas: `anon` solo lectura, `authenticated` lectura+escritura. Resuelve aviso `rls_disabled_in_public` del Security Advisor. Aplicada a producción con `supabase db push`. |
 
 ---
 

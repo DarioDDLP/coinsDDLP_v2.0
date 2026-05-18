@@ -81,14 +81,12 @@
           <a class="numista-link" [href]="numista()!.url" target="_blank" rel="noopener">
             {{ literals.labelMoreInfo }} ↗
           </a>
-        } @else if (numistaError()) {
-          <p class="numista-error">{{ literals.errorNumista }}</p>
         } @else {
           <div class="coin-images">
             <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
             <div class="coin-img-placeholder"><i class="pi pi-image"></i></div>
           </div>
-          <p class="numista-no-id">{{ literals.labelNoImages }}</p>
+          <p class="numista-no-id">{{ noNumistaMessage() }}</p>
         }
       </div>
 
