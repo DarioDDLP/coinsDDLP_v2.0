@@ -8,8 +8,13 @@
 
 Aplicación web para la **gestión de una colección personal de monedas**. Permite visualizar, buscar y filtrar la colección públicamente, y con login habilitado: añadir, editar y borrar monedas.
 
-**Nombre del proyecto:** coinsDDLP_v2.0  
-**Carpeta:** `/Users/dariodelapoza/Documents/Proyectos/coinsDDLP_v2.0/`
+Es un **monorepo** con tres componentes independientes:
+
+| Carpeta | Componente | Runtime |
+|---------|-----------|---------|
+| `coins-ddlp-front/` | Aplicación frontend | Angular 21 (Node) |
+| `supabase/` | Backend: Edge Functions + migraciones | Deno / PostgreSQL |
+| `scripts/` | Utilidades de datos | Python |
 
 ---
 
@@ -18,11 +23,12 @@ Aplicación web para la **gestión de una colección personal de monedas**. Perm
 | Capa | Tecnología | Notas |
 |------|-----------|-------|
 | Frontend | **Angular 21** | Standalone components, Signals, control flow moderno (`@if`, `@for`) |
-| Backend / DB | **Supabase PostgreSQL** | SQL, tiempo real nativo (postgres_changes), sin límite de operaciones |
-| Autenticación | **Supabase Auth** | Login con email/password, integrado en PostgreSQL |
-| UI Components | **PrimeNG (última versión)** | Modales, toasts, tablas, dropdowns, spinners |
-| Estilos | **SCSS** | Global theming + estilos por componente |
-| Hosting | **Firebase Hosting** (opcional) o **Vercel/Netlify** | |
+| Backend / DB | **Supabase PostgreSQL** | SQL, tiempo real nativo (`postgres_changes`) |
+| Autenticación | **Supabase Auth** | Login con email/password |
+| Backend serverless | **Supabase Edge Functions** | Deno — `admin-users`, `numista-proxy` |
+| UI Components | **PrimeNG** | Modales, toasts, tablas, dropdowns, spinners |
+| Estilos | **SCSS** | Theming global + estilos por componente |
+| Hosting | **Vercel** | Deploy automático en cada push a `main` |
 
 ### Características Angular 21 a usar obligatoriamente
 - `signal()`, `computed()`, `effect()` — NO usar `BehaviorSubject` para estado local
@@ -81,7 +87,7 @@ interface EuroCoin {
 }
 ```
 
-### Tabla: `peseta_type` (pendiente de crear)
+### Tabla: `peseta_type`
 
 Datos scrapeados de Numista (187 tipos de pesetas circulantes 1868–2001), almacenados en la tabla `peseta_type` de Supabase.
 
@@ -124,6 +130,8 @@ interface MintingYear {
 }
 ```
 
+La tabla `peseta` (525 registros) guarda los ejemplares concretos en posesión, referenciando a `peseta_type`.
+
 **Estadísticas de los datos scrapeados (2026-04-27):** 187 tipos, 692 entradas de mintingYears, 187/187 descripciones anverso/reverso, 158/187 descripciones de canto, 133/187 comentarios, 1/187 fotos de canto.
 
 **Numista currency ID peseta:** `cu=142` (descubierto en `id="c_espagne142"` del HTML de la página de catálogo).
@@ -148,14 +156,14 @@ Cada decisión de arquitectura y código debe respetar estos principios:
 
 | Principio | Aplicación concreta |
 |-----------|-------------------|
-| **S** — Single Responsibility | Cada clase/servicio/componente tiene una única razón para cambiar. `firestore.service.ts` solo gestiona la comunicación con Firestore; `euros.service.ts` solo contiene lógica de negocio de euros. |
+| **S** — Single Responsibility | Cada clase/servicio/componente tiene una única razón para cambiar. `supabase.service.ts` solo gestiona la comunicación con Supabase; `euros.service.ts` solo contiene lógica de negocio de euros. |
 | **O** — Open/Closed | Extensible sin modificar. Se usan interfaces para servicios y modelos. Añadir una nueva sección (pesetas, etc.) no obliga a tocar `core`. |
 | **L** — Liskov Substitution | Los servicios implementan interfaces (`IEurosRepository`). Los componentes aceptan los tipos que declaran sus `input()` sin restricciones adicionales ocultas. |
 | **I** — Interface Segregation | Interfaces pequeñas y específicas. No existe un único `CoinService` con todo: hay `IEurosRepository`, `IAuthService`, etc. Los componentes sólo conocen lo que necesitan. |
-| **D** — Dependency Inversion | Los componentes y servicios de alto nivel dependen de abstracciones (interfaces/`InjectionToken`), no de implementaciones concretas de Firebase. Facilita tests y sustitución. |
+| **D** — Dependency Inversion | Los componentes y servicios de alto nivel dependen de abstracciones (interfaces/`InjectionToken`), no de implementaciones concretas. Facilita tests y sustitución. |
 
 ### Reglas de codificación derivadas de SOLID
-- Un componente **no llama a Firestore directamente**. Siempre a través de su servicio de feature.
+- Un componente **no llama a Supabase directamente**. Siempre a través de su servicio de feature.
 - Un servicio de feature **no conoce PrimeNG**. Los toasts y modales son responsabilidad del componente.
 - Los literales de texto **nunca van hardcodeados** en templates o servicios: siempre desde `literals.ts`.
 - Las interfaces se definen en `shared/interfaces/`. Los servicios las implementan; los componentes las consumen.
@@ -163,87 +171,62 @@ Cada decisión de arquitectura y código debe respetar estos principios:
 
 ---
 
-## Arquitectura de la aplicación
+## Arquitectura de la aplicación (`coins-ddlp-front/src/`)
 
 ```
 src/
 ├── app/
-│   ├── core/                              # Singleton: una sola instancia en toda la app
+│   ├── core/                          # Singletons: una sola instancia en toda la app
 │   │   ├── guards/
-│   │   │   └── auth.guard.ts              # Funcional, con inject(Auth)
+│   │   │   ├── auth.guard.ts           # Protege operaciones que requieren login
+│   │   │   └── admin.guard.ts          # Protege rutas /admin y /herramientas
 │   │   └── services/
-│   │       ├── auth.service.ts            # SRP: solo Firebase Auth
-│   │       └── firestore.service.ts       # SRP: CRUD genérico sobre Firestore (DIP)
+│   │       ├── supabase.service.ts     # Cliente Supabase — CRUD genérico
+│   │       ├── auth.service.ts         # Supabase Auth
+│   │       ├── numista.service.ts      # Llamadas a la Edge Function numista-proxy
+│   │       ├── loading.service.ts
+│   │       └── global-error-handler.service.ts
 │   │
-│   ├── features/                          # Cada feature es un módulo vertical autocontenido
-│   │   ├── euros/
-│   │   │   ├── components/
-│   │   │   │   ├── euros-countries/       # Listado de países con búsqueda
-│   │   │   │   ├── euros-years/           # Años de un país con búsqueda
-│   │   │   │   └── euros-year-coins/      # Monedas de un país/año con tabla
-│   │   │   ├── services/
-│   │   │   │   └── euros.service.ts       # Lógica de negocio de euros (usa FirestoreService)
-│   │   │   └── euros.routes.ts            # Rutas lazy de la feature
-│   │   ├── conmemorativas/
-│   │   │   ├── components/
-│   │   │   │   └── conmemorativas-list/       # Lista agrupada por año, sin acciones
-│   │   │   ├── services/
-│   │   │   │   └── conmemorativas.service.ts  # getAll() filtrando commemorative=true
-│   │   │   ├── conmemorativas.component.ts    # Shell del módulo (sin router-outlet)
-│   │   │   └── conmemorativas.component.html  # Renderiza <app-conmemorativas-list />
-│   │   ├── pesetas/
-│   │   │   ├── components/
-│   │   │   │   └── pesetas-list/
-│   │   │   ├── services/
-│   │   │   │   └── pesetas.service.ts
-│   │   │   └── pesetas.routes.ts
-│   │   ├── estadisticas/
-│   │   │   ├── components/
-│   │   │   │   └── estadisticas-dashboard/
-│   │   │   ├── services/
-│   │   │   │   └── estadisticas.service.ts
-│   │   │   └── estadisticas.routes.ts
-│   │   └── ubicacion/
-│   │       ├── components/
-│   │       │   └── ubicacion-map/
-│   │       └── ubicacion.routes.ts
+│   ├── features/                       # Cada feature, módulo vertical autocontenido
+│   │   ├── euros/                      # coin-detail, coin-uds-dialog, euros-all-coins,
+│   │   │                               #   euros-countries, euros-year-coins, euros-years
+│   │   ├── conmemorativas/             # conmemorativas-list
+│   │   ├── pesetas/                    # pesetas-denominations, pesetas-all, pesetas-list,
+│   │   │                               #   peseta-detail, peseta-edit-dialog
+│   │   ├── estadisticas/               # estadisticas-dashboard
+│   │   ├── ubicacion/                  # ubicacion-map
+│   │   ├── admin/                      # admin-users, admin-user-dialog, admin-header
+│   │   └── tools/                      # tools-add-euro, tools-add-year
 │   │
-│   ├── shared/                            # Reutilizable entre features, sin lógica de negocio
-│   │   ├── components/                    # Componentes genéricos de UI
-│   │   │   ├── sidebar/                   # Navegación lateral
-│   │   │   ├── coin-badge/                # Badge de estado de conservación (ISP: solo recibe el código)
-│   │   │   ├── country-flag/              # Imagen de bandera circular por país
-│   │   │   └── loading-spinner/           # Spinner genérico de carga
-│   │   ├── constants/                     # Literales y constantes — NUNCA hardcodear texto
-│   │   │   ├── literals.ts                # Todos los textos de UI (labels, mensajes, placeholders)
-│   │   │   ├── conservation-states.const.ts
-│   │   │   └── toast-messages.const.ts    # Textos de notificaciones (importa de literals.ts)
-│   │   ├── interfaces/                    # Contratos (DIP, ISP)
-│   │   │   ├── euro-coin.interface.ts
-│   │   │   ├── conservation-state.interface.ts
-│   │   │   ├── euros-repository.interface.ts   # IEurosRepository (implementa euros.service.ts)
-│   │   │   └── auth-service.interface.ts        # IAuthService
-│   │   ├── pipes/
-│   │   │   └── euro-value.pipe.ts         # SRP: solo formateo de valor facial
-│   │   └── helpers/                       # Funciones puras sin estado
-│   │       └── normalize-strings.helper.ts
+│   ├── shared/                         # Reutilizable entre features, sin lógica de negocio
+│   │   ├── components/                 # badge, button, buttons-header, collection-layout,
+│   │   │                               #   confirm-dialog, country-flag, empty-panel,
+│   │   │                               #   loading-spinner, login-dialog, search-input,
+│   │   │                               #   select, sidebar, text-input, textarea, toggle,
+│   │   │                               #   recovery-password-dialog
+│   │   ├── constants/                  # literals.ts, conservation-states.const.ts,
+│   │   │                               #   toast-messages.const.ts, collections.const.ts
+│   │   ├── interfaces/                 # contratos: euro-coin, peseta, numista-coin,
+│   │   │                               #   auth-service, euros-repository, app-user...
+│   │   ├── helpers/                    # funciones puras: normalize-strings, search-state, badge
+│   │   ├── pipes/                      # euro-value.pipe.ts
+│   │   └── services/                   # excel-export.service.ts
 │   │
-│   ├── app.component.ts                   # Layout raíz: sidebar + <router-outlet>
-│   ├── app.config.ts                      # Providers: Firebase, Router, Animations, PrimeNG
-│   └── app.routes.ts                      # Rutas raíz con lazy loading a feature.routes.ts
+│   ├── app.ts                          # Componente raíz: layout sidebar + <router-outlet>
+│   ├── app.config.ts                   # Providers: cliente Supabase, Router, HttpClient,
+│   │                                   #   Animations, PrimeNG, GlobalErrorHandler
+│   └── app.routes.ts                   # Rutas raíz con lazy loading
 │
-├── assets/
-│   ├── flags/                             # Banderas por país
-│   ├── icons/                             # Iconos del sidebar
-│   └── background.jpg
-└── styles.scss                            # Theming global PrimeNG + reset
+├── environments/                       # environment.ts, environment.prod.ts
+├── styles/  ·  styles.scss              # Theming global PrimeNG + reset
+└── (assets estáticos en coins-ddlp-front/public/: flags/, icons/, background.jpg)
 ```
 
 ### Regla de dependencias entre capas
 ```
-features → shared → (no dependencies)
-features → core   → (no dependencies)
-core     → shared → (no dependencies)
+features → shared → (sin dependencias)
+features → core   → (sin dependencias)
+core     → shared → (sin dependencias)
 
 features NO importan de otras features.
 shared   NO importa de core ni de features.
@@ -254,22 +237,23 @@ shared   NO importa de core ni de features.
 ## Rutas
 
 ```typescript
-// Rutas públicas (sólo visualización)
+// Rutas públicas (visualización)
 /                    → redirect → /euros
-/euros               → EurosListComponent (lazy)
-/euros/:id           → EurosDetailComponent (lazy)
+/euros               → EurosComponent (lazy, con rutas hijas)
 /conmemorativas      → ConmemorativasComponent (lazy)
-/pesetas             → PesetasComponent (lazy)
-/estadisticas        → EstadisticasComponent (lazy)
-/ubicacion           → UbicacionComponent (lazy)
+/pesetas             → PesetasComponent (lazy, con rutas hijas)
+/estadisticas        → EstadisticasDashboardComponent (lazy)
+/ubicacion           → UbicacionMapComponent (lazy)
 
-// Ruta de autenticación
-/login               → LoginComponent (lazy)
+// Rutas protegidas con adminGuard
+/admin               → AdminComponent (lazy, con rutas hijas)
+/herramientas        → ToolsComponent (lazy, con rutas hijas)
 
-// Rutas protegidas con authGuard (sólo con login)
-// Las acciones CRUD se hacen mediante modales dentro de las rutas públicas
-// El authGuard controla la visibilidad de botones de edición/borrado
+/**                  → redirect → /euros
 ```
+
+- **No existe ruta `/login`**: el login es un `p-dialog` (`login-dialog`) que se abre desde cualquier punto.
+- Las acciones CRUD se hacen mediante modales dentro de las rutas públicas; `authGuard` controla la visibilidad de los botones de edición/borrado.
 
 ---
 
@@ -277,39 +261,43 @@ shared   NO importa de core ni de features.
 
 ### Proyecto Supabase
 - **URL:** `https://uvkvagoipxgagyupxoqd.supabase.co`
-- **Anon Key:** Guardada en `src/environments/environment.ts`
+- **Anon Key:** guardada en `coins-ddlp-front/src/environments/environment.ts`
 - **Auth:** Email/Password habilitado en Supabase Auth
-- **PostgreSQL:** Tabla `euro` con 5.441 documentos migrados desde archivo de exportación
+- **PostgreSQL:** tabla `euro` con 5.441 registros migrados desde archivo de exportación
+- **RLS:** activado en `euro`, `peseta`, `peseta_type` — `anon` solo lectura, `authenticated` lectura+escritura
 
-### Configuración en `app.config.ts`
+### Edge Functions (`supabase/functions/`)
+- `numista-proxy` — proxy a la API de Numista (oculta la `NUMISTA_API_KEY`)
+- `admin-users` — gestión de usuarios desde la sección admin
+
+Los secretos (`SUPABASE_SERVICE_ROLE_KEY`, `NUMISTA_API_KEY`) se configuran en el panel de Supabase, **no** en ficheros locales.
+
+### Cliente en `app.config.ts`
 ```typescript
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../environments/environment';
 
 export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-client');
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    // ...
-    {
-      provide: SUPABASE_CLIENT,
-      useFactory: () => createClient(environment.supabase.url, environment.supabase.anonKey),
-    },
-  ],
-};
+// dentro de appConfig.providers:
+{
+  provide: SUPABASE_CLIENT,
+  useFactory: () => createClient(environment.supabase.url, environment.supabase.anonKey),
+}
 ```
 
 ---
 
 ## Estado actual
 
-> **Última actualización:** 2026-05-18 (sesión 11)
+> **Última actualización:** 2026-05-19 (sesión 12)
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
 
 ### Pendiente / Próximos pasos
-1. **Secciones restantes** — estadísticas, ubicación
+1. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido
+2. **Implementar sección Ubicación** — el componente `ubicacion-map` existe; falta el contenido
 
 ---
 
@@ -318,33 +306,37 @@ export const appConfig: ApplicationConfig = {
 | Fecha | Cambio |
 |-------|--------|
 | 2026-04-23 | **Conmemorativas**: módulo completo (solo lectura), agrupado por año asc, ordenado por país. Columna Ceca (150px), columna Álb/H/Pos solo admin. `maxWidth` input en `collection-layout`. Config en `conmemorativas.config.ts`. |
-| 2026-04-24 | **Scripts Numista**: `match-numista-ids-regular.mjs` asignó idNum a 4425 monedas (247 tipos). Todos los regulares tienen idNum. 370 conmemorativas pendientes en `scripts/pending-idnum-2026-04-24.md`. |
+| 2026-04-24 | **Scripts Numista**: `match-numista-ids-regular.mjs` asignó idNum a 4425 monedas (247 tipos). Todos los regulares tienen idNum. 370 conmemorativas pendientes. |
 | 2026-04-26 | **UX listados**: ellipsis en columna descripción de euros-year-coins. `search-state.helper.ts` con `sessionStorage` para persistir buscadores al navegar atrás (5 componentes). Conmemorativas: filas clickables con `?from=conmemorativas`, `coin-detail` ajusta backLink. |
 | 2026-04-27 | **Scraping pesetas**: script Python extrajo 187 tipos de pesetas circulantes (1868–2001) de Numista. 692 entradas mintingYears. Numista currency ID peseta: `cu=142`. |
 | 2026-04-28 | **Módulo pesetas completo**: tablas `peseta_type` (187) y `peseta` (525) en Supabase. `PesetasService` con join. Rutas: denominaciones, todas agrupadas, lista por `:faceValue`. Búsqueda en todos los listados. |
 | 2026-04-30 | **Detalle peseta** (`PesetaDetailComponent`): ruta `/:faceValue/:id` antes de `/:faceValue`. `PesetasService.getById()`. Layout idéntico a `coin-detail` (imágenes, descripciones, features-box con 14 campos + tirada con `DecimalPipe`). Sin llamada Numista. Filas clickables en list y all. |
 | 2026-05-05 | **Exportar Excel**: `ExcelExportService` en `shared/services/` con ExcelJS. Slot `[layout-actions]` en `CollectionLayoutComponent`. Botón "Exportar Excel" en `euros-year-coins`, `euros-all-coins` y `conmemorativas-list`. Cabeceras deep-navy con texto cream. Conmemorativas: una hoja por año. |
 | 2026-05-05 | **Deploy a Vercel**: `vercel.json` con rewrite SPA. URL: https://coinsddlp.vercel.app. Vercel Analytics via script tag en `index.html`. Deploy automático en cada push a `main`. |
+| 2026-05-08 | **Acceso admin**: secciones Estadísticas y Ubicación restringidas solo a admin. |
+| 2026-05-12 | **UI**: favicon y título general de la app. |
 | 2026-05-18 | **Seguridad — RLS**: migración `20260518000000_enable_rls.sql` activa Row-Level Security en `euro`, `peseta`, `peseta_type`. Políticas: `anon` solo lectura, `authenticated` lectura+escritura. Resuelve aviso `rls_disabled_in_public` del Security Advisor. Aplicada a producción con `supabase db push`. |
+| 2026-05-18 | **Detalle moneda**: distinguir error de cuota de Numista de un `idNum` ausente. **Estilos**: hover de fila más marcado, colores `rgba` centralizados en variables CSS. |
+| 2026-05-19 | **Reorganización del repo (sesión 12)**: `CONTEXT.md` renombrado a `CLAUDE.md` (auto-carga). Eliminado el proyecto npm muerto de la raíz (`package.json`, `node_modules`, `.env`) — eran de scripts de Node ya difuntos. `swagger.yaml` (spec API Numista) movido a la raíz. `.DS_Store` añadido al `.gitignore`. Migración RLS y `scrape_ucoin.py` añadidos a git. Borrado el proyecto base `coinsDDLP` v1. |
 
 ---
 
 ## Notas y decisiones técnicas
 
 ### Angular
-- **No usar `NgModule`**: Todo standalone, provideX() en `app.config.ts`
-- **Signals everywhere**: Estado reactivo con signals, no con RxJS subjects para UI local
-- **RxJS sólo para**: operaciones Firestore (collectionData, docData) — usar `toSignal()` para convertir
-- **Guard**: `authGuard` funcional con `inject(Auth)` — NO class-based guard
+- **No usar `NgModule`**: todo standalone, `provideX()` en `app.config.ts`
+- **Signals everywhere**: estado reactivo de UI con signals, no con RxJS subjects
+- **RxJS**: el SDK de Supabase es basado en Promesas; usar RxJS solo para interop puntual (`toSignal()`)
+- **Guards**: funcionales con `inject()` — NO class-based guards
 
 ### PrimeNG
-- Usar el nuevo sistema de temas (CSS variables, `definePreset`) de PrimeNG v18+
+- Usar el sistema de temas con CSS variables y `definePreset` (preset `Aura` personalizado en `app.config.ts`)
 - Importar componentes individualmente en cada standalone component (ISP)
 
 ### Autenticación
-- El login abre un `p-dialog` desde cualquier punto de la app. No existe página `/login` separada.
+- El login abre un `p-dialog` (`login-dialog`) desde cualquier punto de la app. No existe página `/login` separada.
 - Los botones de edición/borrado solo son visibles cuando `authService.isLoggedIn()` es `true`
-- El guard protege operaciones, no rutas de visualización
+- `authGuard` protege operaciones; `adminGuard` protege las rutas `/admin` y `/herramientas`
 
 ### Literales (`shared/constants/literals.ts`)
 - **Ningún texto** va hardcodeado en templates (`.html`) ni en servicios
@@ -352,7 +344,7 @@ export const appConfig: ApplicationConfig = {
 - Los `toast-messages.const.ts` importan sus textos desde `literals.ts`
 
 ### Imágenes
-- Banderas: normalizar nombre del país → buscar en `/assets/flags/{nombre-normalizado}.png`
+- Banderas: normalizar nombre del país → buscar en `public/assets/flags/{nombre-normalizado}-flag.png`
 - Conservación ND: valor por defecto cuando `uds === '0'`
 
 ### Manejo de errores — patrón obligatorio
@@ -376,7 +368,7 @@ Todo componente que haga llamadas asíncronas (Observable o Promise) debe:
 
 El `GlobalErrorHandler` (`core/services/global-error-handler.service.ts`) extrae el mensaje del error con esta prioridad:
 - Status 0 → "Comprueba tu conexión e inténtalo de nuevo"
-- `error.error.message` → body JSON de HttpErrorResponse (Supabase REST estándar)
+- `error.error.message` → body JSON de `HttpErrorResponse` (Supabase REST estándar)
 - `error.error.error` → body de nuestras Edge Functions (`{ error: "mensaje" }`)
 - `error.message` → `Error` JS / `PostgrestError` del SDK
 - Fallback → "Ha ocurrido un error inesperado"
@@ -390,6 +382,6 @@ Los servicios **nunca** muestran toasts ni llaman a `ErrorHandler` — esa respo
 - Constructor injection → usar `inject()`
 - `BehaviorSubject` para estado de UI → usar `signal()`
 - Texto hardcodeado → importar de `literals.ts`
-- Un componente llama a Firestore directamente → pasar siempre por el servicio de feature
+- Un componente llama a Supabase directamente → pasar siempre por el servicio de feature
 - Servicios de feature conocen PrimeNG → los toasts/modales son del componente
 - Features importando de otras features → solo de `shared/` y `core/`
