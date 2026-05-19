@@ -1,6 +1,6 @@
-# coinsDDLP v2.0 — Prompt de contexto del proyecto
+# coinsDDLP v2.0
 
-> **Instrucción para Claude**: Lee este fichero al inicio de cada conversación para recuperar el contexto completo del proyecto. Al finalizar cada sesión de implementación, actualiza las secciones **"Estado actual"** y **"Próximos pasos"** con los cambios realizados.
+> Al cerrar cada sesión de implementación, actualiza las secciones **"Estado actual"** y **"Log de implementación"**.
 
 ---
 
@@ -9,8 +9,7 @@
 Aplicación web para la **gestión de una colección personal de monedas**. Permite visualizar, buscar y filtrar la colección públicamente, y con login habilitado: añadir, editar y borrar monedas.
 
 **Nombre del proyecto:** coinsDDLP_v2.0  
-**Carpeta:** `/Users/dariodelapoza/Documents/Proyectos/coinsDDLP_v2.0/`  
-**Referencia estética:** `/Users/dariodelapoza/Documents/Proyectos/coinsDDLP/coins-ddlp-front/`
+**Carpeta:** `/Users/dariodelapoza/Documents/Proyectos/coinsDDLP_v2.0/`
 
 ---
 
@@ -36,7 +35,7 @@ Aplicación web para la **gestión de una colección personal de monedas**. Perm
 
 ---
 
-## Estética y diseño (referencia v1)
+## Estética y diseño
 
 ### Paleta de colores
 - **Fondo:** Imagen de fondo (`background.jpg`) a pantalla completa, `background-attachment: fixed`
@@ -84,7 +83,7 @@ interface EuroCoin {
 
 ### Tabla: `peseta_type` (pendiente de crear)
 
-Datos scrapeados de Numista (187 tipos de pesetas circulantes 1868–2001). Fichero fuente: `pesetas_circulantes.json` en la raíz del proyecto.
+Datos scrapeados de Numista (187 tipos de pesetas circulantes 1868–2001), almacenados en la tabla `peseta_type` de Supabase.
 
 ```typescript
 interface PesetaType {
@@ -125,7 +124,7 @@ interface MintingYear {
 }
 ```
 
-**Estadísticas del JSON (2026-04-27):** 187 tipos, 692 entradas de mintingYears, 187/187 descripciones anverso/reverso, 158/187 descripciones de canto, 133/187 comentarios, 1/187 fotos de canto.
+**Estadísticas de los datos scrapeados (2026-04-27):** 187 tipos, 692 entradas de mintingYears, 187/187 descripciones anverso/reverso, 158/187 descripciones de canto, 133/187 comentarios, 1/187 fotos de canto.
 
 **Numista currency ID peseta:** `cu=142` (descubierto en `id="c_espagne142"` del HTML de la página de catálogo).
 
@@ -321,7 +320,7 @@ export const appConfig: ApplicationConfig = {
 | 2026-04-23 | **Conmemorativas**: módulo completo (solo lectura), agrupado por año asc, ordenado por país. Columna Ceca (150px), columna Álb/H/Pos solo admin. `maxWidth` input en `collection-layout`. Config en `conmemorativas.config.ts`. |
 | 2026-04-24 | **Scripts Numista**: `match-numista-ids-regular.mjs` asignó idNum a 4425 monedas (247 tipos). Todos los regulares tienen idNum. 370 conmemorativas pendientes en `scripts/pending-idnum-2026-04-24.md`. |
 | 2026-04-26 | **UX listados**: ellipsis en columna descripción de euros-year-coins. `search-state.helper.ts` con `sessionStorage` para persistir buscadores al navegar atrás (5 componentes). Conmemorativas: filas clickables con `?from=conmemorativas`, `coin-detail` ajusta backLink. |
-| 2026-04-27 | **Scraping pesetas**: script Python extrajo 187 tipos de pesetas circulantes (1868–2001) de Numista → `pesetas_circulantes.json`. 692 entradas mintingYears. Numista currency ID peseta: `cu=142`. |
+| 2026-04-27 | **Scraping pesetas**: script Python extrajo 187 tipos de pesetas circulantes (1868–2001) de Numista. 692 entradas mintingYears. Numista currency ID peseta: `cu=142`. |
 | 2026-04-28 | **Módulo pesetas completo**: tablas `peseta_type` (187) y `peseta` (525) en Supabase. `PesetasService` con join. Rutas: denominaciones, todas agrupadas, lista por `:faceValue`. Búsqueda en todos los listados. |
 | 2026-04-30 | **Detalle peseta** (`PesetaDetailComponent`): ruta `/:faceValue/:id` antes de `/:faceValue`. `PesetasService.getById()`. Layout idéntico a `coin-detail` (imágenes, descripciones, features-box con 14 campos + tirada con `DecimalPipe`). Sin llamada Numista. Filas clickables en list y all. |
 | 2026-05-05 | **Exportar Excel**: `ExcelExportService` en `shared/services/` con ExcelJS. Slot `[layout-actions]` en `CollectionLayoutComponent`. Botón "Exportar Excel" en `euros-year-coins`, `euros-all-coins` y `conmemorativas-list`. Cabeceras deep-navy con texto cream. Conmemorativas: una hoja por año. |

@@ -16,7 +16,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "echo '\n⚠️  Recuerda actualizar las secciones \"Estado actual\" y \"Log de implementación\" en CONTEXT.md antes de cerrar la sesión.' >&2"
+            "command": "echo '\n⚠️  Recuerda actualizar las secciones \"Estado actual\" y \"Log de implementación\" en CLAUDE.md antes de cerrar la sesión.' >&2"
           }
         ]
       }
