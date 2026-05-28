@@ -118,9 +118,17 @@ export class ConmemorativasListComponent {
 
   readonly groupedCoins = computed<YearGroup[]>(() => {
     const ownership = this.ownershipFilter();
+    const ambas = this.isAmbas();
     let base = this.allCoins();
-    if (ownership === 'owned') base = base.filter((c) => c.uds > 0);
-    else if (ownership === 'missing') base = base.filter((c) => c.uds === 0);
+    if (ownership === 'owned') {
+      base = ambas
+        ? base.filter((c) => c.uds > 0 && (c.udsAlt ?? 0) > 0)
+        : base.filter((c) => c.uds > 0);
+    } else if (ownership === 'missing') {
+      base = ambas
+        ? base.filter((c) => c.uds === 0 && (c.udsAlt ?? 0) === 0)
+        : base.filter((c) => c.uds === 0);
+    }
 
     const query = normalizeString(this.searchQuery());
     const filtered = base.filter(
