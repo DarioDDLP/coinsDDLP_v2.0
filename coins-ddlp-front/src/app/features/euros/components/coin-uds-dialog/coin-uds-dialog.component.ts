@@ -112,9 +112,11 @@ export class CoinUdsDialogComponent {
     const coin = this.coin();
     if (!coin) return;
 
-    const ownerId = this.showOwnerPicker()
-      ? OWNER_IDS[this.editingOwner()]
-      : (this.ownerService.primaryId() ?? OWNER_IDS.dario);
+    const ownerId = !this.authService.isAdmin()
+      ? this.authService.currentUser()!.uid
+      : this.showOwnerPicker()
+        ? OWNER_IDS[this.editingOwner()]
+        : (this.ownerService.primaryId() ?? OWNER_IDS.dario);
 
     this.errorMessage.set('');
     this.loading.set(true);

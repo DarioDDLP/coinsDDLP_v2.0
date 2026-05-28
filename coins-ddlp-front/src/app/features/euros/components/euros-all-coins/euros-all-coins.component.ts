@@ -22,7 +22,7 @@ import { ExcelExportService } from '../../../../shared/services/excel-export.ser
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
 import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
-import { OwnerService } from '../../../../core/services/owner.service';
+import { OwnerService, OWNER_IDS } from '../../../../core/services/owner.service';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 
 @Component({
@@ -107,9 +107,17 @@ export class EurosAllCoinsComponent {
 
   readonly coinRows = computed(() => {
     const ownership = this.ownershipFilter();
+    const ambas = this.isAmbas();
     let coins = this.allCoins();
-    if (ownership === 'owned') coins = coins.filter((c) => c.uds > 0);
-    else if (ownership === 'missing') coins = coins.filter((c) => c.uds === 0);
+    if (ownership === 'owned') {
+      coins = ambas
+        ? coins.filter((c) => c.uds > 0 && (c.udsAlt ?? 0) > 0)
+        : coins.filter((c) => c.uds > 0);
+    } else if (ownership === 'missing') {
+      coins = ambas
+        ? coins.filter((c) => c.uds === 0 && (c.udsAlt ?? 0) === 0)
+        : coins.filter((c) => c.uds === 0);
+    }
 
     const query = normalizeString(this.searchQuery());
     if (query) {
@@ -135,6 +143,14 @@ export class EurosAllCoinsComponent {
   });
 
   readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
+
+  readonly canEdit = computed(() => {
+    if (this.authService.isAdmin()) return true;
+    if (!this.authService.isLoggedIn()) return false;
+    const mode = this.ownerService.current();
+    if (mode === 'ambas') return false;
+    return this.authService.currentUser()?.uid === OWNER_IDS[mode];
+  });
   readonly hasMint = computed(() => this.allCoins().some((c) => c.mint));
   readonly hasNonCirculating = computed(() => this.coinRows().some((r) => !r.coin.circulation));
   readonly backLink = computed(() => ['/euros', this.country()]);

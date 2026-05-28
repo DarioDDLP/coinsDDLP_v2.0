@@ -129,13 +129,15 @@
                 </td>
               }
               <td style="text-align: center" (click)="$event.stopPropagation()">
-                @if (authService.isAdmin()) {
-                  <app-button
-                    icon="pi pi-plus-circle"
-                    variant="ghost"
-                    [tooltip]="literals.editCoin"
-                    (clicked)="onEditUnits(row.coin)"
-                  />
+                @if (canEdit()) {
+                  <div class="row-actions">
+                    <app-button
+                      icon="pi pi-plus-circle"
+                      variant="ghost"
+                      [tooltip]="literals.editCoin"
+                      (clicked)="onEditUnits(row.coin)"
+                    />
+                  </div>
                 }
               </td>
             </tr>
