@@ -184,6 +184,6 @@ export class EurosAllCoinsComponent {
 
   async exportExcel(): Promise<void> {
     const coins = this.coinRows().map((r) => r.coin);
-    await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint());
+    await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint(), this.isAmbas());
   }
 }

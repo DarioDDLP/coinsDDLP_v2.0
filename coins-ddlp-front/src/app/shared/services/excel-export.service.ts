@@ -26,6 +26,10 @@ export class ExcelExportService {
     size: 11,
   };
 
+  private conservation(code: string | undefined, uds: number): string {
+    return uds > 0 ? (code ?? '') : '';
+  }
+
   private styleHeader(row: ExcelJS.Row): void {
     row.eachCell((cell) => {
       cell.fill = this.HEADER_FILL;
@@ -53,6 +57,7 @@ export class ExcelExportService {
     country: string,
     year: number,
     hasMint: boolean,
+    isAmbas = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(`${country} ${year}`);
@@ -62,11 +67,22 @@ export class ExcelExportService {
       { header: 'Descripción', key: 'description', width: 42 },
     ];
     if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
-    cols.push(
-      { header: 'Conservación', key: 'conservation', width: 14 },
-      { header: 'Uds.', key: 'uds', width: 8 },
-      { header: 'Observaciones', key: 'observations', width: 32 },
-    );
+    if (isAmbas) {
+      cols.push(
+        { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
+        { header: 'Uds. (Darío)', key: 'uds', width: 12 },
+        { header: 'Observaciones (Darío)', key: 'observations', width: 32 },
+        { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
+        { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
+        { header: 'Observaciones (Manolo)', key: 'observationsAlt', width: 32 },
+      );
+    } else {
+      cols.push(
+        { header: 'Conservación', key: 'conservation', width: 14 },
+        { header: 'Uds.', key: 'uds', width: 8 },
+        { header: 'Observaciones', key: 'observations', width: 32 },
+      );
+    }
     ws.columns = cols;
     this.styleHeader(ws.getRow(1));
 
@@ -74,18 +90,29 @@ export class ExcelExportService {
       const row: Record<string, unknown> = {
         faceValue: c.faceValue,
         description: c.description,
-        conservation: c.conservation ?? '',
+        conservation: this.conservation(c.conservation, c.uds),
         uds: c.uds,
-        observations: c.observations ?? '',
+        observations: c.uds > 0 ? (c.observations ?? '') : '',
       };
       if (hasMint) row['mint'] = c.mint ?? '';
+      if (isAmbas) {
+        const udsAlt = c.udsAlt ?? 0;
+        row['conservationAlt'] = this.conservation(c.conservationAlt, udsAlt);
+        row['udsAlt'] = udsAlt;
+        row['observationsAlt'] = udsAlt > 0 ? (c.observationsAlt ?? '') : '';
+      }
       ws.addRow(row);
     }
 
     await this.download(wb, `euros_${country}_${year}.xlsx`);
   }
 
-  async exportEurosAll(coins: EuroCoin[], country: string, hasMint: boolean): Promise<void> {
+  async exportEurosAll(
+    coins: EuroCoin[],
+    country: string,
+    hasMint: boolean,
+    isAmbas = false,
+  ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(country);
 
@@ -95,11 +122,22 @@ export class ExcelExportService {
       { header: 'Descripción', key: 'description', width: 42 },
     ];
     if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
-    cols.push(
-      { header: 'Conservación', key: 'conservation', width: 14 },
-      { header: 'Uds.', key: 'uds', width: 8 },
-      { header: 'Observaciones', key: 'observations', width: 32 },
-    );
+    if (isAmbas) {
+      cols.push(
+        { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
+        { header: 'Uds. (Darío)', key: 'uds', width: 12 },
+        { header: 'Observaciones (Darío)', key: 'observations', width: 32 },
+        { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
+        { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
+        { header: 'Observaciones (Manolo)', key: 'observationsAlt', width: 32 },
+      );
+    } else {
+      cols.push(
+        { header: 'Conservación', key: 'conservation', width: 14 },
+        { header: 'Uds.', key: 'uds', width: 8 },
+        { header: 'Observaciones', key: 'observations', width: 32 },
+      );
+    }
     ws.columns = cols;
     this.styleHeader(ws.getRow(1));
 
@@ -108,18 +146,28 @@ export class ExcelExportService {
         year: c.year,
         faceValue: c.faceValue,
         description: c.description,
-        conservation: c.conservation ?? '',
+        conservation: this.conservation(c.conservation, c.uds),
         uds: c.uds,
-        observations: c.observations ?? '',
+        observations: c.uds > 0 ? (c.observations ?? '') : '',
       };
       if (hasMint) row['mint'] = c.mint ?? '';
+      if (isAmbas) {
+        const udsAlt = c.udsAlt ?? 0;
+        row['conservationAlt'] = this.conservation(c.conservationAlt, udsAlt);
+        row['udsAlt'] = udsAlt;
+        row['observationsAlt'] = udsAlt > 0 ? (c.observationsAlt ?? '') : '';
+      }
       ws.addRow(row);
     }
 
     await this.download(wb, `euros_${country}_todas.xlsx`);
   }
 
-  async exportConmemorativas(groups: ConmExportGroup[], isAdmin: boolean): Promise<void> {
+  async exportConmemorativas(
+    groups: ConmExportGroup[],
+    isAdmin: boolean,
+    isAmbas = false,
+  ): Promise<void> {
     const wb = new ExcelJS.Workbook();
 
     for (const group of groups) {
@@ -131,10 +179,19 @@ export class ExcelExportService {
         { header: 'Descripción', key: 'description', width: 52 },
       ];
       if (isAdmin) cols.push({ header: 'Álb / H / Pos', key: 'location', width: 16 });
-      cols.push(
-        { header: 'Conservación', key: 'conservation', width: 14 },
-        { header: 'Uds.', key: 'uds', width: 8 },
-      );
+      if (isAmbas) {
+        cols.push(
+          { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
+          { header: 'Uds. (Darío)', key: 'uds', width: 12 },
+          { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
+          { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
+        );
+      } else {
+        cols.push(
+          { header: 'Conservación', key: 'conservation', width: 14 },
+          { header: 'Uds.', key: 'uds', width: 8 },
+        );
+      }
       ws.columns = cols;
       this.styleHeader(ws.getRow(1));
 
@@ -143,11 +200,16 @@ export class ExcelExportService {
           country: r.coin.country,
           mint: r.coin.mint ?? '—',
           description: r.coin.description,
-          conservation: r.coin.conservation ?? '',
+          conservation: this.conservation(r.coin.conservation, r.coin.uds),
           uds: r.coin.uds,
         };
         if (isAdmin)
           row['location'] = `${r.location.album} / ${r.location.page} / ${r.location.position}`;
+        if (isAmbas) {
+          const udsAlt = r.coin.udsAlt ?? 0;
+          row['conservationAlt'] = this.conservation(r.coin.conservationAlt, udsAlt);
+          row['udsAlt'] = udsAlt;
+        }
         ws.addRow(row);
       }
     }

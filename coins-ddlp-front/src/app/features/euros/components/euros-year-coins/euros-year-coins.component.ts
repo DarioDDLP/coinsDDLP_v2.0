@@ -236,6 +236,7 @@ export class EurosYearCoinsComponent {
       this.country(),
       this.year()!,
       this.hasMint(),
+      this.isAmbas(),
     );
   }
 }

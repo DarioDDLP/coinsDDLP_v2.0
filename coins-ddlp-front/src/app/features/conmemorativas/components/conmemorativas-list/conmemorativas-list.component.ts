@@ -184,6 +184,10 @@ export class ConmemorativasListComponent {
   }
 
   async exportExcel(): Promise<void> {
-    await this.excelExport.exportConmemorativas(this.groupedCoins(), this.isAdmin());
+    await this.excelExport.exportConmemorativas(
+      this.groupedCoins(),
+      this.isAdmin(),
+      this.isAmbas(),
+    );
   }
 }
