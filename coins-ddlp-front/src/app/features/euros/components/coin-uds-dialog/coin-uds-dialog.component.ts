@@ -151,6 +151,7 @@ export class CoinUdsDialogComponent {
   private close(): void {
     this.errorMessage.set('');
     this.loading.set(false);
+    this.editingOwner.set('dario');
     this.closed.emit();
   }
 }

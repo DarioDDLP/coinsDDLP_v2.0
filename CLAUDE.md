@@ -290,7 +290,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-05-28
+> **Última actualización:** 2026-05-28 (sesión 14)
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
@@ -319,6 +319,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 | 2026-05-18 | **Detalle moneda**: distinguir error de cuota de Numista de un `idNum` ausente. **Estilos**: hover de fila más marcado, colores `rgba` centralizados en variables CSS. |
 | 2026-05-19 | **Reorganización del repo (sesión 12)**: `CONTEXT.md` renombrado a `CLAUDE.md` (auto-carga). Eliminado el proyecto npm muerto de la raíz (`package.json`, `node_modules`, `.env`) — eran de scripts de Node ya difuntos. `swagger.yaml` (spec API Numista) movido a la raíz. `.DS_Store` añadido al `.gitignore`. Migración RLS y `scrape_ucoin.py` añadidos a git. Borrado el proyecto base `coinsDDLP` v1. |
 | 2026-05-28 | **Segunda colección (Manolo) — completa**: Migración SQL `20260528000002_add_euro_ownership.sql`: tablas `owner` y `euro_ownership`, migración de datos de Darío, RLS + grants. `FilterPillsComponent` genérico con `OWNERSHIP_FILTER_OPTIONS` y `OWNER_FILTER_OPTIONS` (config separadas). `OwnerService` singleton (`dario/manolo/ambas`, persistido en sessionStorage). `EurosService` y `ConmemorativasService` con LEFT JOIN a `euro_ownership`, mapeo por modo, `update()` dividido entre `euro` y `euro_ownership`. 3 componentes de tabla con selector de owner (izquierda) + filtro posesión (derecha), recarga reactiva con `effect()`, columnas dobles en modo *ambas*. `coin-uds-dialog` con picker de colección visible solo en modo *ambas* + admin. `tools-add-euro` y `tools-add-year` simplificados: solo catálogo (`NewEuroCoin`), sin campos de posesión. |
+| 2026-05-28 | **Correcciones segunda colección (sesión 14)**: Permisos edición: `canEdit` computed en euros-year-coins y euros-all-coins (visible solo si el usuario logueado está viendo su propia colección; nunca en modo *ambas*). Pills de propietario visibles a todos (sin guarda admin). `coin-uds-dialog`: `ownerId` usa `authService.currentUser().uid` para no-admin; reset de `editingOwner` a 'dario' al cerrar el dialog. Filtros *obtenidas*/*faltantes* en modo *ambas* son simétricos (requieren la condición para los dos propietarios) en euros y conmemorativas. Excel: columnas dobles por propietario en modo *ambas*; conservación en blanco cuando `uds === 0`. `CoinRow` interface en conmemorativas completada con campos `Alt`. |
 
 ---
 

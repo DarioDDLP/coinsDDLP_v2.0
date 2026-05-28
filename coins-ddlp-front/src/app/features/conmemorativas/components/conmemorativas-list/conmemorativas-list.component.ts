@@ -37,6 +37,8 @@ interface CoinRow {
   coin: EuroCoin;
   conservationBadge: ReturnType<typeof getConservationBadge>;
   udsBadge: ReturnType<typeof getUdsBadge>;
+  conservationBadgeAlt: ReturnType<typeof getConservationBadge>;
+  udsBadgeAlt: ReturnType<typeof getUdsBadge> | null;
   location: AlbumLocation;
 }
 
