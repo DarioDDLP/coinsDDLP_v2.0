@@ -107,14 +107,14 @@ export class EurosAllCoinsComponent {
 
   readonly coinRows = computed(() => {
     const ownership = this.ownershipFilter();
-    const ambas = this.isAmbas();
+    const both = this.isBoth();
     let coins = this.allCoins();
     if (ownership === 'owned') {
-      coins = ambas
+      coins = both
         ? coins.filter((c) => c.uds > 0 && (c.udsAlt ?? 0) > 0)
         : coins.filter((c) => c.uds > 0);
     } else if (ownership === 'missing') {
-      coins = ambas
+      coins = both
         ? coins.filter((c) => c.uds === 0 && (c.udsAlt ?? 0) === 0)
         : coins.filter((c) => c.uds === 0);
     }
@@ -142,13 +142,13 @@ export class EurosAllCoinsComponent {
       }));
   });
 
-  readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
+  readonly isBoth = computed(() => this.ownerService.current() === 'both');
 
   readonly canEdit = computed(() => {
     if (this.authService.isAdmin()) return true;
     if (!this.authService.isLoggedIn()) return false;
     const mode = this.ownerService.current();
-    if (mode === 'ambas') return false;
+    if (mode === 'both') return false;
     return this.authService.currentUser()?.uid === OWNER_IDS[mode];
   });
   readonly hasMint = computed(() => this.allCoins().some((c) => c.mint));
@@ -184,6 +184,6 @@ export class EurosAllCoinsComponent {
 
   async exportExcel(): Promise<void> {
     const coins = this.coinRows().map((r) => r.coin);
-    await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint(), this.isAmbas());
+    await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint(), this.isBoth());
   }
 }

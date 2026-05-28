@@ -50,17 +50,17 @@
               }
               <th style="text-align: center">
                 {{ literals.colConservation }}
-                @if (isAmbas()) {
+                @if (isBoth()) {
                   ({{ sharedLiterals.ownerDario }})
                 }
               </th>
               <th style="text-align: center">
                 {{ literals.colUnits }}
-                @if (isAmbas()) {
+                @if (isBoth()) {
                   ({{ sharedLiterals.ownerDario }})
                 }
               </th>
-              @if (isAmbas()) {
+              @if (isBoth()) {
                 <th style="text-align: center">
                   {{ literals.colConservation }} ({{ sharedLiterals.ownerManolo }})
                 </th>
@@ -94,7 +94,7 @@
               <td style="text-align: center">
                 <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
               </td>
-              @if (isAmbas()) {
+              @if (isBoth()) {
                 <td style="text-align: center">
                   @if (row.conservationBadgeAlt) {
                     <app-badge

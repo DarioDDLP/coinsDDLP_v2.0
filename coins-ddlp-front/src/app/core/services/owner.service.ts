@@ -16,7 +16,7 @@ export class OwnerService {
 
   readonly primaryId = computed<string | null>(() => {
     const mode = this.current();
-    return mode === 'ambas' ? null : OWNER_IDS[mode];
+    return mode === 'both' ? null : OWNER_IDS[mode];
   });
 
   setOwner(slug: OwnerSlug): void {

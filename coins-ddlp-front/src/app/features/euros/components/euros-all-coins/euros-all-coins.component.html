@@ -56,17 +56,17 @@
               }
               <th style="text-align: center">
                 {{ literals.colConservation }}
-                @if (isAmbas()) {
+                @if (isBoth()) {
                   ({{ sharedLiterals.ownerDario }})
                 }
               </th>
               <th style="text-align: center">
                 {{ literals.colUnits }}
-                @if (isAmbas()) {
+                @if (isBoth()) {
                   ({{ sharedLiterals.ownerDario }})
                 }
               </th>
-              @if (isAmbas()) {
+              @if (isBoth()) {
                 <th style="text-align: center">
                   {{ literals.colConservation }} ({{ sharedLiterals.ownerManolo }})
                 </th>
@@ -80,7 +80,7 @@
 
           <ng-template pTemplate="groupheader" let-row>
             <tr class="year-group-header">
-              <td [attr.colspan]="isAmbas() ? (hasMint() ? 8 : 7) : hasMint() ? 6 : 5">
+              <td [attr.colspan]="isBoth() ? (hasMint() ? 8 : 7) : hasMint() ? 6 : 5">
                 {{ row.year }}
               </td>
             </tr>
@@ -109,7 +109,7 @@
               <td style="text-align: center">
                 <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
               </td>
-              @if (isAmbas()) {
+              @if (isBoth()) {
                 <td style="text-align: center">
                   @if (row.conservationBadgeAlt) {
                     <app-badge

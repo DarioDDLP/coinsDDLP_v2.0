@@ -65,7 +65,7 @@ export class CoinUdsDialogComponent {
   ];
 
   readonly showOwnerPicker = computed(
-    () => this.ownerService.current() === 'ambas' && this.authService.isAdmin(),
+    () => this.ownerService.current() === 'both' && this.authService.isAdmin(),
   );
 
   readonly editingOwner = signal<'dario' | 'manolo'>('dario');

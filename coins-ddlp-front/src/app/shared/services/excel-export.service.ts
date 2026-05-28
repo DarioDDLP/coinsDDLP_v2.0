@@ -57,7 +57,7 @@ export class ExcelExportService {
     country: string,
     year: number,
     hasMint: boolean,
-    isAmbas = false,
+    isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(`${country} ${year}`);
@@ -67,7 +67,7 @@ export class ExcelExportService {
       { header: 'Descripción', key: 'description', width: 42 },
     ];
     if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
-    if (isAmbas) {
+    if (isBoth) {
       cols.push(
         { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
         { header: 'Uds. (Darío)', key: 'uds', width: 12 },
@@ -95,7 +95,7 @@ export class ExcelExportService {
         observations: c.uds > 0 ? (c.observations ?? '') : '',
       };
       if (hasMint) row['mint'] = c.mint ?? '';
-      if (isAmbas) {
+      if (isBoth) {
         const udsAlt = c.udsAlt ?? 0;
         row['conservationAlt'] = this.conservation(c.conservationAlt, udsAlt);
         row['udsAlt'] = udsAlt;
@@ -111,7 +111,7 @@ export class ExcelExportService {
     coins: EuroCoin[],
     country: string,
     hasMint: boolean,
-    isAmbas = false,
+    isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(country);
@@ -122,7 +122,7 @@ export class ExcelExportService {
       { header: 'Descripción', key: 'description', width: 42 },
     ];
     if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
-    if (isAmbas) {
+    if (isBoth) {
       cols.push(
         { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
         { header: 'Uds. (Darío)', key: 'uds', width: 12 },
@@ -151,7 +151,7 @@ export class ExcelExportService {
         observations: c.uds > 0 ? (c.observations ?? '') : '',
       };
       if (hasMint) row['mint'] = c.mint ?? '';
-      if (isAmbas) {
+      if (isBoth) {
         const udsAlt = c.udsAlt ?? 0;
         row['conservationAlt'] = this.conservation(c.conservationAlt, udsAlt);
         row['udsAlt'] = udsAlt;
@@ -166,7 +166,7 @@ export class ExcelExportService {
   async exportConmemorativas(
     groups: ConmExportGroup[],
     isAdmin: boolean,
-    isAmbas = false,
+    isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
 
@@ -179,7 +179,7 @@ export class ExcelExportService {
         { header: 'Descripción', key: 'description', width: 52 },
       ];
       if (isAdmin) cols.push({ header: 'Álb / H / Pos', key: 'location', width: 16 });
-      if (isAmbas) {
+      if (isBoth) {
         cols.push(
           { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
           { header: 'Uds. (Darío)', key: 'uds', width: 12 },
@@ -205,7 +205,7 @@ export class ExcelExportService {
         };
         if (isAdmin)
           row['location'] = `${r.location.album} / ${r.location.page} / ${r.location.position}`;
-        if (isAmbas) {
+        if (isBoth) {
           const udsAlt = r.coin.udsAlt ?? 0;
           row['conservationAlt'] = this.conservation(r.coin.conservationAlt, udsAlt);
           row['udsAlt'] = udsAlt;

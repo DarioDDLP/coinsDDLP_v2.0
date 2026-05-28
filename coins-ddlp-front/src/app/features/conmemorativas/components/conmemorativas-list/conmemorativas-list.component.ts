@@ -120,14 +120,14 @@ export class ConmemorativasListComponent {
 
   readonly groupedCoins = computed<YearGroup[]>(() => {
     const ownership = this.ownershipFilter();
-    const ambas = this.isAmbas();
+    const both = this.isBoth();
     let base = this.allCoins();
     if (ownership === 'owned') {
-      base = ambas
+      base = both
         ? base.filter((c) => c.uds > 0 && (c.udsAlt ?? 0) > 0)
         : base.filter((c) => c.uds > 0);
     } else if (ownership === 'missing') {
-      base = ambas
+      base = both
         ? base.filter((c) => c.uds === 0 && (c.udsAlt ?? 0) === 0)
         : base.filter((c) => c.uds === 0);
     }
@@ -175,7 +175,7 @@ export class ConmemorativasListComponent {
       }));
   });
 
-  readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
+  readonly isBoth = computed(() => this.ownerService.current() === 'both');
   readonly isEmpty = computed(() => this.groupedCoins().length === 0);
 
   onSearch(query: string): void {
@@ -194,10 +194,6 @@ export class ConmemorativasListComponent {
   }
 
   async exportExcel(): Promise<void> {
-    await this.excelExport.exportConmemorativas(
-      this.groupedCoins(),
-      this.isAdmin(),
-      this.isAmbas(),
-    );
+    await this.excelExport.exportConmemorativas(this.groupedCoins(), this.isAdmin(), this.isBoth());
   }
 }

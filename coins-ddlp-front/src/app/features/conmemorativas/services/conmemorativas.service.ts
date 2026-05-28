@@ -39,7 +39,7 @@ export class ConmemorativasService {
     const ownerships = raw.euro_ownership ?? [];
     const mode = this.ownerService.current();
 
-    if (mode === 'ambas') {
+    if (mode === 'both') {
       const dario = ownerships.find((o) => o.owner_id === OWNER_IDS.dario);
       const manolo = ownerships.find((o) => o.owner_id === OWNER_IDS.manolo);
       return {
