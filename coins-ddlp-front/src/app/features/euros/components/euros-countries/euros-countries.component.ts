@@ -71,8 +71,6 @@ export class EurosCountriesComponent implements OnInit {
 
     const query = normalizeString(queryRaw);
 
-    console.log(`📊 Total de monedas cargadas: ${coins.length}`);
-
     // Agrupar por país y calcular min/max year
     const grouped = new Map<string, { minYear: number; maxYear: number }>();
 
@@ -92,8 +90,6 @@ export class EurosCountriesComponent implements OnInit {
       minYear,
       maxYear,
     }));
-
-    console.log(`🌍 Países encontrados: ${result.length}`, result.map((r) => r.country).sort());
 
     if (query) {
       result = result.filter((group) => normalizeString(group.country).includes(query));
