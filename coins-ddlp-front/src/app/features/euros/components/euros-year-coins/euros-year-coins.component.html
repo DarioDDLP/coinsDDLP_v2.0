@@ -28,6 +28,11 @@
       </span>
       <div class="filter-bar">
         <app-filter-pills
+          [options]="ownerOptions"
+          [value]="ownerService.current()"
+          (valueChange)="onOwnerChange($event)"
+        />
+        <app-filter-pills
           [options]="filterOptions"
           [value]="ownershipFilter()"
           (valueChange)="ownershipFilter.set($event)"
@@ -43,8 +48,26 @@
               @if (hasMint()) {
                 <th>{{ literals.colMint }}</th>
               }
-              <th style="text-align: center">{{ literals.colConservation }}</th>
-              <th style="text-align: center">{{ literals.colUnits }}</th>
+              <th style="text-align: center">
+                {{ literals.colConservation }}
+                @if (isAmbas()) {
+                  ({{ sharedLiterals.ownerDario }})
+                }
+              </th>
+              <th style="text-align: center">
+                {{ literals.colUnits }}
+                @if (isAmbas()) {
+                  ({{ sharedLiterals.ownerDario }})
+                }
+              </th>
+              @if (isAmbas()) {
+                <th style="text-align: center">
+                  {{ literals.colConservation }} ({{ sharedLiterals.ownerManolo }})
+                </th>
+                <th style="text-align: center">
+                  {{ literals.colUnits }} ({{ sharedLiterals.ownerManolo }})
+                </th>
+              }
               <th style="text-align: center"></th>
             </tr>
           </ng-template>
@@ -71,6 +94,25 @@
               <td style="text-align: center">
                 <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
               </td>
+              @if (isAmbas()) {
+                <td style="text-align: center">
+                  @if (row.conservationBadgeAlt) {
+                    <app-badge
+                      [label]="row.conservationBadgeAlt.label"
+                      [severity]="row.conservationBadgeAlt.severity"
+                      [tooltip]="row.conservationBadgeAlt.tooltip"
+                    />
+                  }
+                </td>
+                <td style="text-align: center">
+                  @if (row.udsBadgeAlt) {
+                    <app-badge
+                      [label]="row.udsBadgeAlt.label"
+                      [severity]="row.udsBadgeAlt.severity"
+                    />
+                  }
+                </td>
+              }
               <td style="text-align: center" (click)="$event.stopPropagation()">
                 @if (authService.isAdmin()) {
                   <div class="row-actions">

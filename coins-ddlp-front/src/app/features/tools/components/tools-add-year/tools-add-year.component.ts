@@ -96,13 +96,10 @@ export class ToolsAddYearComponent {
             year: this.targetYear(),
             faceValue: c.faceValue,
             description: c.description,
-            uds: 0,
-            conservation: 'ND',
             commemorative: c.commemorative,
             circulation: c.circulation,
             mint: c.mint,
             idNum: c.idNum,
-            observations: undefined,
           }),
         ),
       );

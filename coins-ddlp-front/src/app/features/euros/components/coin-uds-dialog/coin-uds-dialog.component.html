@@ -16,6 +16,17 @@
     </div>
   </ng-template>
   <div class="uds-form">
+    @if (showOwnerPicker()) {
+      <div class="uds-form__owner-picker">
+        <span class="uds-form__owner-label">{{ literals.editingFor }}</span>
+        <app-filter-pills
+          [options]="ownerPickerOptions"
+          [value]="editingOwner()"
+          (valueChange)="onOwnerPickerChange($event)"
+        />
+      </div>
+    }
+
     <app-text-input
       [label]="literals.unitsLabel"
       [value]="uds().toString()"

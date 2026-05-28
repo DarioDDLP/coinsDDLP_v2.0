@@ -82,6 +82,12 @@ export class SupabaseService {
     if (error) throw error;
   }
 
+  async upsert<T extends object>(tableName: TableName, data: T, onConflict: string): Promise<void> {
+    const { error } = await this.supabase.from(tableName).upsert(data as T, { onConflict });
+
+    if (error) throw error;
+  }
+
   async remove(tableName: TableName, id: string): Promise<void> {
     const { error } = await this.supabase.from(tableName).delete().eq('id', id);
 

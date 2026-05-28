@@ -1,4 +1,4 @@
-import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
 import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
@@ -23,6 +23,9 @@ import {
 } from '../../conmemorativas.config';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
+import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { OwnerService } from '../../../../core/services/owner.service';
+import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 
 interface AlbumLocation {
   album: number;
@@ -65,12 +68,13 @@ interface YearGroup {
   templateUrl: './conmemorativas-list.component.html',
   styleUrl: './conmemorativas-list.component.scss',
 })
-export class ConmemorativasListComponent implements OnInit {
+export class ConmemorativasListComponent {
   private service = inject(ConmemorativasService);
   private excelExport = inject(ExcelExportService);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   private authService = inject(AuthService);
+  readonly ownerService = inject(OwnerService);
 
   readonly isAdmin = this.authService.isAdmin;
 
@@ -78,15 +82,22 @@ export class ConmemorativasListComponent implements OnInit {
   readonly sharedLiterals = LITERALS.shared;
 
   private allCoins = signal<EuroCoin[]>([]);
-  readonly searchQuery = signal('');
+  readonly searchQuery = signal(restoreSearchQuery('conmemorativas'));
   readonly ownershipFilter = signal('all');
   readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
+  readonly ownerOptions = OWNER_FILTER_OPTIONS;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 
-  ngOnInit(): void {
-    this.searchQuery.set(restoreSearchQuery('conmemorativas'));
-    this.loadCoins();
+  constructor() {
+    this.setupReloadEffect();
+  }
+
+  private setupReloadEffect(): void {
+    effect(() => {
+      this.ownerService.current();
+      this.loadCoins();
+    });
   }
 
   loadCoins(): void {
@@ -145,16 +156,25 @@ export class ConmemorativasListComponent implements OnInit {
             coin,
             conservationBadge: getConservationBadge(coin.conservation),
             udsBadge: getUdsBadge(coin.uds),
+            conservationBadgeAlt: coin.conservationAlt
+              ? getConservationBadge(coin.conservationAlt)
+              : null,
+            udsBadgeAlt: coin.udsAlt !== undefined ? getUdsBadge(coin.udsAlt) : null,
             location: computeLocation(globalIndex++),
           })),
       }));
   });
 
+  readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
   readonly isEmpty = computed(() => this.groupedCoins().length === 0);
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery('conmemorativas', query);
+  }
+
+  onOwnerChange(slug: string): void {
+    this.ownerService.setOwner(slug as OwnerSlug);
   }
 
   onCoinClick(coin: EuroCoin): void {

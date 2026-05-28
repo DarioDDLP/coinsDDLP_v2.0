@@ -1,4 +1,4 @@
-import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -21,6 +21,9 @@ import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
+import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { OwnerService } from '../../../../core/services/owner.service';
+import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 
 @Component({
   selector: 'app-euros-all-coins',
@@ -37,13 +40,14 @@ import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership
   templateUrl: './euros-all-coins.component.html',
   styleUrl: './euros-all-coins.component.scss',
 })
-export class EurosAllCoinsComponent implements OnInit {
+export class EurosAllCoinsComponent {
   private eurosService = inject(EurosService);
   private excelExport = inject(ExcelExportService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   readonly authService = inject(AuthService);
+  readonly ownerService = inject(OwnerService);
 
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
@@ -52,6 +56,7 @@ export class EurosAllCoinsComponent implements OnInit {
   readonly searchQuery = signal('');
   readonly ownershipFilter = signal('all');
   readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
+  readonly ownerOptions = OWNER_FILTER_OPTIONS;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly dialogVisible = signal(false);
@@ -59,13 +64,27 @@ export class EurosAllCoinsComponent implements OnInit {
 
   private allCoins = signal<EuroCoin[]>([]);
 
-  ngOnInit(): void {
+  constructor() {
+    this.listenToRouteParams();
+    this.setupReloadEffect();
+  }
+
+  private listenToRouteParams(): void {
     this.route.params.subscribe((params) => {
       const currentCountry = params['country'] || '';
       this.country.set(currentCountry);
       if (currentCountry) {
         this.searchQuery.set(restoreSearchQuery(`euros-all-${currentCountry}`));
-        this.loadCoins(currentCountry);
+      }
+    });
+  }
+
+  private setupReloadEffect(): void {
+    effect(() => {
+      const country = this.country();
+      this.ownerService.current();
+      if (country) {
+        this.loadCoins(country);
       }
     });
   }
@@ -108,9 +127,14 @@ export class EurosAllCoinsComponent implements OnInit {
         year: coin.year,
         conservationBadge: getConservationBadge(coin.conservation),
         udsBadge: getUdsBadge(coin.uds),
+        conservationBadgeAlt: coin.conservationAlt
+          ? getConservationBadge(coin.conservationAlt)
+          : null,
+        udsBadgeAlt: coin.udsAlt !== undefined ? getUdsBadge(coin.udsAlt) : null,
       }));
   });
 
+  readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
   readonly hasMint = computed(() => this.allCoins().some((c) => c.mint));
   readonly hasNonCirculating = computed(() => this.coinRows().some((r) => !r.coin.circulation));
   readonly backLink = computed(() => ['/euros', this.country()]);
@@ -118,6 +142,10 @@ export class EurosAllCoinsComponent implements OnInit {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery(`euros-all-${this.country()}`, query);
+  }
+
+  onOwnerChange(slug: string): void {
+    this.ownerService.setOwner(slug as OwnerSlug);
   }
 
   onCoinClick(coin: EuroCoin): void {

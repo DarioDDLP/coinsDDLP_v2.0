@@ -17,6 +17,9 @@ export const LITERALS = {
     all: 'Todas',
     filterOwned: 'Obtenidas',
     filterMissing: 'Faltantes',
+    ownerDario: 'Darío',
+    ownerManolo: 'Manolo',
+    ownerBoth: 'Ambas',
     toastSuccess: 'Éxito',
     toastError: 'Error',
     toastInfo: 'Información',
@@ -87,6 +90,7 @@ export const LITERALS = {
     idNumLabel: 'ID Numista',
     descriptionLabel: 'Descripción',
     noObservations: 'Sin observaciones',
+    editingFor: 'Colección de',
     nonCirculatingLegend: 'Monedas sombreadas: no circulantes',
   },
 

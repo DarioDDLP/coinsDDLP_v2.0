@@ -16,6 +16,20 @@
   gap: 20px;
   padding: 8px 0 4px;
 
+  &__owner-picker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--surface-border);
+  }
+
+  &__owner-label {
+    font-size: var(--font-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-color-secondary);
+  }
+
   &__actions {
     display: flex;
     justify-content: flex-end;

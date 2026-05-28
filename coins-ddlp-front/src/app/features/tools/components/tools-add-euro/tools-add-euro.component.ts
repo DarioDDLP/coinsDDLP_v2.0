@@ -6,24 +6,15 @@ import {
   SelectComponent,
   SelectOption,
 } from '../../../../shared/components/select/select.component';
-import { TextareaComponent } from '../../../../shared/components/textarea/textarea.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
-import { ConservationCode } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { FACE_VALUE_OPTIONS, MINT_OPTIONS_GERMANY } from '../../tools.config';
-import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 
 @Component({
   selector: 'app-tools-add-euro',
-  imports: [
-    TextInputComponent,
-    SelectComponent,
-    TextareaComponent,
-    ToggleComponent,
-    ButtonComponent,
-  ],
+  imports: [TextInputComponent, SelectComponent, ToggleComponent, ButtonComponent],
   templateUrl: './tools-add-euro.component.html',
   styleUrl: './tools-add-euro.component.scss',
 })
@@ -34,7 +25,6 @@ export class ToolsAddEuroComponent {
 
   readonly literals = LITERALS.herramientas;
   readonly faceValueOptions = FACE_VALUE_OPTIONS;
-  readonly conservationOptions = CONSERVATION_OPTIONS;
   readonly mintOptions = MINT_OPTIONS_GERMANY;
 
   readonly countryOptions = signal<SelectOption[]>([]);
@@ -42,23 +32,14 @@ export class ToolsAddEuroComponent {
   readonly year = signal(0);
   readonly faceValue = signal('');
   readonly description = signal('');
-  readonly uds = signal(0);
-  readonly conservation = signal<ConservationCode | ''>('ND');
   readonly commemorative = signal(false);
   readonly circulation = signal(true);
   readonly mint = signal('');
   readonly idNum = signal('');
-  readonly observations = signal('');
   readonly loading = signal(false);
   readonly errorMessage = signal('');
 
   readonly isMintRequired = computed(() => this.country() === 'Alemania');
-  readonly isConservationLocked = computed(() => this.uds() === 0);
-  readonly availableConservationOptions = computed(() =>
-    this.isConservationLocked()
-      ? this.conservationOptions
-      : this.conservationOptions.filter((o) => o.value !== 'ND'),
-  );
 
   readonly isValid = computed(
     () =>
@@ -66,21 +47,13 @@ export class ToolsAddEuroComponent {
       this.year() > 0 &&
       !!this.faceValue() &&
       !!this.description() &&
-      (!this.isMintRequired() || !!this.mint()) &&
-      (this.isConservationLocked() || !!this.conservation()),
+      (!this.isMintRequired() || !!this.mint()),
   );
 
   constructor() {
     this.loadCountries();
     effect(() => {
       if (!this.isMintRequired()) this.mint.set('');
-    });
-    effect(() => {
-      if (this.isConservationLocked()) {
-        this.conservation.set('ND');
-      } else if (this.conservation() === 'ND') {
-        this.conservation.set('');
-      }
     });
   }
 
@@ -104,13 +77,10 @@ export class ToolsAddEuroComponent {
         year: this.year(),
         faceValue: this.faceValue(),
         description: this.description(),
-        uds: this.uds(),
-        conservation: this.conservation() as ConservationCode,
         commemorative: this.commemorative(),
         circulation: this.circulation(),
         mint: this.mint() || undefined,
         idNum: this.idNum(),
-        observations: this.observations() || undefined,
       });
       this.messageService.add({ ...TOAST_MESSAGES.herramientas.addSuccess, life: 3000 });
       this.resetForm();
@@ -127,12 +97,9 @@ export class ToolsAddEuroComponent {
     this.year.set(0);
     this.faceValue.set('');
     this.description.set('');
-    this.uds.set(0);
-    this.conservation.set('');
     this.commemorative.set(false);
     this.circulation.set(true);
     this.mint.set('');
     this.idNum.set('');
-    this.observations.set('');
   }
 }

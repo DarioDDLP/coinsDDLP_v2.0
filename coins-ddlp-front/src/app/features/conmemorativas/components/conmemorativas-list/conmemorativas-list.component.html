@@ -26,6 +26,11 @@
       </span>
       <div class="filter-bar">
         <app-filter-pills
+          [options]="ownerOptions"
+          [value]="ownerService.current()"
+          (valueChange)="onOwnerChange($event)"
+        />
+        <app-filter-pills
           [options]="filterOptions"
           [value]="ownershipFilter()"
           (valueChange)="ownershipFilter.set($event)"
@@ -48,8 +53,26 @@
                 @if (isAdmin()) {
                   <th style="width: 130px; text-align: center">{{ literals.colLocation }}</th>
                 }
-                <th style="width: 110px; text-align: center">{{ literals.colConservation }}</th>
-                <th style="width: 80px; text-align: center">{{ literals.colUnits }}</th>
+                <th style="width: 110px; text-align: center">
+                  {{ literals.colConservation }}
+                  @if (isAmbas()) {
+                    ({{ sharedLiterals.ownerDario }})
+                  }
+                </th>
+                <th style="width: 80px; text-align: center">
+                  {{ literals.colUnits }}
+                  @if (isAmbas()) {
+                    ({{ sharedLiterals.ownerDario }})
+                  }
+                </th>
+                @if (isAmbas()) {
+                  <th style="width: 110px; text-align: center">
+                    {{ literals.colConservation }} ({{ sharedLiterals.ownerManolo }})
+                  </th>
+                  <th style="width: 80px; text-align: center">
+                    {{ literals.colUnits }} ({{ sharedLiterals.ownerManolo }})
+                  </th>
+                }
               </tr>
             </ng-template>
             <ng-template pTemplate="body" let-row>
@@ -74,6 +97,25 @@
                 <td style="text-align: center">
                   <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
                 </td>
+                @if (isAmbas()) {
+                  <td style="text-align: center">
+                    @if (row.conservationBadgeAlt) {
+                      <app-badge
+                        [label]="row.conservationBadgeAlt.label"
+                        [severity]="row.conservationBadgeAlt.severity"
+                        [tooltip]="row.conservationBadgeAlt.tooltip"
+                      />
+                    }
+                  </td>
+                  <td style="text-align: center">
+                    @if (row.udsBadgeAlt) {
+                      <app-badge
+                        [label]="row.udsBadgeAlt.label"
+                        [severity]="row.udsBadgeAlt.severity"
+                      />
+                    }
+                  </td>
+                }
               </tr>
             </ng-template>
           </p-table>

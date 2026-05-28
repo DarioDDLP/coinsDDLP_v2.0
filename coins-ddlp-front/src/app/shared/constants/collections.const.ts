@@ -1,5 +1,7 @@
 export const TABLES = {
   euro: 'euro',
+  euroOwnership: 'euro_ownership',
+  owner: 'owner',
   peseta: 'peseta',
   pesetaType: 'peseta_type',
 } as const;

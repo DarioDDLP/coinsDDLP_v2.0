@@ -1,4 +1,4 @@
-import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
+import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
@@ -24,6 +24,9 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
+import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { OwnerService } from '../../../../core/services/owner.service';
+import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 
 @Component({
   selector: 'app-euros-year-coins',
@@ -41,7 +44,7 @@ import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
 })
-export class EurosYearCoinsComponent implements OnInit {
+export class EurosYearCoinsComponent {
   private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
   private excelExport = inject(ExcelExportService);
@@ -49,6 +52,7 @@ export class EurosYearCoinsComponent implements OnInit {
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   readonly authService = inject(AuthService);
+  readonly ownerService = inject(OwnerService);
 
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
@@ -67,20 +71,34 @@ export class EurosYearCoinsComponent implements OnInit {
 
   readonly ownershipFilter = signal('all');
   readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
+  readonly ownerOptions = OWNER_FILTER_OPTIONS;
 
-  ngOnInit(): void {
+  constructor() {
+    this.listenToRouteParams();
+    this.setupReloadEffect();
+  }
+
+  private listenToRouteParams(): void {
     this.route.params.subscribe((params) => {
       const currentCountry = params['country'] || '';
       const currentYear = params['year'] ? parseInt(params['year'], 10) : null;
-
       this.country.set(currentCountry);
       this.year.set(currentYear);
-
       if (currentCountry && currentYear !== null) {
         this.searchQuery.set(
           restoreSearchQuery(`euros-year-coins-${currentCountry}-${currentYear}`),
         );
-        this.loadCoins(currentCountry, currentYear);
+      }
+    });
+  }
+
+  private setupReloadEffect(): void {
+    effect(() => {
+      const country = this.country();
+      const year = this.year();
+      this.ownerService.current();
+      if (country && year !== null) {
+        this.loadCoins(country, year);
       }
     });
   }
@@ -116,11 +134,17 @@ export class EurosYearCoinsComponent implements OnInit {
     );
   });
 
+  readonly isAmbas = computed(() => this.ownerService.current() === 'ambas');
+
   readonly coinRows = computed(() =>
     this.coins().map((coin) => ({
       coin,
       conservationBadge: getConservationBadge(coin.conservation),
       udsBadge: getUdsBadge(coin.uds),
+      conservationBadgeAlt: coin.conservationAlt
+        ? getConservationBadge(coin.conservationAlt)
+        : null,
+      udsBadgeAlt: coin.udsAlt !== undefined ? getUdsBadge(coin.udsAlt) : null,
     })),
   );
 
@@ -140,6 +164,10 @@ export class EurosYearCoinsComponent implements OnInit {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery(`euros-year-coins-${this.country()}-${this.year()}`, query);
+  }
+
+  onOwnerChange(slug: string): void {
+    this.ownerService.setOwner(slug as OwnerSlug);
   }
 
   onCoinClick(coin: EuroCoin): void {
