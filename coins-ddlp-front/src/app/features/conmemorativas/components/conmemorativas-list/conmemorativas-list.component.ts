@@ -10,7 +10,10 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
-import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
+import {
+  restoreSearchQuery,
+  saveSearchQuery,
+} from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import {
@@ -33,12 +36,12 @@ interface CoinRow {
 }
 
 function computeLocation(index: number): AlbumLocation {
-  const album      = Math.floor(index / ALBUM_POSITIONS_PER_ALBUM) + 1;
+  const album = Math.floor(index / ALBUM_POSITIONS_PER_ALBUM) + 1;
   const withinAlbum = index % ALBUM_POSITIONS_PER_ALBUM;
-  const page       = Math.floor(withinAlbum / ALBUM_POSITIONS_PER_PAGE) + 1;
-  const withinPage  = withinAlbum % ALBUM_POSITIONS_PER_PAGE;
-  const row        = Math.floor(withinPage / ALBUM_POSITIONS_PER_ROW) + 1;
-  const col        = (withinPage % ALBUM_POSITIONS_PER_ROW) + 1;
+  const page = Math.floor(withinAlbum / ALBUM_POSITIONS_PER_PAGE) + 1;
+  const withinPage = withinAlbum % ALBUM_POSITIONS_PER_PAGE;
+  const row = Math.floor(withinPage / ALBUM_POSITIONS_PER_ROW) + 1;
+  const col = (withinPage % ALBUM_POSITIONS_PER_ROW) + 1;
   return { album, page, position: `${row}.${col}` };
 }
 
@@ -49,26 +52,32 @@ interface YearGroup {
 
 @Component({
   selector: 'app-conmemorativas-list',
-  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, EmptyPanelComponent, ButtonComponent],
+  imports: [
+    TableModule,
+    CollectionLayoutComponent,
+    BadgeComponent,
+    EmptyPanelComponent,
+    ButtonComponent,
+  ],
   templateUrl: './conmemorativas-list.component.html',
   styleUrl: './conmemorativas-list.component.scss',
 })
 export class ConmemorativasListComponent implements OnInit {
-  private service      = inject(ConmemorativasService);
-  private excelExport  = inject(ExcelExportService);
-  private router       = inject(Router);
+  private service = inject(ConmemorativasService);
+  private excelExport = inject(ExcelExportService);
+  private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
-  private authService  = inject(AuthService);
+  private authService = inject(AuthService);
 
   readonly isAdmin = this.authService.isAdmin;
 
-  readonly literals       = LITERALS.conmemorativas;
+  readonly literals = LITERALS.conmemorativas;
   readonly sharedLiterals = LITERALS.shared;
 
-  private allCoins    = signal<EuroCoin[]>([]);
+  private allCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal('');
-  readonly isReady     = signal(false);
-  readonly hasError    = signal(false);
+  readonly isReady = signal(false);
+  readonly hasError = signal(false);
 
   ngOnInit(): void {
     this.searchQuery.set(restoreSearchQuery('conmemorativas'));
@@ -79,18 +88,26 @@ export class ConmemorativasListComponent implements OnInit {
     this.hasError.set(false);
     this.isReady.set(false);
     this.service.getAll().subscribe({
-      next: coins => { this.allCoins.set(coins); this.isReady.set(true); },
-      error: (e)  => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      next: (coins) => {
+        this.allCoins.set(coins);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 
   readonly groupedCoins = computed<YearGroup[]>(() => {
     const query = normalizeString(this.searchQuery());
-    const filtered = this.allCoins().filter(c =>
-      !query ||
-      String(c.year).includes(query) ||
-      normalizeString(c.country).includes(query) ||
-      normalizeString(c.description).includes(query)
+    const filtered = this.allCoins().filter(
+      (c) =>
+        !query ||
+        String(c.year).includes(query) ||
+        normalizeString(c.country).includes(query) ||
+        normalizeString(c.description).includes(query),
     );
 
     const byYear = new Map<number, EuroCoin[]>();
@@ -114,7 +131,7 @@ export class ConmemorativasListComponent implements OnInit {
             if (mint !== 0) return mint;
             return a.description.localeCompare(b.description);
           })
-          .map(coin => ({
+          .map((coin) => ({
             coin,
             conservationBadge: getConservationBadge(coin.conservation),
             udsBadge: getUdsBadge(coin.uds),

@@ -8,16 +8,16 @@ export type TextInputType = 'text' | 'email' | 'password' | 'number';
   styleUrl: './text-input.component.scss',
 })
 export class TextInputComponent {
-  label        = input<string>('');
-  value        = input<string>('');
-  type         = input<TextInputType>('text');
-  placeholder  = input<string>('');
+  label = input<string>('');
+  value = input<string>('');
+  type = input<TextInputType>('text');
+  placeholder = input<string>('');
   autocomplete = input<string>('off');
-  disabled     = input<boolean>(false);
-  min          = input<number | null>(null);
-  max          = input<number | null>(null);
+  disabled = input<boolean>(false);
+  min = input<number | null>(null);
+  max = input<number | null>(null);
 
-  valueChange  = output<string>();
+  valueChange = output<string>();
   enterPressed = output<void>();
 
   onInput(event: Event): void {

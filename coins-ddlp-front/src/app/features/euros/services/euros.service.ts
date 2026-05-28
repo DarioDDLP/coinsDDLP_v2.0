@@ -12,43 +12,42 @@ export class EurosService implements IEurosRepository {
   private loading = inject(LoadingService);
 
   getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]> {
-    return this.supabase.getTableWhere<Pick<EuroCoin, 'country' | 'year'>>(
-      TABLES.euro,
-      (query) => query,
-      'country,year'
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<
+        Pick<EuroCoin, 'country' | 'year'>
+      >(TABLES.euro, (query) => query, 'country,year')
+      .pipe(this.loading.withLoading());
   }
 
   getByCountry(country: string): Observable<Pick<EuroCoin, 'year' | 'commemorative'>[]> {
-    return this.supabase.getTableWhere<Pick<EuroCoin, 'year' | 'commemorative'>>(
-      TABLES.euro,
-      (query) => query.eq('country', country),
-      'year,commemorative'
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<
+        Pick<EuroCoin, 'year' | 'commemorative'>
+      >(TABLES.euro, (query) => query.eq('country', country), 'year,commemorative')
+      .pipe(this.loading.withLoading());
   }
 
   getAllByCountry(country: string): Observable<EuroCoin[]> {
-    return this.supabase.getTableWhere<EuroCoin>(
-      TABLES.euro,
-      (query) => query.eq('country', country)
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<EuroCoin>(TABLES.euro, (query) => query.eq('country', country))
+      .pipe(this.loading.withLoading());
   }
 
   getByCountryAndYear(country: string, year: number): Observable<EuroCoin[]> {
-    return this.supabase.getTableWhere<EuroCoin>(
-      TABLES.euro,
-      (query) => query.eq('country', country).eq('year', year)
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<EuroCoin>(TABLES.euro, (query) =>
+        query.eq('country', country).eq('year', year),
+      )
+      .pipe(this.loading.withLoading());
   }
 
   getById(id: string): Observable<EuroCoin | null> {
-    return this.supabase.getTableWhere<EuroCoin>(
-      TABLES.euro,
-      (query) => query.eq('id', id)
-    ).pipe(
-      map(coins => coins[0] ?? null),
-      this.loading.withLoading()
-    );
+    return this.supabase
+      .getTableWhere<EuroCoin>(TABLES.euro, (query) => query.eq('id', id))
+      .pipe(
+        map((coins) => coins[0] ?? null),
+        this.loading.withLoading(),
+      );
   }
 
   async create(coin: Omit<EuroCoin, 'id'>): Promise<string> {

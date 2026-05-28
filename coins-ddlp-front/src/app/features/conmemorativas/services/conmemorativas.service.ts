@@ -8,12 +8,11 @@ import { TABLES } from '../../../shared/constants/collections.const';
 @Injectable({ providedIn: 'root' })
 export class ConmemorativasService {
   private supabase = inject(SupabaseService);
-  private loading  = inject(LoadingService);
+  private loading = inject(LoadingService);
 
   getAll(): Observable<EuroCoin[]> {
-    return this.supabase.getTableWhere<EuroCoin>(
-      TABLES.euro,
-      (query) => query.eq('commemorative', true)
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<EuroCoin>(TABLES.euro, (query) => query.eq('commemorative', true))
+      .pipe(this.loading.withLoading());
   }
 }

@@ -8,7 +8,10 @@ import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
-import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
+import {
+  restoreSearchQuery,
+  saveSearchQuery,
+} from '../../../../shared/helpers/search-state.helper';
 
 interface CountryGroup {
   country: string;
@@ -18,7 +21,13 @@ interface CountryGroup {
 
 @Component({
   selector: 'app-euros-countries',
-  imports: [CommonModule, RouterLink, CountryFlagComponent, CollectionLayoutComponent, EmptyPanelComponent],
+  imports: [
+    CommonModule,
+    RouterLink,
+    CountryFlagComponent,
+    CollectionLayoutComponent,
+    EmptyPanelComponent,
+  ],
   templateUrl: './euros-countries.component.html',
   styleUrl: './euros-countries.component.scss',
 })
@@ -44,8 +53,15 @@ export class EurosCountriesComponent implements OnInit {
     this.hasError.set(false);
     this.isReady.set(false);
     this.eurosService.getAll().subscribe({
-      next: coins => { this.allCoins.set(coins); this.isReady.set(true); },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      next: (coins) => {
+        this.allCoins.set(coins);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 
@@ -60,7 +76,7 @@ export class EurosCountriesComponent implements OnInit {
     // Agrupar por país y calcular min/max year
     const grouped = new Map<string, { minYear: number; maxYear: number }>();
 
-    coins.forEach(coin => {
+    coins.forEach((coin) => {
       if (!grouped.has(coin.country)) {
         grouped.set(coin.country, { minYear: coin.year, maxYear: coin.year });
       } else {
@@ -77,10 +93,10 @@ export class EurosCountriesComponent implements OnInit {
       maxYear,
     }));
 
-    console.log(`🌍 Países encontrados: ${result.length}`, result.map(r => r.country).sort());
+    console.log(`🌍 Países encontrados: ${result.length}`, result.map((r) => r.country).sort());
 
     if (query) {
-      result = result.filter(group => normalizeString(group.country).includes(query));
+      result = result.filter((group) => normalizeString(group.country).includes(query));
     }
 
     // Ordenar alfabéticamente
@@ -94,4 +110,3 @@ export class EurosCountriesComponent implements OnInit {
     saveSearchQuery('euros-countries', query);
   }
 }
-

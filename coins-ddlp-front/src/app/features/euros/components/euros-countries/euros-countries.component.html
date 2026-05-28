@@ -20,9 +20,7 @@
             <div class="country-card" [routerLink]="['/euros', group.country]">
               <app-country-flag [country]="group.country" [size]="64" />
               <span class="country-card__name">{{ group.country }}</span>
-              <span class="country-card__years">
-                {{ group.minYear }} — {{ group.maxYear }}
-              </span>
+              <span class="country-card__years"> {{ group.minYear }} — {{ group.maxYear }} </span>
             </div>
           }
         </div>

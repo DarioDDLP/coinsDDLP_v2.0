@@ -7,7 +7,10 @@ import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
-import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
+import {
+  restoreSearchQuery,
+  saveSearchQuery,
+} from '../../../../shared/helpers/search-state.helper';
 
 interface YearGroup {
   year: number;
@@ -39,7 +42,7 @@ export class EurosYearsComponent implements OnInit {
   private countryCoins = signal<Pick<EuroCoin, 'year' | 'commemorative'>[]>([]);
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const currentCountry = params['country'] || '';
       this.country.set(currentCountry);
 
@@ -54,14 +57,25 @@ export class EurosYearsComponent implements OnInit {
     this.hasError.set(false);
     this.isReady.set(false);
     this.eurosService.getByCountry(country).subscribe({
-      next: coins => { this.countryCoins.set(coins); this.isReady.set(true); },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      next: (coins) => {
+        this.countryCoins.set(coins);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 
   readonly totalCount = computed(() => this.countryCoins().length);
-  readonly totalRegular = computed(() => this.countryCoins().filter(c => !c.commemorative).length);
-  readonly totalCommemorative = computed(() => this.countryCoins().filter(c => c.commemorative).length);
+  readonly totalRegular = computed(
+    () => this.countryCoins().filter((c) => !c.commemorative).length,
+  );
+  readonly totalCommemorative = computed(
+    () => this.countryCoins().filter((c) => c.commemorative).length,
+  );
 
   readonly yearGroups = computed(() => {
     const coins = this.countryCoins();
@@ -72,7 +86,7 @@ export class EurosYearsComponent implements OnInit {
     // Agrupar por año (datos ya vienen filtrados por país desde Supabase)
     const grouped = new Map<number, { count: number; regular: number; commemorative: number }>();
 
-    coins.forEach(coin => {
+    coins.forEach((coin) => {
       const existing = grouped.get(coin.year) ?? { count: 0, regular: 0, commemorative: 0 };
       existing.count++;
       if (coin.commemorative) {
@@ -84,15 +98,17 @@ export class EurosYearsComponent implements OnInit {
     });
 
     // Convertir a array y filtrar por búsqueda
-    let result: YearGroup[] = Array.from(grouped.entries()).map(([year, { count, regular, commemorative }]) => ({
-      year,
-      count,
-      regular,
-      commemorative,
-    }));
+    let result: YearGroup[] = Array.from(grouped.entries()).map(
+      ([year, { count, regular, commemorative }]) => ({
+        year,
+        count,
+        regular,
+        commemorative,
+      }),
+    );
 
     if (query) {
-      result = result.filter(group => {
+      result = result.filter((group) => {
         const yearStr = group.year.toString();
         return yearStr.includes(query);
       });

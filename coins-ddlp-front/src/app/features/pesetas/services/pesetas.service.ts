@@ -8,28 +8,27 @@ import { TABLES } from '../../../shared/constants/collections.const';
 @Injectable({ providedIn: 'root' })
 export class PesetasService {
   private supabase = inject(SupabaseService);
-  private loading  = inject(LoadingService);
+  private loading = inject(LoadingService);
 
   getAll(): Observable<Peseta[]> {
-    return this.supabase.getTableWhere<Peseta>(
-      TABLES.peseta,
-      (query) => query,
-      '*, peseta_type(*)'
-    ).pipe(this.loading.withLoading());
+    return this.supabase
+      .getTableWhere<Peseta>(TABLES.peseta, (query) => query, '*, peseta_type(*)')
+      .pipe(this.loading.withLoading());
   }
 
-  async update(id: string, data: { uds: number; conservation: string | null; observations: string | null }): Promise<void> {
+  async update(
+    id: string,
+    data: { uds: number; conservation: string | null; observations: string | null },
+  ): Promise<void> {
     return this.supabase.update(TABLES.peseta, id, data);
   }
 
   getById(id: string): Observable<Peseta | null> {
-    return this.supabase.getTableWhere<Peseta>(
-      TABLES.peseta,
-      (query) => query.eq('id', id),
-      '*, peseta_type(*)'
-    ).pipe(
-      map(items => items[0] ?? null),
-      this.loading.withLoading()
-    );
+    return this.supabase
+      .getTableWhere<Peseta>(TABLES.peseta, (query) => query.eq('id', id), '*, peseta_type(*)')
+      .pipe(
+        map((items) => items[0] ?? null),
+        this.loading.withLoading(),
+      );
   }
 }

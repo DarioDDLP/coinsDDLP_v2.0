@@ -26,17 +26,12 @@
             [tooltip]="conservationBadge().tooltip"
             size="md"
           />
-          <app-badge
-            [label]="udsBadge().label"
-            [severity]="udsBadge().severity"
-            size="md"
-          />
+          <app-badge [label]="udsBadge().label" [severity]="udsBadge().severity" size="md" />
         </div>
       </div>
 
       <!-- Body -->
       <div class="detail-body">
-
         <!-- Columna izquierda: imágenes y descripciones -->
         <div class="detail-left">
           @if (peseta()!.peseta_type.imageObverse || peseta()!.peseta_type.imageReverse) {
@@ -107,7 +102,9 @@
               </div>
               <div class="feature-row">
                 <span class="feature-row__label">{{ literals.labelYears }}</span>
-                <span class="feature-row__value">{{ peseta()!.peseta_type.minYear }}–{{ peseta()!.peseta_type.maxYear }}</span>
+                <span class="feature-row__value"
+                  >{{ peseta()!.peseta_type.minYear }}–{{ peseta()!.peseta_type.maxYear }}</span
+                >
               </div>
               @if (peseta()!.peseta_type.composition) {
                 <div class="feature-row">
@@ -136,7 +133,9 @@
               @if (peseta()!.peseta_type.edgeDescription) {
                 <div class="feature-row">
                   <span class="feature-row__label">{{ literals.labelEdge }}</span>
-                  <span class="feature-row__value">{{ peseta()!.peseta_type.edgeDescription }}</span>
+                  <span class="feature-row__value">{{
+                    peseta()!.peseta_type.edgeDescription
+                  }}</span>
                 </div>
               }
               @if (peseta()!.peseta_type.orientation) {
@@ -172,13 +171,17 @@
               @if (peseta()!.peseta_type.engraverObverse) {
                 <div class="feature-row">
                   <span class="feature-row__label">{{ literals.labelEngraverObverse }}</span>
-                  <span class="feature-row__value">{{ peseta()!.peseta_type.engraverObverse }}</span>
+                  <span class="feature-row__value">{{
+                    peseta()!.peseta_type.engraverObverse
+                  }}</span>
                 </div>
               }
               @if (peseta()!.peseta_type.engraverReverse) {
                 <div class="feature-row">
                   <span class="feature-row__label">{{ literals.labelEngraverReverse }}</span>
-                  <span class="feature-row__value">{{ peseta()!.peseta_type.engraverReverse }}</span>
+                  <span class="feature-row__value">{{
+                    peseta()!.peseta_type.engraverReverse
+                  }}</span>
                 </div>
               }
               <div class="feature-row feature-row--separator">
@@ -188,7 +191,7 @@
               @if (peseta()!.mintage) {
                 <div class="feature-row">
                   <span class="feature-row__label">{{ literals.labelMintage }}</span>
-                  <span class="feature-row__value">{{ peseta()!.mintage | number:'1.0-0' }}</span>
+                  <span class="feature-row__value">{{ peseta()!.mintage | number: '1.0-0' }}</span>
                 </div>
               }
             </div>
@@ -201,7 +204,6 @@
             </p>
           </div>
         </div>
-
       </div>
     </app-collection-layout>
   }

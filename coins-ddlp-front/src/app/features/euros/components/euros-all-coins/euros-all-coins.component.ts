@@ -12,39 +12,50 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
-import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
+import {
+  restoreSearchQuery,
+  saveSearchQuery,
+} from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 
 @Component({
   selector: 'app-euros-all-coins',
-  imports: [CommonModule, TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, CoinUdsDialogComponent],
+  imports: [
+    CommonModule,
+    TableModule,
+    CollectionLayoutComponent,
+    BadgeComponent,
+    ButtonComponent,
+    EmptyPanelComponent,
+    CoinUdsDialogComponent,
+  ],
   templateUrl: './euros-all-coins.component.html',
   styleUrl: './euros-all-coins.component.scss',
 })
 export class EurosAllCoinsComponent implements OnInit {
-  private eurosService  = inject(EurosService);
-  private excelExport   = inject(ExcelExportService);
-  private route         = inject(ActivatedRoute);
-  private router        = inject(Router);
-  private errorHandler  = inject(ErrorHandler);
-  readonly authService  = inject(AuthService);
+  private eurosService = inject(EurosService);
+  private excelExport = inject(ExcelExportService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private errorHandler = inject(ErrorHandler);
+  readonly authService = inject(AuthService);
 
-  readonly literals       = LITERALS.euros;
+  readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
 
-  readonly country      = signal('');
-  readonly searchQuery  = signal('');
-  readonly isReady      = signal(false);
-  readonly hasError     = signal(false);
-  readonly dialogVisible  = signal(false);
-  readonly selectedCoin   = signal<EuroCoin | null>(null);
+  readonly country = signal('');
+  readonly searchQuery = signal('');
+  readonly isReady = signal(false);
+  readonly hasError = signal(false);
+  readonly dialogVisible = signal(false);
+  readonly selectedCoin = signal<EuroCoin | null>(null);
 
   private allCoins = signal<EuroCoin[]>([]);
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const currentCountry = params['country'] || '';
       this.country.set(currentCountry);
       if (currentCountry) {
@@ -58,8 +69,15 @@ export class EurosAllCoinsComponent implements OnInit {
     this.hasError.set(false);
     this.isReady.set(false);
     this.eurosService.getAllByCountry(country).subscribe({
-      next: coins => { this.allCoins.set(coins); this.isReady.set(true); },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      next: (coins) => {
+        this.allCoins.set(coins);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 
@@ -68,15 +86,16 @@ export class EurosAllCoinsComponent implements OnInit {
     let coins = this.allCoins();
 
     if (query) {
-      coins = coins.filter(c =>
-        normalizeString(c.faceValue).includes(query) ||
-        normalizeString(c.description).includes(query)
+      coins = coins.filter(
+        (c) =>
+          normalizeString(c.faceValue).includes(query) ||
+          normalizeString(c.description).includes(query),
       );
     }
 
     return [...coins]
-      .sort((a, b) => a.year !== b.year ? a.year - b.year : sortByFaceValue(a, b))
-      .map(coin => ({
+      .sort((a, b) => (a.year !== b.year ? a.year - b.year : sortByFaceValue(a, b)))
+      .map((coin) => ({
         coin,
         year: coin.year,
         conservationBadge: getConservationBadge(coin.conservation),
@@ -84,8 +103,8 @@ export class EurosAllCoinsComponent implements OnInit {
       }));
   });
 
-  readonly hasMint = computed(() => this.allCoins().some(c => c.mint));
-  readonly hasNonCirculating = computed(() => this.coinRows().some(r => !r.coin.circulation));
+  readonly hasMint = computed(() => this.allCoins().some((c) => c.mint));
+  readonly hasNonCirculating = computed(() => this.coinRows().some((r) => !r.coin.circulation));
   readonly backLink = computed(() => ['/euros', this.country()]);
 
   onSearch(query: string): void {
@@ -102,7 +121,9 @@ export class EurosAllCoinsComponent implements OnInit {
     this.dialogVisible.set(true);
   }
 
-  onDialogSaved(): void { this.loadCoins(this.country()); }
+  onDialogSaved(): void {
+    this.loadCoins(this.country());
+  }
 
   onDialogClosed(): void {
     this.dialogVisible.set(false);
@@ -110,7 +131,7 @@ export class EurosAllCoinsComponent implements OnInit {
   }
 
   async exportExcel(): Promise<void> {
-    const coins = this.coinRows().map(r => r.coin);
+    const coins = this.coinRows().map((r) => r.coin);
     await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint());
   }
 }

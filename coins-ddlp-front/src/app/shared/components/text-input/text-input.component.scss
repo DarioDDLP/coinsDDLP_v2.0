@@ -21,7 +21,9 @@
     font-family: var(--font-family);
     color: var(--deep-navy);
     background: #fff;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
 
     &:focus {
       outline: none;

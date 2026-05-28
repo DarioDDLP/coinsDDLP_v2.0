@@ -1,4 +1,13 @@
-import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ErrorHandler,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 import { PesetasService } from '../../services/pesetas.service';
@@ -18,23 +27,23 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
   styleUrl: './peseta-edit-dialog.component.scss',
 })
 export class PesetaEditDialogComponent {
-  private pesetasService  = inject(PesetasService);
-  private messageService  = inject(MessageService);
-  private errorHandler    = inject(ErrorHandler);
+  private pesetasService = inject(PesetasService);
+  private messageService = inject(MessageService);
+  private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
-  peseta  = input<Peseta | null>(null);
+  peseta = input<Peseta | null>(null);
 
-  saved  = output<void>();
+  saved = output<void>();
   closed = output<void>();
 
-  readonly literals       = LITERALS.pesetas;
+  readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
 
-  readonly uds          = signal(0);
+  readonly uds = signal(0);
   readonly conservation = signal('ND');
   readonly observations = signal('');
-  readonly loading      = signal(false);
+  readonly loading = signal(false);
   readonly errorMessage = signal('');
 
   readonly isConservationLocked = computed(() => this.uds() === 0);
@@ -42,7 +51,7 @@ export class PesetaEditDialogComponent {
   readonly availableConservationOptions = computed(() =>
     this.isConservationLocked()
       ? CONSERVATION_OPTIONS
-      : CONSERVATION_OPTIONS.filter(o => o.value !== 'ND')
+      : CONSERVATION_OPTIONS.filter((o) => o.value !== 'ND'),
   );
 
   constructor() {

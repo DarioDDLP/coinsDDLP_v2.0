@@ -13,16 +13,17 @@ export class NumistaService {
   readonly remaining = signal<number | null>(null);
 
   getCoinByIdNum(idNum: string): Observable<NumistaCoin> {
-    return this.http.get<NumistaCoin>(
-      `${environment.supabase.url}/functions/v1/numista-proxy?idNum=${idNum}`,
-      { observe: 'response' }
-    ).pipe(
-      tap(response => {
-        const remaining = response.headers.get('X-Numista-Remaining');
-        if (remaining !== null) this.remaining.set(+remaining);
-      }),
-      map(response => response.body!),
-      this.loading.withLoading()
-    );
+    return this.http
+      .get<NumistaCoin>(`${environment.supabase.url}/functions/v1/numista-proxy?idNum=${idNum}`, {
+        observe: 'response',
+      })
+      .pipe(
+        tap((response) => {
+          const remaining = response.headers.get('X-Numista-Remaining');
+          if (remaining !== null) this.remaining.set(+remaining);
+        }),
+        map((response) => response.body!),
+        this.loading.withLoading(),
+      );
   }
 }

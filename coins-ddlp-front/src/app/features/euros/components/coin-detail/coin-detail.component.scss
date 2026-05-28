@@ -34,7 +34,9 @@
     color: var(--deep-navy);
     line-height: 1.2;
 
-    @media (max-width: 576px) { font-size: 18px; }
+    @media (max-width: 576px) {
+      font-size: 18px;
+    }
   }
 
   &__badges {
@@ -43,7 +45,9 @@
     gap: 10px;
     margin-left: auto;
 
-    @media (max-width: 576px) { margin-left: 0; }
+    @media (max-width: 576px) {
+      margin-left: 0;
+    }
   }
 }
 
@@ -64,7 +68,9 @@
   flex-direction: column;
   gap: 16px;
 
-  @media (max-width: 900px) { width: 100%; }
+  @media (max-width: 900px) {
+    width: 100%;
+  }
 }
 
 .coin-images {
@@ -119,8 +125,12 @@
   opacity: 0.7;
   transition: opacity 0.15s;
 
-  &:hover { opacity: 1; }
-  &:visited { color: var(--cobalt); }
+  &:hover {
+    opacity: 1;
+  }
+  &:visited {
+    color: var(--cobalt);
+  }
 }
 
 .coin-img-placeholder {
@@ -134,7 +144,9 @@
   justify-content: center;
   color: #c0c0c0;
 
-  i { font-size: 48px; }
+  i {
+    font-size: 48px;
+  }
 }
 
 .numista-no-id {
@@ -152,12 +164,14 @@
   flex-direction: column;
   gap: 20px;
 
-  @media (max-width: 900px) { width: 100%; }
+  @media (max-width: 900px) {
+    width: 100%;
+  }
 }
 
 // --- Features box ---
 .features-box {
-  background: #F5E8C7;
+  background: #f5e8c7;
   border-radius: 15px;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.15);
   overflow: hidden;
@@ -182,7 +196,9 @@
   padding: 5px 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-  &:last-child { border-bottom: none; }
+  &:last-child {
+    border-bottom: none;
+  }
 
   &__label {
     width: 35%;

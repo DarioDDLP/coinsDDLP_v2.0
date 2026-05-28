@@ -7,11 +7,29 @@
   letter-spacing: 0.03em;
   white-space: nowrap;
 
-  &--success   { background: var(--state-success-bg);   color: var(--state-success-text); }
-  &--info      { background: var(--state-info-bg);      color: var(--state-info-text); }
-  &--warn      { background: var(--state-warn-bg);      color: var(--state-warn-text); }
-  &--danger    { background: var(--state-danger-bg);    color: var(--state-danger-text); }
-  &--secondary { background: var(--state-secondary-bg); color: var(--state-secondary-text); }
+  &--success {
+    background: var(--state-success-bg);
+    color: var(--state-success-text);
+  }
+  &--info {
+    background: var(--state-info-bg);
+    color: var(--state-info-text);
+  }
+  &--warn {
+    background: var(--state-warn-bg);
+    color: var(--state-warn-text);
+  }
+  &--danger {
+    background: var(--state-danger-bg);
+    color: var(--state-danger-text);
+  }
+  &--secondary {
+    background: var(--state-secondary-bg);
+    color: var(--state-secondary-text);
+  }
 
-  &--md { font-size: 14px; padding: 4px 12px; }
+  &--md {
+    font-size: 14px;
+    padding: 4px 12px;
+  }
 }

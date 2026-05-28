@@ -12,11 +12,7 @@
     <div class="login-form">
       <p class="login-form__confirm-message">{{ literals.logoutConfirm }}</p>
       <div class="login-form__actions login-form__actions--spread">
-        <app-button
-          [label]="sharedLiterals.cancel"
-          variant="primary"
-          (clicked)="onHide()"
-        />
+        <app-button [label]="sharedLiterals.cancel" variant="primary" (clicked)="onHide()" />
         <app-button
           [label]="sharedLiterals.confirm"
           variant="danger"

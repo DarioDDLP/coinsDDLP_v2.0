@@ -9,7 +9,13 @@ import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, SidebarComponent, LoadingSpinnerComponent, Toast, RecoveryPasswordDialogComponent],
+  imports: [
+    RouterOutlet,
+    SidebarComponent,
+    LoadingSpinnerComponent,
+    Toast,
+    RecoveryPasswordDialogComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

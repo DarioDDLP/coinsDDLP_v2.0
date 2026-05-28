@@ -10,14 +10,14 @@ import { LITERALS } from '../../constants/literals';
   styleUrl: './confirm-dialog.component.scss',
 })
 export class ConfirmDialogComponent {
-  visible      = input<boolean>(false);
-  header       = input<string>('');
-  message      = input<string>('');
+  visible = input<boolean>(false);
+  header = input<string>('');
+  message = input<string>('');
   confirmLabel = input<string>(LITERALS.shared.confirm);
-  loading      = input<boolean>(false);
+  loading = input<boolean>(false);
 
   confirmed = output<void>();
-  closed    = output<void>();
+  closed = output<void>();
 
   readonly cancelLabel = LITERALS.shared.cancel;
 }

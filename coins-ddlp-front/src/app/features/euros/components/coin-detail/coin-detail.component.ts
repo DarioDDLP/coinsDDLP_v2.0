@@ -47,7 +47,7 @@ export class CoinDetailComponent implements OnInit {
 
   readonly references = computed(() => {
     return (this.numista()?.references ?? [])
-      .map(r => `${r.catalogue.code} ${r.number}`)
+      .map((r) => `${r.catalogue.code} ${r.number}`)
       .join(' · ');
   });
 
@@ -69,13 +69,19 @@ export class CoinDetailComponent implements OnInit {
     const year = this.route.snapshot.paramMap.get('year')!;
 
     this.eurosService.getById(id).subscribe({
-      next: coin => {
-        if (!coin) { this.router.navigate(['/euros', country, year]); return; }
+      next: (coin) => {
+        if (!coin) {
+          this.router.navigate(['/euros', country, year]);
+          return;
+        }
         this.coin.set(coin);
 
         if (coin.idNum && coin.idNum !== '0') {
           this.numistaService.getCoinByIdNum(coin.idNum).subscribe({
-            next: (data) => { this.numista.set(data); this.isReady.set(true); },
+            next: (data) => {
+              this.numista.set(data);
+              this.isReady.set(true);
+            },
             error: (e) => {
               this.errorHandler.handleError(e);
               if (e?.status === 429) this.numistaQuotaError.set(true);
@@ -87,7 +93,11 @@ export class CoinDetailComponent implements OnInit {
           this.isReady.set(true);
         }
       },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 

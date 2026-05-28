@@ -2,10 +2,12 @@
   width: 260px;
   min-height: 100vh;
   padding: 24px 14px;
-  background: linear-gradient(180deg,
-      rgba(var(--cream-rgb), 0.97) 0%,
-      rgba(var(--gold-tan-rgb), 0.65) 50%,
-      rgba(var(--cream-rgb), 0.97) 100%);
+  background: linear-gradient(
+    180deg,
+    rgba(var(--cream-rgb), 0.97) 0%,
+    rgba(var(--gold-tan-rgb), 0.65) 50%,
+    rgba(var(--cream-rgb), 0.97) 100%
+  );
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow: 4px 0 24px rgba(var(--midnight-rgb), 0.25);
@@ -61,7 +63,9 @@
     color: var(--cobalt);
     font-size: 14px;
     font-weight: 500;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition:
+      background 0.15s,
+      box-shadow 0.15s;
 
     &:hover {
       background: rgba(var(--gold-tan-rgb), 0.2); // gold-tan suave

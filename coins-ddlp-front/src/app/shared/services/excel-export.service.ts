@@ -27,7 +27,7 @@ export class ExcelExportService {
   };
 
   private styleHeader(row: ExcelJS.Row): void {
-    row.eachCell(cell => {
+    row.eachCell((cell) => {
       cell.fill = this.HEADER_FILL;
       cell.font = this.HEADER_FONT;
       cell.alignment = { vertical: 'middle', horizontal: 'left' };
@@ -48,7 +48,12 @@ export class ExcelExportService {
     URL.revokeObjectURL(url);
   }
 
-  async exportEurosYear(coins: EuroCoin[], country: string, year: number, hasMint: boolean): Promise<void> {
+  async exportEurosYear(
+    coins: EuroCoin[],
+    country: string,
+    year: number,
+    hasMint: boolean,
+  ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(`${country} ${year}`);
 
@@ -141,7 +146,8 @@ export class ExcelExportService {
           conservation: r.coin.conservation ?? '',
           uds: r.coin.uds,
         };
-        if (isAdmin) row['location'] = `${r.location.album} / ${r.location.page} / ${r.location.position}`;
+        if (isAdmin)
+          row['location'] = `${r.location.album} / ${r.location.page} / ${r.location.position}`;
         ws.addRow(row);
       }
     }

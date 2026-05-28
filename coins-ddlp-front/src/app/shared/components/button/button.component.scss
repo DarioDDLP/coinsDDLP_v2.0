@@ -10,7 +10,10 @@
   font-weight: var(--font-semibold);
   letter-spacing: var(--letter-spacing-wide);
   cursor: pointer;
-  transition: background 0.15s, opacity 0.15s, box-shadow 0.15s;
+  transition:
+    background 0.15s,
+    opacity 0.15s,
+    box-shadow 0.15s;
 
   i {
     font-size: 14px;

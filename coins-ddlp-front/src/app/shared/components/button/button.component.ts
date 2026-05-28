@@ -10,13 +10,13 @@ export type ButtonVariant = 'primary' | 'secondary' | 'tertiary' | 'danger' | 'g
   styleUrl: './button.component.scss',
 })
 export class ButtonComponent {
-  label    = input<string>('');
-  variant  = input<ButtonVariant>('primary');
-  icon     = input<string>('');
+  label = input<string>('');
+  variant = input<ButtonVariant>('primary');
+  icon = input<string>('');
   disabled = input<boolean>(false);
-  loading  = input<boolean>(false);
-  type     = input<'button' | 'submit'>('button');
-  tooltip  = input<string>('');
+  loading = input<boolean>(false);
+  type = input<'button' | 'submit'>('button');
+  tooltip = input<string>('');
 
   clicked = output<void>();
 

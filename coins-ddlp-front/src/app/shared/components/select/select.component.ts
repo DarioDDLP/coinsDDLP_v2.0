@@ -14,11 +14,11 @@ export interface SelectOption {
   styleUrl: './select.component.scss',
 })
 export class SelectComponent {
-  label       = input<string>('');
-  value       = input<string>('');
-  options     = input<SelectOption[]>([]);
+  label = input<string>('');
+  value = input<string>('');
+  options = input<SelectOption[]>([]);
   placeholder = input<string>('');
-  disabled    = input<boolean>(false);
+  disabled = input<boolean>(false);
 
   valueChange = output<string>();
 }

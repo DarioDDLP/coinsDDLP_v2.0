@@ -10,7 +10,13 @@ import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, CountryFlagComponent, ButtonComponent, LoginDialogComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    CountryFlagComponent,
+    ButtonComponent,
+    LoginDialogComponent,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })

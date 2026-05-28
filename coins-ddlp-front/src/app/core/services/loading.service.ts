@@ -20,9 +20,10 @@ export class LoadingService {
 
   // defer: showLoading corre al suscribirse, no al construir el pipe
   withLoading<T>(): MonoTypeOperatorFunction<T> {
-    return (source) => defer(() => {
-      this.showLoading();
-      return source.pipe(finalize(() => this.hideLoading()));
-    });
+    return (source) =>
+      defer(() => {
+        this.showLoading();
+        return source.pipe(finalize(() => this.hideLoading()));
+      });
   }
 }

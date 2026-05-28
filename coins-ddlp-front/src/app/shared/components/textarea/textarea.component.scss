@@ -22,7 +22,9 @@
     color: var(--deep-navy);
     background: #fff;
     resize: vertical;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
 
     &:focus {
       outline: none;

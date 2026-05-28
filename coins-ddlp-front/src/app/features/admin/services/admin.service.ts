@@ -12,26 +12,37 @@ export class AdminService {
   private edgeFunctionUrl = `${environment.supabase.url}/functions/v1/admin-users`;
 
   getUsers(): Observable<AppUser[]> {
-    return this.withAuth((headers) =>
-      this.http.get<AppUser[]>(this.edgeFunctionUrl, { headers })
-    );
+    return this.withAuth((headers) => this.http.get<AppUser[]>(this.edgeFunctionUrl, { headers }));
   }
 
-  createUser(email: string, password: string, displayName: string, role: string): Observable<AppUser> {
+  createUser(
+    email: string,
+    password: string,
+    displayName: string,
+    role: string,
+  ): Observable<AppUser> {
     return this.withAuth((headers) =>
-      this.http.post<AppUser>(this.edgeFunctionUrl, { email, password, displayName, role }, { headers })
+      this.http.post<AppUser>(
+        this.edgeFunctionUrl,
+        { email, password, displayName, role },
+        { headers },
+      ),
     );
   }
 
   updateUser(uid: string, displayName: string, role: string): Observable<AppUser> {
     return this.withAuth((headers) =>
-      this.http.patch<AppUser>(`${this.edgeFunctionUrl}/${uid}`, { displayName, role }, { headers })
+      this.http.patch<AppUser>(
+        `${this.edgeFunctionUrl}/${uid}`,
+        { displayName, role },
+        { headers },
+      ),
     );
   }
 
   deleteUser(uid: string): Observable<void> {
     return this.withAuth((headers) =>
-      this.http.delete<void>(`${this.edgeFunctionUrl}/${uid}`, { headers })
+      this.http.delete<void>(`${this.edgeFunctionUrl}/${uid}`, { headers }),
     );
   }
 
@@ -42,7 +53,7 @@ export class AdminService {
           Authorization: `Bearer ${session?.access_token ?? ''}`,
         });
         return fn(headers);
-      })
+      }),
     );
   }
 }

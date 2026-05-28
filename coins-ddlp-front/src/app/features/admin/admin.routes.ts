@@ -9,8 +9,6 @@ export const adminRoutes: Routes = [
   {
     path: 'usuarios',
     loadComponent: () =>
-      import('./components/admin-users/admin-users.component').then(
-        (m) => m.AdminUsersComponent
-      ),
+      import('./components/admin-users/admin-users.component').then((m) => m.AdminUsersComponent),
   },
 ];

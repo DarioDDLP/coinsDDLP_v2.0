@@ -6,11 +6,11 @@ import { Component, input, output } from '@angular/core';
   styleUrl: './textarea.component.scss',
 })
 export class TextareaComponent {
-  label       = input<string>('');
-  value       = input<string>('');
+  label = input<string>('');
+  value = input<string>('');
   placeholder = input<string>('');
-  rows        = input<number>(3);
-  disabled    = input<boolean>(false);
+  rows = input<number>(3);
+  disabled = input<boolean>(false);
 
   valueChange = output<string>();
 

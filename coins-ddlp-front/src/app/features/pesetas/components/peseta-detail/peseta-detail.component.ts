@@ -16,24 +16,26 @@ import { LITERALS } from '../../../../shared/constants/literals';
   styleUrl: './peseta-detail.component.scss',
 })
 export class PesetaDetailComponent implements OnInit {
-  private route        = inject(ActivatedRoute);
-  private router       = inject(Router);
-  private service      = inject(PesetasService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private service = inject(PesetasService);
   private errorHandler = inject(ErrorHandler);
 
-  readonly literals       = LITERALS.pesetaDetail;
+  readonly literals = LITERALS.pesetaDetail;
   readonly sharedLiterals = LITERALS.shared;
 
-  readonly peseta   = signal<Peseta | null>(null);
-  readonly isReady  = signal(false);
+  readonly peseta = signal<Peseta | null>(null);
+  readonly isReady = signal(false);
   readonly hasError = signal(false);
 
-  readonly conservationBadge = computed(() => getConservationBadge(this.peseta()?.conservation ?? undefined));
-  readonly udsBadge          = computed(() => getUdsBadge(this.peseta()?.uds ?? 0));
+  readonly conservationBadge = computed(() =>
+    getConservationBadge(this.peseta()?.conservation ?? undefined),
+  );
+  readonly udsBadge = computed(() => getUdsBadge(this.peseta()?.uds ?? 0));
 
   readonly backLink = computed(() => {
     const faceValue = this.route.snapshot.paramMap.get('faceValue') ?? '';
-    const from      = this.route.snapshot.queryParamMap.get('from');
+    const from = this.route.snapshot.queryParamMap.get('from');
     return from === 'all' ? ['/pesetas', 'all'] : ['/pesetas', faceValue];
   });
 
@@ -43,16 +45,23 @@ export class PesetaDetailComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    const id        = this.route.snapshot.paramMap.get('id')!;
+    const id = this.route.snapshot.paramMap.get('id')!;
     const faceValue = this.route.snapshot.paramMap.get('faceValue')!;
 
     this.service.getById(id).subscribe({
-      next: peseta => {
-        if (!peseta) { this.router.navigate(['/pesetas', faceValue]); return; }
+      next: (peseta) => {
+        if (!peseta) {
+          this.router.navigate(['/pesetas', faceValue]);
+          return;
+        }
         this.peseta.set(peseta);
         this.isReady.set(true);
       },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 }

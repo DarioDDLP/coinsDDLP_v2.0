@@ -1,4 +1,13 @@
-import { Component, computed, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ErrorHandler,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 import { AdminService } from '../../services/admin.service';
@@ -22,7 +31,7 @@ export class AdminUserDialogComponent {
   private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
-  user    = input<AppUser | null>(null);
+  user = input<AppUser | null>(null);
 
   saved = output<void>();
   closed = output<void>();
@@ -40,11 +49,9 @@ export class AdminUserDialogComponent {
 
   readonly isEditMode = computed(() => !!this.user());
   readonly header = computed(() =>
-    this.isEditMode() ? this.literals.editTitle : this.literals.createTitle
+    this.isEditMode() ? this.literals.editTitle : this.literals.createTitle,
   );
-  readonly canSubmit = computed(() =>
-    this.isEditMode() || (!!this.email() && !!this.password())
-  );
+  readonly canSubmit = computed(() => this.isEditMode() || (!!this.email() && !!this.password()));
 
   readonly roleOptions = ROLE_OPTIONS;
 
@@ -65,7 +72,12 @@ export class AdminUserDialogComponent {
 
     const obs$ = this.isEditMode()
       ? this.adminService.updateUser(this.user()!.uid, this.displayName(), this.role())
-      : this.adminService.createUser(this.email(), this.password(), this.displayName(), this.role());
+      : this.adminService.createUser(
+          this.email(),
+          this.password(),
+          this.displayName(),
+          this.role(),
+        );
 
     obs$.subscribe({
       next: () => {

@@ -14,32 +14,39 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
 
 @Component({
   selector: 'app-coin-uds-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, TextareaComponent, ToggleComponent],
+  imports: [
+    Dialog,
+    ButtonComponent,
+    TextInputComponent,
+    SelectComponent,
+    TextareaComponent,
+    ToggleComponent,
+  ],
   templateUrl: './coin-uds-dialog.component.html',
   styleUrl: './coin-uds-dialog.component.scss',
 })
 export class CoinUdsDialogComponent {
-  private eurosService  = inject(EurosService);
+  private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
-  private errorHandler  = inject(ErrorHandler);
+  private errorHandler = inject(ErrorHandler);
 
   visible = input<boolean>(false);
-  coin    = input<EuroCoin | null>(null);
+  coin = input<EuroCoin | null>(null);
 
-  saved  = output<void>();
+  saved = output<void>();
   closed = output<void>();
 
-  readonly literals       = LITERALS.euros;
+  readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
   readonly conservationOptions = CONSERVATION_OPTIONS;
 
-  readonly uds          = signal(0);
+  readonly uds = signal(0);
   readonly conservation = signal<ConservationCode>('ND');
   readonly observations = signal('');
-  readonly circulation  = signal(true);
-  readonly idNum        = signal('');
-  readonly description  = signal('');
-  readonly loading      = signal(false);
+  readonly circulation = signal(true);
+  readonly idNum = signal('');
+  readonly description = signal('');
+  readonly loading = signal(false);
   readonly errorMessage = signal('');
 
   constructor() {

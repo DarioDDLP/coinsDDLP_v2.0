@@ -14,7 +14,13 @@ import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 
 @Component({
   selector: 'app-admin-users',
-  imports: [TableModule, ButtonComponent, AdminUserDialogComponent, ConfirmDialogComponent, BadgeComponent],
+  imports: [
+    TableModule,
+    ButtonComponent,
+    AdminUserDialogComponent,
+    ConfirmDialogComponent,
+    BadgeComponent,
+  ],
   templateUrl: './admin-users.component.html',
   styleUrl: './admin-users.component.scss',
 })
@@ -35,21 +41,22 @@ export class AdminUsersComponent implements OnInit {
         if (roleDiff !== 0) return roleDiff;
         return (a.email ?? '').localeCompare(b.email ?? '');
       })
-      .map(user => ({ user, roleBadge: getRoleBadge(user.role) }))
+      .map((user) => ({ user, roleBadge: getRoleBadge(user.role) })),
   );
-  readonly isReady             = signal(false);
-  readonly dialogVisible       = signal(false);
-  readonly editingUser         = signal<AppUser | null>(null);
+  readonly isReady = signal(false);
+  readonly dialogVisible = signal(false);
+  readonly editingUser = signal<AppUser | null>(null);
   readonly deleteDialogVisible = signal(false);
-  readonly deletingUser        = signal<AppUser | null>(null);
-  readonly deleteLoading       = signal(false);
+  readonly deletingUser = signal<AppUser | null>(null);
+  readonly deleteLoading = signal(false);
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
   private loadUsers(): void {
-    this.adminService.getUsers()
+    this.adminService
+      .getUsers()
       .pipe(this.loadingService.withLoading())
       .subscribe({
         next: (users) => {

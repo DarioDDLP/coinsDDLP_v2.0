@@ -19,8 +19,12 @@
         <div class="denomination-grid">
           <div class="denomination-card denomination-card--all" [routerLink]="['/pesetas', 'all']">
             <span class="denomination-card__value">{{ literals.allLabel }}</span>
-            <span class="denomination-card__years">{{ totals().minYear }} — {{ totals().maxYear }}</span>
-            <span class="denomination-card__count">{{ totals().owned }} / {{ totals().total }}</span>
+            <span class="denomination-card__years"
+              >{{ totals().minYear }} — {{ totals().maxYear }}</span
+            >
+            <span class="denomination-card__count"
+              >{{ totals().owned }} / {{ totals().total }}</span
+            >
           </div>
           @for (card of denominationCards(); track card.faceValueLabel) {
             <div class="denomination-card" [routerLink]="['/pesetas', card.faceValueLabel]">

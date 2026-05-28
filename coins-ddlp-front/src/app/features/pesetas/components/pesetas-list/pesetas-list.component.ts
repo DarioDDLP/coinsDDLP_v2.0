@@ -10,7 +10,10 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
-import { restoreSearchQuery, saveSearchQuery } from '../../../../shared/helpers/search-state.helper';
+import {
+  restoreSearchQuery,
+  saveSearchQuery,
+} from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { PesetaEditDialogComponent } from '../peseta-edit-dialog/peseta-edit-dialog.component';
 
@@ -22,33 +25,40 @@ interface PesetaRow {
 
 @Component({
   selector: 'app-pesetas-list',
-  imports: [TableModule, CollectionLayoutComponent, BadgeComponent, ButtonComponent, EmptyPanelComponent, PesetaEditDialogComponent],
+  imports: [
+    TableModule,
+    CollectionLayoutComponent,
+    BadgeComponent,
+    ButtonComponent,
+    EmptyPanelComponent,
+    PesetaEditDialogComponent,
+  ],
   templateUrl: './pesetas-list.component.html',
   styleUrl: './pesetas-list.component.scss',
 })
 export class PesetasListComponent implements OnInit {
-  private service      = inject(PesetasService);
-  private route        = inject(ActivatedRoute);
-  private router       = inject(Router);
+  private service = inject(PesetasService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   readonly authService = inject(AuthService);
 
-  readonly literals       = LITERALS.pesetas;
+  readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
 
-  readonly faceValue   = signal('');
-  private allPesetas   = signal<Peseta[]>([]);
-  readonly searchQuery  = signal('');
-  readonly isReady      = signal(false);
-  readonly hasError     = signal(false);
+  readonly faceValue = signal('');
+  private allPesetas = signal<Peseta[]>([]);
+  readonly searchQuery = signal('');
+  readonly isReady = signal(false);
+  readonly hasError = signal(false);
 
-  readonly dialogVisible  = signal(false);
+  readonly dialogVisible = signal(false);
   readonly selectedPeseta = signal<Peseta | null>(null);
 
   readonly backLink = ['/pesetas'];
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.route.params.subscribe((params) => {
       const faceValue = params['faceValue'] ?? '';
       this.faceValue.set(faceValue);
       this.searchQuery.set(restoreSearchQuery(`pesetas-${faceValue}`));
@@ -60,28 +70,34 @@ export class PesetasListComponent implements OnInit {
     this.hasError.set(false);
     this.isReady.set(false);
     this.service.getAll().subscribe({
-      next: pesetas => {
+      next: (pesetas) => {
         const fv = this.faceValue();
         this.allPesetas.set(
-          [...pesetas.filter(p => p.peseta_type.faceValueLabel === fv)]
-            .sort((a, b) => a.mintYear - b.mintYear)
+          [...pesetas.filter((p) => p.peseta_type.faceValueLabel === fv)].sort(
+            (a, b) => a.mintYear - b.mintYear,
+          ),
         );
         this.isReady.set(true);
       },
-      error: (e) => { this.errorHandler.handleError(e); this.hasError.set(true); this.isReady.set(true); },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.hasError.set(true);
+        this.isReady.set(true);
+      },
     });
   }
 
   readonly rows = computed<PesetaRow[]>(() => {
     const query = normalizeString(this.searchQuery());
     return this.allPesetas()
-      .filter(p =>
-        !query ||
-        normalizeString(p.peseta_type.title).includes(query) ||
-        normalizeString(p.label).includes(query) ||
-        p.mintYear.toString().includes(query)
+      .filter(
+        (p) =>
+          !query ||
+          normalizeString(p.peseta_type.title).includes(query) ||
+          normalizeString(p.label).includes(query) ||
+          p.mintYear.toString().includes(query),
       )
-      .map(peseta => ({
+      .map((peseta) => ({
         peseta,
         conservationBadge: getConservationBadge(peseta.conservation),
         udsBadge: getUdsBadge(peseta.uds),

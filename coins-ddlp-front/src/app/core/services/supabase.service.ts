@@ -15,9 +15,9 @@ export class SupabaseService {
   getTableWhere<T>(
     tableName: TableName,
     filterFn: (query: any) => any,
-    fields = '*'
+    fields = '*',
   ): Observable<T[]> {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       const loadAllData = async () => {
         try {
           let allData: T[] = [];
@@ -27,7 +27,9 @@ export class SupabaseService {
 
           while (hasMore) {
             const baseQuery = this.supabase.from(tableName).select(fields);
-            const { data, error } = await filterFn(baseQuery).order('id', { ascending: true }).range(offset, offset + pageSize - 1);
+            const { data, error } = await filterFn(baseQuery)
+              .order('id', { ascending: true })
+              .range(offset, offset + pageSize - 1);
 
             if (error) {
               observer.error(error);
@@ -57,10 +59,7 @@ export class SupabaseService {
     });
   }
 
-  async add<T extends object>(
-    tableName: TableName,
-    data: T
-  ): Promise<string> {
+  async add<T extends object>(tableName: TableName, data: T): Promise<string> {
     const { data: insertedData, error } = await this.supabase
       .from(tableName)
       .insert([data])
@@ -73,7 +72,7 @@ export class SupabaseService {
   async update<T extends object>(
     tableName: TableName,
     id: string,
-    data: Partial<T>
+    data: Partial<T>,
   ): Promise<void> {
     const { error } = await this.supabase
       .from(tableName)
@@ -84,10 +83,7 @@ export class SupabaseService {
   }
 
   async remove(tableName: TableName, id: string): Promise<void> {
-    const { error } = await this.supabase
-      .from(tableName)
-      .delete()
-      .eq('id', id);
+    const { error } = await this.supabase.from(tableName).delete().eq('id', id);
 
     if (error) throw error;
   }

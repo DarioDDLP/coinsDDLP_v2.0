@@ -9,8 +9,8 @@ import { ToggleSwitch } from 'primeng/toggleswitch';
   styleUrl: './toggle.component.scss',
 })
 export class ToggleComponent {
-  label    = input<string>('');
-  value    = input<boolean>(false);
+  label = input<string>('');
+  value = input<boolean>(false);
   disabled = input<boolean>(false);
 
   valueChange = output<boolean>();
