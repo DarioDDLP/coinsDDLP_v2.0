@@ -8,8 +8,10 @@ export interface BadgeData {
   tooltip?: string;
 }
 
-export function getConservationBadge(code: string | undefined | null): BadgeData {
-  const state = CONSERVATION_MAP.get(code ?? '') ?? CONSERVATION_MAP.get('ND')!;
+export function getConservationBadge(code: string | undefined | null): BadgeData | null {
+  if (!code || code === 'ND') return null;
+  const state = CONSERVATION_MAP.get(code);
+  if (!state) return null;
   return { label: state.code, severity: state.severity, tooltip: state.name };
 }
 

@@ -20,12 +20,14 @@
           <span class="detail-header__numista-title">{{ peseta()!.peseta_type.title }}</span>
         </div>
         <div class="detail-header__badges">
-          <app-badge
-            [label]="conservationBadge().label"
-            [severity]="conservationBadge().severity"
-            [tooltip]="conservationBadge().tooltip"
-            size="md"
-          />
+          @if (conservationBadge()) {
+            <app-badge
+              [label]="conservationBadge()!.label"
+              [severity]="conservationBadge()!.severity"
+              [tooltip]="conservationBadge()!.tooltip"
+              size="md"
+            />
+          }
           <app-badge [label]="udsBadge().label" [severity]="udsBadge().severity" size="md" />
         </div>
       </div>

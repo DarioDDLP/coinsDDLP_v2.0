@@ -55,11 +55,13 @@
                   </td>
                 }
                 <td style="text-align: center">
-                  <app-badge
-                    [label]="row.conservationBadge.label"
-                    [severity]="row.conservationBadge.severity"
-                    [tooltip]="row.conservationBadge.tooltip"
-                  />
+                  @if (row.conservationBadge) {
+                    <app-badge
+                      [label]="row.conservationBadge.label"
+                      [severity]="row.conservationBadge.severity"
+                      [tooltip]="row.conservationBadge.tooltip"
+                    />
+                  }
                 </td>
                 <td style="text-align: center">
                   <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
