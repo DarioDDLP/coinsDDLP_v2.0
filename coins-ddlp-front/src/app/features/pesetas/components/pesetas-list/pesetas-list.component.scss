@@ -28,10 +28,6 @@
 :host ::ng-deep .p-datatable-tbody > tr.clickable-row {
   cursor: pointer;
 
-  > td {
-    transition: background-color 0.15s;
-  }
-
   &:hover > td {
     background: rgba(var(--cobalt-rgb), 0.08);
   }
