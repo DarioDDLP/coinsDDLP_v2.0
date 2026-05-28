@@ -290,7 +290,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-05-28 (sesión 14)
+> **Última actualización:** 2026-05-28
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
