@@ -2,12 +2,16 @@
   [visible]="visible()"
   (onHide)="onHide()"
   [modal]="true"
-  [header]="literals.editCoin"
   [style]="{ width: '380px' }"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
 >
+  <ng-template pTemplate="header">
+    <div class="dialog-header">
+      <span class="dialog-header__title">{{ dialogTitle() }}</span>
+    </div>
+  </ng-template>
   <div class="edit-form">
     <app-text-input
       [label]="literals.unitsLabel"

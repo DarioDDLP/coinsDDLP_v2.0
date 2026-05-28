@@ -1,12 +1,22 @@
-import { Component, effect, ErrorHandler, inject, input, output, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ErrorHandler,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TextareaComponent } from '../../../../shared/components/textarea/textarea.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
+import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ConservationCode, EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
@@ -16,11 +26,13 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
   selector: 'app-coin-uds-dialog',
   imports: [
     Dialog,
+    SharedModule,
     ButtonComponent,
     TextInputComponent,
     SelectComponent,
     TextareaComponent,
     ToggleComponent,
+    CountryFlagComponent,
   ],
   templateUrl: './coin-uds-dialog.component.html',
   styleUrl: './coin-uds-dialog.component.scss',
@@ -39,6 +51,11 @@ export class CoinUdsDialogComponent {
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
   readonly conservationOptions = CONSERVATION_OPTIONS;
+
+  readonly dialogTitle = computed(() => {
+    const c = this.coin();
+    return c ? `${this.sharedLiterals.edit} ${c.faceValue} ${c.year}` : this.literals.editCoin;
+  });
 
   readonly uds = signal(0);
   readonly conservation = signal<ConservationCode>('ND');

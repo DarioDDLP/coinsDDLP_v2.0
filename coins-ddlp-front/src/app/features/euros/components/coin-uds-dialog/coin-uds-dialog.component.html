@@ -2,12 +2,19 @@
   [visible]="visible()"
   (onHide)="onHide()"
   [modal]="true"
-  [header]="literals.editCoin"
   [style]="{ width: '380px' }"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
 >
+  <ng-template pTemplate="header">
+    <div class="dialog-header">
+      @if (coin()) {
+        <app-country-flag [country]="coin()!.country" [size]="20" />
+      }
+      <span class="dialog-header__title">{{ dialogTitle() }}</span>
+    </div>
+  </ng-template>
   <div class="uds-form">
     <app-text-input
       [label]="literals.unitsLabel"

@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { MessageService } from 'primeng/api';
+import { MessageService, SharedModule } from 'primeng/api';
 import { PesetasService } from '../../services/pesetas.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
@@ -22,7 +22,14 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
 
 @Component({
   selector: 'app-peseta-edit-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, TextareaComponent],
+  imports: [
+    Dialog,
+    SharedModule,
+    ButtonComponent,
+    TextInputComponent,
+    SelectComponent,
+    TextareaComponent,
+  ],
   templateUrl: './peseta-edit-dialog.component.html',
   styleUrl: './peseta-edit-dialog.component.scss',
 })
@@ -39,6 +46,13 @@ export class PesetaEditDialogComponent {
 
   readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
+
+  readonly dialogTitle = computed(() => {
+    const p = this.peseta();
+    return p
+      ? `${this.sharedLiterals.edit} ${p.peseta_type.faceValueLabel} ${p.mintYear}`
+      : this.literals.editCoin;
+  });
 
   readonly uds = signal(0);
   readonly conservation = signal('ND');

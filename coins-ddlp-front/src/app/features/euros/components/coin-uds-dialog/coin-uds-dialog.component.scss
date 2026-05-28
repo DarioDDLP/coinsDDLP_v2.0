@@ -1,3 +1,15 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &__title {
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+    color: var(--deep-navy);
+  }
+}
+
 .uds-form {
   display: flex;
   flex-direction: column;
