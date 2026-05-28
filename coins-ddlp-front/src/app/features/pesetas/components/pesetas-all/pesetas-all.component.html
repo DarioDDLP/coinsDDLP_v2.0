@@ -17,6 +17,14 @@
       cardBackground="#ffffff"
       (searchChange)="onSearch($event)"
     >
+      <div class="filter-bar">
+        <app-filter-pills
+          [options]="filterOptions"
+          [value]="ownershipFilter()"
+          (valueChange)="ownershipFilter.set($event)"
+        />
+      </div>
+
       @if (!isEmpty()) {
         @for (group of groupedPesetas(); track group.faceValueLabel) {
           <h2 class="denomination-header">{{ group.faceValueLabel }}</h2>

@@ -21,6 +21,8 @@ import {
   ALBUM_POSITIONS_PER_PAGE,
   ALBUM_POSITIONS_PER_ALBUM,
 } from '../../conmemorativas.config';
+import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
 
 interface AlbumLocation {
   album: number;
@@ -58,6 +60,7 @@ interface YearGroup {
     BadgeComponent,
     EmptyPanelComponent,
     ButtonComponent,
+    FilterPillsComponent,
   ],
   templateUrl: './conmemorativas-list.component.html',
   styleUrl: './conmemorativas-list.component.scss',
@@ -76,6 +79,8 @@ export class ConmemorativasListComponent implements OnInit {
 
   private allCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal('');
+  readonly ownershipFilter = signal('all');
+  readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 
@@ -101,8 +106,13 @@ export class ConmemorativasListComponent implements OnInit {
   }
 
   readonly groupedCoins = computed<YearGroup[]>(() => {
+    const ownership = this.ownershipFilter();
+    let base = this.allCoins();
+    if (ownership === 'owned') base = base.filter((c) => c.uds > 0);
+    else if (ownership === 'missing') base = base.filter((c) => c.uds === 0);
+
     const query = normalizeString(this.searchQuery());
-    const filtered = this.allCoins().filter(
+    const filtered = base.filter(
       (c) =>
         !query ||
         String(c.year).includes(query) ||

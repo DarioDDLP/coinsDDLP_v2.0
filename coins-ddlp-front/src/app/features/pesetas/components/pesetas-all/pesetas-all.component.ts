@@ -16,6 +16,8 @@ import {
 } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { PesetaEditDialogComponent } from '../peseta-edit-dialog/peseta-edit-dialog.component';
+import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
 
 interface PesetaRow {
   peseta: Peseta;
@@ -37,6 +39,7 @@ interface DenominationGroup {
     ButtonComponent,
     EmptyPanelComponent,
     PesetaEditDialogComponent,
+    FilterPillsComponent,
   ],
   templateUrl: './pesetas-all.component.html',
   styleUrl: './pesetas-all.component.scss',
@@ -52,6 +55,8 @@ export class PesetasAllComponent implements OnInit {
 
   private allPesetas = signal<Peseta[]>([]);
   readonly searchQuery = signal('');
+  readonly ownershipFilter = signal('all');
+  readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 
@@ -82,8 +87,13 @@ export class PesetasAllComponent implements OnInit {
   }
 
   readonly groupedPesetas = computed<DenominationGroup[]>(() => {
+    const ownership = this.ownershipFilter();
+    let base = this.allPesetas();
+    if (ownership === 'owned') base = base.filter((p) => p.uds > 0);
+    else if (ownership === 'missing') base = base.filter((p) => p.uds === 0);
+
     const query = normalizeString(this.searchQuery());
-    const filtered = this.allPesetas().filter(
+    const filtered = base.filter(
       (p) =>
         !query ||
         normalizeString(p.peseta_type.faceValueLabel).includes(query) ||

@@ -18,6 +18,14 @@
       maxWidth="1100px"
       (searchChange)="onSearch($event)"
     >
+      <div class="filter-bar">
+        <app-filter-pills
+          [options]="filterOptions"
+          [value]="ownershipFilter()"
+          (valueChange)="ownershipFilter.set($event)"
+        />
+      </div>
+
       @if (!isEmpty()) {
         <p-table
           [value]="rows()"

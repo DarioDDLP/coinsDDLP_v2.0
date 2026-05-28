@@ -22,6 +22,8 @@ import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.compo
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
+import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
 
 @Component({
   selector: 'app-euros-year-coins',
@@ -34,6 +36,7 @@ import { ExcelExportService } from '../../../../shared/services/excel-export.ser
     EmptyPanelComponent,
     CoinUdsDialogComponent,
     ConfirmDialogComponent,
+    FilterPillsComponent,
   ],
   templateUrl: './euros-year-coins.component.html',
   styleUrl: './euros-year-coins.component.scss',
@@ -61,6 +64,9 @@ export class EurosYearCoinsComponent implements OnInit {
   readonly deleteDialogVisible = signal(false);
   readonly selectedDeleteCoin = signal<EuroCoin | null>(null);
   readonly deleteLoading = signal(false);
+
+  readonly ownershipFilter = signal('all');
+  readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
 
   ngOnInit(): void {
     this.route.params.subscribe((params) => {
@@ -96,9 +102,14 @@ export class EurosYearCoinsComponent implements OnInit {
   }
 
   readonly coins = computed<EuroCoin[]>(() => {
+    const ownership = this.ownershipFilter();
+    let coins = this.yearCoins();
+    if (ownership === 'owned') coins = coins.filter((c) => c.uds > 0);
+    else if (ownership === 'missing') coins = coins.filter((c) => c.uds === 0);
+
     const query = normalizeString(this.searchQuery());
-    if (!query) return this.yearCoins();
-    return this.yearCoins().filter(
+    if (!query) return coins;
+    return coins.filter(
       (c) =>
         normalizeString(c.faceValue).includes(query) ||
         normalizeString(c.description).includes(query),

@@ -24,6 +24,14 @@
           (clicked)="exportExcel()"
         />
       </span>
+      <div class="filter-bar">
+        <app-filter-pills
+          [options]="filterOptions"
+          [value]="ownershipFilter()"
+          (valueChange)="ownershipFilter.set($event)"
+        />
+      </div>
+
       @if (!isEmpty()) {
         @for (group of groupedCoins(); track group.year) {
           <h2 class="year-header">{{ group.year }}</h2>

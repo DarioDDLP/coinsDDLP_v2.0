@@ -27,6 +27,12 @@
   }
 }
 
+.filter-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
 .non-circulating-legend {
   display: flex;
   align-items: center;

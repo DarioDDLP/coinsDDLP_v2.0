@@ -1,0 +1,11 @@
+<div class="filter-pills">
+  @for (opt of options(); track opt.value) {
+    <button
+      class="filter-pills__btn"
+      [class.filter-pills__btn--active]="value() === opt.value"
+      (click)="valueChange.emit(opt.value)"
+    >
+      {{ opt.label }}
+    </button>
+  }
+</div>

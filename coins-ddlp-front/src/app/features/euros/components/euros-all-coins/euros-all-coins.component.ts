@@ -19,6 +19,8 @@ import {
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
+import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
 
 @Component({
   selector: 'app-euros-all-coins',
@@ -30,6 +32,7 @@ import { ExcelExportService } from '../../../../shared/services/excel-export.ser
     ButtonComponent,
     EmptyPanelComponent,
     CoinUdsDialogComponent,
+    FilterPillsComponent,
   ],
   templateUrl: './euros-all-coins.component.html',
   styleUrl: './euros-all-coins.component.scss',
@@ -47,6 +50,8 @@ export class EurosAllCoinsComponent implements OnInit {
 
   readonly country = signal('');
   readonly searchQuery = signal('');
+  readonly ownershipFilter = signal('all');
+  readonly filterOptions = OWNERSHIP_FILTER_OPTIONS;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly dialogVisible = signal(false);
@@ -82,9 +87,12 @@ export class EurosAllCoinsComponent implements OnInit {
   }
 
   readonly coinRows = computed(() => {
-    const query = normalizeString(this.searchQuery());
+    const ownership = this.ownershipFilter();
     let coins = this.allCoins();
+    if (ownership === 'owned') coins = coins.filter((c) => c.uds > 0);
+    else if (ownership === 'missing') coins = coins.filter((c) => c.uds === 0);
 
+    const query = normalizeString(this.searchQuery());
     if (query) {
       coins = coins.filter(
         (c) =>

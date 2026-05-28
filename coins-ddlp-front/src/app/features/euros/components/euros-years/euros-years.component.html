@@ -21,7 +21,7 @@
         <div class="year-grid">
           @if (totalCount() > 0) {
             <div class="year-card year-card--all" [routerLink]="['/euros', country(), 'all']">
-              <span class="year-card__year">{{ literals.filterAll }}</span>
+              <span class="year-card__year">{{ sharedLiterals.all }}</span>
               <div class="year-card__details">
                 <span class="year-card__regular">{{ totalRegular() }} {{ literals.regular }}</span>
                 <span class="year-card__commemorative"

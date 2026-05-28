@@ -9,7 +9,7 @@
     />
   } @else {
     <app-collection-layout
-      [title]="literals.filterAll"
+      [title]="sharedLiterals.all"
       [country]="country()"
       [backLink]="backLink()"
       [backLabel]="literals.back"
@@ -26,6 +26,14 @@
           (clicked)="exportExcel()"
         />
       </span>
+      <div class="filter-bar">
+        <app-filter-pills
+          [options]="filterOptions"
+          [value]="ownershipFilter()"
+          (valueChange)="ownershipFilter.set($event)"
+        />
+      </div>
+
       @if (coinRows().length > 0) {
         <p-table
           [value]="coinRows()"

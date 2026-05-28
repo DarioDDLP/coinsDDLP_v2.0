@@ -26,6 +26,14 @@
           (clicked)="exportExcel()"
         />
       </span>
+      <div class="filter-bar">
+        <app-filter-pills
+          [options]="filterOptions"
+          [value]="ownershipFilter()"
+          (valueChange)="ownershipFilter.set($event)"
+        />
+      </div>
+
       @if (coins().length > 0) {
         <p-table [value]="coinRows()" [tableStyle]="{ 'min-width': '50rem' }" [stripedRows]="true">
           <ng-template pTemplate="header">
