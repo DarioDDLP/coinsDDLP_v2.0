@@ -13,6 +13,9 @@
         <app-country-flag [country]="coin()!.country" [size]="20" />
       }
       <span class="dialog-header__title">{{ dialogTitle() }}</span>
+      @if (coin()?.variant) {
+        <app-badge [label]="coin()!.variant!" severity="secondary" />
+      }
     </div>
   </ng-template>
   <div class="uds-form">

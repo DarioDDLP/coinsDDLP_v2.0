@@ -10,7 +10,12 @@ import { ToggleComponent } from '../../../../shared/components/toggle/toggle.com
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { FACE_VALUE_OPTIONS, MINT_OPTIONS_GERMANY } from '../../tools.config';
+import {
+  FACE_VALUE_OPTIONS,
+  MINT_OPTIONS_GERMANY,
+  VARIANT_FACE_VALUES,
+  VARIANT_OPTIONS,
+} from '../../tools.config';
 
 @Component({
   selector: 'app-tools-add-euro',
@@ -26,6 +31,7 @@ export class ToolsAddEuroComponent {
   readonly literals = LITERALS.herramientas;
   readonly faceValueOptions = FACE_VALUE_OPTIONS;
   readonly mintOptions = MINT_OPTIONS_GERMANY;
+  readonly variantOptions = VARIANT_OPTIONS;
 
   readonly countryOptions = signal<SelectOption[]>([]);
   readonly country = signal('');
@@ -36,10 +42,12 @@ export class ToolsAddEuroComponent {
   readonly circulation = signal(true);
   readonly mint = signal('');
   readonly idNum = signal('');
+  readonly variant = signal('');
   readonly loading = signal(false);
   readonly errorMessage = signal('');
 
   readonly isMintRequired = computed(() => this.country() === 'Alemania');
+  readonly isVariantApplicable = computed(() => VARIANT_FACE_VALUES.has(this.faceValue()));
 
   readonly isValid = computed(
     () =>
@@ -54,6 +62,9 @@ export class ToolsAddEuroComponent {
     this.loadCountries();
     effect(() => {
       if (!this.isMintRequired()) this.mint.set('');
+    });
+    effect(() => {
+      if (!this.isVariantApplicable()) this.variant.set('');
     });
   }
 
@@ -81,6 +92,7 @@ export class ToolsAddEuroComponent {
         circulation: this.circulation(),
         mint: this.mint() || undefined,
         idNum: this.idNum(),
+        variant: this.variant() || undefined,
       });
       this.messageService.add({ ...TOAST_MESSAGES.herramientas.addSuccess, life: 3000 });
       this.resetForm();
@@ -101,5 +113,6 @@ export class ToolsAddEuroComponent {
     this.circulation.set(true);
     this.mint.set('');
     this.idNum.set('');
+    this.variant.set('');
   }
 }

@@ -17,6 +17,13 @@ export const FACE_VALUE_OPTIONS: SelectOption[] = [...STANDARD_FACE_VALUES, '2 E
   (v) => ({ label: v, value: v }),
 );
 
+export const VARIANT_OPTIONS: SelectOption[] = [
+  { label: 'LA', value: 'LA' },
+  { label: 'LR', value: 'LR' },
+];
+
+export const VARIANT_FACE_VALUES = new Set(['2 Euros', '2 Euros C']);
+
 export const MINT_OPTIONS_GERMANY: SelectOption[] = [
   { label: 'A — Berlín', value: 'A' },
   { label: 'D — Múnich', value: 'D' },

@@ -20,6 +20,7 @@ import { TextareaComponent } from '../../../../shared/components/textarea/textar
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ConservationCode, EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
@@ -38,6 +39,7 @@ import { FilterPillOption } from '../../../../shared/components/filter-pills/fil
     ToggleComponent,
     CountryFlagComponent,
     FilterPillsComponent,
+    BadgeComponent,
   ],
   templateUrl: './coin-uds-dialog.component.html',
   styleUrl: './coin-uds-dialog.component.scss',

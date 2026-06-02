@@ -22,6 +22,9 @@
           }
         </div>
         <div class="detail-header__badges">
+          @if (coin()!.variant) {
+            <app-badge [label]="coin()!.variant!" severity="secondary" size="md" />
+          }
           @if (conservationBadge()) {
             <app-badge
               [label]="conservationBadge()!.label"

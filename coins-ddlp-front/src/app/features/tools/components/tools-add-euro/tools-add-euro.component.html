@@ -16,6 +16,15 @@
           [placeholder]="literals.placeholderFaceValue"
           (valueChange)="faceValue.set($event)"
         />
+        @if (isVariantApplicable()) {
+          <app-select
+            [label]="literals.labelVariant"
+            [value]="variant()"
+            [options]="variantOptions"
+            [placeholder]="literals.placeholderVariant"
+            (valueChange)="variant.set($event)"
+          />
+        }
         <app-select
           [label]="literals.labelMint"
           [value]="mint()"
