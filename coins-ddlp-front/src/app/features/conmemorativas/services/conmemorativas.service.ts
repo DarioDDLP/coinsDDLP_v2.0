@@ -24,7 +24,10 @@ export class ConmemorativasService {
       .getTableWhere<RawEuroCoin>(
         TABLES.euro,
         (query) => {
-          const q = query.eq('commemorative', true);
+          const q = query
+            .eq('commemorative', true)
+            .order('description')
+            .order('variant', { nullsFirst: true });
           return ownerId ? q.eq('euro_ownership.owner_id', ownerId) : q;
         },
         OWNERSHIP_JOIN,
@@ -52,6 +55,7 @@ export class ConmemorativasService {
         commemorative: raw.commemorative,
         circulation: raw.circulation,
         idNum: raw.idNum,
+        variant: raw.variant,
         uds: dario?.uds ?? 0,
         conservation: (dario?.conservation ?? 'ND') as ConservationCode,
         observations: dario?.observations,
@@ -72,6 +76,7 @@ export class ConmemorativasService {
       commemorative: raw.commemorative,
       circulation: raw.circulation,
       idNum: raw.idNum,
+      variant: raw.variant,
       uds: ownership?.uds ?? 0,
       conservation: (ownership?.conservation ?? 'ND') as ConservationCode,
       observations: ownership?.observations,
