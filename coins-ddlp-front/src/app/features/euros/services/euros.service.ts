@@ -42,7 +42,15 @@ export class EurosService implements IEurosRepository {
     return this.supabase
       .getTableWhere<RawEuroCoin>(
         TABLES.euro,
-        (query) => this.applyOwnerFilter(query.eq('country', country), ownerId),
+        (query) =>
+          this.applyOwnerFilter(
+            query
+              .eq('country', country)
+              .order('faceValue')
+              .order('description')
+              .order('variant', { nullsFirst: true }),
+            ownerId,
+          ),
         OWNERSHIP_JOIN,
       )
       .pipe(
@@ -56,7 +64,16 @@ export class EurosService implements IEurosRepository {
     return this.supabase
       .getTableWhere<RawEuroCoin>(
         TABLES.euro,
-        (query) => this.applyOwnerFilter(query.eq('country', country).eq('year', year), ownerId),
+        (query) =>
+          this.applyOwnerFilter(
+            query
+              .eq('country', country)
+              .eq('year', year)
+              .order('faceValue')
+              .order('description')
+              .order('variant', { nullsFirst: true }),
+            ownerId,
+          ),
         OWNERSHIP_JOIN,
       )
       .pipe(
@@ -135,6 +152,7 @@ export class EurosService implements IEurosRepository {
         commemorative: raw.commemorative,
         circulation: raw.circulation,
         idNum: raw.idNum,
+        variant: raw.variant,
         uds: dario?.uds ?? 0,
         conservation: (dario?.conservation ?? 'ND') as ConservationCode,
         observations: dario?.observations,
@@ -155,6 +173,7 @@ export class EurosService implements IEurosRepository {
       commemorative: raw.commemorative,
       circulation: raw.circulation,
       idNum: raw.idNum,
+      variant: raw.variant,
       uds: ownership?.uds ?? 0,
       conservation: (ownership?.conservation ?? 'ND') as ConservationCode,
       observations: ownership?.observations,

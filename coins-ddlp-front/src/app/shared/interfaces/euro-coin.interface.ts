@@ -17,6 +17,7 @@ export interface RawEuroCoin {
   commemorative: boolean;
   circulation: boolean;
   idNum: string;
+  variant?: string;
   euro_ownership: RawOwnership[] | null;
 }
 
@@ -30,6 +31,7 @@ export interface EuroCoin {
   commemorative: boolean;
   circulation: boolean;
   idNum: string;
+  variant?: string;
   // Ownership fields (from euro_ownership join)
   uds: number;
   conservation: ConservationCode;

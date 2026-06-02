@@ -92,7 +92,12 @@
               (click)="onCoinClick(row.coin)"
               class="row--clickable"
             >
-              <td>{{ row.coin.faceValue }}</td>
+              <td style="white-space: nowrap">
+                {{ row.coin.faceValue }}
+                @if (row.coin.variant) {
+                  <app-badge [label]="row.coin.variant!" severity="secondary" />
+                }
+              </td>
               <td>{{ row.coin.description }}</td>
               @if (hasMint()) {
                 <td>{{ row.coin.mint ?? '—' }}</td>

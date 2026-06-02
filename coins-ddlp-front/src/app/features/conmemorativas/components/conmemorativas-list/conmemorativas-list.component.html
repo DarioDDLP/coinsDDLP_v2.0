@@ -79,7 +79,12 @@
               <tr class="row--clickable" (click)="onCoinClick(row.coin)">
                 <td>{{ row.coin.country }}</td>
                 <td>{{ row.coin.mint ?? '—' }}</td>
-                <td class="clip">{{ row.coin.description }}</td>
+                <td class="clip">
+                  {{ row.coin.description }}
+                  @if (row.coin.variant) {
+                    <app-badge [label]="row.coin.variant!" severity="secondary" />
+                  }
+                </td>
                 @if (isAdmin()) {
                   <td style="text-align: center; white-space: nowrap">
                     {{ row.location.album }} / {{ row.location.page }} / {{ row.location.position }}

@@ -65,6 +65,19 @@ Es un **monorepo** con tres componentes independientes:
 - Descripciones: 18px
 - Títulos h1: 25px
 
+### Sistema de variables CSS
+Los colores, tipografía y espaciado están centralizados en dos parciales SCSS:
+
+| Archivo | Contenido |
+|---------|-----------|
+| `src/styles/_variables.scss` | Colores: `--cobalt`, `--gold-tan`, `--cream`, `--deep-navy`, `--midnight`, `--danger`, estados (`--state-*-bg/text`) |
+| `src/styles/_typography.scss` | Fuente: `--font-family`; tamaños: `--font-xs` (11px) a `--font-2xl` (36px); pesos: `--font-regular/medium/semibold/bold`; `--letter-spacing-*` |
+
+**Reglas obligatorias:**
+- Nunca usar valores hardcodeados de color, tamaño de fuente, peso o espaciado de letras en SCSS. Siempre usar las variables CSS (`var(--...)`)
+- Los estilos propios de cada componente van en su propio archivo `.component.scss`, nunca en `styles.scss`
+- `styles.scss` es solo para reset global y theming de PrimeNG
+
 ---
 
 ## Estructura de datos (Supabase PostgreSQL)
@@ -290,7 +303,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-05-28
+> **Última actualización:** 2026-06-02
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
