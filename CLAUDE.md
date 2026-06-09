@@ -310,7 +310,6 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ### Pendiente / Próximos pasos
 1. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido
-2. **Implementar sección Ubicación** — el componente `ubicacion-map` existe; falta el contenido
 
 ---
 
@@ -333,6 +332,8 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 | 2026-05-19 | **Reorganización del repo (sesión 12)**: `CONTEXT.md` renombrado a `CLAUDE.md` (auto-carga). Eliminado el proyecto npm muerto de la raíz (`package.json`, `node_modules`, `.env`) — eran de scripts de Node ya difuntos. `swagger.yaml` (spec API Numista) movido a la raíz. `.DS_Store` añadido al `.gitignore`. Migración RLS y `scrape_ucoin.py` añadidos a git. Borrado el proyecto base `coinsDDLP` v1. |
 | 2026-05-28 | **Segunda colección (Manolo) — completa**: Migración SQL `20260528000002_add_euro_ownership.sql`: tablas `owner` y `euro_ownership`, migración de datos de Darío, RLS + grants. `FilterPillsComponent` genérico con `OWNERSHIP_FILTER_OPTIONS` y `OWNER_FILTER_OPTIONS` (config separadas). `OwnerService` singleton (`dario/manolo/ambas`, persistido en sessionStorage). `EurosService` y `ConmemorativasService` con LEFT JOIN a `euro_ownership`, mapeo por modo, `update()` dividido entre `euro` y `euro_ownership`. 3 componentes de tabla con selector de owner (izquierda) + filtro posesión (derecha), recarga reactiva con `effect()`, columnas dobles en modo *ambas*. `coin-uds-dialog` con picker de colección visible solo en modo *ambas* + admin. `tools-add-euro` y `tools-add-year` simplificados: solo catálogo (`NewEuroCoin`), sin campos de posesión. |
 | 2026-05-28 | **Correcciones segunda colección (sesión 14)**: Permisos edición: `canEdit` computed en euros-year-coins y euros-all-coins (visible solo si el usuario logueado está viendo su propia colección; nunca en modo *ambas*). Pills de propietario visibles a todos (sin guarda admin). `coin-uds-dialog`: `ownerId` usa `authService.currentUser().uid` para no-admin; reset de `editingOwner` a 'dario' al cerrar el dialog. Filtros *obtenidas*/*faltantes* en modo *ambas* son simétricos (requieren la condición para los dos propietarios) en euros y conmemorativas. Excel: columnas dobles por propietario en modo *ambas*; conservación en blanco cuando `uds === 0`. `CoinRow` interface en conmemorativas completada con campos `Alt`. |
+| 2026-06-09 | **Refactor camelCase DB (sesión 16)**: Columnas `euro_id/owner_id` → `euroId/ownerId` en `euro_ownership`; `peseta_type_id` → `pesetaTypeId` en `peseta`. Interfaces `RawOwnership` y `Peseta` actualizadas. `EurosService` y `ConmemorativasService` adaptados. Convención: todas las columnas de todas las tablas usan camelCase. |
+| 2026-06-09 | **Módulo Ubicación completo (sesión 16)**: Tabla `country_location` (id, country, album, yearFrom, yearTo, isClosed) con 26 filas iniciales. `UbicacionService` (getAll, getCountries, add, update, remove). `ubicacion-map`: vista agrupada por álbum con bandera, rango de años y badge "Cerrado". Admin puede añadir/editar/eliminar entradas. Módulo público (lectura sin login); edición restringida a admin. `UbicacionEditDialogComponent` con select de país, álbum, años y toggle cerrado. |
 | 2026-06-02 | **Variantes de moneda LA/LR (sesión 15)**: Migración SQL `20260602000000_add_coin_variant.sql`: columna `variant TEXT` nullable en `euro`; España 2€ y 2€C existentes marcadas como `LA`; filas `LR` insertadas con uds=0. Interface `EuroCoin`/`RawEuroCoin` con `variant?`. `EurosService` y `ConmemorativasService`: mapeo de `variant` en ambos modos de propietario; orden `faceValue → description → variant NULLS FIRST` para garantizar LA antes de LR. Tablas `euros-year-coins`, `euros-all-coins`, `conmemorativas-list`: badge `secondary` inline en denominación/descripción. `coin-detail`: badge en cabecera junto a conservación. `coin-uds-dialog`: badge en cabecera (solo lectura). `tools-add-euro`: select LA/LR entre valor facial y ceca, visible solo para 2€/2€C. `VARIANT_OPTIONS` y `VARIANT_FACE_VALUES` en `tools.config.ts`. Documentadas reglas de variables CSS/SCSS en CLAUDE.md. 22 de 25 países pendientes de migrar (España como prueba piloto). |
 
 ---
@@ -353,6 +354,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 - El login abre un `p-dialog` (`login-dialog`) desde cualquier punto de la app. No existe página `/login` separada.
 - Los botones de edición/borrado solo son visibles cuando `authService.isLoggedIn()` es `true`
 - `authGuard` protege operaciones; `adminGuard` protege las rutas `/admin` y `/herramientas`
+- `/ubicacion` es pública (lectura sin login); botones de edición/borrado solo visibles para admin (`isAdmin()`)
 
 ### Literales (`shared/constants/literals.ts`)
 - **Ningún texto** va hardcodeado en templates (`.html`) ni en servicios
