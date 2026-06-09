@@ -4,7 +4,7 @@ export interface RawOwnership {
   uds: number;
   conservation: string;
   observations?: string;
-  owner_id: string;
+  ownerId: string;
 }
 
 export interface RawEuroCoin {

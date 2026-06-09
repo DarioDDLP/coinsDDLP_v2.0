@@ -28,7 +28,7 @@ export interface PesetaType {
 
 export interface Peseta {
   id: string;
-  peseta_type_id: number;
+  pesetaTypeId: number;
   designYear: number;
   mintYear: number;
   mintage: number | null;
