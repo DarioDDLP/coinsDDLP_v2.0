@@ -35,32 +35,28 @@
                 </td>
                 @if (canEdit()) {
                   <td class="album-table__actions">
-                    <app-button
-                      icon="pi pi-pencil"
-                      variant="ghost"
-                      [tooltip]="literals.editEntry"
-                      (clicked)="onEdit(loc)"
-                    />
-                    <app-button
-                      icon="pi pi-trash"
-                      variant="danger"
-                      [tooltip]="literals.deleteEntry"
-                      (clicked)="onDelete(loc)"
-                    />
-                    @if (addEntryIds().has(loc.id)) {
+                    <div class="row-actions">
                       <app-button
-                        icon="pi pi-plus"
+                        icon="pi pi-pencil"
                         variant="ghost"
-                        [tooltip]="literals.addEntry"
-                        (clicked)="onAddEntry(loc)"
+                        [tooltip]="literals.editEntry"
+                        (clicked)="onEdit(loc)"
                       />
-                    }
+                      <app-button
+                        icon="pi pi-trash"
+                        variant="danger"
+                        [tooltip]="literals.deleteEntry"
+                        (clicked)="onDelete(loc)"
+                      />
+                    </div>
                   </td>
                 }
               </tr>
             }
           </table>
         </div>
+      } @empty {
+        <app-empty-panel icon="pi-inbox" [title]="sharedLiterals.noResults" />
       }
     </div>
   </app-collection-layout>

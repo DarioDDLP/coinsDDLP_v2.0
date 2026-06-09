@@ -26,11 +26,11 @@
   border-collapse: collapse;
 
   &__row {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(var(--cobalt-rgb), 0.08);
     transition: background-color 0.15s;
 
     &:hover {
-      background: rgba(0, 0, 0, 0.03);
+      background: rgba(var(--cobalt-rgb), 0.04);
     }
 
     &:last-child {
@@ -66,10 +66,14 @@
   }
 
   &__actions {
-    width: 120px;
-    text-align: right;
-    white-space: nowrap;
+    width: 88px;
   }
+}
+
+.row-actions {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
 }
 
 @media (max-width: 576px) {

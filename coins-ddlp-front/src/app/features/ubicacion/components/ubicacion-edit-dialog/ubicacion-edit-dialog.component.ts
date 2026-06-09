@@ -63,12 +63,9 @@ export class UbicacionEditDialogComponent {
 
   readonly countryLocked = computed(() => this.location() !== null);
 
-  readonly header = computed(() => {
-    const loc = this.location();
-    if (!loc) return this.literals.addCountry;
-    if (!loc.id) return this.literals.addEntry;
-    return this.literals.editEntry;
-  });
+  readonly header = computed(() =>
+    this.location() ? this.literals.editEntry : this.literals.addCountry,
+  );
 
   readonly canSubmit = computed(
     () => !!this.country() && !!this.album() && !!this.yearFrom() && !this.loading(),

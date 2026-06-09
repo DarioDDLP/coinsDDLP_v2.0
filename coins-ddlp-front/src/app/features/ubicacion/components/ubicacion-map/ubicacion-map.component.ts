@@ -64,19 +64,6 @@ export class UbicacionMapComponent implements OnInit {
       .map(([album, locations]) => ({ album, locations }));
   });
 
-  readonly addEntryIds = computed(() => {
-    const countryMap = new Map<string, CountryLocation[]>();
-    for (const loc of this.allLocations()) {
-      const existing = countryMap.get(loc.country) ?? [];
-      countryMap.set(loc.country, [...existing, loc]);
-    }
-    const ids = new Set<string>();
-    for (const locs of countryMap.values()) {
-      if (locs.length > 1) ids.add(locs[locs.length - 1].id);
-    }
-    return ids;
-  });
-
   ngOnInit(): void {
     this.loadLocations();
   }
@@ -92,17 +79,6 @@ export class UbicacionMapComponent implements OnInit {
 
   protected onEdit(loc: CountryLocation): void {
     this.selectedLocation.set(loc);
-    this.showEditDialog.set(true);
-  }
-
-  protected onAddEntry(loc: CountryLocation): void {
-    this.selectedLocation.set({
-      ...loc,
-      id: '',
-      yearFrom: (loc.yearTo ?? loc.yearFrom) + 1,
-      yearTo: null,
-      isClosed: false,
-    });
     this.showEditDialog.set(true);
   }
 
@@ -136,6 +112,7 @@ export class UbicacionMapComponent implements OnInit {
 
   protected onDialogSaved(): void {
     this.showEditDialog.set(false);
+    this.selectedLocation.set(null);
     this.loadLocations();
   }
 
