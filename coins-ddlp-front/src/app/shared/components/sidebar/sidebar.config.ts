@@ -27,7 +27,6 @@ export const SIDEBAR_ITEMS: SidebarItem[] = [
     label: LITERALS.sidebar.ubicacion,
     routerLink: '/ubicacion',
     icon: 'pi pi-map-marker',
-    adminOnly: true,
   },
   { label: LITERALS.sidebar.admin, routerLink: '/admin', icon: 'pi pi-shield', adminOnly: true },
   {

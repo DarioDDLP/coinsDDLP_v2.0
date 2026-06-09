@@ -51,7 +51,7 @@ export class UbicacionMapComponent implements OnInit {
   private locationToDelete = signal<CountryLocation | null>(null);
   readonly selectedLocation = signal<CountryLocation | null>(null);
 
-  readonly canEdit = computed(() => this.authService.isLoggedIn());
+  readonly canEdit = computed(() => this.authService.isAdmin());
 
   readonly albumGroups = computed<AlbumGroup[]>(() => {
     const map = new Map<number, CountryLocation[]>();
