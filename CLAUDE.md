@@ -303,15 +303,14 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-06-02
+> **Última actualización:** 2026-06-09
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
 
 ### Pendiente / Próximos pasos
-1. **Variantes LA/LR — restantes 21 países** — España funciona como prueba piloto; aplicar migración equivalente a los otros 21 países (de 25 totales) que tienen monedas de 2€/2€C con variante
-2. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido
-3. **Implementar sección Ubicación** — el componente `ubicacion-map` existe; falta el contenido
+1. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido
+2. **Implementar sección Ubicación** — el componente `ubicacion-map` existe; falta el contenido
 
 ---
 
