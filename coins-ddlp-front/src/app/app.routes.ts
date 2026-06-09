@@ -35,9 +35,9 @@ export const routes: Routes = [
   {
     path: 'ubicacion',
     loadComponent: () =>
-      import('./features/ubicacion/components/ubicacion-map/ubicacion-map.component').then(
-        (m) => m.UbicacionMapComponent,
-      ),
+      import('./features/ubicacion/ubicacion.component').then((m) => m.UbicacionComponent),
+    loadChildren: () =>
+      import('./features/ubicacion/ubicacion.routes').then((m) => m.ubicacionRoutes),
   },
   {
     path: 'admin',
