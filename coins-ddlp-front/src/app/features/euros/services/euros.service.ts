@@ -13,7 +13,7 @@ import {
 import { IEurosRepository } from '../../../shared/interfaces/euros-repository.interface';
 import { TABLES } from '../../../shared/constants/collections.const';
 
-const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, owner_id)';
+const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
 
 @Injectable({ providedIn: 'root' })
 export class EurosService implements IEurosRepository {
@@ -118,8 +118,8 @@ export class EurosService implements IEurosRepository {
       promises.push(
         this.supabase.upsert(
           TABLES.euroOwnership,
-          { euro_id: id, owner_id: resolvedOwnerId, ...ownershipUpdate },
-          'euro_id,owner_id',
+          { euroId: id, ownerId: resolvedOwnerId, ...ownershipUpdate },
+          'euroId,ownerId',
         ),
       );
     }
@@ -132,7 +132,7 @@ export class EurosService implements IEurosRepository {
   }
 
   private applyOwnerFilter(query: any, ownerId: string | null): any {
-    return ownerId ? query.eq('euro_ownership.owner_id', ownerId) : query;
+    return ownerId ? query.eq('euro_ownership.ownerId', ownerId) : query;
   }
 
   private mapRawCoin(raw: RawEuroCoin): EuroCoin {
@@ -140,8 +140,8 @@ export class EurosService implements IEurosRepository {
     const mode = this.ownerService.current();
 
     if (mode === 'both') {
-      const dario = ownerships.find((o) => o.owner_id === OWNER_IDS.dario);
-      const manolo = ownerships.find((o) => o.owner_id === OWNER_IDS.manolo);
+      const dario = ownerships.find((o) => o.ownerId === OWNER_IDS.dario);
+      const manolo = ownerships.find((o) => o.ownerId === OWNER_IDS.manolo);
       return {
         id: raw.id,
         year: raw.year,

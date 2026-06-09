@@ -10,7 +10,7 @@ import {
 } from '../../../shared/interfaces/euro-coin.interface';
 import { TABLES } from '../../../shared/constants/collections.const';
 
-const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, owner_id)';
+const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
 
 @Injectable({ providedIn: 'root' })
 export class ConmemorativasService {
@@ -28,7 +28,7 @@ export class ConmemorativasService {
             .eq('commemorative', true)
             .order('description')
             .order('variant', { nullsFirst: true });
-          return ownerId ? q.eq('euro_ownership.owner_id', ownerId) : q;
+          return ownerId ? q.eq('euro_ownership.ownerId', ownerId) : q;
         },
         OWNERSHIP_JOIN,
       )
@@ -43,8 +43,8 @@ export class ConmemorativasService {
     const mode = this.ownerService.current();
 
     if (mode === 'both') {
-      const dario = ownerships.find((o) => o.owner_id === OWNER_IDS.dario);
-      const manolo = ownerships.find((o) => o.owner_id === OWNER_IDS.manolo);
+      const dario = ownerships.find((o) => o.ownerId === OWNER_IDS.dario);
+      const manolo = ownerships.find((o) => o.ownerId === OWNER_IDS.manolo);
       return {
         id: raw.id,
         year: raw.year,
