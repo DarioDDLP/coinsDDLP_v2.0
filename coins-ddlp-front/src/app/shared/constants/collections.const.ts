@@ -4,6 +4,7 @@ export const TABLES = {
   owner: 'owner',
   peseta: 'peseta',
   pesetaType: 'peseta_type',
+  countryLocation: 'country_location',
 } as const;
 
 export type TableName = (typeof TABLES)[keyof typeof TABLES];

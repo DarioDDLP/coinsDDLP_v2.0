@@ -1,0 +1,35 @@
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { SupabaseService } from '../../../core/services/supabase.service';
+import { LoadingService } from '../../../core/services/loading.service';
+import {
+  CountryLocation,
+  NewCountryLocation,
+} from '../../../shared/interfaces/country-location.interface';
+import { TABLES } from '../../../shared/constants/collections.const';
+
+@Injectable({ providedIn: 'root' })
+export class UbicacionService {
+  private supabase = inject(SupabaseService);
+  private loading = inject(LoadingService);
+
+  getAll(): Observable<CountryLocation[]> {
+    return this.supabase
+      .getTableWhere<CountryLocation>(TABLES.countryLocation, (query) =>
+        query.order('album', { ascending: true }).order('country', { ascending: true }),
+      )
+      .pipe(this.loading.withLoading());
+  }
+
+  async add(data: NewCountryLocation): Promise<string> {
+    return this.supabase.add(TABLES.countryLocation, data);
+  }
+
+  async update(id: string, data: Partial<NewCountryLocation>): Promise<void> {
+    return this.supabase.update(TABLES.countryLocation, id, data);
+  }
+
+  async remove(id: string): Promise<void> {
+    return this.supabase.remove(TABLES.countryLocation, id);
+  }
+}
