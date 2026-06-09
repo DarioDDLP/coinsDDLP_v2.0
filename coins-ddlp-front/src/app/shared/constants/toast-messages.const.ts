@@ -96,4 +96,26 @@ export const TOAST_MESSAGES = {
       detail: LITERALS.herramientas.tiradaError,
     },
   },
+  ubicacion: {
+    deleteSuccess: {
+      severity: 'success',
+      summary: LITERALS.shared.toastSuccess,
+      detail: LITERALS.ubicacion.deleteSuccess,
+    },
+    deleteError: {
+      severity: 'error',
+      summary: LITERALS.shared.toastError,
+      detail: LITERALS.ubicacion.deleteError,
+    },
+    saveSuccess: {
+      severity: 'success',
+      summary: LITERALS.shared.toastSuccess,
+      detail: LITERALS.ubicacion.saveSuccess,
+    },
+    saveError: {
+      severity: 'error',
+      summary: LITERALS.shared.toastError,
+      detail: LITERALS.ubicacion.saveError,
+    },
+  },
 } as const;

@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
 import { LoadingService } from '../../../core/services/loading.service';
 import {
@@ -19,6 +19,12 @@ export class UbicacionService {
         query.order('album', { ascending: true }).order('country', { ascending: true }),
       )
       .pipe(this.loading.withLoading());
+  }
+
+  getCountries(): Observable<string[]> {
+    return this.supabase
+      .getTableWhere<{ country: string }>(TABLES.euro, (q) => q, 'country')
+      .pipe(map((rows) => [...new Set(rows.map((r) => r.country))].sort()));
   }
 
   async add(data: NewCountryLocation): Promise<string> {

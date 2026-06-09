@@ -1,0 +1,12 @@
+.entry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 8px 0 4px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 4px;
+  }
+}

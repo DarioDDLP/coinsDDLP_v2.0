@@ -286,5 +286,21 @@ export const LITERALS = {
 
   ubicacion: {
     title: 'Ubicación',
+    album: 'Álbum',
+    closed: 'Cerrado',
+    addCountry: 'Añadir país',
+    addEntry: 'Nueva entrada',
+    editEntry: 'Editar entrada',
+    deleteEntry: 'Eliminar entrada',
+    country: 'País',
+    countryPlaceholder: 'Selecciona un país',
+    yearFrom: 'Año desde',
+    yearTo: 'Año hasta',
+    yearToPlaceholder: 'Vacío = abierto',
+    deleteConfirm: '¿Seguro que quieres eliminar esta entrada?',
+    saveSuccess: 'Entrada guardada correctamente',
+    saveError: 'Error al guardar la entrada',
+    deleteSuccess: 'Entrada eliminada correctamente',
+    deleteError: 'Error al eliminar la entrada',
   },
 } as const;

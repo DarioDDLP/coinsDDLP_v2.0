@@ -1,3 +1,8 @@
+export interface AlbumGroup {
+  album: number;
+  locations: CountryLocation[];
+}
+
 export interface CountryLocation {
   id: string;
   country: string;

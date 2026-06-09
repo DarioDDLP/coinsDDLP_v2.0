@@ -1,0 +1,61 @@
+<p-dialog
+  [visible]="visible()"
+  (onHide)="onHide()"
+  [modal]="true"
+  [header]="header()"
+  [style]="{ width: '420px' }"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="true"
+>
+  <div class="entry-form">
+    <app-select
+      [label]="literals.country"
+      [value]="country()"
+      [options]="countryOptions()"
+      [placeholder]="literals.countryPlaceholder"
+      [disabled]="countryLocked()"
+      (valueChange)="country.set($event)"
+    />
+
+    <app-text-input
+      [label]="literals.album"
+      [value]="album()"
+      type="number"
+      [min]="1"
+      (valueChange)="album.set($event)"
+    />
+
+    <app-text-input
+      [label]="literals.yearFrom"
+      [value]="yearFrom()"
+      type="number"
+      [min]="1999"
+      (valueChange)="yearFrom.set($event)"
+    />
+
+    <app-text-input
+      [label]="literals.yearTo"
+      [value]="yearTo()"
+      type="number"
+      [min]="1999"
+      [placeholder]="literals.yearToPlaceholder"
+      (valueChange)="yearTo.set($event)"
+    />
+
+    <app-toggle
+      [label]="literals.closed"
+      [value]="isClosed()"
+      (valueChange)="isClosed.set($event)"
+    />
+
+    <div class="entry-form__actions">
+      <app-button
+        [label]="sharedLiterals.save"
+        [loading]="loading()"
+        [disabled]="!canSubmit()"
+        (clicked)="onSubmit()"
+      />
+    </div>
+  </div>
+</p-dialog>

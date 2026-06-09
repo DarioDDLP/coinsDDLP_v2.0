@@ -1,0 +1,81 @@
+.ubicacion-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.album-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.album-section {
+  &__title {
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+    color: var(--deep-navy);
+    margin: 0 0 8px 0;
+    padding-bottom: 6px;
+    border-bottom: 2px solid var(--gold-tan);
+  }
+}
+
+.album-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  &__row {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    transition: background-color 0.15s;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  td {
+    padding: 8px 12px;
+    vertical-align: middle;
+  }
+
+  &__flag {
+    width: 36px;
+    padding-right: 4px;
+  }
+
+  &__country {
+    font-size: var(--font-sm);
+    font-weight: var(--font-medium);
+    color: var(--deep-navy);
+    min-width: 120px;
+  }
+
+  &__years {
+    font-size: var(--font-sm);
+    color: var(--cobalt);
+    min-width: 100px;
+  }
+
+  &__badge {
+    width: 80px;
+  }
+
+  &__actions {
+    width: 120px;
+    text-align: right;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 576px) {
+  .album-table {
+    &__years {
+      display: none;
+    }
+  }
+}
