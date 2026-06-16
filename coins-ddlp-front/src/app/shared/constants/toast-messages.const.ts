@@ -90,6 +90,10 @@ export const TOAST_MESSAGES = {
       summary: LITERALS.shared.toastError,
       detail: LITERALS.herramientas.addError,
     },
+    tiradaSuccess: {
+      severity: 'success',
+      summary: LITERALS.shared.toastSuccess,
+    },
     tiradaError: {
       severity: 'error',
       summary: LITERALS.shared.toastError,

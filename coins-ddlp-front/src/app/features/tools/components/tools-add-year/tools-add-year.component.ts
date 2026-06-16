@@ -105,8 +105,7 @@ export class ToolsAddYearComponent {
       );
 
       this.messageService.add({
-        severity: 'success',
-        summary: LITERALS.shared.toastSuccess,
+        ...TOAST_MESSAGES.herramientas.tiradaSuccess,
         detail: `${toCreate.length} ${this.literals.tiradaSuccess}`,
         life: 4000,
       });
