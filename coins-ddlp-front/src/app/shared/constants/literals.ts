@@ -288,6 +288,7 @@ export const LITERALS = {
     title: 'Ubicación',
     album: 'Álbum',
     closed: 'Cerrado',
+    searchPlaceholder: 'Buscar país...',
     addCountry: 'Añadir entrada',
     editEntry: 'Editar entrada',
     deleteEntry: 'Eliminar entrada',

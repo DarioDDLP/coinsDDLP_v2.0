@@ -9,11 +9,17 @@
     (retry)="ngOnInit()"
   />
 } @else {
-  <app-collection-layout [title]="literals.title" maxWidth="900px">
+  <app-collection-layout
+    [title]="literals.title"
+    maxWidth="900px"
+    [searchPlaceholder]="literals.searchPlaceholder"
+    [searchValue]="searchQuery()"
+    (searchChange)="onSearch($event)"
+  >
     @if (canEdit()) {
-      <div class="ubicacion-toolbar">
+      <span layout-actions>
         <app-button [label]="literals.addCountry" icon="pi pi-plus" (clicked)="onAddCountry()" />
-      </div>
+      </span>
     }
 
     <div class="album-list">

@@ -16,6 +16,7 @@ import {
 } from '../../../../shared/interfaces/country-location.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
+import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 
 @Component({
   selector: 'app-ubicacion-map',
@@ -42,6 +43,7 @@ export class UbicacionMapComponent implements OnInit {
   readonly sharedLiterals = LITERALS.shared;
 
   private allLocations = signal<CountryLocation[]>([]);
+  readonly searchQuery = signal('');
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly isDeleting = signal(false);
@@ -53,9 +55,15 @@ export class UbicacionMapComponent implements OnInit {
 
   readonly canEdit = computed(() => this.authService.isAdmin());
 
+  private readonly filteredLocations = computed<CountryLocation[]>(() => {
+    const query = normalizeString(this.searchQuery());
+    if (!query) return this.allLocations();
+    return this.allLocations().filter((loc) => normalizeString(loc.country).includes(query));
+  });
+
   readonly albumGroups = computed<AlbumGroup[]>(() => {
     const map = new Map<number, CountryLocation[]>();
-    for (const loc of this.allLocations()) {
+    for (const loc of this.filteredLocations()) {
       const existing = map.get(loc.album) ?? [];
       map.set(loc.album, [...existing, loc]);
     }
@@ -70,6 +78,10 @@ export class UbicacionMapComponent implements OnInit {
 
   protected yearRange(loc: CountryLocation): string {
     return loc.yearTo ? `${loc.yearFrom} → ${loc.yearTo}` : `${loc.yearFrom} →`;
+  }
+
+  protected onSearch(query: string): void {
+    this.searchQuery.set(query);
   }
 
   protected onAddCountry(): void {
