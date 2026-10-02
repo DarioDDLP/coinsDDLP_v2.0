@@ -1,6 +1,7 @@
 import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
+import { Skeleton } from 'primeng/skeleton';
 import { AdminService } from '../../services/admin.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { AdminUserDialogComponent } from '../admin-user-dialog/admin-user-dialog.component';
@@ -9,13 +10,13 @@ import { BadgeComponent } from '../../../../shared/components/badge/badge.compon
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { LoadingService } from '../../../../core/services/loading.service';
 import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 
 @Component({
   selector: 'app-admin-users',
   imports: [
     TableModule,
+    Skeleton,
     ButtonComponent,
     AdminUserDialogComponent,
     ConfirmDialogComponent,
@@ -27,10 +28,10 @@ import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 export class AdminUsersComponent implements OnInit {
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
-  private loadingService = inject(LoadingService);
   private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.admin;
+  readonly skeletonRows = Array.from({ length: 4 });
 
   readonly users = signal<AppUser[]>([]);
   readonly userRows = computed(() =>
@@ -55,19 +56,16 @@ export class AdminUsersComponent implements OnInit {
   }
 
   private loadUsers(): void {
-    this.adminService
-      .getUsers()
-      .pipe(this.loadingService.withLoading())
-      .subscribe({
-        next: (users) => {
-          this.users.set(users);
-          this.isReady.set(true);
-        },
-        error: (e) => {
-          this.errorHandler.handleError(e);
-          this.isReady.set(true);
-        },
-      });
+    this.adminService.getUsers().subscribe({
+      next: (users) => {
+        this.users.set(users);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.isReady.set(true);
+      },
+    });
   }
 
   protected onEdit(user: AppUser | null): void {

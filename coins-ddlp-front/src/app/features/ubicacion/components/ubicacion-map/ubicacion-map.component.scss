@@ -1,79 +1,98 @@
-.album-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-5);
+  align-items: start;
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
 }
 
-.album-section {
+.album-card {
+  @include card;
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--surface-2);
+  }
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: rgba(var(--accent-rgb), 0.14);
+    color: var(--accent);
+  }
+
   &__title {
+    flex: 1;
+    margin: 0;
     font-size: var(--font-md);
-    font-weight: var(--font-semibold);
-    color: var(--deep-navy);
-    margin: 0 0 8px 0;
-    padding-bottom: 6px;
-    border-bottom: 2px solid var(--gold-tan);
+    font-weight: var(--font-bold);
+  }
+
+  &__count {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+  }
+
+  &__list {
+    margin: 0;
+    padding: var(--space-2) 0;
+    list-style: none;
   }
 }
 
-.album-table {
-  width: 100%;
-  border-collapse: collapse;
+.location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  padding: var(--space-2) var(--space-5);
+  transition: background var(--transition-fast);
 
-  &__row {
-    border-bottom: 1px solid rgba(var(--cobalt-rgb), 0.08);
-    transition: background-color 0.15s;
-
-    &:hover {
-      background: rgba(var(--cobalt-rgb), 0.04);
-    }
-
-    &:last-child {
-      border-bottom: none;
-    }
+  &:hover {
+    background: var(--surface-2);
   }
 
-  td {
-    padding: 8px 12px;
-    vertical-align: middle;
+  @include mobile {
+    padding-inline: var(--space-4);
   }
 
-  &__flag {
-    width: 36px;
-    padding-right: 4px;
+  &__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
   }
 
   &__country {
-    font-size: var(--font-sm);
+    font-size: var(--font-body);
     font-weight: var(--font-medium);
-    color: var(--deep-navy);
-    min-width: 120px;
+    color: var(--text);
+    @include truncate;
   }
 
   &__years {
-    font-size: var(--font-sm);
-    color: var(--cobalt);
-    min-width: 100px;
-  }
-
-  &__badge {
-    width: 80px;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
   }
 
   &__actions {
-    width: 88px;
-  }
-}
-
-.row-actions {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-}
-
-@media (max-width: 576px) {
-  .album-table {
-    &__years {
-      display: none;
-    }
+    display: flex;
+    gap: var(--space-1);
   }
 }

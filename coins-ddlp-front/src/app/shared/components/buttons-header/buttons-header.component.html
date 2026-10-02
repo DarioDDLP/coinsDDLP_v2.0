@@ -1,17 +1,25 @@
-<div class="buttons-header">
-  <h1 class="buttons-header__title">{{ title() }}</h1>
-  @if (items().length > 0) {
-    <nav class="buttons-header__nav">
+<header class="section-header">
+  <div class="section-header__titles">
+    @if (overline()) {
+      <span class="section-header__overline">{{ overline() }}</span>
+    }
+    <h1 class="section-header__title">{{ title() }}</h1>
+  </div>
+
+  @if (items().length > 1) {
+    <nav class="section-header__tabs" [attr.aria-label]="title()">
       @for (item of items(); track item.routerLink) {
         <a
+          class="section-header__tab"
           [routerLink]="item.routerLink"
-          routerLinkActive="buttons-header__nav-item--active"
-          class="buttons-header__nav-item"
+          routerLinkActive="section-header__tab--active"
+          #rla="routerLinkActive"
+          [attr.aria-current]="rla.isActive ? 'page' : null"
         >
-          <i [class]="item.icon"></i>
+          <i [class]="item.icon" aria-hidden="true"></i>
           <span>{{ item.label }}</span>
         </a>
       }
     </nav>
   }
-</div>
+</header>

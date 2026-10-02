@@ -1,22 +1,21 @@
 .user-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 8px 0 4px;
+  gap: var(--space-5);
 
   &__actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 4px;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
   }
 
   &__error {
-    font-size: 13px;
-    color: var(--state-danger);
     margin: 0;
-    padding: 8px 12px;
-    background: rgba(239, 68, 68, 0.08);
-    border-radius: 6px;
-    border-left: 3px solid var(--state-danger);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--state-danger-bg);
+    color: var(--state-danger-text);
+    font-size: var(--font-sm);
   }
 }

@@ -1,9 +1,9 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
+import { Skeleton } from 'primeng/skeleton';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -24,7 +24,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
     PageLayoutComponent,
     CountryFlagComponent,
     BadgeComponent,
-    LoadingSpinnerComponent,
+    Skeleton,
     EmptyPanelComponent,
     ConfirmDialogComponent,
     ButtonComponent,
@@ -54,6 +54,14 @@ export class UbicacionMapComponent implements OnInit {
   readonly selectedLocation = signal<CountryLocation | null>(null);
 
   readonly canEdit = computed(() => this.authService.isAdmin());
+  readonly skeletonCards = Array.from({ length: 3 });
+
+  readonly subtitle = computed(() => {
+    const locations = this.allLocations();
+    if (locations.length === 0) return '';
+    const albums = new Set(locations.map((l) => l.album)).size;
+    return `${albums} ${this.literals.albumsCount} · ${locations.length} ${this.literals.countriesCount}`;
+  });
 
   private readonly filteredLocations = computed<CountryLocation[]>(() => {
     const query = normalizeString(this.searchQuery());
@@ -133,7 +141,8 @@ export class UbicacionMapComponent implements OnInit {
     this.selectedLocation.set(null);
   }
 
-  private loadLocations(): void {
+  loadLocations(): void {
+    this.hasError.set(false);
     this.service.getAll().subscribe({
       next: (locations) => {
         this.allLocations.set(locations);

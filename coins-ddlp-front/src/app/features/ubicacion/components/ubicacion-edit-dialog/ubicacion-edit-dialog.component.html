@@ -3,7 +3,8 @@
   (onHide)="onHide()"
   [modal]="true"
   [header]="header()"
-  [style]="{ width: '420px' }"
+  [style]="{ width: '440px' }"
+  [breakpoints]="dialogBreakpoints"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
@@ -26,22 +27,24 @@
       (valueChange)="album.set($event)"
     />
 
-    <app-text-input
-      [label]="literals.yearFrom"
-      [value]="yearFrom()"
-      type="number"
-      [min]="1999"
-      (valueChange)="yearFrom.set($event)"
-    />
+    <div class="entry-form__row">
+      <app-text-input
+        [label]="literals.yearFrom"
+        [value]="yearFrom()"
+        type="number"
+        [min]="1999"
+        (valueChange)="yearFrom.set($event)"
+      />
 
-    <app-text-input
-      [label]="literals.yearTo"
-      [value]="yearTo()"
-      type="number"
-      [min]="1999"
-      [placeholder]="literals.yearToPlaceholder"
-      (valueChange)="yearTo.set($event)"
-    />
+      <app-text-input
+        [label]="literals.yearTo"
+        [value]="yearTo()"
+        type="number"
+        [min]="1999"
+        [placeholder]="literals.yearToPlaceholder"
+        (valueChange)="yearTo.set($event)"
+      />
+    </div>
 
     <app-toggle
       [label]="literals.closed"
@@ -50,6 +53,7 @@
     />
 
     <div class="entry-form__actions">
+      <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
       <app-button
         [label]="sharedLiterals.save"
         [loading]="loading()"

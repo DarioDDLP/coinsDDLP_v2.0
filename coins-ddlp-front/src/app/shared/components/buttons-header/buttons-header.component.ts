@@ -7,6 +7,7 @@ export interface NavItem {
   icon: string;
 }
 
+/** Cabecera de sección con pestañas enlazadas a rutas hijas (Admin, Herramientas). */
 @Component({
   selector: 'app-buttons-header',
   imports: [RouterLink, RouterLinkActive],
@@ -15,5 +16,6 @@ export interface NavItem {
 })
 export class ButtonsHeaderComponent {
   title = input.required<string>();
+  overline = input<string>('');
   items = input<NavItem[]>([]);
 }

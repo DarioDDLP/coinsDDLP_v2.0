@@ -25,6 +25,7 @@ import {
   NewCountryLocation,
 } from '../../../../shared/interfaces/country-location.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 
 @Component({
@@ -46,6 +47,7 @@ export class UbicacionEditDialogComponent {
 
   readonly literals = LITERALS.ubicacion;
   readonly sharedLiterals = LITERALS.shared;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly country = signal('');
   readonly album = signal('');

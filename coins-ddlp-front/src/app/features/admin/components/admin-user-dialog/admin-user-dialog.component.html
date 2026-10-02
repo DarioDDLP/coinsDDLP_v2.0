@@ -3,7 +3,8 @@
   (onHide)="onHide()"
   [modal]="true"
   [header]="header()"
-  [style]="{ width: '420px' }"
+  [style]="{ width: '440px' }"
+  [breakpoints]="dialogBreakpoints"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
@@ -46,10 +47,11 @@
     />
 
     @if (errorMessage()) {
-      <p class="user-form__error">{{ errorMessage() }}</p>
+      <p class="user-form__error" role="alert">{{ errorMessage() }}</p>
     }
 
     <div class="user-form__actions">
+      <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
       <app-button
         [label]="sharedLiterals.save"
         [loading]="loading()"

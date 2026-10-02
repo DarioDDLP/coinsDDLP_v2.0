@@ -1,11 +1,9 @@
+@use 'mixins' as *;
+
 :host {
   display: block;
 }
 
 .tools {
-  padding: var(--space-7) 0;
-
-  &__content {
-    width: 100%;
-  }
+  @include page-container;
 }

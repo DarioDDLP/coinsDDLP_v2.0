@@ -31,6 +31,17 @@
   @include focus-ring;
 }
 
+// Contenedor de página: mismo ancho máximo y márgenes que page-layout
+@mixin page-container {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) clamp(var(--space-5), 4vw, var(--space-9)) var(--space-9);
+
+  @include mobile {
+    padding: var(--space-4) var(--space-4) var(--space-7);
+  }
+}
+
 @mixin truncate {
   overflow: hidden;
   text-overflow: ellipsis;

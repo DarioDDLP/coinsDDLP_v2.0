@@ -249,7 +249,11 @@ export const LITERALS = {
   },
 
   conmemorativas: {
-    title: 'Conmemorativas',
+    title: 'Conmemorativas de 2 €',
+    overline: 'Colección',
+    progressTotal: 'Progreso total',
+    coinsCount: 'monedas',
+    jumpToYear: 'Saltar a año',
     search: 'Buscar por año, país o descripción...',
     colCountry: 'País',
     colMint: 'Ceca',
@@ -326,6 +330,10 @@ export const LITERALS = {
 
   ubicacion: {
     title: 'Ubicación',
+    overline: 'Colección',
+    albumsCount: 'álbumes',
+    countrySingular: 'país',
+    countriesCount: 'países',
     album: 'Álbum',
     closed: 'Cerrado',
     searchPlaceholder: 'Buscar país...',

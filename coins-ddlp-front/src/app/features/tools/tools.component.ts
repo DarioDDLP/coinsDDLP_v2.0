@@ -16,6 +16,7 @@ export class ToolsComponent {
   private router = inject(Router);
 
   readonly title = LITERALS.herramientas.title;
+  readonly overline = LITERALS.nav.groupManagement;
   readonly navItems = TOOLS_NAV_ITEMS;
 
   constructor() {

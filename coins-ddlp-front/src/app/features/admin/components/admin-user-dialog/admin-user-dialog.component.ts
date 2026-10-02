@@ -16,6 +16,7 @@ import { TextInputComponent } from '../../../../shared/components/text-input/tex
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { ROLE_OPTIONS } from './admin-user-dialog.config';
 
@@ -39,6 +40,7 @@ export class AdminUserDialogComponent {
   readonly literals = LITERALS.admin;
   readonly authLiterals = LITERALS.auth;
   readonly sharedLiterals = LITERALS.shared;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly email = signal('');
   readonly password = signal('');

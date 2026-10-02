@@ -1,35 +1,182 @@
-.filter-bar {
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.total-progress {
+  padding: var(--space-4) var(--space-5);
+  @include card;
+}
+
+.skeleton-list {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 16px;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.year-header {
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--deep-navy);
-  margin: 24px 0 8px;
+// Altura de la fila de chips fija: las cabeceras de año se pegan justo debajo
+:host {
+  --jumps-height: 48px;
+}
 
-  &:first-of-type {
-    margin-top: 0;
+// --- Saltar a año (fija arriba al hacer scroll) ---
+
+.year-jumps {
+  @include scroll-row;
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  gap: var(--space-1);
+  height: var(--jumps-height);
+  align-items: center;
+  margin-bottom: var(--space-2);
+  background: var(--bg);
+
+  @include mobile {
+    top: var(--topbar-height);
+    margin: 0 calc(-1 * var(--space-4)) var(--space-2);
+    padding: 0 var(--space-4);
   }
 }
 
-:host ::ng-deep .p-datatable-tbody > tr > td {
-  color: var(--cobalt);
-}
-
-:host ::ng-deep .p-datatable-tbody > tr.row--clickable {
+.year-jump {
+  flex: none;
+  height: 32px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-family);
+  font-size: var(--font-sm);
+  font-variant-numeric: tabular-nums;
   cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  @include focus-ring;
 
-  &:hover > td {
-    background: rgba(var(--cobalt-rgb), 0.08);
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
   }
+
+  &--active {
+    border-color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.12);
+    color: var(--accent-soft);
+  }
+}
+
+// --- Secciones por año ---
+
+.year-sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.year-section {
+  // Al saltar a un año, deja hueco para los chips fijos (y la barra superior en móvil)
+  scroll-margin-top: var(--jumps-height);
+
+  @include mobile {
+    scroll-margin-top: calc(var(--topbar-height) + var(--jumps-height));
+  }
+
+  &__header {
+    position: sticky;
+    top: var(--jumps-height);
+    z-index: 2;
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-3) var(--space-1);
+    background: var(--bg);
+
+    @include mobile {
+      top: calc(var(--topbar-height) + var(--jumps-height));
+    }
+  }
+
+  &__year {
+    margin: 0;
+    font-size: var(--font-lg);
+    font-weight: var(--font-bold);
+  }
+
+  &__count {
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// --- Tabla ---
+
+.col-country {
+  width: 190px;
+}
+
+.col-mint {
+  width: 130px;
+  white-space: nowrap;
+}
+
+.col-grow {
+  width: 100%;
+  max-width: 0;
+
+  @include mobile {
+    max-width: none;
+  }
+}
+
+.col-center {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.col-location {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.country {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text);
+  font-weight: var(--font-medium);
+}
+
+.coin-row__desc {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  color: var(--text-soft);
 }
 
 .clip {
-  max-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  @include truncate;
+  min-width: 0;
+}
+
+.owner-tag {
+  display: block;
+  font-size: 10px;
+  color: var(--text-faint);
+  text-transform: none;
+}
+
+.muted {
+  color: var(--text-faint);
+}
+
+:host ::ng-deep .coin-row {
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: inset 0 0 0 2px var(--primary);
+  }
 }
