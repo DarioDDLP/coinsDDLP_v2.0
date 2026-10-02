@@ -1,15 +1,18 @@
-// Tipografía coinsDDLP — Montserrat (Google Fonts)
+// Tipografía coinsDDLP — Inter (interfaz) + Montserrat (títulos)
 :root {
-  --font-family: 'Montserrat', sans-serif;
+  --font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-family-display: 'Montserrat', 'Inter', system-ui, sans-serif;
 
   // Tamaños
-  --font-xs: 11px;
+  --font-xs: 12px;
   --font-sm: 13px;
-  --font-base: 15px;
+  --font-base: 16px;
+  --font-body: 14px; // texto de tablas, listas y controles
   --font-md: 18px;
   --font-lg: 22px;
   --font-xl: 28px;
-  --font-2xl: 36px;
+  --font-2xl: 32px;
+  --font-title: clamp(24px, 2.2vw + 12px, 32px); // h1 de página
 
   // Pesos
   --font-regular: 400;
@@ -26,16 +29,5 @@
   --letter-spacing-tight: -0.02em;
   --letter-spacing-normal: 0;
   --letter-spacing-wide: 0.08em;
-  --letter-spacing-wider: 0.14em;
+  --letter-spacing-wider: 0.12em;
 }
-
-// SCSS variables
-$font-family: 'Montserrat', sans-serif;
-
-$font-xs: 11px;
-$font-sm: 13px;
-$font-base: 15px;
-$font-md: 18px;
-$font-lg: 22px;
-$font-xl: 28px;
-$font-2xl: 36px;

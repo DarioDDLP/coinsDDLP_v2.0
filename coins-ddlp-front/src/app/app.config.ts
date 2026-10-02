@@ -11,44 +11,9 @@ import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
-import { definePreset } from '@primeuix/themes';
-import Aura from '@primeuix/themes/aura';
-
-const AppPreset = definePreset(Aura, {
-  components: {
-    select: {
-      root: {
-        borderColor: '#2d3a7a',
-        hoverBorderColor: '#2d3a7a',
-        focusBorderColor: '#d9b582',
-        borderRadius: '8px',
-        paddingX: '14px',
-        paddingY: '10px',
-        color: '#151465',
-        focusRing: {
-          width: '0',
-          style: 'none',
-          shadow: '0 0 0 3px rgba(217, 181, 130, 0.15)',
-        },
-      },
-      option: {
-        color: '#151465',
-        focusBackground: '#fff5e8',
-        focusColor: '#151465',
-        selectedBackground: '#2d3a7a',
-        selectedColor: '#ffffff',
-        selectedFocusBackground: '#151465',
-        selectedFocusColor: '#ffffff',
-      },
-      overlay: {
-        borderColor: '#2d3a7a',
-        borderRadius: '8px',
-      },
-    },
-  },
-});
 import { environment } from '../environments/environment';
 import { GlobalErrorHandler } from './core/services/global-error-handler.service';
+import { AppPreset, DARK_MODE_SELECTOR } from './core/theme/app-preset';
 
 export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-client');
 
@@ -63,7 +28,7 @@ export const appConfig: ApplicationConfig = {
       license: environment.primeuiLicense,
       theme: {
         preset: AppPreset,
-        options: { darkModeSelector: false },
+        options: { darkModeSelector: DARK_MODE_SELECTOR },
       },
     }),
     {
