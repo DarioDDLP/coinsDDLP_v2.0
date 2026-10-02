@@ -12,7 +12,7 @@ Es un **monorepo** con tres componentes independientes:
 
 | Carpeta | Componente | Runtime |
 |---------|-----------|---------|
-| `coins-ddlp-front/` | Aplicación frontend | Angular 21 (Node) |
+| `coins-ddlp-front/` | Aplicación frontend | Angular 22 (Node ≥ 24.15) |
 | `supabase/` | Backend: Edge Functions + migraciones | Deno / PostgreSQL |
 | `scripts/` | Utilidades de datos | Python |
 
@@ -22,15 +22,15 @@ Es un **monorepo** con tres componentes independientes:
 
 | Capa | Tecnología | Notas |
 |------|-----------|-------|
-| Frontend | **Angular 21** | Standalone components, Signals, control flow moderno (`@if`, `@for`) |
+| Frontend | **Angular 22** | Standalone components, Signals, control flow moderno (`@if`, `@for`) |
 | Backend / DB | **Supabase PostgreSQL** | SQL, tiempo real nativo (`postgres_changes`) |
 | Autenticación | **Supabase Auth** | Login con email/password |
 | Backend serverless | **Supabase Edge Functions** | Deno — `admin-users`, `numista-proxy` |
-| UI Components | **PrimeNG** | Modales, toasts, tablas, dropdowns, spinners |
+| UI Components | **PrimeNG 22** | Modales, toasts, tablas, dropdowns, spinners. Licencia PrimeUI Community (ver Notas → PrimeNG) |
 | Estilos | **SCSS** | Theming global + estilos por componente |
 | Hosting | **Vercel** | Deploy automático en cada push a `main` |
 
-### Características Angular 21 a usar obligatoriamente
+### Características Angular 22 a usar obligatoriamente
 - `signal()`, `computed()`, `effect()` — NO usar `BehaviorSubject` para estado local
 - `inject()` — NO inyección por constructor
 - `@if`, `@for`, `@switch` — NO `*ngIf`, `*ngFor`
@@ -38,6 +38,7 @@ Es un **monorepo** con tres componentes independientes:
 - `input()` / `output()` signals para comunicación entre componentes
 - `toSignal()` / `toObservable()` para interop con RxJS cuando sea necesario
 - Lazy loading de rutas con `loadComponent`
+- **OnPush por defecto** (Angular 22): no declarar `changeDetection`; NO usar `ChangeDetectionStrategy.Eager`. Todo estado que pinte la plantilla debe ser un signal
 
 ---
 
@@ -227,7 +228,7 @@ src/
 │   │
 │   ├── app.ts                          # Componente raíz: layout sidebar + <router-outlet>
 │   ├── app.config.ts                   # Providers: cliente Supabase, Router, HttpClient,
-│   │                                   #   Animations, PrimeNG, GlobalErrorHandler
+│   │                                   #   PrimeNG, GlobalErrorHandler
 │   └── app.routes.ts                   # Rutas raíz con lazy loading
 │
 ├── environments/                       # environment.ts, environment.prod.ts
@@ -303,7 +304,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-06-09
+> **Última actualización:** 2026-10-02
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
@@ -334,6 +335,8 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 | 2026-05-28 | **Correcciones segunda colección (sesión 14)**: Permisos edición: `canEdit` computed en euros-year-coins y euros-all-coins (visible solo si el usuario logueado está viendo su propia colección; nunca en modo *ambas*). Pills de propietario visibles a todos (sin guarda admin). `coin-uds-dialog`: `ownerId` usa `authService.currentUser().uid` para no-admin; reset de `editingOwner` a 'dario' al cerrar el dialog. Filtros *obtenidas*/*faltantes* en modo *ambas* son simétricos (requieren la condición para los dos propietarios) en euros y conmemorativas. Excel: columnas dobles por propietario en modo *ambas*; conservación en blanco cuando `uds === 0`. `CoinRow` interface en conmemorativas completada con campos `Alt`. |
 | 2026-06-09 | **Refactor camelCase DB (sesión 16)**: Columnas `euro_id/owner_id` → `euroId/ownerId` en `euro_ownership`; `peseta_type_id` → `pesetaTypeId` en `peseta`. Interfaces `RawOwnership` y `Peseta` actualizadas. `EurosService` y `ConmemorativasService` adaptados. Convención: todas las columnas de todas las tablas usan camelCase. |
 | 2026-06-09 | **Módulo Ubicación completo (sesión 16)**: Tabla `country_location` (id, country, album, yearFrom, yearTo, isClosed) con 26 filas iniciales. `UbicacionService` (getAll, getCountries, add, update, remove). `ubicacion-map`: vista agrupada por álbum con bandera, rango de años y badge "Cerrado". Admin puede añadir/editar/eliminar entradas. Módulo público (lectura sin login); edición restringida a admin. `UbicacionEditDialogComponent` con select de país, álbum, años y toggle cerrado. |
+| 2026-06-16 | **Ubicación y toasts**: buscador por país en la cabecera de `ubicacion-map`; `empty-panel` alineado con el resto de listados cuando no hay resultados. Todos los toasts centralizados en `TOAST_MESSAGES`. |
+| 2026-10-02 | **Migración a Angular 22 + PrimeNG 22 (rama `chore/angular-22`)**: `ng update` a Angular 22.2 y TypeScript 6.0. Eliminados los `Eager` que añade la migración → todos los componentes en OnPush (el estado ya era 100% signals). HttpClient con `fetch` (nuevo default, sin `withXhr`). Eliminado `@angular/animations` y `provideAnimationsAsync()`: ni la app ni PrimeNG 22 lo usan (PrimeNG anima con CSS nativo y `animate.enter/leave`). PrimeNG 21 → 22.1: `@primeng/themes` → `@primeuix/themes`, añadido `@angular/cdk`, `pTemplate="x"` → `#x` (8 plantillas), fuera `SharedModule`, `p-progressSpinner` → `p-progress-spinner`. Licencia PrimeUI Community en `environment*.ts` → `providePrimeNG({ license })`. `engines.node >=24.15.0`. |
 | 2026-06-02 | **Variantes de moneda LA/LR (sesión 15)**: Migración SQL `20260602000000_add_coin_variant.sql`: columna `variant TEXT` nullable en `euro`; España 2€ y 2€C existentes marcadas como `LA`; filas `LR` insertadas con uds=0. Interface `EuroCoin`/`RawEuroCoin` con `variant?`. `EurosService` y `ConmemorativasService`: mapeo de `variant` en ambos modos de propietario; orden `faceValue → description → variant NULLS FIRST` para garantizar LA antes de LR. Tablas `euros-year-coins`, `euros-all-coins`, `conmemorativas-list`: badge `secondary` inline en denominación/descripción. `coin-detail`: badge en cabecera junto a conservación. `coin-uds-dialog`: badge en cabecera (solo lectura). `tools-add-euro`: select LA/LR entre valor facial y ceca, visible solo para 2€/2€C. `VARIANT_OPTIONS` y `VARIANT_FACE_VALUES` en `tools.config.ts`. Documentadas reglas de variables CSS/SCSS en CLAUDE.md. 22 de 25 países pendientes de migrar (España como prueba piloto). |
 
 ---
@@ -345,9 +348,12 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 - **Signals everywhere**: estado reactivo de UI con signals, no con RxJS subjects
 - **RxJS**: el SDK de Supabase es basado en Promesas; usar RxJS solo para interop puntual (`toSignal()`)
 - **Guards**: funcionales con `inject()` — NO class-based guards
+- No usar `@angular/animations` (obsoleto en Angular 22). Para animaciones propias, `animate.enter` / `animate.leave` con clases CSS
 
 ### PrimeNG
-- Usar el sistema de temas con CSS variables y `definePreset` (preset `Aura` personalizado en `app.config.ts`)
+- Usar el sistema de temas con CSS variables y `definePreset` de `@primeuix/themes` (preset `Aura` personalizado en `app.config.ts`). `@primeng/themes` está obsoleto
+- Plantillas de componentes PrimeNG con variable de plantilla (`<ng-template #header>`, `#body`, `#groupheader`…). `pTemplate` ya no existe
+- **Licencia**: desde la v22 PrimeNG usa la licencia PrimeUI. Clave Community gratuita en `environment.primeuiLicense` (ambos `environment*.ts`), pasada a `providePrimeNG({ license })`. Se verifica offline, sin telemetría. **Caduca el 2027-10-02**: renovarla en https://primeui.dev/licenses/community; si caduca, PrimeNG muestra un aviso de licencia en la app
 - Importar componentes individualmente en cada standalone component (ISP)
 
 ### Autenticación
