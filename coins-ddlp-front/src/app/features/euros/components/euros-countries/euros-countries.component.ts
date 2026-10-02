@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { formatNumber } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
@@ -68,6 +69,7 @@ export class EurosCountriesComponent {
   readonly hasError = signal(false);
   /** Colección cargada: si cambia se vuelve a mostrar el skeleton. */
   private loadedOwner: string | null = null;
+  private loadSub?: Subscription;
 
   constructor() {
     // Recarga al cambiar de colección (Darío / Manolo / ambas) o tras editar una moneda (sin skeleton)
@@ -84,7 +86,9 @@ export class EurosCountriesComponent {
   loadSummary(showSkeleton = true): void {
     this.hasError.set(false);
     if (showSkeleton) this.isReady.set(false);
-    this.eurosService.getCatalogSummary().subscribe({
+    // Solo cuenta la última petición: una anterior que llegue tarde no pisa los datos nuevos
+    this.loadSub?.unsubscribe();
+    this.loadSub = this.eurosService.getCatalogSummary().subscribe({
       next: (rows) => {
         this.summary.set(rows);
         this.isReady.set(true);

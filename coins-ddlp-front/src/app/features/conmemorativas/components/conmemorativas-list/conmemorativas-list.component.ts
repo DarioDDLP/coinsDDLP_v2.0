@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import { formatNumber } from '@angular/common';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -119,6 +120,7 @@ export class ConmemorativasListComponent {
   readonly ownerOptions = OWNER_FILTER_OPTIONS;
 
   private allCoins = signal<EuroCoin[]>([]);
+  private loadSub?: Subscription;
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly ownershipFilter = signal('all');
   readonly isReady = signal(false);
@@ -161,7 +163,9 @@ export class ConmemorativasListComponent {
   loadCoins(): void {
     this.hasError.set(false);
     this.isReady.set(false);
-    this.service.getAll().subscribe({
+    // Solo cuenta la última petición: una anterior que llegue tarde no pisa los datos nuevos
+    this.loadSub?.unsubscribe();
+    this.loadSub = this.service.getAll().subscribe({
       next: (coins) => {
         this.allCoins.set(coins);
         this.isReady.set(true);

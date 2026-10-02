@@ -7,9 +7,8 @@ import {
   input,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { Dialog } from 'primeng/dialog';
 import { UbicacionService } from '../../services/ubicacion.service';
@@ -20,6 +19,7 @@ import {
   SelectOption,
 } from '../../../../shared/components/select/select.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import {
   CountryLocation,
   NewCountryLocation,
@@ -30,7 +30,14 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
 
 @Component({
   selector: 'app-ubicacion-edit-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, ToggleComponent],
+  imports: [
+    Dialog,
+    ButtonComponent,
+    TextInputComponent,
+    SelectComponent,
+    ToggleComponent,
+    SkeletonComponent,
+  ],
   templateUrl: './ubicacion-edit-dialog.component.html',
   styleUrl: './ubicacion-edit-dialog.component.scss',
 })
@@ -56,12 +63,10 @@ export class UbicacionEditDialogComponent {
   readonly isClosed = signal(false);
   readonly loading = signal(false);
 
-  readonly countryOptions = toSignal(
-    this.service
-      .getCountries()
-      .pipe(map((countries): SelectOption[] => countries.map((c) => ({ label: c, value: c })))),
-    { initialValue: [] as SelectOption[] },
-  );
+  /** Países del catálogo: se piden la primera vez que se abre el diálogo, no al montar la vista. */
+  readonly countryOptions = signal<SelectOption[]>([]);
+  readonly countriesReady = signal(false);
+  private countriesRequested = false;
 
   readonly countryLocked = computed(() => this.location() !== null);
 
@@ -75,6 +80,26 @@ export class UbicacionEditDialogComponent {
 
   constructor() {
     this.setupFormEffect();
+    effect(() => {
+      if (this.visible() && !this.countriesRequested) untracked(() => this.loadCountries());
+    });
+  }
+
+  private loadCountries(): void {
+    this.countriesRequested = true;
+    this.countriesReady.set(false);
+    this.service.getCountries().subscribe({
+      next: (countries) => {
+        this.countryOptions.set(countries.map((c) => ({ label: c, value: c })));
+        this.countriesReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        // Se reintenta la próxima vez que se abra el diálogo
+        this.countriesRequested = false;
+        this.countriesReady.set(true);
+      },
+    });
   }
 
   protected async onSubmit(): Promise<void> {

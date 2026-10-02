@@ -84,18 +84,21 @@
   </app-page-layout>
 }
 
-<app-ubicacion-edit-dialog
-  [visible]="showEditDialog()"
-  [location]="selectedLocation()"
-  (saved)="onDialogSaved()"
-  (closed)="onDialogClosed()"
-/>
+<!-- Solo admin puede editar: así el resto no monta el diálogo ni descarga la lista de países -->
+@if (canEdit()) {
+  <app-ubicacion-edit-dialog
+    [visible]="showEditDialog()"
+    [location]="selectedLocation()"
+    (saved)="onDialogSaved()"
+    (closed)="onDialogClosed()"
+  />
 
-<app-confirm-dialog
-  [visible]="showConfirmDelete()"
-  [header]="literals.deleteEntry"
-  [message]="literals.deleteConfirm"
-  [loading]="isDeleting()"
-  (confirmed)="onConfirmDelete()"
-  (closed)="onCloseConfirmDelete()"
-/>
+  <app-confirm-dialog
+    [visible]="showConfirmDelete()"
+    [header]="literals.deleteEntry"
+    [message]="literals.deleteConfirm"
+    [loading]="isDeleting()"
+    (confirmed)="onConfirmDelete()"
+    (closed)="onCloseConfirmDelete()"
+  />
+}

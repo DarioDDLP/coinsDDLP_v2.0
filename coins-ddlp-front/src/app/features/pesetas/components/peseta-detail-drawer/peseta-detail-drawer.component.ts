@@ -11,7 +11,7 @@ import {
 import { formatNumber } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { PesetasService } from '../../services/pesetas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
@@ -64,6 +64,7 @@ export class PesetaDetailDrawerComponent {
   readonly peseta = signal<Peseta | null>(null);
   readonly hasError = signal(false);
   readonly editVisible = signal(false);
+  private loadSub?: Subscription;
 
   constructor() {
     effect(() => {
@@ -75,7 +76,9 @@ export class PesetaDetailDrawerComponent {
 
   private load(id: string): void {
     this.hasError.set(false);
-    this.service.getById(id).subscribe({
+    // Solo cuenta la última petición: una anterior que llegue tarde no pisa la ficha
+    this.loadSub?.unsubscribe();
+    this.loadSub = this.service.getById(id).subscribe({
       next: (peseta) => {
         if (!peseta) {
           this.close();

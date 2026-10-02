@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
@@ -98,6 +98,7 @@ export class EurosCountryComponent {
   private coinsData = signal<EuroCoin[]>([]);
   /** País + colección cargados: si cambian se vuelve a mostrar el skeleton. */
   private loadedKey = '';
+  private loadSub?: Subscription;
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly searchQuery = signal('');
@@ -146,7 +147,9 @@ export class EurosCountryComponent {
   loadCoins(country: string, showSkeleton = true): void {
     this.hasError.set(false);
     if (showSkeleton) this.isReady.set(false);
-    this.eurosService.getAllByCountry(country).subscribe({
+    // Solo cuenta la última petición: una anterior que llegue tarde no pisa los datos nuevos
+    this.loadSub?.unsubscribe();
+    this.loadSub = this.eurosService.getAllByCountry(country).subscribe({
       next: (coins) => {
         this.coinsData.set(coins);
         this.isReady.set(true);

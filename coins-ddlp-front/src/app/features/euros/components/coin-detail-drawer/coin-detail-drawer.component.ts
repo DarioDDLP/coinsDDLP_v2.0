@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
@@ -89,9 +89,14 @@ export class CoinDetailDrawerComponent {
     });
   }
 
+  // Solo cuenta la última petición de cada tipo: una anterior que llegue tarde no pisa la ficha
+  private loadSub?: Subscription;
+  private numistaSub?: Subscription;
+
   private load(id: string): void {
     this.hasError.set(false);
-    this.eurosService.getById(id).subscribe({
+    this.loadSub?.unsubscribe();
+    this.loadSub = this.eurosService.getById(id).subscribe({
       next: (coin) => {
         if (!coin) {
           this.close();
@@ -109,12 +114,14 @@ export class CoinDetailDrawerComponent {
   }
 
   private loadNumista(idNum: string): void {
+    this.numistaSub?.unsubscribe();
     this.numista.set(null);
     this.numistaError.set(false);
     this.numistaQuotaError.set(false);
+    this.numistaLoading.set(false);
     if (!idNum || idNum === '0') return;
     this.numistaLoading.set(true);
-    this.numistaService.getCoinByIdNum(idNum).subscribe({
+    this.numistaSub = this.numistaService.getCoinByIdNum(idNum).subscribe({
       next: (data) => {
         this.numista.set(data);
         this.numistaLoading.set(false);

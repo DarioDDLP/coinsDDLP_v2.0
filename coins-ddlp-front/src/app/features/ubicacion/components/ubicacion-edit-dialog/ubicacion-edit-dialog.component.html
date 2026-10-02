@@ -10,14 +10,18 @@
   [closable]="true"
 >
   <div class="entry-form">
-    <app-select
-      [label]="literals.country"
-      [value]="country()"
-      [options]="countryOptions()"
-      [placeholder]="literals.countryPlaceholder"
-      [disabled]="countryLocked()"
-      (valueChange)="country.set($event)"
-    />
+    @if (countriesReady()) {
+      <app-select
+        [label]="literals.country"
+        [value]="country()"
+        [options]="countryOptions()"
+        [placeholder]="literals.countryPlaceholder"
+        [disabled]="countryLocked()"
+        (valueChange)="country.set($event)"
+      />
+    } @else {
+      <app-skeleton height="4.25rem" />
+    }
 
     <app-text-input
       [label]="literals.album"
