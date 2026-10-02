@@ -5,14 +5,14 @@ import { NumistaService } from '../../../../core/services/numista.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-coin-detail',
-  imports: [BadgeComponent, CollectionLayoutComponent, EmptyPanelComponent],
+  imports: [BadgeComponent, PageLayoutComponent, EmptyPanelComponent],
   templateUrl: './coin-detail.component.html',
   styleUrl: './coin-detail.component.scss',
 })

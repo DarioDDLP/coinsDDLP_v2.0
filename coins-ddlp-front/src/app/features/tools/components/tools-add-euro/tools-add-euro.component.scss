@@ -4,10 +4,10 @@
   justify-content: center;
 
   &__card {
-    background: var(--cream);
-    border-radius: 10px;
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     padding: 32px;
-    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
     width: 100%;
     max-width: 860px;
   }

@@ -8,15 +8,13 @@
       (retry)="loadCoins()"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="literals.title"
       [searchPlaceholder]="literals.search"
       [searchValue]="searchQuery()"
-      cardBackground="#ffffff"
-      maxWidth="1400px"
       (searchChange)="onSearch($event)"
     >
-      <span layout-actions>
+      <span page-actions>
         <app-button
           icon="pi pi-file-excel"
           [label]="sharedLiterals.exportExcel"
@@ -24,7 +22,7 @@
           (clicked)="exportExcel()"
         />
       </span>
-      <div class="filter-bar">
+      <div class="filter-bar" page-filters>
         <app-filter-pills
           [options]="ownerOptions"
           [value]="ownerService.current()"
@@ -128,6 +126,6 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

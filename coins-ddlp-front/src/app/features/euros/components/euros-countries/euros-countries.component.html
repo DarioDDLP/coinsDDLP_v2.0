@@ -8,7 +8,7 @@
       (retry)="loadCoins()"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="literals.countriesTitle"
       [searchPlaceholder]="literals.searchCountries"
       [searchValue]="searchQuery()"
@@ -27,6 +27,6 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

@@ -1,9 +1,10 @@
 <img
   class="country-flag"
   [src]="flagPath()"
-  [alt]="country()"
-  [title]="country()"
+  [alt]="decorative() ? '' : country()"
   [style.width]="sizePx()"
   [style.height]="sizePx()"
+  loading="lazy"
+  decoding="async"
   (error)="onImageError($event)"
 />

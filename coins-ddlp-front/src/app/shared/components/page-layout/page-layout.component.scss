@@ -1,0 +1,150 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) clamp(var(--space-5), 4vw, var(--space-9)) var(--space-9);
+
+  @include mobile {
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-4) var(--space-7);
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  &__back {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    padding: var(--space-1) var(--space-2) var(--space-1) 0;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    font-size: var(--font-body);
+    font-weight: var(--font-medium);
+    text-decoration: none;
+    @include focus-ring;
+
+    &:hover {
+      color: var(--text);
+    }
+
+    // En móvil el botón atrás está en la barra superior
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-5);
+  }
+
+  &__title-block {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    min-width: 0;
+
+    // La bandera y el título ya están en la barra superior de móvil
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    min-width: 0;
+  }
+
+  &__overline {
+    @include overline;
+    color: var(--accent);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-title);
+    font-weight: var(--font-bold);
+    color: var(--text);
+  }
+
+  &__subtitle {
+    margin: 0;
+    font-size: var(--font-body);
+    color: var(--text-muted);
+  }
+
+  &__aside {
+    flex: 0 1 360px;
+    min-width: 240px;
+
+    &:empty {
+      display: none;
+    }
+
+    @include mobile {
+      flex-basis: 100%;
+      min-width: 0;
+    }
+  }
+
+  &__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+
+    &:empty {
+      display: none;
+    }
+  }
+
+  &__search {
+    flex: 1 1 280px;
+  }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+
+    &:empty {
+      display: none;
+    }
+
+    @include mobile {
+      flex-wrap: nowrap;
+      margin: 0 calc(-1 * var(--space-4));
+      padding: 0 var(--space-4);
+      overflow-x: auto;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+
+  &__body {
+    min-width: 0;
+  }
+}

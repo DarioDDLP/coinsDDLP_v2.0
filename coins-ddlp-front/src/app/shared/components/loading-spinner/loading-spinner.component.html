@@ -1,4 +1,4 @@
-<div class="spinner-container">
-  <p-progress-spinner [style]="{ width: '100px', height: '100px' }"></p-progress-spinner>
-  <p class="spinner-message">{{ message() }}</p>
+<div class="spinner" role="status" aria-live="polite">
+  <p-progress-spinner strokeWidth="4" [style]="{ width: '48px', height: '48px' }" />
+  <p class="spinner__message">{{ message() }}</p>
 </div>

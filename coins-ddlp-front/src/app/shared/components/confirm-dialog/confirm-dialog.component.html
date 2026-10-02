@@ -3,15 +3,17 @@
   (onHide)="closed.emit()"
   [modal]="true"
   [header]="header()"
-  [style]="{ width: '420px' }"
+  [style]="{ width: '440px' }"
+  [breakpoints]="dialogBreakpoints"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
+  [dismissableMask]="true"
 >
   <div class="confirm-dialog">
     <p class="confirm-dialog__message">{{ message() }}</p>
     <div class="confirm-dialog__actions">
-      <app-button [label]="cancelLabel" variant="primary" (clicked)="closed.emit()" />
+      <app-button [label]="cancelLabel" variant="secondary" (clicked)="closed.emit()" />
       <app-button
         [label]="confirmLabel()"
         variant="danger"

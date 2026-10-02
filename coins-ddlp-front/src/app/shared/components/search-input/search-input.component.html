@@ -1,7 +1,21 @@
-<input
-  type="text"
-  class="search-input"
-  [placeholder]="placeholder()"
-  [value]="value()"
-  (input)="onInput($event.target.value)"
-/>
+<label class="search-input">
+  <i class="pi pi-search search-input__icon" aria-hidden="true"></i>
+  <input
+    type="search"
+    class="search-input__control"
+    [placeholder]="placeholder()"
+    [attr.aria-label]="placeholder()"
+    [value]="value()"
+    (input)="onInput($event.target.value)"
+  />
+  @if (value()) {
+    <button
+      type="button"
+      class="search-input__clear"
+      [attr.aria-label]="clearLabel"
+      (click)="onInput('')"
+    >
+      <i class="pi pi-times" aria-hidden="true"></i>
+    </button>
+  }
+</label>

@@ -1,7 +1,18 @@
+:host {
+  display: inline-flex;
+  flex: none;
+  border-radius: var(--radius-full);
+
+  &.ring {
+    box-shadow:
+      0 0 0 2px var(--bg),
+      0 0 0 3px var(--border-strong);
+  }
+}
+
 .country-flag {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
   display: block;
+  border-radius: var(--radius-full);
+  object-fit: cover;
+  background: var(--surface-2);
 }

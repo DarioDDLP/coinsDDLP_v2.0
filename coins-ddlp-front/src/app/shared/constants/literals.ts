@@ -23,6 +23,8 @@ export const LITERALS = {
     toastError: 'Error',
     toastInfo: 'Información',
     exportExcel: 'Exportar Excel',
+    clearSearch: 'Borrar búsqueda',
+    progress: 'Progreso',
   },
 
   auth: {

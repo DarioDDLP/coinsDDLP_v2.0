@@ -8,11 +8,10 @@
       (retry)="ngOnInit()"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="literals.denominationsTitle"
       [searchPlaceholder]="literals.searchDenominations"
       [searchValue]="searchQuery()"
-      maxWidth="1000px"
       (searchChange)="onSearch($event)"
     >
       @if (!isEmpty()) {
@@ -37,6 +36,6 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

@@ -1,8 +1,9 @@
 <div class="toggle">
   @if (label()) {
-    <span class="toggle__label">{{ label() }}</span>
+    <label class="field-label" [for]="id">{{ label() }}</label>
   }
   <p-toggleswitch
+    [inputId]="id"
     [ngModel]="value()"
     (ngModelChange)="valueChange.emit($event)"
     [disabled]="disabled()"

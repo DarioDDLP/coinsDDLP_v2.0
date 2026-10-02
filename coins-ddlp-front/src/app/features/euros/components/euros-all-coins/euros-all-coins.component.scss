@@ -1,11 +1,6 @@
-:host ::ng-deep .p-datatable-thead > tr > th {
-  background: var(--deep-navy);
-  color: var(--cream);
-}
-
 :host ::ng-deep .p-datatable-tbody > tr.year-group-header > td {
-  background: var(--cobalt);
-  color: var(--cream);
+  background: var(--surface-2);
+  color: var(--accent-soft);
   font-weight: 700;
   font-size: 15px;
   padding: 8px 16px;

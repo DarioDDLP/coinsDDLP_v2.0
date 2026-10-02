@@ -4,14 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PesetasService } from '../../services/pesetas.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { LITERALS } from '../../../../shared/constants/literals';
 
 @Component({
   selector: 'app-peseta-detail',
-  imports: [BadgeComponent, CollectionLayoutComponent, EmptyPanelComponent, DecimalPipe],
+  imports: [BadgeComponent, PageLayoutComponent, EmptyPanelComponent, DecimalPipe],
   templateUrl: './peseta-detail.component.html',
   styleUrl: './peseta-detail.component.scss',
 })

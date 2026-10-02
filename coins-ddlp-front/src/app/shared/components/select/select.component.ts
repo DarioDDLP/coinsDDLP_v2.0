@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { uniqueId } from '../../helpers/unique-id.helper';
 import { Select } from 'primeng/select';
 
 export interface SelectOption {
@@ -21,4 +22,6 @@ export class SelectComponent {
   disabled = input<boolean>(false);
 
   valueChange = output<string>();
+
+  readonly id = uniqueId('select');
 }

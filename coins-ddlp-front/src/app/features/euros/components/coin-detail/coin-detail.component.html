@@ -6,13 +6,11 @@
       [message]="sharedLiterals.errorLoadMessage"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="coin()!.faceValue"
       [country]="coin()!.country"
       [backLink]="backLink()"
       [backLabel]="sharedLiterals.back"
-      cardBackground="#ffffff"
-      [cardOpacity]="0.95"
     >
       <!-- Header de la moneda -->
       <div class="detail-header">
@@ -203,6 +201,6 @@
           </div>
         </div>
       </div>
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

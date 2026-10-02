@@ -8,7 +8,7 @@
       (retry)="loadYears(country())"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="country()"
       [country]="country()"
       [backLink]="['/euros']"
@@ -45,6 +45,6 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

@@ -9,15 +9,14 @@
     (retry)="ngOnInit()"
   />
 } @else {
-  <app-collection-layout
+  <app-page-layout
     [title]="literals.title"
-    maxWidth="900px"
     [searchPlaceholder]="literals.searchPlaceholder"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
     @if (canEdit()) {
-      <span layout-actions>
+      <span page-actions>
         <app-button [label]="literals.addCountry" icon="pi pi-plus" (clicked)="onAddCountry()" />
       </span>
     }
@@ -67,7 +66,7 @@
     } @else {
       <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
     }
-  </app-collection-layout>
+  </app-page-layout>
 }
 
 <app-ubicacion-edit-dialog

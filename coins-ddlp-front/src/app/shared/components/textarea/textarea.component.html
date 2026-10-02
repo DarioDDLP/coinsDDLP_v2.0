@@ -1,8 +1,9 @@
 @if (label()) {
-  <label class="textarea__label">{{ label() }}</label>
+  <label class="field-label" [for]="id">{{ label() }}</label>
 }
 <textarea
-  class="textarea__control"
+  class="field-control"
+  [id]="id"
   [value]="value()"
   [placeholder]="placeholder()"
   [rows]="rows()"

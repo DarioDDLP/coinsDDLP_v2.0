@@ -2,7 +2,7 @@ import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angu
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { EurosService } from '../../services/euros.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
@@ -25,7 +25,7 @@ interface CountryGroup {
     CommonModule,
     RouterLink,
     CountryFlagComponent,
-    CollectionLayoutComponent,
+    PageLayoutComponent,
     EmptyPanelComponent,
   ],
   templateUrl: './euros-countries.component.html',

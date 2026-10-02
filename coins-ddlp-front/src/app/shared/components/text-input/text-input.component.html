@@ -1,8 +1,9 @@
 @if (label()) {
-  <label class="text-input__label">{{ label() }}</label>
+  <label class="field-label" [for]="id">{{ label() }}</label>
 }
 <input
-  class="text-input__input"
+  class="field-control"
+  [id]="id"
   [type]="type()"
   [value]="value()"
   [placeholder]="placeholder()"
@@ -10,6 +11,7 @@
   [disabled]="disabled()"
   [attr.min]="min()"
   [attr.max]="max()"
+  [attr.inputmode]="type() === 'number' ? 'numeric' : null"
   (input)="onInput($event)"
   (keydown.enter)="onEnter()"
 />

@@ -1,0 +1,20 @@
+<div class="progress-stat__row">
+  <span class="progress-stat__count">
+    @if (label()) {
+      <span class="progress-stat__label">{{ label() }}</span>
+    }
+    <span class="progress-stat__owned">{{ owned() | number: '1.0-0' }}</span>
+    <span class="progress-stat__total"> / {{ total() | number: '1.0-0' }}</span>
+  </span>
+  <span class="progress-stat__percent">{{ percent() }} %</span>
+</div>
+<div
+  class="progress-stat__bar"
+  role="progressbar"
+  [attr.aria-valuenow]="percent()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-label]="ariaLabel()"
+>
+  <span [style.width.%]="percent()"></span>
+</div>

@@ -83,5 +83,53 @@ export const AppPreset = definePreset(Aura, {
     mask: {
       background: 'light-dark(rgba(0,0,0,0.4), rgba(4, 7, 14, 0.62))',
     },
+    overlay: {
+      select: {
+        background: 'light-dark({surface.0}, {surface.900})',
+        borderColor: 'light-dark({surface.200}, {surface.700})',
+        borderRadius: '10px',
+        shadow: '0 12px 40px rgba(0, 0, 0, 0.45)',
+      },
+      popover: {
+        background: 'light-dark({surface.0}, #151e31)',
+        borderColor: 'light-dark({surface.200}, {surface.700})',
+        borderRadius: '12px',
+        shadow: '0 12px 40px rgba(0, 0, 0, 0.45)',
+      },
+      modal: {
+        background: 'light-dark({surface.0}, #151e31)',
+        borderColor: 'light-dark({surface.200}, {surface.700})',
+        borderRadius: '16px',
+        padding: '1.5rem',
+        shadow: '0 24px 60px rgba(0, 0, 0, 0.55)',
+      },
+    },
+  },
+  components: {
+    datatable: {
+      root: {
+        borderColor: 'light-dark({surface.200}, #18213a)',
+      },
+      headerCell: {
+        background: 'light-dark({surface.0}, {surface.900})',
+        color: 'light-dark({surface.500}, {surface.500})',
+        padding: '0.75rem 1rem',
+      },
+      row: {
+        background: 'light-dark({surface.0}, {surface.900})',
+        hoverBackground: 'light-dark({surface.100}, #16203a)',
+        stripedBackground: 'light-dark({surface.50}, #141d30)',
+      },
+      bodyCell: {
+        padding: '0.875rem 1rem',
+      },
+    },
+    tooltip: {
+      root: {
+        background: '{surface.700}',
+        color: '{surface.50}',
+        borderRadius: '8px',
+      },
+    },
   },
 });

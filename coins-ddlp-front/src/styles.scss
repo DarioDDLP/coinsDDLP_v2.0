@@ -39,6 +39,35 @@ a {
   color: var(--text);
 }
 
+// --- Theming PrimeNG (lo que los tokens del preset no cubren) ---
+
+// Tablas: contenedor redondeado y cabeceras en versalitas
+.p-datatable {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.p-datatable-thead > tr > th {
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.p-datatable-tbody > tr:last-child > td {
+  border-bottom: 0;
+}
+
+.p-datatable-tbody > tr > td {
+  font-size: var(--font-body);
+}
+
+// Diálogos: título con la tipografía de títulos
+.p-dialog-title {
+  font-family: var(--font-family-display);
+}
+
 // Scrollbars discretos acordes al tema oscuro
 * {
   scrollbar-width: thin;

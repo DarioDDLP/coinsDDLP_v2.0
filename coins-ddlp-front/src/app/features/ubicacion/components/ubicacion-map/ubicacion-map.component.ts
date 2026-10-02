@@ -1,6 +1,6 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
@@ -21,7 +21,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 @Component({
   selector: 'app-ubicacion-map',
   imports: [
-    CollectionLayoutComponent,
+    PageLayoutComponent,
     CountryFlagComponent,
     BadgeComponent,
     LoadingSpinnerComponent,

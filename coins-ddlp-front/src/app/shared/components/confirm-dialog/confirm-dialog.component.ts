@@ -2,6 +2,7 @@ import { Component, input, output } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
 import { ButtonComponent } from '../button/button.component';
 import { LITERALS } from '../../constants/literals';
+import { DIALOG_BREAKPOINTS } from '../../constants/dialog.const';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -20,4 +21,5 @@ export class ConfirmDialogComponent {
   closed = output<void>();
 
   readonly cancelLabel = LITERALS.shared.cancel;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 }

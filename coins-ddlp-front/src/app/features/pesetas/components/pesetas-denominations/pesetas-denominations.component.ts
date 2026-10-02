@@ -1,6 +1,6 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { PesetasService } from '../../services/pesetas.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
@@ -22,7 +22,7 @@ interface DenominationCard {
 
 @Component({
   selector: 'app-pesetas-denominations',
-  imports: [RouterLink, CollectionLayoutComponent, EmptyPanelComponent],
+  imports: [RouterLink, PageLayoutComponent, EmptyPanelComponent],
   templateUrl: './pesetas-denominations.component.html',
   styleUrl: './pesetas-denominations.component.scss',
 })

@@ -3,7 +3,8 @@
   (onHide)="onHide()"
   [modal]="true"
   [header]="header()"
-  [style]="{ width: '380px' }"
+  [style]="{ width: '400px' }"
+  [breakpoints]="dialogBreakpoints"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
@@ -12,7 +13,7 @@
     <div class="login-form">
       <p class="login-form__confirm-message">{{ literals.logoutConfirm }}</p>
       <div class="login-form__actions login-form__actions--spread">
-        <app-button [label]="sharedLiterals.cancel" variant="primary" (clicked)="onHide()" />
+        <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
         <app-button
           [label]="sharedLiterals.confirm"
           variant="danger"
@@ -42,7 +43,7 @@
         />
 
         @if (errorMessage()) {
-          <p class="login-form__error">{{ errorMessage() }}</p>
+          <p class="login-form__error" role="alert">{{ errorMessage() }}</p>
         }
 
         <div class="login-form__actions login-form__actions--spread">
@@ -82,7 +83,7 @@
       />
 
       @if (errorMessage()) {
-        <p class="login-form__error">{{ errorMessage() }}</p>
+        <p class="login-form__error" role="alert">{{ errorMessage() }}</p>
       }
 
       <div class="login-form__actions login-form__actions--forgot">

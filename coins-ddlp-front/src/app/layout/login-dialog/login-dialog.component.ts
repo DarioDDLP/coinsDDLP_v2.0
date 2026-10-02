@@ -16,6 +16,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
 import { LITERALS } from '../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
+import { DIALOG_BREAKPOINTS } from '../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-login-dialog',
@@ -34,6 +35,7 @@ export class LoginDialogComponent {
   closed = output<void>();
 
   readonly literals = LITERALS.auth;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
   readonly sharedLiterals = LITERALS.shared;
 
   readonly email = signal('');

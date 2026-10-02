@@ -6,13 +6,11 @@
       [message]="sharedLiterals.errorLoadMessage"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="peseta()!.peseta_type.faceValueLabel"
       country="España"
       [backLink]="backLink()"
       [backLabel]="sharedLiterals.back"
-      cardBackground="#ffffff"
-      [cardOpacity]="0.95"
     >
       <!-- Header -->
       <div class="detail-header">
@@ -207,6 +205,6 @@
           </div>
         </div>
       </div>
-    </app-collection-layout>
+    </app-page-layout>
   }
 }

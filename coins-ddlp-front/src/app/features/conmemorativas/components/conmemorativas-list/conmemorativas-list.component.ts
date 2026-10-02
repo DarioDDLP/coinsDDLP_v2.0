@@ -1,7 +1,7 @@
 import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
@@ -61,7 +61,7 @@ interface YearGroup {
   selector: 'app-conmemorativas-list',
   imports: [
     TableModule,
-    CollectionLayoutComponent,
+    PageLayoutComponent,
     BadgeComponent,
     EmptyPanelComponent,
     ButtonComponent,

@@ -8,17 +8,16 @@
       (retry)="loadCoins(country(), year()!)"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="title()"
       [country]="country()"
       [backLink]="backLink()"
       [backLabel]="literals.back"
       [searchPlaceholder]="literals.searchCoins"
       [searchValue]="searchQuery()"
-      cardBackground="#ffffff"
       (searchChange)="onSearch($event)"
     >
-      <span layout-actions>
+      <span page-actions>
         <app-button
           icon="pi pi-file-excel"
           [label]="sharedLiterals.exportExcel"
@@ -26,7 +25,7 @@
           (clicked)="exportExcel()"
         />
       </span>
-      <div class="filter-bar">
+      <div class="filter-bar" page-filters>
         <app-filter-pills
           [options]="ownerOptions"
           [value]="ownerService.current()"
@@ -150,7 +149,7 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }
 

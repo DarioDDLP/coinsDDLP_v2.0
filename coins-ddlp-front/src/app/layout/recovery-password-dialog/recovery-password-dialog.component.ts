@@ -6,6 +6,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
 import { LITERALS } from '../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
+import { DIALOG_BREAKPOINTS } from '../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-recovery-password-dialog',
@@ -22,6 +23,7 @@ export class RecoveryPasswordDialogComponent {
   closed = output<void>();
 
   readonly literals = LITERALS.auth;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly newPassword = signal('');
   readonly confirmPassword = signal('');

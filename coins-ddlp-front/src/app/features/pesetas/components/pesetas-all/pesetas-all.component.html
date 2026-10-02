@@ -8,16 +8,15 @@
       (retry)="loadPesetas()"
     />
   } @else {
-    <app-collection-layout
+    <app-page-layout
       [title]="literals.allTitle"
       [backLink]="backLink"
       [backLabel]="literals.back"
       [searchPlaceholder]="literals.allSearch"
       [searchValue]="searchQuery()"
-      cardBackground="#ffffff"
       (searchChange)="onSearch($event)"
     >
-      <div class="filter-bar">
+      <div class="filter-bar" page-filters>
         <app-filter-pills
           [options]="filterOptions"
           [value]="ownershipFilter()"
@@ -75,7 +74,7 @@
       } @else {
         <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
       }
-    </app-collection-layout>
+    </app-page-layout>
   }
 }
 

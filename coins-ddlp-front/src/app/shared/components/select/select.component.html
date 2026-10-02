@@ -1,7 +1,8 @@
 @if (label()) {
-  <label class="select__label">{{ label() }}</label>
+  <label class="field-label" [for]="id">{{ label() }}</label>
 }
 <p-select
+  [inputId]="id"
   [options]="options()"
   [ngModel]="value()"
   (ngModelChange)="valueChange.emit($event)"

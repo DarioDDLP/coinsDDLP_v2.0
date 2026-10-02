@@ -15,11 +15,6 @@
   }
 }
 
-:host ::ng-deep .p-datatable-thead > tr > th {
-  background: var(--deep-navy);
-  color: var(--cream);
-}
-
 :host ::ng-deep .p-datatable-tbody > tr > td {
   color: var(--cobalt);
 }
