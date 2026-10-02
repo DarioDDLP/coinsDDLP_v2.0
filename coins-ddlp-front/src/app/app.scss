@@ -1,4 +1,37 @@
-.main-content {
-  margin-left: 260px;
-  min-height: 100vh;
+.shell {
+  display: flex;
+  min-height: 100dvh;
+
+  &--mobile {
+    flex-direction: column;
+  }
+
+  &__main {
+    flex: 1;
+    min-width: 0;
+    outline: none;
+  }
+
+  &--mobile &__main {
+    padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+.skip-link {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  z-index: 1000;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: var(--font-semibold);
+  text-decoration: none;
+  transform: translateY(-200%);
+  transition: transform var(--transition-fast);
+
+  &:focus {
+    transform: translateY(0);
+  }
 }

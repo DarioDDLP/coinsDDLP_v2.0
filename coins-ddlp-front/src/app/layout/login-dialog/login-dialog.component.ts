@@ -11,11 +11,11 @@ import {
 import { Router } from '@angular/router';
 import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
-import { AuthService } from '../../../core/services/auth.service';
-import { ButtonComponent } from '../button/button.component';
-import { TextInputComponent } from '../text-input/text-input.component';
-import { LITERALS } from '../../constants/literals';
-import { TOAST_MESSAGES } from '../../constants/toast-messages.const';
+import { AuthService } from '../../core/services/auth.service';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
+import { LITERALS } from '../../shared/constants/literals';
+import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
 
 @Component({
   selector: 'app-login-dialog',
