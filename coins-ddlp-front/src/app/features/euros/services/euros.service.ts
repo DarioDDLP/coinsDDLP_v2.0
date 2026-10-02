@@ -1,7 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
-import { LoadingService } from '../../../core/services/loading.service';
 import { OwnerService, OWNER_IDS } from '../../../core/services/owner.service';
 import {
   ConservationCode,
@@ -21,7 +20,6 @@ const SUMMARY_SELECT = 'country, year, commemorative, euro_ownership!left(uds, o
 @Injectable({ providedIn: 'root' })
 export class EurosService implements IEurosRepository {
   private supabase = inject(SupabaseService);
-  private loading = inject(LoadingService);
   private ownerService = inject(OwnerService);
 
   /** Se incrementa tras cada alta, edición o borrado para que las vistas abiertas recarguen. */
@@ -43,11 +41,11 @@ export class EurosService implements IEurosRepository {
   }
 
   getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]> {
-    return this.supabase
-      .getTableWhere<
-        Pick<EuroCoin, 'country' | 'year'>
-      >(TABLES.euro, (query) => query, 'country,year')
-      .pipe(this.loading.withLoading());
+    return this.supabase.getTableWhere<Pick<EuroCoin, 'country' | 'year'>>(
+      TABLES.euro,
+      (query) => query,
+      'country,year',
+    );
   }
 
   getAllByCountry(country: string): Observable<EuroCoin[]> {
@@ -86,10 +84,7 @@ export class EurosService implements IEurosRepository {
           ),
         OWNERSHIP_JOIN,
       )
-      .pipe(
-        map((coins) => coins.map((c) => this.mapRawCoin(c))),
-        this.loading.withLoading(),
-      );
+      .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c))));
   }
 
   getById(id: string): Observable<EuroCoin | null> {

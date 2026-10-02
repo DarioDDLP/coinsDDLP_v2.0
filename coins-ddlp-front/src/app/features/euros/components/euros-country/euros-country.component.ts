@@ -14,7 +14,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
 import { MessageService } from 'primeng/api';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -23,6 +22,7 @@ import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/e
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { EurosService } from '../../services/euros.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OwnerService } from '../../../../core/services/owner.service';
@@ -58,7 +58,6 @@ interface YearChip {
   imports: [
     RouterOutlet,
     TableModule,
-    Skeleton,
     PageLayoutComponent,
     BadgeComponent,
     ButtonComponent,
@@ -66,6 +65,7 @@ interface YearChip {
     ProgressStatComponent,
     FilterPillsComponent,
     ConfirmDialogComponent,
+    SkeletonComponent,
     CoinUdsDialogComponent,
   ],
   templateUrl: './euros-country.component.html',
@@ -85,7 +85,6 @@ export class EurosCountryComponent {
   readonly sharedLiterals = LITERALS.shared;
   readonly ownerOptions = OWNER_FILTER_OPTIONS;
   readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
-  readonly skeletonRows = Array.from({ length: 8 });
   readonly backLink = ['/euros'];
 
   readonly country = toSignal(this.route.paramMap.pipe(map((p) => p.get('country') ?? '')), {
@@ -97,6 +96,8 @@ export class EurosCountryComponent {
   );
 
   private coinsData = signal<EuroCoin[]>([]);
+  /** País + colección cargados: si cambian se vuelve a mostrar el skeleton. */
+  private loadedKey = '';
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly searchQuery = signal('');
@@ -119,12 +120,16 @@ export class EurosCountryComponent {
       untracked(() => this.searchQuery.set(restoreSearchQuery(key)));
     });
 
-    // Recarga por país, colección activa o tras editar/borrar una moneda
+    // Recarga por país, colección activa o tras editar/borrar una moneda (esta última sin skeleton)
     effect(() => {
       const country = this.country();
-      this.ownerService.current();
+      const key = `${country}|${this.ownerService.current()}`;
       this.eurosService.revision();
-      if (country) untracked(() => this.loadCoins(country));
+      if (!country) return;
+      untracked(() => {
+        this.loadCoins(country, key !== this.loadedKey);
+        this.loadedKey = key;
+      });
     });
 
     // Mantiene visible el chip del año activo (en móvil la fila hace scroll horizontal)
@@ -138,8 +143,9 @@ export class EurosCountryComponent {
     });
   }
 
-  loadCoins(country: string): void {
+  loadCoins(country: string, showSkeleton = true): void {
     this.hasError.set(false);
+    if (showSkeleton) this.isReady.set(false);
     this.eurosService.getAllByCountry(country).subscribe({
       next: (coins) => {
         this.coinsData.set(coins);

@@ -1,0 +1,21 @@
+:host(.layout-stack) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+// Los bloques se colocan como hijos directos del contenedor del padre (flex o grid)
+:host(.layout-inline) {
+  display: contents;
+}
+
+// En una fila de chips con scroll horizontal no deben encogerse
+:host(.layout-inline) p-skeleton {
+  flex-shrink: 0;
+}
+
+// Con altura 'auto' el bloque toma su alto del ancho: círculo perfecto a cualquier tamaño
+.skeleton-circle {
+  aspect-ratio: 1;
+}

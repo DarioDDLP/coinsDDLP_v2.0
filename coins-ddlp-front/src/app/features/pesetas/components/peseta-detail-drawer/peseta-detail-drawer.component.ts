@@ -12,7 +12,6 @@ import { formatNumber } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { Skeleton } from 'primeng/skeleton';
 import { PesetasService } from '../../services/pesetas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
@@ -37,7 +36,6 @@ const NUMISTA_PIECE_URL = 'https://en.numista.com/catalogue/pieces';
   selector: 'app-peseta-detail-drawer',
   imports: [
     DetailDrawerComponent,
-    Skeleton,
     BadgeComponent,
     ButtonComponent,
     CountryFlagComponent,

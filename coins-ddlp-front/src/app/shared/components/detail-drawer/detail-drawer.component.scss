@@ -113,3 +113,33 @@
     }
   }
 }
+
+// Skeleton de ficha: misma geometría que .detail-badges, .coin-images y .detail-section
+// (styles/_detail.scss) para que el contenido real ocupe su sitio sin saltos.
+.drawer-skeleton {
+  &__badges {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  &__images {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+
+  &__image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3);
+    @include card;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+}

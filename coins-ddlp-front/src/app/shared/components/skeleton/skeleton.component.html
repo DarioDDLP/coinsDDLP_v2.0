@@ -1,0 +1,12 @@
+@if (announce()) {
+  <span class="sr-only" role="status">{{ loadingLabel }}</span>
+}
+@for (_ of items(); track $index) {
+  <p-skeleton
+    [class.skeleton-circle]="isCircle()"
+    [shape]="isCircle() ? 'circle' : 'rectangle'"
+    [height]="blockHeight()"
+    [width]="width()"
+    [borderRadius]="borderRadius()"
+  />
+}

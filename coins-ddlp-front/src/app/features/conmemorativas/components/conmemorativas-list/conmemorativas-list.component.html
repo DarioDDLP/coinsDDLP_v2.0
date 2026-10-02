@@ -26,7 +26,7 @@
           size="lg"
         />
       } @else {
-        <p-skeleton height="3.25rem" />
+        <app-skeleton height="3.25rem" [announce]="false" />
       }
     </div>
 
@@ -55,11 +55,7 @@
     />
 
     @if (!isReady()) {
-      <div class="skeleton-list" aria-busy="true">
-        @for (_ of skeletonRows; track $index) {
-          <p-skeleton height="3rem" />
-        }
-      </div>
+      <app-skeleton [count]="8" />
     } @else if (groupedCoins().length > 0) {
       <nav #jumpsNav class="year-jumps" [attr.aria-label]="literals.jumpToYear">
         @for (group of groupedCoins(); track group.year) {

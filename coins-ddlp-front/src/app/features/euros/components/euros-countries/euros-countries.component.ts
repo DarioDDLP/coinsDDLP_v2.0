@@ -1,12 +1,20 @@
-import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  ErrorHandler,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { formatNumber } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Skeleton } from 'primeng/skeleton';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { EurosService } from '../../services/euros.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoinSummary } from '../../../../shared/interfaces/euro-coin.interface';
@@ -34,7 +42,7 @@ const SEARCH_KEY = 'euros-countries';
   selector: 'app-euros-countries',
   imports: [
     RouterLink,
-    Skeleton,
+    SkeletonComponent,
     CountryFlagComponent,
     PageLayoutComponent,
     EmptyPanelComponent,
@@ -58,18 +66,24 @@ export class EurosCountriesComponent {
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
+  /** Colección cargada: si cambia se vuelve a mostrar el skeleton. */
+  private loadedOwner: string | null = null;
 
   constructor() {
-    // Recarga al cambiar de colección (Darío / Manolo / ambas) o tras editar una moneda
+    // Recarga al cambiar de colección (Darío / Manolo / ambas) o tras editar una moneda (sin skeleton)
     effect(() => {
-      this.ownerService.current();
+      const owner = this.ownerService.current();
       this.eurosService.revision();
-      this.loadSummary();
+      untracked(() => {
+        this.loadSummary(owner !== this.loadedOwner);
+        this.loadedOwner = owner;
+      });
     });
   }
 
-  loadSummary(): void {
+  loadSummary(showSkeleton = true): void {
     this.hasError.set(false);
+    if (showSkeleton) this.isReady.set(false);
     this.eurosService.getCatalogSummary().subscribe({
       next: (rows) => {
         this.summary.set(rows);

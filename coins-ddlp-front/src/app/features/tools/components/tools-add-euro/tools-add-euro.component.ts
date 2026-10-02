@@ -8,6 +8,7 @@ import {
 } from '../../../../shared/components/select/select.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import {
@@ -19,7 +20,13 @@ import {
 
 @Component({
   selector: 'app-tools-add-euro',
-  imports: [TextInputComponent, SelectComponent, ToggleComponent, ButtonComponent],
+  imports: [
+    TextInputComponent,
+    SelectComponent,
+    ToggleComponent,
+    ButtonComponent,
+    SkeletonComponent,
+  ],
   templateUrl: './tools-add-euro.component.html',
   styleUrl: './tools-add-euro.component.scss',
 })
@@ -34,6 +41,7 @@ export class ToolsAddEuroComponent {
   readonly variantOptions = VARIANT_OPTIONS;
 
   readonly countryOptions = signal<SelectOption[]>([]);
+  readonly isReady = signal(false);
   readonly country = signal('');
   readonly year = signal(0);
   readonly faceValue = signal('');
@@ -73,8 +81,12 @@ export class ToolsAddEuroComponent {
       next: (coins) => {
         const unique = [...new Set(coins.map((c) => c.country))].sort();
         this.countryOptions.set(unique.map((c) => ({ label: c, value: c })));
+        this.isReady.set(true);
       },
-      error: (e) => this.errorHandler.handleError(e),
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.isReady.set(true);
+      },
     });
   }
 

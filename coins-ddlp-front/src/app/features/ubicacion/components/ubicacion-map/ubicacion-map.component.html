@@ -27,10 +27,8 @@
     }
 
     @if (!isReady()) {
-      <div class="album-grid" aria-busy="true">
-        @for (_ of skeletonCards; track $index) {
-          <p-skeleton height="16rem" borderRadius="16px" />
-        }
+      <div class="album-grid">
+        <app-skeleton layout="inline" [count]="3" height="16rem" radius="lg" />
       </div>
     } @else if (albumGroups().length > 0) {
       <div class="album-grid">

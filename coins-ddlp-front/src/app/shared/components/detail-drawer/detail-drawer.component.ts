@@ -9,8 +9,8 @@ import {
   signal,
 } from '@angular/core';
 import { Drawer } from 'primeng/drawer';
-import { Skeleton } from 'primeng/skeleton';
 import { ButtonComponent } from '../button/button.component';
+import { SkeletonComponent } from '../skeleton/skeleton.component';
 import { LITERALS } from '../../constants/literals';
 
 /** Duración aproximada de la animación de salida del drawer. */
@@ -28,7 +28,7 @@ const CLOSE_ANIMATION_MS = 220;
  */
 @Component({
   selector: 'app-detail-drawer',
-  imports: [Drawer, Skeleton, ButtonComponent],
+  imports: [Drawer, SkeletonComponent, ButtonComponent],
   templateUrl: './detail-drawer.component.html',
   styleUrl: './detail-drawer.component.scss',
 })
@@ -38,6 +38,8 @@ export class DetailDrawerComponent {
   readonly subtitle = input<string>('');
   /** Nombre accesible del panel. */
   readonly ariaLabel = input<string>('');
+  /** Mientras es true el cuerpo muestra el skeleton de ficha (badges, imágenes y características). */
+  readonly loading = input(false);
 
   /** Se emite una sola vez, cuando el panel ha terminado de cerrarse. */
   readonly closed = output<void>();

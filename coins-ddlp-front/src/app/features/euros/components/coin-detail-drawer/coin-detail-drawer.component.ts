@@ -11,7 +11,6 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { Skeleton } from 'primeng/skeleton';
 import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
@@ -39,7 +38,6 @@ interface Feature {
   selector: 'app-coin-detail-drawer',
   imports: [
     DetailDrawerComponent,
-    Skeleton,
     BadgeComponent,
     ButtonComponent,
     CountryFlagComponent,
@@ -73,8 +71,9 @@ export class CoinDetailDrawerComponent {
   readonly numistaLoading = signal(false);
   readonly numistaError = signal(false);
   readonly numistaQuotaError = signal(false);
-  readonly isReady = signal(false);
   readonly hasError = signal(false);
+  /** Un solo skeleton hasta tener la moneda y los datos de Numista: la ficha aparece entera. */
+  readonly isLoading = computed(() => !this.hasError() && (!this.coin() || this.numistaLoading()));
 
   readonly udsDialogVisible = signal(false);
   readonly deleteDialogVisible = signal(false);
@@ -100,13 +99,11 @@ export class CoinDetailDrawerComponent {
         }
         const idNumChanged = coin.idNum !== this.coin()?.idNum;
         this.coin.set(coin);
-        this.isReady.set(true);
         if (idNumChanged) this.loadNumista(coin.idNum);
       },
       error: (e) => {
         this.errorHandler.handleError(e);
         this.hasError.set(true);
-        this.isReady.set(true);
       },
     });
   }

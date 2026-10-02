@@ -2,10 +2,6 @@
 
 <p-toast [position]="layout.isMobile() ? 'top-center' : 'top-right'" />
 
-@if (loadingService.isLoading()) {
-  <app-loading-spinner />
-}
-
 <div class="shell" [class.shell--mobile]="layout.isMobile()">
   @if (layout.isMobile()) {
     <app-topbar />

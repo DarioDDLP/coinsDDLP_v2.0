@@ -206,7 +206,6 @@ src/
 │   │       ├── auth.service.ts         # Supabase Auth
 │   │       ├── numista.service.ts      # Llamadas a la Edge Function numista-proxy
 │   │       ├── owner.service.ts        # Colección activa (Darío / Manolo / ambas)
-│   │       ├── loading.service.ts      # Spinner global (solo guardados y Herramientas)
 │   │       └── global-error-handler.service.ts
 │   │   └── theme/app-preset.ts         # Preset oscuro de PrimeNG (Aura) + DARK_MODE_SELECTOR
 │   │
@@ -233,7 +232,7 @@ src/
 │   │   ├── components/                 # page-layout, detail-drawer, progress-stat, badge,
 │   │   │                               #   button, buttons-header (cabecera con pestañas),
 │   │   │                               #   confirm-dialog, country-flag, empty-panel,
-│   │   │                               #   filter-pills, loading-spinner, search-input,
+│   │   │                               #   filter-pills, skeleton, search-input,
 │   │   │                               #   select, text-input, textarea, toggle
 │   │   ├── constants/                  # literals.ts, dialog.const.ts, conservation-states,
 │   │   │                               #   toast-messages, collections, *-filter.config
@@ -269,9 +268,9 @@ shared   NO importa de core, layout ni features.
 
 ### Patrones del rediseño
 - **Páginas de colección:** `app-page-layout` (título, bandera, subtítulo, `[page-aside]` con `progress-stat`, buscador, `[page-actions]`, `[page-filters]`). Alimenta `PageHeaderService` para la barra superior de móvil.
-- **Detalle de moneda:** ruta hija `moneda/:id` que pinta `app-detail-drawer` sobre la lista. El drawer usa fondo y bloqueo de scroll propios (no la máscara modal de PrimeNG, que se quedaba huérfana y bloqueaba la app) y emite `closed` una sola vez al terminar de cerrarse.
+- **Detalle de moneda:** ruta hija `moneda/:id` que pinta `app-detail-drawer` sobre la lista. El drawer usa fondo y bloqueo de scroll propios (no la máscara modal de PrimeNG, que se quedaba huérfana y bloqueaba la app) y emite `closed` una sola vez al terminar de cerrarse. Su input `loading` pinta el skeleton de ficha (badges, dos imágenes, características) en lugar del contenido: euros lo mantiene hasta tener moneda **y** Numista, pesetas hasta tener la peseta.
 - **Recarga tras editar:** los servicios exponen una señal `revision` que se incrementa en create/update/remove; las vistas abiertas la leen en su `effect` de carga.
-- **Carga:** las lecturas de euros, pesetas, conmemorativas, ubicación y admin muestran `p-skeleton`; `LoadingService` (spinner global) queda para operaciones de guardado y Herramientas.
+- **Carga:** solo skeletons, no hay spinner global. `app-skeleton` (`shared/components/skeleton`) es el **único** marcador de carga: nunca `p-skeleton` directo. Inputs: `count`, `height`, `width`, `radius` sm/md/lg/full, `shape` rect/circle (círculo 1:1 al ancho dado), `layout` `stack` = columna propia | `inline` = fluye en la fila de chips o grid del padre, `announce` (anuncia "Cargando…" con `role="status"`; si una vista pinta varios, solo el principal anuncia y el resto lleva `[announce]="false"`). Cada vista tiene `isReady`: vuelve a `false` (skeleton) al cambiar lo que se ve (país, colección) o al reintentar; tras editar (`revision`) recarga sin skeleton. Las acciones (guardar, borrar) muestran su estado con `app-button [loading]`.
 
 ---
 
@@ -335,7 +334,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-02
+> **Última actualización:** 2026-10-03
 
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
@@ -347,6 +346,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 1. **Publicar la release** (ver arriba) cuando Darío dé el visto bueno
 2. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido. Construirla con el sistema nuevo (`page-layout`, `progress-stat`, tokens) y `resource`/`httpResource`
 3. Literales sin uso heredados de antes del rediseño (`herramientas.*`, varios `euros.*`): revisar y limpiar
+4. Cargas: respuestas fuera de orden si se cambia de país/colección muy rápido (pasar a `switchMap`/`resource`); el select de países de `ubicacion-edit-dialog` sale vacío un instante al abrir
 
 ---
 
@@ -374,6 +374,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 | 2026-06-16 | **Ubicación y toasts**: buscador por país en la cabecera de `ubicacion-map`; `empty-panel` alineado con el resto de listados cuando no hay resultados. Todos los toasts centralizados en `TOAST_MESSAGES`. |
 | 2026-10-02 | **Migración a Angular 22 + PrimeNG 22 (rama `chore/angular-22`)**: `ng update` a Angular 22.2 y TypeScript 6.0. Eliminados los `Eager` que añade la migración → todos los componentes en OnPush (el estado ya era 100% signals). HttpClient con `fetch` (nuevo default, sin `withXhr`). Eliminado `@angular/animations` y `provideAnimationsAsync()`: ni la app ni PrimeNG 22 lo usan (PrimeNG anima con CSS nativo y `animate.enter/leave`). PrimeNG 21 → 22.1: `@primeng/themes` → `@primeuix/themes`, añadido `@angular/cdk`, `pTemplate="x"` → `#x` (8 plantillas), fuera `SharedModule`, `p-progressSpinner` → `p-progress-spinner`. Licencia PrimeUI Community en `environment*.ts` → `providePrimeNG({ license })`. `engines.node >=24.15.0`. |
 | 2026-10-02 | **Rediseño completo (rama `feat/redesign`, 7 fases)**: tema oscuro "medianoche + oro" (tokens semánticos, Inter + Montserrat, preset PrimeNG oscuro siempre activo), sin fotos de fondo (−11 MB). Shell responsive en `app/layout/`: sidebar expandido/plegable/raíl, topbar + bottom-nav + panel "Más" en móvil. Componentes compartidos rediseñados + nuevos `page-layout`, `progress-stat`, `detail-drawer`. **Euros**: de 4 niveles a país con chips de año + detalle en drawer, progreso por país. **Pesetas**: vista única con chips de denominación (orden lógico vía `denominationSortKey`) + drawer. **Conmemorativas**: chips de salto y cabeceras de año fijas; arreglada la ubicación de álbum, que se calculaba sobre la lista filtrada. **Ubicación**: álbumes en tarjetas. **Admin/Herramientas**: cabecera con pestañas. Redirecciones de URLs antiguas, skeletons, locale `es`, accesibilidad (labels asociadas, foco visible, `aria-*`). Tests de `app.spec.ts` reparados (2/2). |
+| 2026-10-03 | **Carga solo con skeletons (rama `feat/redesign`)**: eliminados `LoadingService` y `app-loading-spinner` (salían encima de los skeletons en el detalle de moneda y en Herramientas). Nuevo `shared/components/skeleton` (`app-skeleton`: radios por token, círculo, `layout` stack/inline, anuncio "Cargando…") como único marcador de carga; ya no se usa `p-skeleton` directo en ninguna vista. Fichas de detalle: un solo skeleton con la forma final dentro de `app-detail-drawer` (`loading`), en lugar de dos fases distintas en euros (moneda → Numista); arreglados los círculos de imagen, que con `size="100%"` no tenían altura. El skeleton vuelve al cambiar de país/colección o reintentar (antes se veían los datos anteriores); recarga silenciosa tras editar. admin-users mantiene cabecera visible al cargar. Fuera clases duplicadas (`.table-skeleton`, `.skeleton-list`, `__loading`), señal `isReady` muerta en coin-detail y literal `loadingNumista`. |
 | 2026-06-02 | **Variantes de moneda LA/LR (sesión 15)**: Migración SQL `20260602000000_add_coin_variant.sql`: columna `variant TEXT` nullable en `euro`; España 2€ y 2€C existentes marcadas como `LA`; filas `LR` insertadas con uds=0. Interface `EuroCoin`/`RawEuroCoin` con `variant?`. `EurosService` y `ConmemorativasService`: mapeo de `variant` en ambos modos de propietario; orden `faceValue → description → variant NULLS FIRST` para garantizar LA antes de LR. Tablas `euros-year-coins`, `euros-all-coins`, `conmemorativas-list`: badge `secondary` inline en denominación/descripción. `coin-detail`: badge en cabecera junto a conservación. `coin-uds-dialog`: badge en cabecera (solo lectura). `tools-add-euro`: select LA/LR entre valor facial y ceca, visible solo para 2€/2€C. `VARIANT_OPTIONS` y `VARIANT_FACE_VALUES` en `tools.config.ts`. Documentadas reglas de variables CSS/SCSS en CLAUDE.md. 22 de 25 países pendientes de migrar (España como prueba piloto). |
 
 ---

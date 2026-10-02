@@ -14,13 +14,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { map } from 'rxjs';
 import { TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { PesetasService } from '../../services/pesetas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
@@ -54,13 +54,13 @@ const SEARCH_KEY = 'pesetas';
   imports: [
     RouterOutlet,
     TableModule,
-    Skeleton,
     PageLayoutComponent,
     BadgeComponent,
     ButtonComponent,
     EmptyPanelComponent,
     ProgressStatComponent,
     FilterPillsComponent,
+    SkeletonComponent,
     PesetaEditDialogComponent,
   ],
   templateUrl: './pesetas-browser.component.html',
@@ -76,7 +76,6 @@ export class PesetasBrowserComponent {
   readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
   readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
-  readonly skeletonRows = Array.from({ length: 8 });
 
   private readonly valueParam = toSignal(
     this.route.queryParamMap.pipe(map((q) => q.get('valor'))),
@@ -95,9 +94,10 @@ export class PesetasBrowserComponent {
   private readonly chipsNav = viewChild<ElementRef<HTMLElement>>('chipsNav');
 
   constructor() {
+    // Recarga tras editar una peseta, sin volver al skeleton
     effect(() => {
       this.service.revision();
-      untracked(() => this.loadPesetas());
+      untracked(() => this.loadPesetas(false));
     });
 
     // Mantiene visible el chip activo (en móvil la fila hace scroll horizontal)
@@ -111,8 +111,9 @@ export class PesetasBrowserComponent {
     });
   }
 
-  loadPesetas(): void {
+  loadPesetas(showSkeleton = true): void {
     this.hasError.set(false);
+    if (showSkeleton) this.isReady.set(false);
     this.service.getAll().subscribe({
       next: (pesetas) => {
         this.pesetas.set(pesetas);

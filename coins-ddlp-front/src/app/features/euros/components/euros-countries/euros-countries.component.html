@@ -26,7 +26,7 @@
           size="lg"
         />
       } @else {
-        <p-skeleton height="3.25rem" />
+        <app-skeleton height="3.25rem" [announce]="false" />
       }
     </div>
 
@@ -39,17 +39,22 @@
     />
 
     @if (!isReady()) {
-      <div class="country-grid" aria-busy="true">
+      <div class="country-grid">
         @for (_ of skeletonCards; track $index) {
           <div class="country-card country-card--skeleton">
             <div class="country-card__head">
-              <p-skeleton shape="circle" size="48px" />
+              <app-skeleton
+                layout="inline"
+                shape="circle"
+                width="var(--flag-size, 48px)"
+                [announce]="$first"
+              />
               <div class="country-card__names">
-                <p-skeleton width="7rem" height="1rem" />
-                <p-skeleton width="5rem" height="0.8rem" />
+                <app-skeleton width="7rem" height="1rem" [announce]="false" />
+                <app-skeleton width="5rem" height="0.8rem" [announce]="false" />
               </div>
             </div>
-            <p-skeleton height="1.75rem" />
+            <app-skeleton height="1.75rem" [announce]="false" />
           </div>
         }
       </div>

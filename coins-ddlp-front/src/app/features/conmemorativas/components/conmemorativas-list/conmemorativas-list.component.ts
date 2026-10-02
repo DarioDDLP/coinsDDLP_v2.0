@@ -15,7 +15,6 @@ import {
 import { formatNumber } from '@angular/common';
 import { Router } from '@angular/router';
 import { TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -23,6 +22,7 @@ import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/e
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { ConmemorativasService } from '../../services/conmemorativas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { OwnerService } from '../../../../core/services/owner.service';
@@ -91,7 +91,6 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
   selector: 'app-conmemorativas-list',
   imports: [
     TableModule,
-    Skeleton,
     PageLayoutComponent,
     BadgeComponent,
     ButtonComponent,
@@ -99,6 +98,7 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
     CountryFlagComponent,
     ProgressStatComponent,
     FilterPillsComponent,
+    SkeletonComponent,
   ],
   templateUrl: './conmemorativas-list.component.html',
   styleUrl: './conmemorativas-list.component.scss',
@@ -117,7 +117,6 @@ export class ConmemorativasListComponent {
   readonly sharedLiterals = LITERALS.shared;
   readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
   readonly ownerOptions = OWNER_FILTER_OPTIONS;
-  readonly skeletonRows = Array.from({ length: 6 });
 
   private allCoins = signal<EuroCoin[]>([]);
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
@@ -158,8 +157,10 @@ export class ConmemorativasListComponent {
     inject(DestroyRef).onDestroy(() => this.observer?.disconnect());
   }
 
+  /** Se llama al cambiar de colección o al reintentar: siempre vuelve al skeleton. */
   loadCoins(): void {
     this.hasError.set(false);
+    this.isReady.set(false);
     this.service.getAll().subscribe({
       next: (coins) => {
         this.allCoins.set(coins);

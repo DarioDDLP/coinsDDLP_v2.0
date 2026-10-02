@@ -23,7 +23,7 @@
       @if (isReady()) {
         <app-progress-stat [owned]="progress().owned" [total]="progress().total" />
       } @else {
-        <p-skeleton height="2rem" />
+        <app-skeleton height="2rem" [announce]="false" />
       }
     </div>
 
@@ -66,18 +66,12 @@
           </button>
         }
       } @else {
-        @for (_ of skeletonRows; track $index) {
-          <p-skeleton width="4.5rem" height="2.5rem" borderRadius="12px" />
-        }
+        <app-skeleton layout="inline" [count]="8" width="4.5rem" height="40px" [announce]="false" />
       }
     </nav>
 
     @if (!isReady()) {
-      <div class="table-skeleton" aria-busy="true">
-        @for (_ of skeletonRows; track $index) {
-          <p-skeleton height="3rem" />
-        }
-      </div>
+      <app-skeleton [count]="8" />
     } @else if (coinRows().length > 0) {
       <p-table
         class="table-stack"

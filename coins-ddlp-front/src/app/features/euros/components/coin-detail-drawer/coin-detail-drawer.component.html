@@ -4,6 +4,7 @@
   [title]="coin()?.faceValue ?? ''"
   [subtitle]="coin()?.description ?? ''"
   [ariaLabel]="eurosLiterals.detailTitle"
+  [loading]="isLoading()"
   (closed)="close()"
 >
   @if (coin(); as c) {
@@ -33,10 +34,7 @@
     </div>
 
     <div class="coin-images">
-      @if (numistaLoading()) {
-        <p-skeleton shape="circle" size="100%" />
-        <p-skeleton shape="circle" size="100%" />
-      } @else if (numista(); as n) {
+      @if (numista(); as n) {
         @if (n.obverse?.thumbnail) {
           <figure class="coin-images__item">
             <img [src]="n.obverse!.thumbnail" [alt]="literals.labelObverse" />
@@ -60,7 +58,7 @@
         <div class="coin-images__placeholder"><i class="pi pi-image" aria-hidden="true"></i></div>
       }
     </div>
-    @if (!numistaLoading() && !numista()) {
+    @if (!numista()) {
       <p class="detail-notice">{{ noNumistaMessage() }}</p>
     }
 
@@ -110,12 +108,6 @@
         <i class="pi pi-external-link" aria-hidden="true"></i>
       </a>
     }
-  } @else {
-    <div class="detail-loading">
-      <p-skeleton height="1.5rem" width="10rem" />
-      <p-skeleton height="12rem" />
-      <p-skeleton height="8rem" />
-    </div>
   }
 
   @if (canEdit() && coin()) {

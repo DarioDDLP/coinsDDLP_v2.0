@@ -26,7 +26,7 @@
           size="lg"
         />
       } @else {
-        <p-skeleton height="3.25rem" />
+        <app-skeleton height="3.25rem" [announce]="false" />
       }
     </div>
 
@@ -53,18 +53,12 @@
           </button>
         }
       } @else {
-        @for (_ of skeletonRows; track $index) {
-          <p-skeleton width="6rem" height="3.25rem" borderRadius="12px" />
-        }
+        <app-skeleton layout="inline" [count]="8" width="6rem" height="52px" [announce]="false" />
       }
     </nav>
 
     @if (!isReady()) {
-      <div class="table-skeleton" aria-busy="true">
-        @for (_ of skeletonRows; track $index) {
-          <p-skeleton height="3rem" />
-        }
-      </div>
+      <app-skeleton [count]="8" />
     } @else if (rows().length > 0) {
       <p-table
         class="table-stack"

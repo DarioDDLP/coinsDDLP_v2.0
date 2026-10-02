@@ -157,7 +157,6 @@ export const LITERALS = {
     labelObservations: 'Observaciones',
     labelNoObservations: 'Sin observaciones',
     labelMoreInfo: 'Más información en Numista',
-    loadingNumista: 'Cargando datos de Numista...',
     errorNumista: 'No se pudieron cargar los datos de Numista',
     errorNumistaQuota: 'Sin cuota de Numista',
     labelNoIdNum: 'IdNum pendiente de actualizar',

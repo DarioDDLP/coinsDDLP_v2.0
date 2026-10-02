@@ -3,6 +3,7 @@
   [title]="peseta()?.peseta_type?.faceValueLabel ?? ''"
   [subtitle]="peseta()?.peseta_type?.title ?? ''"
   [ariaLabel]="pesetasLiterals.detailTitle"
+  [loading]="!peseta() && !hasError()"
   (closed)="close()"
 >
   @if (peseta()) {
@@ -102,12 +103,6 @@
         <i class="pi pi-external-link" aria-hidden="true"></i>
       </a>
     }
-  } @else {
-    <div class="detail-loading">
-      <p-skeleton height="1.5rem" width="10rem" />
-      <p-skeleton height="12rem" />
-      <p-skeleton height="8rem" />
-    </div>
   }
 
   @if (authService.isAdmin() && peseta()) {

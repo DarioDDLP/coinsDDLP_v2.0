@@ -1,9 +1,9 @@
 import { Component, computed, ErrorHandler, inject, signal, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
-import { Skeleton } from 'primeng/skeleton';
 import { AdminService } from '../../services/admin.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { AdminUserDialogComponent } from '../admin-user-dialog/admin-user-dialog.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -16,7 +16,7 @@ import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
   selector: 'app-admin-users',
   imports: [
     TableModule,
-    Skeleton,
+    SkeletonComponent,
     ButtonComponent,
     AdminUserDialogComponent,
     ConfirmDialogComponent,
@@ -31,7 +31,6 @@ export class AdminUsersComponent implements OnInit {
   private errorHandler = inject(ErrorHandler);
 
   readonly literals = LITERALS.admin;
-  readonly skeletonRows = Array.from({ length: 4 });
 
   readonly users = signal<AppUser[]>([]);
   readonly userRows = computed(() =>

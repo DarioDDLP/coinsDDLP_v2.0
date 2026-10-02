@@ -30,8 +30,8 @@
               <p class="drawer__subtitle">{{ subtitle() }}</p>
             }
           } @else {
-            <p-skeleton width="8rem" height="0.9rem" />
-            <p-skeleton width="12rem" height="1.6rem" />
+            <app-skeleton width="8rem" height="0.9rem" radius="sm" [announce]="false" />
+            <app-skeleton width="12rem" height="1.6rem" radius="sm" [announce]="false" />
           }
         </div>
         <app-button
@@ -43,7 +43,38 @@
       </header>
 
       <div class="drawer__body">
-        <ng-content />
+        @if (loading()) {
+          <div class="drawer-skeleton__badges">
+            <app-skeleton
+              layout="inline"
+              [count]="2"
+              width="5.5rem"
+              height="28px"
+              radius="full"
+              [announce]="false"
+            />
+          </div>
+          <div class="drawer-skeleton__images">
+            @for (_ of [1, 2]; track $index) {
+              <div class="drawer-skeleton__image">
+                <app-skeleton layout="inline" shape="circle" [announce]="false" />
+                <app-skeleton
+                  layout="inline"
+                  width="3.5rem"
+                  height="0.75rem"
+                  radius="sm"
+                  [announce]="false"
+                />
+              </div>
+            }
+          </div>
+          <div class="drawer-skeleton__section">
+            <app-skeleton width="7rem" height="0.75rem" radius="sm" [announce]="false" />
+            <app-skeleton [count]="6" height="1.5rem" radius="sm" />
+          </div>
+        } @else {
+          <ng-content />
+        }
       </div>
 
       <footer class="drawer__footer">

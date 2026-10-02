@@ -1,9 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Toast } from 'primeng/toast';
-import { LoadingSpinnerComponent } from './shared/components/loading-spinner/loading-spinner.component';
 import { LITERALS } from './shared/constants/literals';
-import { LoadingService } from './core/services/loading.service';
 import { AuthService } from './core/services/auth.service';
 import { LayoutStateService } from './layout/layout-state.service';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
@@ -18,7 +16,6 @@ import { RecoveryPasswordDialogComponent } from './layout/recovery-password-dial
   imports: [
     RouterOutlet,
     Toast,
-    LoadingSpinnerComponent,
     SidebarComponent,
     TopbarComponent,
     BottomNavComponent,
@@ -30,7 +27,6 @@ import { RecoveryPasswordDialogComponent } from './layout/recovery-password-dial
   styleUrl: './app.scss',
 })
 export class App {
-  readonly loadingService = inject(LoadingService);
   readonly authService = inject(AuthService);
   readonly layout = inject(LayoutStateService);
   readonly literals = LITERALS.nav;
