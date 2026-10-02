@@ -1,5 +1,6 @@
 @use 'styles/variables' as *;
 @use 'styles/typography' as *;
+@use 'styles/mixins' as *;
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700&display=swap');
 @import 'primeicons/primeicons.css';
 
@@ -61,6 +62,13 @@ a {
 
 .p-datatable-tbody > tr > td {
   font-size: var(--font-body);
+}
+
+// Tablas que en móvil se muestran como tarjetas: <p-table class="table-stack">
+// (en PrimeNG 22 el host de p-table es el propio .p-datatable; styleClass ya no se aplica).
+// Cada <td> lleva data-label (etiqueta) o data-cell="primary|secondary|hide-mobile".
+.p-datatable.table-stack {
+  @include stack-table-on-mobile;
 }
 
 // Diálogos: título con la tipografía de títulos

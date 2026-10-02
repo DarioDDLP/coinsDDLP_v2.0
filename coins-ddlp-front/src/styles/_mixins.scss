@@ -60,7 +60,7 @@
 
 // En móvil, cada fila de p-table se muestra como una tarjeta.
 // Cada <td> necesita data-label="…" para pintar su etiqueta.
-// Uso: en el .scss del componente → :host ::ng-deep .p-datatable { @include stack-table-on-mobile; }
+// Se aplica globalmente con <p-table class="table-stack"> (ver styles.scss).
 @mixin stack-table-on-mobile {
   @include mobile {
     .p-datatable-table {

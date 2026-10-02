@@ -19,16 +19,11 @@ import { Peseta } from '../../../../shared/interfaces/peseta.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
+import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-peseta-edit-dialog',
-  imports: [
-    Dialog,
-    ButtonComponent,
-    TextInputComponent,
-    SelectComponent,
-    TextareaComponent,
-  ],
+  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent, TextareaComponent],
   templateUrl: './peseta-edit-dialog.component.html',
   styleUrl: './peseta-edit-dialog.component.scss',
 })
@@ -45,6 +40,7 @@ export class PesetaEditDialogComponent {
 
   readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly dialogTitle = computed(() => {
     const p = this.peseta();

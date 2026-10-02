@@ -1,9 +1,14 @@
 @use 'mixins' as *;
 @use 'breakpoints' as *;
 
-// --- Chips de año ---
+.total-progress {
+  padding: var(--space-4) var(--space-5);
+  @include card;
+}
 
-.year-chips {
+// --- Chips de denominación ---
+
+.value-chips {
   @include scroll-row;
   margin-bottom: var(--space-5);
   padding-bottom: var(--space-1);
@@ -14,33 +19,40 @@
   }
 }
 
-.year-chip {
+.value-chip {
   flex: none;
   display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: 40px;
-  padding: 0 var(--space-4);
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: var(--space-2) var(--space-4);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: var(--surface-1);
   color: var(--text-soft);
   font-family: var(--font-family);
-  font-size: var(--font-body);
-  font-weight: var(--font-medium);
-  font-variant-numeric: tabular-nums;
+  text-align: left;
   cursor: pointer;
   transition:
     border-color var(--transition-fast),
     background var(--transition-fast);
   @include focus-ring;
 
-  small {
-    font-size: var(--font-xs);
-    color: var(--text-faint);
+  &__label {
+    font-size: var(--font-body);
+    font-weight: var(--font-medium);
+    white-space: nowrap;
   }
 
-  &:hover:not(.year-chip--active) {
+  &__count {
+    font-size: var(--font-xs);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &:hover:not(.value-chip--active) {
     border-color: var(--border-strong);
     color: var(--text);
   }
@@ -50,7 +62,7 @@
     background: rgba(var(--accent-rgb), 0.14);
     color: var(--accent-soft);
 
-    small {
+    .value-chip__count {
       color: var(--accent);
     }
   }
@@ -79,25 +91,11 @@
 
 .col-actions {
   width: 1%;
-  white-space: nowrap;
   text-align: right !important;
-}
-
-.owner-tag {
-  display: block;
-  font-size: 10px;
-  color: var(--text-faint);
-  letter-spacing: var(--letter-spacing-normal);
-  text-transform: none;
 }
 
 .muted {
   color: var(--text-faint);
-}
-
-.row-actions {
-  display: inline-flex;
-  gap: var(--space-1);
 }
 
 .sr-only {
@@ -119,65 +117,39 @@
     }
   }
 
-  .coin-row__value {
+  .coin-row__year {
     color: var(--text);
     font-weight: var(--font-medium);
-
-    app-badge {
-      margin-left: var(--space-1);
-    }
+    font-variant-numeric: tabular-nums;
   }
 
-  .coin-row__desc {
+  .coin-row__title {
     color: var(--text-soft);
   }
 
-  .coin-row--non-circulating > td {
-    background: rgba(var(--accent-rgb), 0.06) !important;
-  }
-
-  .year-group > td {
+  .group-row > td {
     padding: var(--space-3) var(--space-4) !important;
     background: var(--surface-2) !important;
-    border-bottom: 1px solid var(--border-subtle);
   }
 
-  .year-group__year {
+  .group-row__title {
     font-family: var(--font-family-display);
     font-size: var(--font-md);
     font-weight: var(--font-bold);
     color: var(--accent-soft);
   }
 
-  // En móvil la fila de cabecera de año ocupa todo el ancho
   @include mobile {
-    .year-group > td {
+    .group-row > td {
       flex: 1 1 100%;
     }
 
-    .p-datatable-tbody > tr.year-group {
+    .p-datatable-tbody > tr.group-row {
       padding: 0;
     }
 
     .col-actions {
       margin-left: auto;
     }
-  }
-}
-
-.legend {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin: var(--space-3) 0 0;
-  font-size: var(--font-sm);
-  color: var(--text-muted);
-
-  &__swatch {
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: rgba(var(--accent-rgb), 0.12);
   }
 }

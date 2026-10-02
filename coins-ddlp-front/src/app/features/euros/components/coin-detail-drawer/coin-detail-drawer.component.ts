@@ -1,19 +1,16 @@
 import {
   Component,
   computed,
-  DestroyRef,
-  DOCUMENT,
   effect,
   ErrorHandler,
   inject,
-  Renderer2,
   signal,
   untracked,
+  viewChild,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 import { map } from 'rxjs';
-import { Drawer } from 'primeng/drawer';
 import { Skeleton } from 'primeng/skeleton';
 import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
@@ -25,14 +22,12 @@ import { BadgeComponent } from '../../../../shared/components/badge/badge.compon
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { DetailDrawerComponent } from '../../../../shared/components/detail-drawer/detail-drawer.component';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
-
-/** Duración aproximada de la animación de salida del drawer. */
-const CLOSE_ANIMATION_MS = 220;
 
 interface Feature {
   label: string;
@@ -43,7 +38,7 @@ interface Feature {
 @Component({
   selector: 'app-coin-detail-drawer',
   imports: [
-    Drawer,
+    DetailDrawerComponent,
     Skeleton,
     BadgeComponent,
     ButtonComponent,
@@ -72,9 +67,7 @@ export class CoinDetailDrawerComponent {
   });
   private readonly from = this.route.snapshot.queryParamMap.get('from');
 
-  /** El drawer se abre al montarse y, al cerrarse, la animación termina antes de navegar. */
-  readonly open = signal(true);
-  private closing = false;
+  private readonly drawer = viewChild.required(DetailDrawerComponent);
   readonly coin = signal<EuroCoin | null>(null);
   readonly numista = signal<NumistaCoin | null>(null);
   readonly numistaLoading = signal(false);
@@ -90,12 +83,6 @@ export class CoinDetailDrawerComponent {
   readonly canEdit = injectCanEditCoins();
 
   constructor() {
-    // Bloquea el scroll de la página mientras el panel existe; se libera siempre al destruirse
-    const body = inject(DOCUMENT).body;
-    const renderer = inject(Renderer2);
-    renderer.setStyle(body, 'overflow', 'hidden');
-    inject(DestroyRef).onDestroy(() => renderer.removeStyle(body, 'overflow'));
-
     effect(() => {
       const id = this.id();
       this.eurosService.revision();
@@ -199,21 +186,8 @@ export class CoinDetailDrawerComponent {
 
   // --- Acciones ---
 
-  /**
-   * Único punto de cierre (botón, fondo o Esc vía onHide): lanza la animación de salida
-   * y navega al terminar. Al no usar la máscara modal de PrimeNG, destruir el componente
-   * en cualquier momento no deja nada colgado.
-   */
-  requestClose(): void {
-    if (this.closing) return;
-    this.open.set(false);
-    setTimeout(() => this.close(), CLOSE_ANIMATION_MS);
-  }
-
-  /** Vuelve a la lista. Puede llegar dos veces (onHide + requestClose): solo navega una. */
+  /** Vuelve a la lista (lo emite el drawer una sola vez, al terminar de cerrarse). */
   close(): void {
-    if (this.closing) return;
-    this.closing = true;
     if (this.from === 'conmemorativas') {
       this.router.navigate(['/conmemorativas']);
       return;
@@ -232,7 +206,7 @@ export class CoinDetailDrawerComponent {
       await this.eurosService.remove(coin.id);
       this.messageService.add({ ...TOAST_MESSAGES.euros.deleteSuccess, life: 3000 });
       this.deleteDialogVisible.set(false);
-      this.requestClose();
+      this.drawer().requestClose();
     } catch (e) {
       this.errorHandler.handleError(e);
     } finally {

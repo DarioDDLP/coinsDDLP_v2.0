@@ -80,7 +80,7 @@
       </div>
     } @else if (coinRows().length > 0) {
       <p-table
-        class="coins-table"
+        class="table-stack"
         [value]="coinRows()"
         dataKey="coin.id"
         [rowGroupMode]="selectedYear() === null ? 'subheader' : undefined"

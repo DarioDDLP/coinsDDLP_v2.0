@@ -1,30 +1,45 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
 
+/**
+ * /pesetas?valor=5 pesetas     → vista única con chips de denominación (valor opcional)
+ * /pesetas/moneda/:id          → la misma vista con el detalle abierto en panel lateral
+ *
+ * Las URLs del diseño anterior (/all, /:faceValue, /:faceValue/:id) redirigen a las nuevas.
+ */
 export const pesetasRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./components/pesetas-denominations/pesetas-denominations.component').then(
-        (m) => m.PesetasDenominationsComponent,
+      import('./components/pesetas-browser/pesetas-browser.component').then(
+        (m) => m.PesetasBrowserComponent,
       ),
+    children: [
+      { path: '', children: [] },
+      {
+        path: 'moneda/:id',
+        loadComponent: () =>
+          import('./components/peseta-detail-drawer/peseta-detail-drawer.component').then(
+            (m) => m.PesetaDetailDrawerComponent,
+          ),
+      },
+    ],
   },
+  // --- Redirecciones de las rutas antiguas ---
   {
     path: 'all',
-    loadComponent: () =>
-      import('./components/pesetas-all/pesetas-all.component').then((m) => m.PesetasAllComponent),
+    redirectTo: () => inject(Router).createUrlTree(['/pesetas']),
   },
   {
     path: ':faceValue/:id',
-    loadComponent: () =>
-      import('./components/peseta-detail/peseta-detail.component').then(
-        (m) => m.PesetaDetailComponent,
-      ),
+    redirectTo: ({ params }) =>
+      inject(Router).createUrlTree(['/pesetas', 'moneda', params['id']], {
+        queryParams: { valor: params['faceValue'] },
+      }),
   },
   {
     path: ':faceValue',
-    loadComponent: () =>
-      import('./components/pesetas-list/pesetas-list.component').then(
-        (m) => m.PesetasListComponent,
-      ),
+    redirectTo: ({ params }) =>
+      inject(Router).createUrlTree(['/pesetas'], { queryParams: { valor: params['faceValue'] } }),
   },
 ];
