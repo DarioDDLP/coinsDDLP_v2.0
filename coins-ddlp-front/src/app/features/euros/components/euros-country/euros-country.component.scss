@@ -85,7 +85,7 @@
 
 .owner-tag {
   display: block;
-  font-size: 10px;
+  font-size: var(--font-2xs);
   color: var(--text-faint);
   letter-spacing: var(--letter-spacing-normal);
   text-transform: none;
@@ -98,15 +98,6 @@
 .row-actions {
   display: inline-flex;
   gap: var(--space-1);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 :host ::ng-deep {

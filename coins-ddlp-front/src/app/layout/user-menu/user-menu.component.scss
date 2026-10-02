@@ -1,0 +1,101 @@
+@use 'mixins' as *;
+
+:host {
+  display: block;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--font-body);
+  font-weight: var(--font-medium);
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  &--compact {
+    justify-content: center;
+  }
+
+  &__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: var(--surface-4);
+    color: var(--accent-soft);
+    font-size: var(--font-sm);
+    font-weight: var(--font-bold);
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    @include truncate;
+  }
+
+  &__role {
+    font-size: var(--font-xs);
+    color: var(--accent);
+  }
+
+  &__more {
+    margin-left: auto;
+    color: var(--text-faint);
+  }
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 200px;
+
+  &__email {
+    padding: var(--space-1) var(--space-2) var(--space-2);
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+    @include truncate;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: 40px;
+    padding: 0 var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--danger-soft);
+    font: inherit;
+    font-size: var(--font-body);
+    cursor: pointer;
+    @include focus-ring;
+
+    &:hover {
+      background: var(--surface-2);
+    }
+  }
+}

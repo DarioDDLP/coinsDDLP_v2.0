@@ -57,37 +57,7 @@
     }
 
     @if (authService.isLoggedIn()) {
-      <button
-        type="button"
-        class="sidebar__user"
-        [attr.aria-label]="literals.account"
-        aria-haspopup="menu"
-        (click)="userMenu.toggle($event)"
-      >
-        <span class="sidebar__avatar" aria-hidden="true">{{ initials() }}</span>
-        @if (!layout.sidebarRail()) {
-          <span class="sidebar__user-text">
-            <span class="sidebar__user-name">{{ displayName() }}</span>
-            <span class="sidebar__user-role">{{
-              authService.isAdmin() ? literals.adminRole : literals.userRole
-            }}</span>
-          </span>
-          <i class="pi pi-ellipsis-h sidebar__user-more" aria-hidden="true"></i>
-        }
-      </button>
-      <p-popover #userMenu>
-        <div class="user-menu">
-          <span class="user-menu__email">{{ authService.currentUser()?.email }}</span>
-          <button
-            type="button"
-            class="user-menu__item user-menu__item--danger"
-            (click)="userMenu.hide(); layout.openLogout()"
-          >
-            <i class="pi pi-sign-out" aria-hidden="true"></i>
-            {{ authLiterals.logoutButton }}
-          </button>
-        </div>
-      </p-popover>
+      <app-user-menu [compact]="layout.sidebarRail()" />
     } @else {
       <button
         type="button"

@@ -44,40 +44,47 @@ Es un **monorepo** con tres componentes independientes:
 
 ## Estética y diseño
 
-### Paleta de colores
-- **Fondo:** Imagen de fondo (`background.jpg`) a pantalla completa, `background-attachment: fixed`
-- **Cards:** Blanco `#ffffff` con opacidad 0.95 y sombra `0 2px 7px rgba(0,0,0,0.3)`
-- **Acento dorado:** `#F5E8C7` (fondos de sección features)
-- **Sidebar activo:** `#eaeeed` (gris muy claro con borde izquierdo)
-- **Estados de conservación:**
-  - FDC / SC → `success` (verde `#22c55e`)
-  - EBC / MBC → `info` (azul)
-  - BC / RC → `warning` (naranja)
-  - MC → `danger` (rojo `#ef4444`)
+Tema **oscuro "medianoche + oro"**, siempre activo. Prototipo de referencia: https://claude.ai/artifact/Vxbqtx1mB61suyw27FfnwP
 
-### Layout
-- **Sidebar** fijo a la izquierda con logo e items de navegación con icono
-- **Contenido principal:** card centrada, 60% de ancho en desktop
-- **Breakpoints:** 1500px → 90%, 900px → columna, 576px → 98%, 490px → columna completa
-- **Border-radius:** 10px en cards, 50% en banderas (circulares), 15px en feature boxes
+### Paleta de colores
+- **Fondo y superficies:** `--bg` (#0b0f1a) → `--surface-1` (tarjetas, tablas) → `--surface-2` (hover, inputs) → `--surface-3` (drawers, diálogos) → `--surface-4`. Bordes `--border-subtle` / `--border` / `--border-strong`. Sin imágenes de fondo.
+- **Texto:** `--text`, `--text-soft`, `--text-muted`, `--text-faint`
+- **Marca:** `--primary` azul (#3b82f6: enlaces, foco, selección) y `--accent` oro (#d4af6a: botón principal, elemento activo, progreso)
+- **Estados de conservación** (badges con fondo translúcido + texto claro, `--state-*-bg/text`):
+  - FDC / SC → `success` (verde) · EBC / MBC → `info` (azul) · BC / RC → `warn` (ámbar) · MC → `danger` (rojo)
+  - Unidades en posesión y "no circulante" → `accent` (oro); `secondary` para variantes LA/LR
+
+### Layout y breakpoints (`src/styles/_breakpoints.scss`)
+- **Desktop ≥ 1280px:** sidebar expandido (248px), plegable (preferencia en `localStorage`)
+- **Tablet 768–1279px:** sidebar en modo raíl (72px, solo iconos con tooltip)
+- **Móvil < 768px:** barra superior (`topbar`: atrás, título, bandera, cuenta) + barra inferior de 5 pestañas (`bottom-nav`; "Más" abre `more-sheet`). Las tablas pasan a tarjetas y los diálogos ocupan todo el ancho
+- **Contenido:** `max-width: 1280px` con padding fluido (`page-layout` / mixin `page-container`)
+- **Radios:** `--radius-sm/md/lg/xl` (6/10/16/20px), banderas circulares con anillo
 
 ### Tipografía
-- Labels: 14px
-- Descripciones: 18px
-- Títulos h1: 25px
+- **Inter** para la interfaz (cifras tabulares en tablas y contadores) y **Montserrat** para títulos (h1–h3, títulos de diálogo)
+- Base 16px. Escala `--font-2xs` (10px) … `--font-2xl` (32px); `--font-body` (14px) para tablas y controles; `--font-title` (h1 de página, con `clamp()`)
 
-### Sistema de variables CSS
-Los colores, tipografía y espaciado están centralizados en dos parciales SCSS:
-
+### Sistema de variables CSS y parciales SCSS
 | Archivo | Contenido |
 |---------|-----------|
-| `src/styles/_variables.scss` | Colores: `--cobalt`, `--gold-tan`, `--cream`, `--deep-navy`, `--midnight`, `--danger`, estados (`--state-*-bg/text`) |
-| `src/styles/_typography.scss` | Fuente: `--font-family`; tamaños: `--font-xs` (11px) a `--font-2xl` (36px); pesos: `--font-regular/medium/semibold/bold`; `--letter-spacing-*` |
+| `src/styles/_variables.scss` | Colores (superficies, texto, marca, estados), radios, sombras, `--ring`, espaciado `--space-1…9` (escala de 4px), medidas de layout |
+| `src/styles/_typography.scss` | Familias, tamaños, pesos, interlineado, `--letter-spacing-*`, `--icon-md` |
+| `src/styles/_breakpoints.scss` | `$bp-tablet` / `$bp-desktop` y mixins `mobile`, `tablet-up`, `tablet`, `desktop` |
+| `src/styles/_mixins.scss` | `focus-ring`, `card`, `card-interactive`, `page-container`, `truncate`, `overline`, `scroll-row`, `stack-table-on-mobile` |
+| `src/styles/_forms.scss` | Estilos comunes de los controles de formulario propios |
+| `src/styles/_detail.scss` | Contenido de las fichas de detalle (imágenes, secciones, características) |
+
+`src/styles` está en `includePaths`: los componentes importan con `@use 'mixins' as *;` (sin rutas relativas).
 
 **Reglas obligatorias:**
-- Nunca usar valores hardcodeados de color, tamaño de fuente, peso o espaciado de letras en SCSS. Siempre usar las variables CSS (`var(--...)`)
+- Nunca usar valores hardcodeados de color, tamaño de fuente, peso o espaciado de letras en SCSS. Siempre usar las variables CSS (`var(--...)`). Los únicos hex viven en `_variables.scss` y en el preset de PrimeNG (`core/theme/app-preset.ts`)
 - Los estilos propios de cada componente van en su propio archivo `.component.scss`, nunca en `styles.scss`
-- `styles.scss` es solo para reset global y theming de PrimeNG
+- `styles.scss` es solo para reset global, utilidades globales (`.sr-only`, `.table-stack`) y theming de PrimeNG
+- Sin `style="…"` en plantillas: clases en el `.scss` del componente
+- Tablas: `<p-table class="table-stack">` y en cada `<td>` `data-label="…"` o `data-cell="primary|secondary|hide-mobile"` para la vista de tarjetas en móvil. En PrimeNG 22 `styleClass` no se aplica a `p-table`
+- Diálogos: `[breakpoints]="dialogBreakpoints"` (`DIALOG_BREAKPOINTS`) y botón Cancelar `secondary`
+- Accesibilidad: foco visible (`focus-ring`), botones solo-icono con `tooltip` (se usa como `aria-label`), etiquetas de formulario asociadas, filas clicables con `tabindex="0"` y Enter
 
 ---
 
@@ -198,53 +205,73 @@ src/
 │   │       ├── supabase.service.ts     # Cliente Supabase — CRUD genérico
 │   │       ├── auth.service.ts         # Supabase Auth
 │   │       ├── numista.service.ts      # Llamadas a la Edge Function numista-proxy
-│   │       ├── loading.service.ts
+│   │       ├── owner.service.ts        # Colección activa (Darío / Manolo / ambas)
+│   │       ├── loading.service.ts      # Spinner global (solo guardados y Herramientas)
 │   │       └── global-error-handler.service.ts
+│   │   └── theme/app-preset.ts         # Preset oscuro de PrimeNG (Aura) + DARK_MODE_SELECTOR
+│   │
+│   ├── layout/                         # Estructura de la app (shell); puede usar core y shared
+│   │   ├── sidebar/  · user-menu/      # Escritorio/tablet: navegación, cuota Numista, usuario
+│   │   ├── topbar/   · bottom-nav/     # Móvil: barra superior y pestañas inferiores
+│   │   ├── more-sheet/                 # Móvil: panel "Más" (gestión, cuota, sesión)
+│   │   ├── login-dialog/ · recovery-password-dialog/
+│   │   ├── layout-state.service.ts     # Viewport, sidebar plegado, panel "Más", diálogo de login
+│   │   └── navigation.config.ts        # NAV_ITEMS (grupo, icono, adminOnly, mobilePrimary)
 │   │
 │   ├── features/                       # Cada feature, módulo vertical autocontenido
-│   │   ├── euros/                      # coin-detail, coin-uds-dialog, euros-all-coins,
-│   │   │                               #   euros-countries, euros-year-coins, euros-years
+│   │   ├── euros/                      # euros-countries, euros-country, coin-detail-drawer,
+│   │   │                               #   coin-uds-dialog · euros-permissions.ts
 │   │   ├── conmemorativas/             # conmemorativas-list
-│   │   ├── pesetas/                    # pesetas-denominations, pesetas-all, pesetas-list,
-│   │   │                               #   peseta-detail, peseta-edit-dialog
-│   │   ├── estadisticas/               # estadisticas-dashboard
-│   │   ├── ubicacion/                  # ubicacion-map
-│   │   ├── admin/                      # admin-users, admin-user-dialog, admin-header
+│   │   ├── pesetas/                    # pesetas-browser, peseta-detail-drawer,
+│   │   │                               #   peseta-edit-dialog · denomination-order.ts
+│   │   ├── estadisticas/               # estadisticas-dashboard (pendiente)
+│   │   ├── ubicacion/                  # ubicacion-map, ubicacion-edit-dialog
+│   │   ├── admin/                      # admin-users, admin-user-dialog
 │   │   └── tools/                      # tools-add-euro, tools-add-year
 │   │
 │   ├── shared/                         # Reutilizable entre features, sin lógica de negocio
-│   │   ├── components/                 # badge, button, buttons-header, collection-layout,
+│   │   ├── components/                 # page-layout, detail-drawer, progress-stat, badge,
+│   │   │                               #   button, buttons-header (cabecera con pestañas),
 │   │   │                               #   confirm-dialog, country-flag, empty-panel,
-│   │   │                               #   loading-spinner, login-dialog, search-input,
-│   │   │                               #   select, sidebar, text-input, textarea, toggle,
-│   │   │                               #   recovery-password-dialog
-│   │   ├── constants/                  # literals.ts, conservation-states.const.ts,
-│   │   │                               #   toast-messages.const.ts, collections.const.ts
+│   │   │                               #   filter-pills, loading-spinner, search-input,
+│   │   │                               #   select, text-input, textarea, toggle
+│   │   ├── constants/                  # literals.ts, dialog.const.ts, conservation-states,
+│   │   │                               #   toast-messages, collections, *-filter.config
 │   │   ├── interfaces/                 # contratos: euro-coin, peseta, numista-coin,
 │   │   │                               #   auth-service, euros-repository, app-user...
-│   │   ├── helpers/                    # funciones puras: normalize-strings, search-state, badge
+│   │   ├── helpers/                    # funciones puras: normalize-strings, search-state,
+│   │   │                               #   badge, unique-id
 │   │   ├── pipes/                      # euro-value.pipe.ts
-│   │   └── services/                   # excel-export.service.ts
+│   │   └── services/                   # excel-export.service.ts, page-header.service.ts
 │   │
-│   ├── app.ts                          # Componente raíz: layout sidebar + <router-outlet>
-│   ├── app.config.ts                   # Providers: cliente Supabase, Router, HttpClient,
-│   │                                   #   PrimeNG, GlobalErrorHandler
+│   ├── app.ts / app.html               # Shell: sidebar o topbar+bottom-nav, <router-outlet>,
+│   │                                   #   diálogos de sesión (@defer)
+│   ├── app.config.ts                   # Providers: Supabase, Router, HttpClient (fetch),
+│   │                                   #   PrimeNG (preset + licencia), LOCALE_ID 'es'
 │   └── app.routes.ts                   # Rutas raíz con lazy loading
 │
 ├── environments/                       # environment.ts, environment.prod.ts
-├── styles/  ·  styles.scss              # Theming global PrimeNG + reset
-└── (assets estáticos en coins-ddlp-front/public/: flags/, icons/, background.jpg)
+├── styles/  ·  styles.scss              # Parciales SCSS (ver Estética) + reset y theming PrimeNG
+└── (assets estáticos en coins-ddlp-front/public/: favicon.png, assets/flags/)
 ```
 
 ### Regla de dependencias entre capas
 ```
-features → shared → (sin dependencias)
-features → core   → (sin dependencias)
-core     → shared → (sin dependencias)
+layout   → core, shared
+features → core, shared
+core     → shared
+shared   → (sin dependencias)
 
-features NO importan de otras features.
-shared   NO importa de core ni de features.
+features NO importan de otras features (se comunican navegando: p. ej. conmemorativas
+abre el detalle de euros con /euros/:country/moneda/:id?from=conmemorativas).
+shared   NO importa de core, layout ni features.
 ```
+
+### Patrones del rediseño
+- **Páginas de colección:** `app-page-layout` (título, bandera, subtítulo, `[page-aside]` con `progress-stat`, buscador, `[page-actions]`, `[page-filters]`). Alimenta `PageHeaderService` para la barra superior de móvil.
+- **Detalle de moneda:** ruta hija `moneda/:id` que pinta `app-detail-drawer` sobre la lista. El drawer usa fondo y bloqueo de scroll propios (no la máscara modal de PrimeNG, que se quedaba huérfana y bloqueaba la app) y emite `closed` una sola vez al terminar de cerrarse.
+- **Recarga tras editar:** los servicios exponen una señal `revision` que se incrementa en create/update/remove; las vistas abiertas la leen en su `effect` de carga.
+- **Carga:** las lecturas de euros, pesetas, conmemorativas, ubicación y admin muestran `p-skeleton`; `LoadingService` (spinner global) queda para operaciones de guardado y Herramientas.
 
 ---
 
@@ -252,21 +279,25 @@ shared   NO importa de core ni de features.
 
 ```typescript
 // Rutas públicas (visualización)
-/                    → redirect → /euros
-/euros               → EurosComponent (lazy, con rutas hijas)
-/conmemorativas      → ConmemorativasComponent (lazy)
-/pesetas             → PesetasComponent (lazy, con rutas hijas)
-/estadisticas        → EstadisticasDashboardComponent (lazy)
-/ubicacion           → UbicacionMapComponent (lazy)
+/                              → redirect → /euros
+/euros                         → países (tarjetas con progreso)
+/euros/:country?year=2005      → vista de país: chips de año ("Todos" sin year)
+/euros/:country/moneda/:id     → misma vista + drawer de detalle (?from=conmemorativas vuelve allí)
+/conmemorativas                → lista por año con chips de salto
+/pesetas?valor=5 pesetas       → vista única con chips de denominación
+/pesetas/moneda/:id            → misma vista + drawer de detalle
+/estadisticas                  → EstadisticasDashboardComponent (admin, pendiente)
+/ubicacion                     → álbumes en tarjetas
 
 // Rutas protegidas con adminGuard
-/admin               → AdminComponent (lazy, con rutas hijas)
-/herramientas        → ToolsComponent (lazy, con rutas hijas)
+/admin/usuarios                → AdminComponent + admin-users
+/herramientas/añadir-euro|año  → ToolsComponent + formularios
 
-/**                  → redirect → /euros
+/**                            → redirect → /euros
 ```
 
-- **No existe ruta `/login`**: el login es un `p-dialog` (`login-dialog`) que se abre desde cualquier punto.
+- **Redirecciones de las URLs antiguas** (enlaces guardados): `/euros/:country/all`, `/euros/:country/:year`, `/euros/:country/:year/:id`, `/pesetas/all`, `/pesetas/:faceValue`, `/pesetas/:faceValue/:id`.
+- **No existe ruta `/login`**: el login es un `p-dialog` (`login-dialog`, en `layout/`) que se abre desde el sidebar, la barra superior o el panel "Más" vía `LayoutStateService.openLogin()`.
 - Las acciones CRUD se hacen mediante modales dentro de las rutas públicas; `authGuard` controla la visibilidad de los botones de edición/borrado.
 
 ---
@@ -309,8 +340,13 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 ### URL de producción
 **https://coinsddlp.vercel.app** — deploy automático en cada push a `main` (Vercel, plan Hobby)
 
+### Ramas pendientes de publicar
+- `chore/angular-22` (migración a Angular 22 + PrimeNG 22) y `feat/redesign` (rediseño oscuro + responsive, creada desde la anterior). **No fusionar en `main` hasta que Darío lo indique**: entonces se crea una rama `release/…` desde `main`, se fusionan las dos, se verifica y se pasa a `main` con su etiqueta de versión.
+
 ### Pendiente / Próximos pasos
-1. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido
+1. **Publicar la release** (ver arriba) cuando Darío dé el visto bueno
+2. **Implementar sección Estadísticas** — el componente `estadisticas-dashboard` existe; falta el contenido. Construirla con el sistema nuevo (`page-layout`, `progress-stat`, tokens) y `resource`/`httpResource`
+3. Literales sin uso heredados de antes del rediseño (`herramientas.*`, varios `euros.*`): revisar y limpiar
 
 ---
 
@@ -337,6 +373,7 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 | 2026-06-09 | **Módulo Ubicación completo (sesión 16)**: Tabla `country_location` (id, country, album, yearFrom, yearTo, isClosed) con 26 filas iniciales. `UbicacionService` (getAll, getCountries, add, update, remove). `ubicacion-map`: vista agrupada por álbum con bandera, rango de años y badge "Cerrado". Admin puede añadir/editar/eliminar entradas. Módulo público (lectura sin login); edición restringida a admin. `UbicacionEditDialogComponent` con select de país, álbum, años y toggle cerrado. |
 | 2026-06-16 | **Ubicación y toasts**: buscador por país en la cabecera de `ubicacion-map`; `empty-panel` alineado con el resto de listados cuando no hay resultados. Todos los toasts centralizados en `TOAST_MESSAGES`. |
 | 2026-10-02 | **Migración a Angular 22 + PrimeNG 22 (rama `chore/angular-22`)**: `ng update` a Angular 22.2 y TypeScript 6.0. Eliminados los `Eager` que añade la migración → todos los componentes en OnPush (el estado ya era 100% signals). HttpClient con `fetch` (nuevo default, sin `withXhr`). Eliminado `@angular/animations` y `provideAnimationsAsync()`: ni la app ni PrimeNG 22 lo usan (PrimeNG anima con CSS nativo y `animate.enter/leave`). PrimeNG 21 → 22.1: `@primeng/themes` → `@primeuix/themes`, añadido `@angular/cdk`, `pTemplate="x"` → `#x` (8 plantillas), fuera `SharedModule`, `p-progressSpinner` → `p-progress-spinner`. Licencia PrimeUI Community en `environment*.ts` → `providePrimeNG({ license })`. `engines.node >=24.15.0`. |
+| 2026-10-02 | **Rediseño completo (rama `feat/redesign`, 7 fases)**: tema oscuro "medianoche + oro" (tokens semánticos, Inter + Montserrat, preset PrimeNG oscuro siempre activo), sin fotos de fondo (−11 MB). Shell responsive en `app/layout/`: sidebar expandido/plegable/raíl, topbar + bottom-nav + panel "Más" en móvil. Componentes compartidos rediseñados + nuevos `page-layout`, `progress-stat`, `detail-drawer`. **Euros**: de 4 niveles a país con chips de año + detalle en drawer, progreso por país. **Pesetas**: vista única con chips de denominación (orden lógico vía `denominationSortKey`) + drawer. **Conmemorativas**: chips de salto y cabeceras de año fijas; arreglada la ubicación de álbum, que se calculaba sobre la lista filtrada. **Ubicación**: álbumes en tarjetas. **Admin/Herramientas**: cabecera con pestañas. Redirecciones de URLs antiguas, skeletons, locale `es`, accesibilidad (labels asociadas, foco visible, `aria-*`). Tests de `app.spec.ts` reparados (2/2). |
 | 2026-06-02 | **Variantes de moneda LA/LR (sesión 15)**: Migración SQL `20260602000000_add_coin_variant.sql`: columna `variant TEXT` nullable en `euro`; España 2€ y 2€C existentes marcadas como `LA`; filas `LR` insertadas con uds=0. Interface `EuroCoin`/`RawEuroCoin` con `variant?`. `EurosService` y `ConmemorativasService`: mapeo de `variant` en ambos modos de propietario; orden `faceValue → description → variant NULLS FIRST` para garantizar LA antes de LR. Tablas `euros-year-coins`, `euros-all-coins`, `conmemorativas-list`: badge `secondary` inline en denominación/descripción. `coin-detail`: badge en cabecera junto a conservación. `coin-uds-dialog`: badge en cabecera (solo lectura). `tools-add-euro`: select LA/LR entre valor facial y ceca, visible solo para 2€/2€C. `VARIANT_OPTIONS` y `VARIANT_FACE_VALUES` en `tools.config.ts`. Documentadas reglas de variables CSS/SCSS en CLAUDE.md. 22 de 25 países pendientes de migrar (España como prueba piloto). |
 
 ---
@@ -351,13 +388,17 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 - No usar `@angular/animations` (obsoleto en Angular 22). Para animaciones propias, `animate.enter` / `animate.leave` con clases CSS
 
 ### PrimeNG
-- Usar el sistema de temas con CSS variables y `definePreset` de `@primeuix/themes` (preset `Aura` personalizado en `app.config.ts`). `@primeng/themes` está obsoleto
+- Usar el sistema de temas con CSS variables y `definePreset` de `@primeuix/themes` (preset `Aura` personalizado en `core/theme/app-preset.ts`). `@primeng/themes` está obsoleto
+- El esquema oscuro está siempre activo: `darkModeSelector: '.app-dark'` + `class="app-dark"` en `<html>` (Aura v3 usa `light-dark()`, que depende de `color-scheme`)
+- En PrimeNG 22 `styleClass` no se aplica a `p-table` (usar `class` en el host); en `p-drawer` sí funciona
+- Al agrupar filas (`rowGroupMode="subheader"`), PrimeNG ordena por `groupRowsBy` como texto: usar una clave que ordene bien (p. ej. posición con ceros a la izquierda)
+- No usar la máscara modal de `p-drawer` en paneles que se destruyen al navegar: usar `app-detail-drawer`
 - Plantillas de componentes PrimeNG con variable de plantilla (`<ng-template #header>`, `#body`, `#groupheader`…). `pTemplate` ya no existe
 - **Licencia**: desde la v22 PrimeNG usa la licencia PrimeUI. Clave Community gratuita en `environment.primeuiLicense` (ambos `environment*.ts`), pasada a `providePrimeNG({ license })`. Se verifica offline, sin telemetría. **Caduca el 2027-10-02**: renovarla en https://primeui.dev/licenses/community; si caduca, PrimeNG muestra un aviso de licencia en la app
 - Importar componentes individualmente en cada standalone component (ISP)
 
 ### Autenticación
-- El login abre un `p-dialog` (`login-dialog`) desde cualquier punto de la app. No existe página `/login` separada.
+- El login abre un `p-dialog` (`login-dialog`, alojado una vez en el shell) desde cualquier punto de la app vía `LayoutStateService.openLogin()` / `openLogout()`. No existe página `/login` separada.
 - Los botones de edición/borrado solo son visibles cuando `authService.isLoggedIn()` es `true`
 - `authGuard` protege operaciones; `adminGuard` protege las rutas `/admin` y `/herramientas`
 - `/ubicacion` es pública (lectura sin login); botones de edición/borrado solo visibles para admin (`isAdmin()`)
@@ -368,7 +409,8 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 - Los `toast-messages.const.ts` importan sus textos desde `literals.ts`
 
 ### Imágenes
-- Banderas: normalizar nombre del país → buscar en `public/assets/flags/{nombre-normalizado}-flag.png`
+- Banderas: normalizar nombre del país → buscar en `public/assets/flags/{nombre-normalizado}-flag.png` (componente `country-flag`; su tamaño se puede sobrescribir desde CSS con `--flag-size`)
+- Fotos de monedas: Numista (euros, vía `numista-proxy`) y `peseta_type.image*` (pesetas). Numista bloquea navegadores headless (403), así que en capturas automáticas no aparecen
 - Conservación ND: valor por defecto cuando `uds === '0'`
 
 ### Manejo de errores — patrón obligatorio

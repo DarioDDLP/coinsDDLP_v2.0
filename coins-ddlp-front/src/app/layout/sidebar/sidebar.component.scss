@@ -171,7 +171,6 @@
     }
   }
 
-  &__user,
   &__login,
   &__collapse {
     display: flex;
@@ -215,39 +214,6 @@
       color: var(--text);
     }
   }
-
-  &__avatar {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-full);
-    background: var(--surface-4);
-    color: var(--accent-soft);
-    font-size: var(--font-sm);
-    font-weight: var(--font-bold);
-  }
-
-  &__user-text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  &__user-name {
-    @include truncate;
-  }
-
-  &__user-role {
-    font-size: var(--font-xs);
-    color: var(--accent);
-  }
-
-  &__user-more {
-    margin-left: auto;
-    color: var(--text-faint);
-  }
 }
 
 // --- Modo raíl: solo iconos, centrados ---
@@ -265,47 +231,5 @@
     justify-content: center;
     padding: 0;
   }
-
-  &__user {
-    justify-content: center;
-  }
 }
 
-.user-menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 200px;
-
-  &__email {
-    padding: var(--space-1) var(--space-2) var(--space-2);
-    font-size: var(--font-xs);
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border-subtle);
-    @include truncate;
-  }
-
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    height: 40px;
-    padding: 0 var(--space-2);
-    border: 0;
-    border-radius: var(--radius-sm);
-    background: transparent;
-    color: var(--text);
-    font: inherit;
-    font-size: var(--font-body);
-    cursor: pointer;
-    @include focus-ring;
-
-    &:hover {
-      background: var(--surface-2);
-    }
-
-    &--danger {
-      color: var(--danger-soft);
-    }
-  }
-}

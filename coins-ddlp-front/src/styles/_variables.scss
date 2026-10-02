@@ -85,18 +85,4 @@
   --bottom-nav-height: 64px;
   --content-max-width: 1280px;
   --transition-fast: 150ms ease;
-
-  // --- LEGACY (temporal, se elimina en la fase 7 del rediseño) ---
-  // Alias de la paleta clara antigua hacia los tokens nuevos, para que los
-  // componentes aún no migrados sigan siendo legibles sobre fondo oscuro.
-  --cobalt: var(--text-soft);
-  --cobalt-rgb: var(--text-rgb);
-  --gold-tan: var(--accent);
-  --gold-tan-rgb: var(--accent-rgb);
-  --cream: var(--text);
-  --cream-rgb: var(--surface-1-rgb);
-  --deep-navy: var(--text);
-  --deep-navy-rgb: var(--text-rgb);
-  --midnight: var(--bg);
-  --midnight-rgb: 0, 0, 0;
 }

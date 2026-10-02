@@ -1,13 +1,12 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { Popover } from 'primeng/popover';
 import { TooltipModule } from 'primeng/tooltip';
 import { LITERALS } from '../../shared/constants/literals';
 import { NumistaService } from '../../core/services/numista.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LayoutStateService } from '../layout-state.service';
 import { NAV_ITEMS, NavGroup, NavItem, NUMISTA_MONTHLY_QUOTA } from '../navigation.config';
-import { userInitials, userDisplayName } from '../user-display';
+import { UserMenuComponent } from '../user-menu/user-menu.component';
 
 interface NavSection {
   group: NavGroup;
@@ -17,7 +16,7 @@ interface NavSection {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, Popover, TooltipModule],
+  imports: [RouterLink, RouterLinkActive, TooltipModule, UserMenuComponent],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   host: {
@@ -48,7 +47,4 @@ export class SidebarComponent {
     const remaining = this.numistaService.remaining();
     return remaining === null ? 0 : Math.round((remaining / this.quota) * 100);
   });
-
-  readonly initials = computed(() => userInitials(this.authService.currentUser()));
-  readonly displayName = computed(() => userDisplayName(this.authService.currentUser()));
 }

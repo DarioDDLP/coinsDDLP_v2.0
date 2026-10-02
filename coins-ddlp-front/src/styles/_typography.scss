@@ -4,6 +4,8 @@
   --font-family-display: 'Montserrat', 'Inter', system-ui, sans-serif;
 
   // Tamaños
+  --font-2xs: 10px; // etiquetas mínimas (propietario en cabeceras de tabla)
+  --font-caption: 11px; // texto de la barra de pestañas inferior
   --font-xs: 12px;
   --font-sm: 13px;
   --font-base: 16px;
@@ -13,6 +15,7 @@
   --font-xl: 28px;
   --font-2xl: 32px;
   --font-title: clamp(24px, 2.2vw + 12px, 32px); // h1 de página
+  --icon-md: 20px; // iconos de navegación
 
   // Pesos
   --font-regular: 400;
@@ -28,6 +31,7 @@
   // Espaciado entre letras
   --letter-spacing-tight: -0.02em;
   --letter-spacing-normal: 0;
+  --letter-spacing-snug: 0.02em;
   --letter-spacing-wide: 0.08em;
   --letter-spacing-wider: 0.12em;
 }
