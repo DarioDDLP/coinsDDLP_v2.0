@@ -26,6 +26,7 @@ import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 import { FilterPillOption } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-coin-uds-dialog',
@@ -59,6 +60,7 @@ export class CoinUdsDialogComponent {
   readonly literals = LITERALS.euros;
   readonly sharedLiterals = LITERALS.shared;
   readonly conservationOptions = CONSERVATION_OPTIONS;
+  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly ownerPickerOptions: FilterPillOption[] = [
     { value: 'dario', label: LITERALS.shared.ownerDario },

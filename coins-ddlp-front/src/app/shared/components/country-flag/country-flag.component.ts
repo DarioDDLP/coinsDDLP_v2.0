@@ -18,7 +18,8 @@ export class CountryFlagComponent {
   readonly decorative = input<boolean>(false);
 
   readonly flagPath = computed(() => getFlagPath(this.country()));
-  readonly sizePx = computed(() => `${this.size()}px`);
+  /** El tamaño puede sobrescribirse desde CSS con --flag-size (p. ej. en móvil). */
+  readonly cssSize = computed(() => `var(--flag-size, ${this.size()}px)`);
 
   onImageError(event: Event): void {
     (event.target as HTMLImageElement).style.visibility = 'hidden';

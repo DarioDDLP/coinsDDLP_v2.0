@@ -1,60 +1,78 @@
-import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, effect, ErrorHandler, inject, signal } from '@angular/core';
+import { formatNumber } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { Skeleton } from 'primeng/skeleton';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
+import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { EurosService } from '../../services/euros.service';
-import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
+import { OwnerService } from '../../../../core/services/owner.service';
+import { EuroCoinSummary } from '../../../../shared/interfaces/euro-coin.interface';
+import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
+import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
+import { isOwned } from '../../euros-permissions';
 
-interface CountryGroup {
+interface CountryCard {
   country: string;
   minYear: number;
   maxYear: number;
+  owned: number;
+  total: number;
 }
+
+const SEARCH_KEY = 'euros-countries';
 
 @Component({
   selector: 'app-euros-countries',
   imports: [
-    CommonModule,
     RouterLink,
+    Skeleton,
     CountryFlagComponent,
     PageLayoutComponent,
     EmptyPanelComponent,
+    ProgressStatComponent,
+    FilterPillsComponent,
   ],
   templateUrl: './euros-countries.component.html',
   styleUrl: './euros-countries.component.scss',
 })
-export class EurosCountriesComponent implements OnInit {
+export class EurosCountriesComponent {
   private eurosService = inject(EurosService);
   private errorHandler = inject(ErrorHandler);
+  readonly ownerService = inject(OwnerService);
 
   readonly literals = LITERALS.euros;
+  readonly sharedLiterals = LITERALS.shared;
+  readonly ownerOptions = OWNER_FILTER_OPTIONS;
+  readonly skeletonCards = Array.from({ length: 12 });
 
-  private allCoins = signal<Pick<EuroCoin, 'country' | 'year'>[]>([]);
-  readonly searchQuery = signal('');
+  private summary = signal<EuroCoinSummary[]>([]);
+  readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 
-  readonly sharedLiterals = LITERALS.shared;
-
-  ngOnInit(): void {
-    this.searchQuery.set(restoreSearchQuery('euros-countries'));
-    this.loadCoins();
+  constructor() {
+    // Recarga al cambiar de colección (Darío / Manolo / ambas) o tras editar una moneda
+    effect(() => {
+      this.ownerService.current();
+      this.eurosService.revision();
+      this.loadSummary();
+    });
   }
 
-  loadCoins(): void {
+  loadSummary(): void {
     this.hasError.set(false);
-    this.isReady.set(false);
-    this.eurosService.getAll().subscribe({
-      next: (coins) => {
-        this.allCoins.set(coins);
+    this.eurosService.getCatalogSummary().subscribe({
+      next: (rows) => {
+        this.summary.set(rows);
         this.isReady.set(true);
       },
       error: (e) => {
@@ -65,44 +83,50 @@ export class EurosCountriesComponent implements OnInit {
     });
   }
 
-  readonly countryGroups = computed(() => {
-    const coins = this.allCoins();
-    const queryRaw = this.searchQuery().trim();
-
-    const query = normalizeString(queryRaw);
-
-    // Agrupar por país y calcular min/max year
-    const grouped = new Map<string, { minYear: number; maxYear: number }>();
-
-    coins.forEach((coin) => {
-      if (!grouped.has(coin.country)) {
-        grouped.set(coin.country, { minYear: coin.year, maxYear: coin.year });
-      } else {
-        const group = grouped.get(coin.country)!;
-        group.minYear = Math.min(group.minYear, coin.year);
-        group.maxYear = Math.max(group.maxYear, coin.year);
-      }
-    });
-
-    // Convertir a array y filtrar por búsqueda
-    let result = Array.from(grouped.entries()).map(([country, { minYear, maxYear }]) => ({
-      country,
-      minYear,
-      maxYear,
-    }));
-
-    if (query) {
-      result = result.filter((group) => normalizeString(group.country).includes(query));
+  private readonly allCards = computed<CountryCard[]>(() => {
+    const both = this.ownerService.current() === 'both';
+    const byCountry = new Map<string, CountryCard>();
+    for (const coin of this.summary()) {
+      const card = byCountry.get(coin.country) ?? {
+        country: coin.country,
+        minYear: coin.year,
+        maxYear: coin.year,
+        owned: 0,
+        total: 0,
+      };
+      card.minYear = Math.min(card.minYear, coin.year);
+      card.maxYear = Math.max(card.maxYear, coin.year);
+      card.total++;
+      if (isOwned(coin.uds, coin.udsAlt, both)) card.owned++;
+      byCountry.set(coin.country, card);
     }
-
-    // Ordenar alfabéticamente
-    result.sort((a, b) => a.country.localeCompare(b.country));
-
-    return result;
+    return [...byCountry.values()].sort((a, b) => a.country.localeCompare(b.country, 'es'));
   });
+
+  readonly countryCards = computed(() => {
+    const query = normalizeString(this.searchQuery().trim());
+    const cards = this.allCards();
+    return query ? cards.filter((c) => normalizeString(c.country).includes(query)) : cards;
+  });
+
+  readonly totals = computed(() =>
+    this.allCards().reduce(
+      (acc, c) => ({ owned: acc.owned + c.owned, total: acc.total + c.total }),
+      { owned: 0, total: 0 },
+    ),
+  );
+
+  readonly subtitle = computed(
+    () =>
+      `${this.allCards().length} ${this.literals.countriesCount} · ${formatNumber(this.totals().total, 'es', '1.0-0')} ${this.literals.coinsInCatalog}`,
+  );
 
   onSearch(query: string): void {
     this.searchQuery.set(query);
-    saveSearchQuery('euros-countries', query);
+    saveSearchQuery(SEARCH_KEY, query);
+  }
+
+  onOwnerChange(slug: string): void {
+    this.ownerService.setOwner(slug as OwnerSlug);
   }
 }

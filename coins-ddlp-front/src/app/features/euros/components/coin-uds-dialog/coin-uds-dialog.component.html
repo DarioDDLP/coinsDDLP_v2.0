@@ -2,7 +2,8 @@
   [visible]="visible()"
   (onHide)="onHide()"
   [modal]="true"
-  [style]="{ width: '380px' }"
+  [style]="{ width: '460px' }"
+  [breakpoints]="dialogBreakpoints"
   [draggable]="false"
   [resizable]="false"
   [closable]="true"
@@ -30,20 +31,22 @@
       </div>
     }
 
-    <app-text-input
-      [label]="literals.unitsLabel"
-      [value]="uds().toString()"
-      type="number"
-      [min]="0"
-      (valueChange)="uds.set(+$event)"
-    />
+    <div class="uds-form__row">
+      <app-text-input
+        [label]="literals.unitsLabel"
+        [value]="uds().toString()"
+        type="number"
+        [min]="0"
+        (valueChange)="uds.set(+$event)"
+      />
 
-    <app-select
-      [label]="literals.conservationLabel"
-      [value]="conservation()"
-      [options]="conservationOptions"
-      (valueChange)="conservation.set($any($event))"
-    />
+      <app-select
+        [label]="literals.conservationLabel"
+        [value]="conservation()"
+        [options]="conservationOptions"
+        (valueChange)="conservation.set($any($event))"
+      />
+    </div>
 
     <app-textarea
       [label]="literals.descriptionLabel"
@@ -72,10 +75,11 @@
     />
 
     @if (errorMessage()) {
-      <p class="uds-form__error">{{ errorMessage() }}</p>
+      <p class="uds-form__error" role="alert">{{ errorMessage() }}</p>
     }
 
     <div class="uds-form__actions">
+      <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
       <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
     </div>
   </div>

@@ -188,8 +188,8 @@ export class ConmemorativasListComponent {
   }
 
   onCoinClick(coin: EuroCoin): void {
-    this.router.navigate(['/euros', coin.country, coin.year, coin.id], {
-      queryParams: { from: 'conmemorativas' },
+    this.router.navigate(['/euros', coin.country, 'moneda', coin.id], {
+      queryParams: { year: coin.year, from: 'conmemorativas' },
     });
   }
 
