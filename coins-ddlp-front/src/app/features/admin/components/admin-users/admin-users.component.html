@@ -10,7 +10,7 @@
       [tableStyle]="{ 'min-width': '600px' }"
       class="p-datatable-striped"
     >
-      <ng-template pTemplate="header">
+      <ng-template #header>
         <tr>
           <th>{{ literals.colEmail }}</th>
           <th>{{ literals.colName }}</th>
@@ -18,7 +18,7 @@
           <th style="text-align: center">{{ literals.colActions }}</th>
         </tr>
       </ng-template>
-      <ng-template pTemplate="body" let-row>
+      <ng-template #body let-row>
         <tr>
           <td>{{ row.user.email }}</td>
           <td>{{ row.user.displayName ?? '—' }}</td>

@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { MessageService, SharedModule } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { PesetasService } from '../../services/pesetas.service';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
@@ -24,7 +24,6 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
   selector: 'app-peseta-edit-dialog',
   imports: [
     Dialog,
-    SharedModule,
     ButtonComponent,
     TextInputComponent,
     SelectComponent,

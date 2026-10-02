@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { Dialog } from 'primeng/dialog';
-import { MessageService, SharedModule } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { OwnerService, OWNER_IDS } from '../../../../core/services/owner.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -31,7 +31,6 @@ import { FilterPillOption } from '../../../../shared/components/filter-pills/fil
   selector: 'app-coin-uds-dialog',
   imports: [
     Dialog,
-    SharedModule,
     ButtonComponent,
     TextInputComponent,
     SelectComponent,

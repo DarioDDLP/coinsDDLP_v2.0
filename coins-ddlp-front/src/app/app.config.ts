@@ -5,15 +5,14 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { MessageService } from 'primeng/api';
 
 import { routes } from './app.routes';
 import { providePrimeNG } from 'primeng/config';
-import { definePreset } from '@primeng/themes';
-import Aura from '@primeng/themes/aura';
+import { definePreset } from '@primeuix/themes';
+import Aura from '@primeuix/themes/aura';
 
 const AppPreset = definePreset(Aura, {
   components: {
@@ -60,8 +59,8 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     provideRouter(routes),
     provideHttpClient(),
-    provideAnimationsAsync(),
     providePrimeNG({
+      license: environment.primeuiLicense,
       theme: {
         preset: AppPreset,
         options: { darkModeSelector: false },

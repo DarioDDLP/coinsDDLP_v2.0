@@ -33,7 +33,7 @@
             [tableStyle]="{ 'min-width': '50rem' }"
             [stripedRows]="true"
           >
-            <ng-template pTemplate="header">
+            <ng-template #header>
               <tr>
                 <th style="width: 110px">{{ literals.colYear }}</th>
                 <th>{{ literals.colTitle }}</th>
@@ -42,7 +42,7 @@
                 <th style="text-align: center"></th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-row>
+            <ng-template #body let-row>
               <tr class="clickable-row" (click)="onCoinClick(row.peseta)">
                 <td>{{ row.peseta.label }}</td>
                 <td>{{ row.peseta.peseta_type.title }}</td>

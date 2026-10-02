@@ -7,7 +7,7 @@
   [resizable]="false"
   [closable]="true"
 >
-  <ng-template pTemplate="header">
+  <ng-template #header>
     <div class="dialog-header">
       @if (coin()) {
         <app-country-flag [country]="coin()!.country" [size]="20" />

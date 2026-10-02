@@ -47,7 +47,7 @@
           rowGroupMode="subheader"
           groupRowsBy="year"
         >
-          <ng-template pTemplate="header">
+          <ng-template #header>
             <tr>
               <th>{{ literals.colFaceValue }}</th>
               <th>Descripción</th>
@@ -78,7 +78,7 @@
             </tr>
           </ng-template>
 
-          <ng-template pTemplate="groupheader" let-row>
+          <ng-template #groupheader let-row>
             <tr class="year-group-header">
               <td [attr.colspan]="isBoth() ? (hasMint() ? 8 : 7) : hasMint() ? 6 : 5">
                 {{ row.year }}
@@ -86,7 +86,7 @@
             </tr>
           </ng-template>
 
-          <ng-template pTemplate="body" let-row>
+          <ng-template #body let-row>
             <tr
               [class.row--non-circulating]="!row.coin.circulation"
               (click)="onCoinClick(row.coin)"
