@@ -1,0 +1,146 @@
+<app-detail-drawer
+  #drawer
+  [overline]="coin() ? coin()!.country + ' · ' + coin()!.year : ''"
+  [title]="coin()?.faceValue ?? ''"
+  [subtitle]="coin()?.description ?? ''"
+  [ariaLabel]="eurosLiterals.detailTitle"
+  [loading]="isLoading()"
+  (closed)="close()"
+>
+  @if (coin(); as c) {
+    <app-country-flag
+      drawer-overline
+      [country]="c.country"
+      [size]="20"
+      [decorative]="true"
+      [ring]="false"
+    />
+  }
+
+  @if (hasError()) {
+    <app-error-panel [compact]="true" (retry)="retry()" />
+  } @else if (coin(); as c) {
+    <div class="detail-badges">
+      @if (c.variant) {
+        <app-badge [label]="c.variant" severity="secondary" size="md" />
+      }
+      @if (conservationBadge(); as cb) {
+        <app-badge [label]="cb.label" [severity]="cb.severity" [tooltip]="cb.tooltip" size="md" />
+      }
+      <app-badge [label]="udsLabel()" [severity]="udsBadge().severity" size="md" />
+      @if (!c.circulation) {
+        <app-badge [label]="eurosLiterals.nonCirculating" severity="accent" size="md" />
+      }
+    </div>
+
+    <div class="coin-images">
+      @if (numista(); as n) {
+        @if (n.obverse?.thumbnail) {
+          <figure class="coin-images__item">
+            <img [src]="n.obverse!.thumbnail" [alt]="literals.labelObverse" />
+            <figcaption>{{ literals.labelObverse }}</figcaption>
+          </figure>
+        }
+        @if (n.reverse?.thumbnail) {
+          <figure class="coin-images__item">
+            <img [src]="n.reverse!.thumbnail" [alt]="literals.labelReverse" />
+            <figcaption>{{ literals.labelReverse }}</figcaption>
+          </figure>
+        }
+        @if (n.edge?.thumbnail) {
+          <figure class="coin-images__item coin-images__item--edge">
+            <img [src]="n.edge!.thumbnail" [alt]="literals.labelEdge" />
+            <figcaption>{{ literals.labelEdge }}</figcaption>
+          </figure>
+        }
+      } @else {
+        <div class="coin-images__placeholder"><i class="pi pi-image" aria-hidden="true"></i></div>
+        <div class="coin-images__placeholder"><i class="pi pi-image" aria-hidden="true"></i></div>
+      }
+    </div>
+    @if (!numista()) {
+      <p class="detail-notice">{{ noNumistaMessage() }}</p>
+    }
+
+    @if (numista(); as n) {
+      @if (n.obverse?.description) {
+        <section class="detail-section">
+          <h3 class="detail-section-title">{{ literals.labelObverse }}</h3>
+          <p class="detail-text">{{ n.obverse!.description }}</p>
+        </section>
+      }
+      @if (n.reverse?.description) {
+        <section class="detail-section">
+          <h3 class="detail-section-title">{{ literals.labelReverse }}</h3>
+          <p class="detail-text">{{ n.reverse!.description }}</p>
+        </section>
+      }
+      @if (n.edge?.description) {
+        <section class="detail-section">
+          <h3 class="detail-section-title">{{ literals.labelEdge }}</h3>
+          <p class="detail-text">{{ n.edge!.description }}</p>
+        </section>
+      }
+    }
+
+    <section class="detail-section">
+      <h3 class="detail-section-title">
+        {{ numista() ? literals.labelFeatures : literals.labelBasicData }}
+      </h3>
+      <dl class="features">
+        @for (f of features(); track f.label) {
+          <div class="features__row">
+            <dt>{{ f.label }}</dt>
+            <dd>{{ f.value }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <section class="detail-section detail-section--card">
+      <h3 class="detail-section-title">{{ literals.labelObservations }}</h3>
+      <p class="detail-text">{{ c.observations || literals.labelNoObservations }}</p>
+    </section>
+
+    @if (numista(); as n) {
+      <a class="detail-link" [href]="n.url" target="_blank" rel="noopener">
+        {{ literals.labelMoreInfo }}
+        <i class="pi pi-external-link" aria-hidden="true"></i>
+      </a>
+    }
+  }
+
+  @if (canEdit() && coin()) {
+    <div drawer-footer class="detail-actions">
+      <app-button
+        icon="pi pi-pencil"
+        [label]="eurosLiterals.editUnits"
+        [block]="true"
+        (clicked)="udsDialogVisible.set(true)"
+      />
+      @if (authService.isAdmin()) {
+        <app-button
+          icon="pi pi-trash"
+          variant="danger"
+          [tooltip]="eurosLiterals.deleteCoin"
+          (clicked)="deleteDialogVisible.set(true)"
+        />
+      }
+    </div>
+  }
+</app-detail-drawer>
+
+<!-- Los diálogos de edición solo se montan para quien puede usarlos -->
+@if (canEdit()) {
+  <app-coin-uds-dialog [(visible)]="udsDialogVisible" [coin]="coin()" />
+}
+
+@if (authService.isAdmin()) {
+  <app-confirm-dialog
+    [(visible)]="deleteDialogVisible"
+    [header]="eurosLiterals.deleteCoin"
+    [message]="eurosLiterals.deleteConfirm"
+    [loading]="deleteLoading()"
+    (confirmed)="onConfirmDelete()"
+  />
+}

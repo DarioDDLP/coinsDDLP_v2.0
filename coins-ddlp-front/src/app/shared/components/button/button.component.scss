@@ -1,22 +1,41 @@
+@use 'mixins' as *;
+
+:host {
+  display: inline-flex;
+
+  &.block {
+    display: flex;
+    width: 100%;
+
+    .btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
-  border: none;
-  border-radius: 8px;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
   font-family: var(--font-family);
-  font-size: var(--font-sm);
+  font-size: var(--font-body);
   font-weight: var(--font-semibold);
-  letter-spacing: var(--letter-spacing-wide);
+  white-space: nowrap;
   cursor: pointer;
   transition:
-    background 0.15s,
-    opacity 0.15s,
-    box-shadow 0.15s;
+    background var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+  @include focus-ring;
 
   i {
-    font-size: 14px;
+    font-size: var(--font-body);
   }
 
   &:disabled {
@@ -24,63 +43,79 @@
     cursor: not-allowed;
   }
 
-  // Primary — deep-navy con hover cobalt
   &--primary {
-    background: var(--deep-navy);
-    color: var(--cream);
-    box-shadow: 0 2px 6px rgba(var(--deep-navy-rgb), 0.3);
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
 
     &:hover:not(:disabled) {
-      background: var(--cobalt);
-      box-shadow: 0 4px 10px rgba(var(--cobalt-rgb), 0.35);
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
     }
   }
 
-  // Secondary — gold-tan con texto dark
   &--secondary {
-    background: var(--gold-tan);
-    color: var(--midnight);
-    box-shadow: 0 2px 6px rgba(var(--gold-tan-rgb), 0.4);
+    background: var(--surface-2);
+    border-color: var(--border);
+    color: var(--text);
 
     &:hover:not(:disabled) {
-      background: #c9a56e;
-      box-shadow: 0 4px 10px rgba(var(--gold-tan-rgb), 0.5);
+      background: var(--surface-4);
+      border-color: var(--border-strong);
     }
   }
 
-  // Danger
+  &--tertiary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text-soft);
+
+    &:hover:not(:disabled) {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: var(--text-muted);
+
+    &:hover:not(:disabled) {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+  }
+
   &--danger {
     background: var(--danger);
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(var(--danger-rgb), 0.3);
+    border-color: var(--danger);
+    color: var(--text);
 
     &:hover:not(:disabled) {
       background: var(--danger-hover);
-      box-shadow: 0 4px 10px rgba(var(--danger-rgb), 0.4);
+      border-color: var(--danger-hover);
     }
   }
 
-  // Tertiary — cream con texto deep-navy (inverso al primary)
-  &--tertiary {
-    background: var(--cream);
-    color: var(--deep-navy);
-    box-shadow: 0 2px 6px rgba(var(--cream-rgb), 0.3);
+  // Solo icono: botón cuadrado y compacto
+  &--icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
 
-    &:hover:not(:disabled) {
-      background: #f0e6d3;
-      box-shadow: 0 4px 10px rgba(var(--cream-rgb), 0.4);
+    i {
+      font-size: var(--font-base);
     }
   }
 
-  // Ghost — sin fondo, borde cobalt
-  &--ghost {
+  // La papelera de una fila no debe ser un bloque rojo: solo el icono se tiñe
+  &--danger.btn--icon {
     background: transparent;
-    color: var(--cobalt);
-    border: 1.5px solid var(--cobalt);
-    box-shadow: none;
+    border-color: transparent;
+    color: var(--danger-soft);
 
     &:hover:not(:disabled) {
-      background: rgba(var(--cobalt-rgb), 0.08);
+      background: var(--state-danger-bg);
     }
   }
 }

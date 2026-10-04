@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { uniqueId } from '../../helpers/unique-id.helper';
 
 @Component({
   selector: 'app-textarea',
@@ -13,6 +14,8 @@ export class TextareaComponent {
   disabled = input<boolean>(false);
 
   valueChange = output<string>();
+
+  readonly id = uniqueId('textarea');
 
   onInput(event: Event): void {
     this.valueChange.emit((event.target as HTMLTextAreaElement).value);

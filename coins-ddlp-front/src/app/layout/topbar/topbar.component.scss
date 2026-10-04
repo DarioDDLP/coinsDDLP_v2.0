@@ -1,0 +1,80 @@
+@use 'mixins' as *;
+
+:host {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: block;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: calc(var(--topbar-height) + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) var(--space-2) 0 var(--space-1);
+  background: rgba(var(--bg-rgb), 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-subtle);
+
+  &__title {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    font-size: var(--font-md);
+    font-weight: var(--font-bold);
+    @include truncate;
+  }
+
+  &__icon-btn {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--text-soft);
+    font-size: var(--font-md);
+    text-decoration: none;
+    cursor: pointer;
+    @include focus-ring;
+  }
+
+  &__mark {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-left: var(--space-3);
+    margin-right: var(--space-1);
+    border-radius: var(--radius-sm);
+    background: var(--text);
+    color: var(--bg);
+    font-size: var(--font-xs);
+    font-weight: var(--font-bold);
+    text-decoration: none;
+    @include focus-ring;
+  }
+
+  &__avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    margin: 0 var(--space-1);
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--surface-4);
+    color: var(--accent-soft);
+    font: inherit;
+    font-size: var(--font-xs);
+    font-weight: var(--font-bold);
+    cursor: pointer;
+    @include focus-ring;
+  }
+}

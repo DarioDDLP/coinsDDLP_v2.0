@@ -7,6 +7,7 @@ export interface FilterPillOption {
   label: string;
 }
 
+/** Control segmentado: un grupo de opciones excluyentes. */
 @Component({
   selector: 'app-filter-pills',
   templateUrl: './filter-pills.component.html',
@@ -15,6 +16,7 @@ export interface FilterPillOption {
 export class FilterPillsComponent {
   readonly options = input.required<FilterPillOption[]>();
   readonly value = input<string>('');
+  readonly ariaLabel = input<string>('');
 
   readonly valueChange = output<string>();
 }

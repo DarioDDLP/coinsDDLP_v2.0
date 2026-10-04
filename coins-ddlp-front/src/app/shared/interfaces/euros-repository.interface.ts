@@ -1,7 +1,8 @@
 import { Observable } from 'rxjs';
-import { EuroCoin, NewEuroCoin } from './euro-coin.interface';
+import { EuroCoin, EuroCoinSummary, NewEuroCoin } from './euro-coin.interface';
 
 export interface IEurosRepository {
+  getCatalogSummary(): Observable<EuroCoinSummary[]>;
   getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]>;
   getAllByCountry(country: string): Observable<EuroCoin[]>;
   getById(id: string): Observable<EuroCoin | null>;

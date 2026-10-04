@@ -1,8 +1,10 @@
-<div class="filter-pills">
+<div class="filter-pills" role="group" [attr.aria-label]="ariaLabel() || null">
   @for (opt of options(); track opt.value) {
     <button
+      type="button"
       class="filter-pills__btn"
       [class.filter-pills__btn--active]="value() === opt.value"
+      [attr.aria-pressed]="value() === opt.value"
       (click)="valueChange.emit(opt.value)"
     >
       {{ opt.label }}

@@ -5,12 +5,13 @@ import {
   ErrorHandler,
   inject,
   input,
-  output,
+  model,
   signal,
+  untracked,
 } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
-import { MessageService, SharedModule } from 'primeng/api';
+import { MessageService } from 'primeng/api';
 import { PesetasService } from '../../services/pesetas.service';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
@@ -23,8 +24,7 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
 @Component({
   selector: 'app-peseta-edit-dialog',
   imports: [
-    Dialog,
-    SharedModule,
+    DialogComponent,
     ButtonComponent,
     TextInputComponent,
     SelectComponent,
@@ -38,11 +38,8 @@ export class PesetaEditDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  visible = input<boolean>(false);
-  peseta = input<Peseta | null>(null);
-
-  saved = output<void>();
-  closed = output<void>();
+  readonly visible = model(false);
+  readonly peseta = input<Peseta | null>(null);
 
   readonly literals = LITERALS.pesetas;
   readonly sharedLiterals = LITERALS.shared;
@@ -58,7 +55,6 @@ export class PesetaEditDialogComponent {
   readonly conservation = signal('ND');
   readonly observations = signal('');
   readonly loading = signal(false);
-  readonly errorMessage = signal('');
 
   readonly isConservationLocked = computed(() => this.uds() === 0);
 
@@ -69,14 +65,18 @@ export class PesetaEditDialogComponent {
   );
 
   constructor() {
+    // Al abrir se cargan los valores guardados de la peseta
     effect(() => {
+      if (!this.visible()) return;
       const p = this.peseta();
-      this.uds.set(p?.uds ?? 0);
-      this.conservation.set(p?.conservation ?? 'ND');
-      this.observations.set(p?.observations ?? '');
-      this.errorMessage.set('');
+      untracked(() => {
+        this.uds.set(p?.uds ?? 0);
+        this.conservation.set(p?.conservation ?? 'ND');
+        this.observations.set(p?.observations ?? '');
+      });
     });
 
+    // Sin unidades el estado es ND; con unidades hay que elegir uno real
     effect(() => {
       if (this.isConservationLocked()) {
         this.conservation.set('ND');
@@ -90,7 +90,6 @@ export class PesetaEditDialogComponent {
     const peseta = this.peseta();
     if (!peseta) return;
 
-    this.errorMessage.set('');
     this.loading.set(true);
     try {
       await this.pesetasService.update(peseta.id, {
@@ -98,24 +97,12 @@ export class PesetaEditDialogComponent {
         conservation: this.conservation() || 'ND',
         observations: this.observations() || null,
       });
-      this.messageService.add({ ...TOAST_MESSAGES.pesetas.saveSuccess, life: 3000 });
-      this.saved.emit();
-      this.close();
+      this.messageService.add(TOAST_MESSAGES.pesetas.saveSuccess);
+      this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.saveError);
     } finally {
       this.loading.set(false);
     }
-  }
-
-  onHide(): void {
-    this.close();
-  }
-
-  private close(): void {
-    this.errorMessage.set('');
-    this.loading.set(false);
-    this.closed.emit();
   }
 }

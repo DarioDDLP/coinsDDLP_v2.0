@@ -1,0 +1,29 @@
+<button
+  type="button"
+  class="user"
+  [class.user--compact]="compact()"
+  [attr.aria-label]="literals.account"
+  aria-haspopup="menu"
+  (click)="menu.toggle($event)"
+>
+  <span class="user__avatar" aria-hidden="true">{{ initials() }}</span>
+  @if (!compact()) {
+    <span class="user__text">
+      <span class="user__name">{{ displayName() }}</span>
+      <span class="user__role">{{
+        authService.isAdmin() ? literals.adminRole : literals.userRole
+      }}</span>
+    </span>
+    <i class="pi pi-ellipsis-h user__more" aria-hidden="true"></i>
+  }
+</button>
+
+<p-popover #menu>
+  <div class="menu">
+    <span class="menu__email">{{ authService.currentUser()?.email }}</span>
+    <button type="button" class="menu__item" (click)="menu.hide(); layout.openLogout()">
+      <i class="pi pi-sign-out" aria-hidden="true"></i>
+      {{ authLiterals.logoutButton }}
+    </button>
+  </div>
+</p-popover>

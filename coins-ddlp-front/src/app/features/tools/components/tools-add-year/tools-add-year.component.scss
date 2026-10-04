@@ -1,35 +1,36 @@
-.add-year {
-  padding: 24px 48px;
-  display: flex;
-  justify-content: center;
+@use 'mixins' as *;
+@use 'breakpoints' as *;
 
+.add-year {
   &__card {
-    background: var(--cream);
-    border-radius: 10px;
-    padding: 32px;
-    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
-    width: 100%;
     max-width: 480px;
+    padding: var(--space-7);
+    @include card;
+
+    @include mobile {
+      max-width: none;
+      padding: var(--space-5) var(--space-4);
+    }
   }
 
   &__form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
-    margin-bottom: 16px;
+    gap: var(--space-4);
   }
 
   &__error {
-    font-size: 14px;
-    color: var(--danger);
-    margin: 0 0 12px;
-    border-left: 3px solid var(--danger);
-    padding-left: 8px;
+    margin: var(--space-4) 0 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--state-danger-bg);
+    color: var(--state-danger-text);
+    font-size: var(--font-sm);
   }
 
   &__actions {
     display: flex;
     justify-content: flex-end;
-    margin-top: 8px;
+    margin-top: var(--space-6);
   }
 }

@@ -1,5 +1,14 @@
-import { Routes } from '@angular/router';
+import { inject } from '@angular/core';
+import { Router, Routes } from '@angular/router';
 
+/**
+ * /euros                        → cuadrícula de países
+ * /euros/:country?year=2005     → vista de país (año opcional)
+ * /euros/:country/moneda/:id    → vista de país con el detalle abierto en panel lateral
+ *
+ * Las URLs del diseño anterior (/:country/all, /:country/:year, /:country/:year/:id)
+ * redirigen a las nuevas para no romper enlaces guardados.
+ */
 export const eurosRoutes: Routes = [
   {
     path: '',
@@ -11,25 +20,40 @@ export const eurosRoutes: Routes = [
   {
     path: ':country',
     loadComponent: () =>
-      import('./components/euros-years/euros-years.component').then((m) => m.EurosYearsComponent),
+      import('./components/euros-country/euros-country.component').then(
+        (m) => m.EurosCountryComponent,
+      ),
+    children: [
+      { path: '', children: [] },
+      {
+        path: 'moneda/:id',
+        loadComponent: () =>
+          import('./components/coin-detail-drawer/coin-detail-drawer.component').then(
+            (m) => m.CoinDetailDrawerComponent,
+          ),
+      },
+    ],
   },
+  // --- Redirecciones de las rutas antiguas ---
   {
     path: ':country/all',
-    loadComponent: () =>
-      import('./components/euros-all-coins/euros-all-coins.component').then(
-        (m) => m.EurosAllCoinsComponent,
-      ),
+    redirectTo: ({ params }) => inject(Router).createUrlTree(['/euros', params['country']]),
   },
   {
     path: ':country/:year',
-    loadComponent: () =>
-      import('./components/euros-year-coins/euros-year-coins.component').then(
-        (m) => m.EurosYearCoinsComponent,
-      ),
+    redirectTo: ({ params }) =>
+      inject(Router).createUrlTree(['/euros', params['country']], {
+        queryParams: { year: params['year'] },
+      }),
   },
   {
     path: ':country/:year/:id',
-    loadComponent: () =>
-      import('./components/coin-detail/coin-detail.component').then((m) => m.CoinDetailComponent),
+    redirectTo: ({ params, queryParams }) =>
+      inject(Router).createUrlTree(['/euros', params['country'], 'moneda', params['id']], {
+        queryParams: {
+          ...queryParams,
+          ...(params['year'] !== 'all' ? { year: params['year'] } : {}),
+        },
+      }),
   },
 ];

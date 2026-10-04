@@ -1,42 +1,65 @@
-.buttons-header {
-  margin-bottom: 40px;
-  padding: 0 5%;
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.section-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    // En móvil el título ya está en la barra superior
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__overline {
+    @include overline;
+    color: var(--accent);
+  }
 
   &__title {
-    font-size: 25px;
-    font-weight: 700;
-    color: var(--cream);
-    margin: 0 0 28px;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    margin: 0;
+    font-size: var(--font-title);
+    font-weight: var(--font-bold);
   }
 
-  &__nav {
-    display: flex;
-    gap: 8px;
+  &__tabs {
+    @include scroll-row;
+    gap: var(--space-1);
+    border-bottom: 1px solid var(--border-subtle);
   }
 
-  &__nav-item {
-    display: flex;
+  &__tab {
+    flex: none;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 18px;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-size: 14px;
-    font-weight: 500;
+    gap: var(--space-2);
+    height: 44px;
+    padding: 0 var(--space-4);
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    color: var(--text-muted);
+    font-size: var(--font-body);
+    font-weight: var(--font-medium);
     text-decoration: none;
-    backdrop-filter: blur(4px);
-    transition: background 0.2s;
+    transition:
+      color var(--transition-fast),
+      border-color var(--transition-fast);
+    @include focus-ring;
 
     &:hover {
-      background: rgba(255, 255, 255, 0.25);
+      color: var(--text);
     }
 
     &--active {
-      background: rgba(255, 255, 255, 0.9);
-      color: var(--deep-navy);
-      font-weight: 600;
+      border-bottom-color: var(--accent);
+      color: var(--accent-soft);
     }
   }
 }

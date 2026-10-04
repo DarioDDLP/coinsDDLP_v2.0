@@ -8,13 +8,14 @@ import {
   SelectOption,
 } from '../../../../shared/components/select/select.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { STANDARD_FACE_VALUES } from '../../tools.config';
 
 @Component({
   selector: 'app-tools-add-year',
-  imports: [TextInputComponent, SelectComponent, ButtonComponent],
+  imports: [TextInputComponent, SelectComponent, ButtonComponent, SkeletonComponent],
   templateUrl: './tools-add-year.component.html',
   styleUrl: './tools-add-year.component.scss',
 })
@@ -26,6 +27,7 @@ export class ToolsAddYearComponent {
   readonly literals = LITERALS.herramientas;
 
   private readonly allCoins = signal<{ country: string; year: number }[]>([]);
+  readonly isReady = signal(false);
 
   readonly country = signal('');
   readonly sourceYear = signal(0);
@@ -69,8 +71,14 @@ export class ToolsAddYearComponent {
 
   private loadCoins(): void {
     this.eurosService.getAll().subscribe({
-      next: (coins) => this.allCoins.set(coins),
-      error: (e) => this.errorHandler.handleError(e),
+      next: (coins) => {
+        this.allCoins.set(coins);
+        this.isReady.set(true);
+      },
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.isReady.set(true);
+      },
     });
   }
 
@@ -104,16 +112,10 @@ export class ToolsAddYearComponent {
         ),
       );
 
-      this.messageService.add({
-        ...TOAST_MESSAGES.herramientas.tiradaSuccess,
-        detail: `${toCreate.length} ${this.literals.tiradaSuccess}`,
-        life: 4000,
-      });
+      this.messageService.add(TOAST_MESSAGES.herramientas.tiradaSuccess(toCreate.length));
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.messageService.add({ ...TOAST_MESSAGES.herramientas.tiradaError, life: 3000 });
-      this.errorMessage.set(this.literals.tiradaError);
     } finally {
       this.loading.set(false);
     }

@@ -1,74 +1,77 @@
 <div class="add-euro">
   <div class="add-euro__card">
-    <div class="add-euro__grid">
-      <div class="add-euro__col">
-        <app-select
-          [label]="literals.labelCountry"
-          [value]="country()"
-          [options]="countryOptions()"
-          [placeholder]="literals.placeholderCountry"
-          (valueChange)="country.set($event)"
-        />
-        <app-select
-          [label]="literals.labelFaceValue"
-          [value]="faceValue()"
-          [options]="faceValueOptions"
-          [placeholder]="literals.placeholderFaceValue"
-          (valueChange)="faceValue.set($event)"
-        />
-        @if (isVariantApplicable()) {
+    @if (!isReady()) {
+      <div class="add-euro__grid">
+        <app-skeleton [count]="5" height="4.25rem" />
+        <app-skeleton [count]="4" height="4.25rem" [announce]="false" />
+      </div>
+    } @else {
+      <div class="add-euro__grid">
+        <div class="add-euro__col">
           <app-select
-            [label]="literals.labelVariant"
-            [value]="variant()"
-            [options]="variantOptions"
-            [placeholder]="literals.placeholderVariant"
-            (valueChange)="variant.set($event)"
+            [label]="literals.labelCountry"
+            [value]="country()"
+            [options]="countryOptions()"
+            [placeholder]="literals.placeholderCountry"
+            (valueChange)="country.set($event)"
           />
-        }
-        <app-select
-          [label]="literals.labelMint"
-          [value]="mint()"
-          [options]="mintOptions"
-          [placeholder]="literals.placeholderMint"
-          [disabled]="!isMintRequired()"
-          (valueChange)="mint.set($event)"
-        />
-        <app-toggle
-          [label]="literals.labelCommemorative"
-          [value]="commemorative()"
-          (valueChange)="commemorative.set($event)"
-        />
-      </div>
+          <app-select
+            [label]="literals.labelFaceValue"
+            [value]="faceValue()"
+            [options]="faceValueOptions"
+            [placeholder]="literals.placeholderFaceValue"
+            (valueChange)="faceValue.set($event)"
+          />
+          @if (isVariantApplicable()) {
+            <app-select
+              [label]="literals.labelVariant"
+              [value]="variant()"
+              [options]="variantOptions"
+              [placeholder]="literals.placeholderVariant"
+              (valueChange)="variant.set($event)"
+            />
+          }
+          <app-select
+            [label]="literals.labelMint"
+            [value]="mint()"
+            [options]="mintOptions"
+            [placeholder]="literals.placeholderMint"
+            [disabled]="!isMintRequired()"
+            (valueChange)="mint.set($event)"
+          />
+          <app-toggle
+            [label]="literals.labelCommemorative"
+            [value]="commemorative()"
+            (valueChange)="commemorative.set($event)"
+          />
+        </div>
 
-      <div class="add-euro__col">
-        <app-text-input
-          [label]="literals.labelYear"
-          [value]="year() > 0 ? year().toString() : ''"
-          type="number"
-          [min]="1900"
-          [max]="2100"
-          (valueChange)="year.set(+$event)"
-        />
-        <app-text-input
-          [label]="literals.labelDescription"
-          [value]="description()"
-          (valueChange)="description.set($event)"
-        />
-        <app-text-input
-          [label]="literals.labelIdNum"
-          [value]="idNum()"
-          (valueChange)="idNum.set($event)"
-        />
-        <app-toggle
-          [label]="literals.labelCirculation"
-          [value]="circulation()"
-          (valueChange)="circulation.set($event)"
-        />
+        <div class="add-euro__col">
+          <app-text-input
+            [label]="literals.labelYear"
+            [value]="year() > 0 ? year().toString() : ''"
+            type="number"
+            [min]="1900"
+            [max]="2100"
+            (valueChange)="year.set(+$event)"
+          />
+          <app-text-input
+            [label]="literals.labelDescription"
+            [value]="description()"
+            (valueChange)="description.set($event)"
+          />
+          <app-text-input
+            [label]="literals.labelIdNum"
+            [value]="idNum()"
+            (valueChange)="idNum.set($event)"
+          />
+          <app-toggle
+            [label]="literals.labelCirculation"
+            [value]="circulation()"
+            (valueChange)="circulation.set($event)"
+          />
+        </div>
       </div>
-    </div>
-
-    @if (errorMessage()) {
-      <p class="add-euro__error">{{ errorMessage() }}</p>
     }
 
     <div class="add-euro__actions">

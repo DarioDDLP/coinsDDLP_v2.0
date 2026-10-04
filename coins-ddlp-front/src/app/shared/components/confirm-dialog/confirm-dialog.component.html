@@ -1,23 +1,23 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="closed.emit()"
-  [modal]="true"
+<app-dialog
+  [(visible)]="visible"
   [header]="header()"
-  [style]="{ width: '420px' }"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
+  [closable]="!loading()"
+  [dismissable]="!loading()"
 >
-  <div class="confirm-dialog">
-    <p class="confirm-dialog__message">{{ message() }}</p>
-    <div class="confirm-dialog__actions">
-      <app-button [label]="cancelLabel" variant="primary" (clicked)="closed.emit()" />
-      <app-button
-        [label]="confirmLabel()"
-        variant="danger"
-        [loading]="loading()"
-        (clicked)="confirmed.emit()"
-      />
-    </div>
-  </div>
-</p-dialog>
+  <p class="confirm-dialog__message">{{ message() }}</p>
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="cancelLabel"
+      variant="secondary"
+      [disabled]="loading()"
+      (clicked)="visible.set(false)"
+    />
+    <app-button
+      [label]="confirmLabel()"
+      variant="danger"
+      [loading]="loading()"
+      (clicked)="confirmed.emit()"
+    />
+  </ng-container>
+</app-dialog>

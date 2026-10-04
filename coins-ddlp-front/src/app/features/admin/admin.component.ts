@@ -16,6 +16,7 @@ export class AdminComponent {
   private router = inject(Router);
 
   readonly title = LITERALS.admin.title;
+  readonly overline = LITERALS.nav.groupManagement;
   readonly navItems = ADMIN_NAV_ITEMS;
 
   constructor() {

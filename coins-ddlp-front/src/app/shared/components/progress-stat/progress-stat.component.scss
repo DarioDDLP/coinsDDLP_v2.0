@@ -1,0 +1,77 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-stat {
+  &__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    font-size: var(--font-sm);
+  }
+
+  &__count {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    min-width: 0;
+    color: var(--text-muted);
+  }
+
+  &__label {
+    margin-right: var(--space-2);
+  }
+
+  &__owned {
+    color: var(--text-soft);
+  }
+
+  &__percent {
+    color: var(--accent);
+    font-weight: var(--font-semibold);
+  }
+
+  &__bar {
+    height: 6px;
+    border-radius: var(--radius-full);
+    background: var(--surface-4);
+    overflow: hidden;
+
+    span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent-deep), var(--accent));
+      transition: width 400ms ease;
+    }
+  }
+}
+
+:host(.size-sm) {
+  gap: var(--space-1);
+
+  .progress-stat__row {
+    font-size: var(--font-xs);
+  }
+
+  .progress-stat__bar {
+    height: 4px;
+  }
+}
+
+:host(.size-lg) {
+  .progress-stat__owned {
+    font-size: var(--font-lg);
+    font-weight: var(--font-semibold);
+    color: var(--text);
+  }
+
+  .progress-stat__bar {
+    height: 8px;
+  }
+}

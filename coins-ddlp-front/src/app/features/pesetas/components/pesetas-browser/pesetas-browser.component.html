@@ -1,0 +1,150 @@
+@if (hasError()) {
+  <app-page-layout [title]="literals.title">
+    <app-error-panel (retry)="loadPesetas()" />
+  </app-page-layout>
+} @else {
+  <app-page-layout
+    [title]="literals.title"
+    [overline]="literals.overline"
+    [subtitle]="subtitle()"
+    [searchPlaceholder]="literals.search"
+    [searchValue]="searchQuery()"
+    (searchChange)="onSearch($event)"
+  >
+    <div page-aside class="total-progress">
+      @if (isReady()) {
+        <app-progress-stat
+          [label]="literals.progressTotal"
+          [owned]="progress().owned"
+          [total]="progress().total"
+          size="lg"
+        />
+      } @else {
+        <app-skeleton height="3.25rem" [announce]="false" />
+      }
+    </div>
+
+    <app-filter-pills
+      page-filters
+      [options]="ownershipOptions"
+      [value]="ownershipFilter()"
+      [ariaLabel]="sharedLiterals.ownership"
+      (valueChange)="ownershipFilter.set($event)"
+    />
+
+    <nav #chipsNav class="value-chips" [attr.aria-label]="literals.denominationsLabel">
+      @if (isReady()) {
+        @for (chip of chips(); track chip.label) {
+          <button
+            type="button"
+            class="value-chip"
+            [class.value-chip--active]="selectedValue() === chip.value"
+            [attr.aria-pressed]="selectedValue() === chip.value"
+            (click)="selectValue(chip.value)"
+          >
+            <span class="value-chip__label">{{ chip.label }}</span>
+            <small class="value-chip__count">{{ chip.owned }}/{{ chip.total }}</small>
+          </button>
+        }
+      } @else {
+        <app-skeleton layout="inline" [count]="8" width="6rem" height="52px" [announce]="false" />
+      }
+    </nav>
+
+    @if (!isReady()) {
+      <app-skeleton [count]="8" />
+    } @else if (rows().length > 0) {
+      <p-table
+        class="table-stack"
+        [value]="rows()"
+        dataKey="peseta.id"
+        [rowGroupMode]="selectedValue() === null ? 'subheader' : undefined"
+        groupRowsBy="groupKey"
+        [stripedRows]="selectedValue() !== null"
+        [rowHover]="true"
+      >
+        <ng-template #header>
+          <tr>
+            <th class="col-nowrap">{{ literals.colYear }}</th>
+            <th class="col-grow">{{ literals.colTitle }}</th>
+            <th class="col-center">{{ literals.colConservation }}</th>
+            <th class="col-center">{{ literals.colUnits }}</th>
+            @if (authService.isAdmin()) {
+              <th class="col-actions">
+                <span class="sr-only">{{ sharedLiterals.actions }}</span>
+              </th>
+            }
+          </tr>
+        </ng-template>
+
+        <ng-template #groupheader let-row>
+          <tr class="group-row">
+            <td [attr.colspan]="5">
+              <span class="group-row__title">{{ row.denomination }}</span>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-row>
+          <tr
+            class="coin-row"
+            tabindex="0"
+            [attr.aria-label]="row.peseta.label + ' · ' + row.peseta.peseta_type.title"
+            (click)="openPeseta(row.peseta)"
+            (keydown.enter)="openPeseta(row.peseta)"
+          >
+            <td class="col-nowrap coin-row__year" data-cell="primary">{{ row.peseta.label }}</td>
+            <td class="col-grow coin-row__title" data-cell="secondary">
+              {{ row.peseta.peseta_type.title }}
+            </td>
+            <td class="col-center" [attr.data-label]="literals.colConservation">
+              @if (row.conservationBadge) {
+                <app-badge
+                  [label]="row.conservationBadge.label"
+                  [severity]="row.conservationBadge.severity"
+                  [tooltip]="row.conservationBadge.tooltip"
+                />
+              } @else {
+                <span class="muted">—</span>
+              }
+            </td>
+            <td class="col-center" [attr.data-label]="literals.colUnits">
+              <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
+            </td>
+            @if (authService.isAdmin()) {
+              <td
+                class="col-actions"
+                (click)="$event.stopPropagation()"
+                (keydown.enter)="$event.stopPropagation()"
+              >
+                <app-button
+                  icon="pi pi-pencil"
+                  variant="ghost"
+                  [tooltip]="literals.editCoin"
+                  (clicked)="onEdit(row.peseta)"
+                />
+              </td>
+            }
+          </tr>
+        </ng-template>
+      </p-table>
+    } @else {
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
+    }
+  </app-page-layout>
+}
+
+<router-outlet />
+
+<!-- El diálogo de edición solo se monta para quien puede usarlo -->
+@if (authService.isAdmin()) {
+  <app-peseta-edit-dialog [(visible)]="dialogVisible" [peseta]="selectedPeseta()" />
+}

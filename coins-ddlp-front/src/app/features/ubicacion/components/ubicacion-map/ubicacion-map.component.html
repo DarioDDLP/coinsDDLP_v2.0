@@ -1,87 +1,104 @@
-@if (!isReady()) {
-  <app-loading-spinner />
-} @else if (hasError()) {
-  <app-empty-panel
-    icon="pi-exclamation-circle"
-    [title]="sharedLiterals.errorLoad"
-    [message]="sharedLiterals.errorLoadMessage"
-    [retryLabel]="sharedLiterals.retry"
-    (retry)="ngOnInit()"
-  />
+@if (hasError()) {
+  <app-page-layout [title]="literals.title">
+    <app-error-panel (retry)="loadLocations()" />
+  </app-page-layout>
 } @else {
-  <app-collection-layout
+  <app-page-layout
     [title]="literals.title"
-    maxWidth="900px"
+    [overline]="literals.overline"
+    [subtitle]="subtitle()"
     [searchPlaceholder]="literals.searchPlaceholder"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
     @if (canEdit()) {
-      <span layout-actions>
-        <app-button [label]="literals.addCountry" icon="pi pi-plus" (clicked)="onAddCountry()" />
-      </span>
+      <app-button
+        page-actions
+        [label]="literals.addCountry"
+        icon="pi pi-plus"
+        (clicked)="onAddCountry()"
+      />
     }
 
-    @if (albumGroups().length > 0) {
-      <div class="album-list">
+    @if (!isReady()) {
+      <div class="album-grid">
+        <app-skeleton layout="inline" [count]="3" height="16rem" radius="lg" />
+      </div>
+    } @else if (albumGroups().length > 0) {
+      <div class="album-grid">
         @for (group of albumGroups(); track group.album) {
-          <div class="album-section">
-            <h3 class="album-section__title">{{ literals.album }} {{ group.album }}</h3>
-            <table class="album-table">
+          <section class="album-card">
+            <header class="album-card__header">
+              <span class="album-card__icon" aria-hidden="true"><i class="pi pi-book"></i></span>
+              <h2 class="album-card__title">{{ literals.album }} {{ group.album }}</h2>
+              <span class="album-card__count">
+                {{ group.locations.length }}
+                {{
+                  group.locations.length === 1 ? literals.countrySingular : literals.countriesCount
+                }}
+              </span>
+            </header>
+
+            <ul class="album-card__list">
               @for (loc of group.locations; track loc.id) {
-                <tr class="album-table__row">
-                  <td class="album-table__flag">
-                    <app-country-flag [country]="loc.country" [size]="24" />
-                  </td>
-                  <td class="album-table__country">{{ loc.country }}</td>
-                  <td class="album-table__years">{{ yearRange(loc) }}</td>
-                  <td class="album-table__badge">
-                    @if (loc.isClosed) {
-                      <app-badge [label]="literals.closed" severity="secondary" />
-                    }
-                  </td>
-                  @if (canEdit()) {
-                    <td class="album-table__actions">
-                      <div class="row-actions">
-                        <app-button
-                          icon="pi pi-pencil"
-                          variant="ghost"
-                          [tooltip]="literals.editEntry"
-                          (clicked)="onEdit(loc)"
-                        />
-                        <app-button
-                          icon="pi pi-trash"
-                          variant="danger"
-                          [tooltip]="literals.deleteEntry"
-                          (clicked)="onDelete(loc)"
-                        />
-                      </div>
-                    </td>
+                <li class="location">
+                  <app-country-flag [country]="loc.country" [size]="28" [decorative]="true" />
+                  <div class="location__text">
+                    <span class="location__country">{{ loc.country }}</span>
+                    <span class="location__years">{{ yearRange(loc) }}</span>
+                  </div>
+                  @if (loc.isClosed) {
+                    <app-badge [label]="literals.closed" severity="secondary" />
                   }
-                </tr>
+                  @if (canEdit()) {
+                    <div class="location__actions">
+                      <app-button
+                        icon="pi pi-pencil"
+                        variant="ghost"
+                        [tooltip]="literals.editEntry"
+                        (clicked)="onEdit(loc)"
+                      />
+                      <app-button
+                        icon="pi pi-trash"
+                        variant="danger"
+                        [tooltip]="literals.deleteEntry"
+                        (clicked)="onDelete(loc)"
+                      />
+                    </div>
+                  }
+                </li>
               }
-            </table>
-          </div>
+            </ul>
+          </section>
         }
       </div>
     } @else {
-      <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
     }
-  </app-collection-layout>
+  </app-page-layout>
 }
 
-<app-ubicacion-edit-dialog
-  [visible]="showEditDialog()"
-  [location]="selectedLocation()"
-  (saved)="onDialogSaved()"
-  (closed)="onDialogClosed()"
-/>
+<!-- Solo admin puede editar: así el resto no monta el diálogo ni descarga la lista de países -->
+@if (canEdit()) {
+  <app-ubicacion-edit-dialog
+    [(visible)]="showEditDialog"
+    [location]="selectedLocation()"
+    (saved)="loadLocations(false)"
+  />
 
-<app-confirm-dialog
-  [visible]="showConfirmDelete()"
-  [header]="literals.deleteEntry"
-  [message]="literals.deleteConfirm"
-  [loading]="isDeleting()"
-  (confirmed)="onConfirmDelete()"
-  (closed)="onCloseConfirmDelete()"
-/>
+  <app-confirm-dialog
+    [(visible)]="showConfirmDelete"
+    [header]="literals.deleteEntry"
+    [message]="literals.deleteConfirm"
+    [loading]="isDeleting()"
+    (confirmed)="onConfirmDelete()"
+  />
+}
