@@ -78,7 +78,7 @@
               <span class="year-section__count"> {{ group.owned }} / {{ group.rows.length }} </span>
             </header>
 
-            <p-table class="table-stack" [value]="group.rows" dataKey="coin.id">
+            <p-table class="table-stack" [value]="group.rows" dataKey="coin.id" [rowHover]="true">
               <ng-template #header>
                 <tr>
                   <th class="col-country">{{ literals.colCountry }}</th>

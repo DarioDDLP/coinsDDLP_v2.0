@@ -80,6 +80,7 @@
         [rowGroupMode]="selectedYear() === null ? 'subheader' : undefined"
         groupRowsBy="year"
         [stripedRows]="selectedYear() !== null"
+        [rowHover]="true"
       >
         <ng-template #header>
           <tr>

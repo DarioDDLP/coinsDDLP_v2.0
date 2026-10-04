@@ -117,7 +117,7 @@ export const AppPreset = definePreset(Aura, {
       },
       row: {
         background: 'light-dark({surface.0}, {surface.900})',
-        hoverBackground: 'light-dark({surface.100}, #16203a)',
+        hoverBackground: 'light-dark({surface.100}, {surface.800})',
         stripedBackground: 'light-dark({surface.50}, #141d30)',
       },
       bodyCell: {
