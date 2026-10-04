@@ -1,0 +1,18 @@
+# Abre o actualiza el PR de release a partir de los Conventional Commits de main.
+# Al fusionar ese PR crea la etiqueta vX.Y.Z y la release de GitHub.
+# Configuración: release-please-config.json y .release-please-manifest.json
+name: release-please
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v5
