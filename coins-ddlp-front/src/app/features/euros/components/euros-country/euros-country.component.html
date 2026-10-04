@@ -140,6 +140,13 @@
               @if (row.coin.variant) {
                 <app-badge [label]="row.coin.variant" severity="secondary" />
               }
+              @if (!row.coin.circulation) {
+                <app-badge
+                  [label]="literals.nonCirculatingShort"
+                  severity="neutral"
+                  [tooltip]="literals.nonCirculating"
+                />
+              }
             </td>
             <td class="col-grow coin-row__desc" data-cell="secondary">
               {{ row.coin.description }}
@@ -218,7 +225,7 @@
 
       @if (hasNonCirculating()) {
         <p class="legend">
-          <span class="legend__swatch" aria-hidden="true"></span>
+          <app-badge [label]="literals.nonCirculatingShort" severity="neutral" />
           {{ literals.nonCirculatingLegend }}
         </p>
       }

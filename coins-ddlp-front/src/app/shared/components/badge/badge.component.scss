@@ -34,6 +34,12 @@
     background: var(--state-accent-bg);
     color: var(--state-accent-text);
   }
+  // Contorno sin relleno: marca discreta (p. ej. "NC" en filas no circulantes)
+  &--neutral {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-faint);
+  }
 
   &--md {
     height: 28px;

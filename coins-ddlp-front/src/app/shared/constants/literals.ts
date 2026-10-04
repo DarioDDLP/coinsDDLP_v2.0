@@ -100,7 +100,8 @@ export const LITERALS = {
     idNumLabel: 'ID Numista',
     descriptionLabel: 'Descripción',
     editingFor: 'Colección de',
-    nonCirculatingLegend: 'Filas sombreadas: monedas no circulantes',
+    nonCirculatingShort: 'NC',
+    nonCirculatingLegend: 'Monedas no circulantes (atenuadas)',
   },
 
   nav: {

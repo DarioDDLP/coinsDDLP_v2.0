@@ -117,8 +117,25 @@
     color: var(--text-soft);
   }
 
-  .coin-row--non-circulating > td {
-    background: rgba(var(--accent-rgb), 0.06) !important;
+  // No circulantes: atenuadas (rara vez se consiguen); recuperan intensidad con hover/foco
+  .coin-row--non-circulating {
+    .coin-row__value,
+    .coin-row__desc,
+    > td {
+      color: var(--text-faint);
+    }
+
+    > td:not(.coin-row__value) app-badge {
+      opacity: 0.6;
+      transition: opacity var(--transition-fast);
+    }
+
+    &:hover,
+    &:focus-visible {
+      > td:not(.coin-row__value) app-badge {
+        opacity: 1;
+      }
+    }
   }
 
   .year-group > td {
@@ -157,12 +174,4 @@
   margin: var(--space-3) 0 0;
   font-size: var(--font-sm);
   color: var(--text-muted);
-
-  &__swatch {
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: rgba(var(--accent-rgb), 0.12);
-  }
 }
