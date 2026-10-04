@@ -1,10 +1,4 @@
-import {
-  ApplicationConfig,
-  ErrorHandler,
-  InjectionToken,
-  LOCALE_ID,
-  provideBrowserGlobalErrorListeners,
-} from '@angular/core';
+import { ApplicationConfig, ErrorHandler, InjectionToken, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
@@ -24,7 +18,8 @@ export const SUPABASE_CLIENT = new InjectionToken<SupabaseClient>('supabase-clie
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideBrowserGlobalErrorListeners(),
+    // Sin provideBrowserGlobalErrorListeners(): reenviaría al toast los errores de scripts
+    // ajenos (extensiones, carteras como la de Brave con window.ethereum)
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
     MessageService,
     { provide: LOCALE_ID, useValue: 'es' },
