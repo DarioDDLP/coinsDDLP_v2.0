@@ -20,6 +20,8 @@ import { PageLayoutComponent } from '../../../../shared/components/page-layout/p
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
@@ -96,6 +98,7 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
     BadgeComponent,
     ButtonComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     CountryFlagComponent,
     ProgressStatComponent,
     FilterPillsComponent,
@@ -123,6 +126,7 @@ export class ConmemorativasListComponent {
   private loadSub?: Subscription;
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly ownershipFilter = signal('all');
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 

@@ -1,12 +1,6 @@
 @if (hasError()) {
   <app-page-layout [title]="literals.title">
-    <app-empty-panel
-      icon="pi-exclamation-circle"
-      [title]="sharedLiterals.errorLoad"
-      [message]="sharedLiterals.errorLoadMessage"
-      [retryLabel]="sharedLiterals.retry"
-      (retry)="loadPesetas()"
-    />
+    <app-error-panel (retry)="loadPesetas()" />
   </app-page-layout>
 } @else {
   <app-page-layout
@@ -135,7 +129,15 @@
         </ng-template>
       </p-table>
     } @else {
-      <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
     }
   </app-page-layout>
 }

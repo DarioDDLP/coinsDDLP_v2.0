@@ -19,6 +19,8 @@ import { PageLayoutComponent } from '../../../../shared/components/page-layout/p
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -62,6 +64,7 @@ interface YearChip {
     BadgeComponent,
     ButtonComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     ProgressStatComponent,
     FilterPillsComponent,
     ConfirmDialogComponent,
@@ -113,6 +116,7 @@ export class EurosCountryComponent {
   readonly canEdit = injectCanEditCoins();
   private readonly yearChipsNav = viewChild<ElementRef<HTMLElement>>('yearChipsNav');
   readonly isBoth = computed(() => this.ownerService.current() === 'both');
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
 
   constructor() {
     // Al cambiar de país: restaurar su búsqueda guardada
@@ -156,7 +160,8 @@ export class EurosCountryComponent {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantienen los datos: basta con el toast
+        if (showSkeleton) this.hasError.set(true);
         this.isReady.set(true);
       },
     });

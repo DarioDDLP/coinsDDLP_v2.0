@@ -17,7 +17,7 @@
   }
 
   @if (hasError()) {
-    <p class="detail-notice">{{ sharedLiterals.errorLoad }}</p>
+    <app-error-panel [compact]="true" (retry)="retry()" />
   } @else if (peseta(); as p) {
     <div class="detail-badges">
       @if (conservationBadge(); as cb) {

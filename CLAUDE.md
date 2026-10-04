@@ -40,6 +40,10 @@ Gestión de una colección personal de monedas: consulta, búsqueda y filtros p�
 - Cada carga guarda su `Subscription` y cancela la anterior (`this.loadSub?.unsubscribe()`) para que una respuesta antigua no pise la nueva
 - Acciones (guardar, borrar): `app-button [loading]`
 
+**Vacío y error**
+- Fallo de carga: `<app-error-panel (retry)="…" />` (vistas dentro de `app-page-layout`; en las fichas `[compact]="true"`). Mensaje común con Reintentar y `role="alert"`; el motivo concreto lo da el toast. Si falla una recarga sin skeleton (tras editar) se mantienen los datos y no se muestra el panel
+- Lista vacía: `app-empty-panel` alimentado por `getEmptyState(search, ownership)` (`shared/helpers/empty-state.helper.ts`): búsqueda → "Sin resultados para «X»" + Borrar búsqueda (`onSearch('')`) › Faltantes → "¡No te falta ninguna!" (`tone="success"`) › Obtenidas → "Aún no tienes ninguna" › "No hay nada que mostrar". Inputs del panel: `icon`, `title`, `message`, `tone` neutral/success/error, `compact`, `actionLabel`/`actionIcon` + output `action`
+
 ## Estilos y diseño
 
 Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/artifact/Vxbqtx1mB61suyw27FfnwP
@@ -64,7 +68,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 - `core/` — singletons. `guards/` (`adminGuard` para `/admin` y `/herramientas`; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth`, `numista` (Edge Function `numista-proxy`, expone la cuota restante), `owner` (colección activa), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
 - `layout/` — shell: `sidebar`, `user-menu`, `topbar`, `bottom-nav`, `more-sheet`, `login-dialog`, `recovery-password-dialog`, `layout-state.service.ts` (viewport, sidebar plegado, panel "Más", diálogo de login), `navigation.config.ts` (`NAV_ITEMS`)
 - `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (vacía), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog), `tools` (tools-add-euro, tools-add-year)
-- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`); `interfaces/`; `helpers/` (normalize-strings, search-state, badge, unique-id); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
+- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, error-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`); `interfaces/`; `helpers/` (normalize-strings, search-state, badge, unique-id, empty-state); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
 - `app.config.ts`: Supabase, Router, HttpClient con `fetch`, PrimeNG (preset + licencia), `LOCALE_ID 'es'`. Assets en `coins-ddlp-front/public/` (favicon, `assets/flags/`)
 
 **Patrones:**

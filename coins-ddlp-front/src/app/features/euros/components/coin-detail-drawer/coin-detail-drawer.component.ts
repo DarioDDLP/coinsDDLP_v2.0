@@ -18,6 +18,7 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -39,6 +40,7 @@ interface Feature {
   imports: [
     DetailDrawerComponent,
     BadgeComponent,
+    ErrorPanelComponent,
     ButtonComponent,
     CountryFlagComponent,
     ConfirmDialogComponent,
@@ -108,9 +110,15 @@ export class CoinDetailDrawerComponent {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantiene la ficha: basta con el toast
+        if (String(this.coin()?.id) !== id) this.hasError.set(true);
       },
     });
+  }
+
+  retry(): void {
+    const id = this.id();
+    if (id) this.load(id);
   }
 
   private loadNumista(idNum: string): void {

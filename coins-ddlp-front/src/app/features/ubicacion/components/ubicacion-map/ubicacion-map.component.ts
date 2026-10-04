@@ -4,6 +4,8 @@ import { PageLayoutComponent } from '../../../../shared/components/page-layout/p
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
@@ -26,6 +28,7 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
     BadgeComponent,
     SkeletonComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     ConfirmDialogComponent,
     ButtonComponent,
     UbicacionEditDialogComponent,
@@ -44,6 +47,7 @@ export class UbicacionMapComponent implements OnInit {
 
   private allLocations = signal<CountryLocation[]>([]);
   readonly searchQuery = signal('');
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly isDeleting = signal(false);
@@ -133,7 +137,8 @@ export class UbicacionMapComponent implements OnInit {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantienen los datos: basta con el toast
+        if (showSkeleton) this.hasError.set(true);
         this.isReady.set(true);
       },
     });

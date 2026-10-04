@@ -1,12 +1,6 @@
 @if (hasError()) {
   <app-page-layout [title]="literals.title">
-    <app-empty-panel
-      icon="pi-exclamation-circle"
-      [title]="sharedLiterals.errorLoad"
-      [message]="sharedLiterals.errorLoadMessage"
-      [retryLabel]="sharedLiterals.retry"
-      (retry)="loadLocations()"
-    />
+    <app-error-panel (retry)="loadLocations()" />
   </app-page-layout>
 } @else {
   <app-page-layout
@@ -79,7 +73,15 @@
         }
       </div>
     } @else {
-      <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
     }
   </app-page-layout>
 }

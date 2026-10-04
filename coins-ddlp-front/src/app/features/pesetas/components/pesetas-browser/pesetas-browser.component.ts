@@ -18,6 +18,8 @@ import { PageLayoutComponent } from '../../../../shared/components/page-layout/p
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
@@ -58,6 +60,7 @@ const SEARCH_KEY = 'pesetas';
     BadgeComponent,
     ButtonComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     ProgressStatComponent,
     FilterPillsComponent,
     SkeletonComponent,
@@ -87,6 +90,7 @@ export class PesetasBrowserComponent {
   readonly hasError = signal(false);
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly ownershipFilter = signal('all');
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
 
   readonly dialogVisible = signal(false);
   readonly selectedPeseta = signal<Peseta | null>(null);
@@ -121,7 +125,8 @@ export class PesetasBrowserComponent {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantienen los datos: basta con el toast
+        if (showSkeleton) this.hasError.set(true);
         this.isReady.set(true);
       },
     });

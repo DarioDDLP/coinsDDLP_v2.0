@@ -13,6 +13,8 @@ import { Subscription } from 'rxjs';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
@@ -47,6 +49,7 @@ const SEARCH_KEY = 'euros-countries';
     CountryFlagComponent,
     PageLayoutComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     ProgressStatComponent,
     FilterPillsComponent,
   ],
@@ -65,6 +68,7 @@ export class EurosCountriesComponent {
 
   private summary = signal<EuroCoinSummary[]>([]);
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   /** Colección cargada: si cambia se vuelve a mostrar el skeleton. */
@@ -95,7 +99,8 @@ export class EurosCountriesComponent {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantienen los datos: basta con el toast
+        if (showSkeleton) this.hasError.set(true);
         this.isReady.set(true);
       },
     });

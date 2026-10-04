@@ -16,6 +16,7 @@ import { PesetasService } from '../../services/pesetas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { DetailDrawerComponent } from '../../../../shared/components/detail-drawer/detail-drawer.component';
@@ -37,6 +38,7 @@ const NUMISTA_PIECE_URL = 'https://en.numista.com/catalogue/pieces';
   imports: [
     DetailDrawerComponent,
     BadgeComponent,
+    ErrorPanelComponent,
     ButtonComponent,
     CountryFlagComponent,
     PesetaEditDialogComponent,
@@ -88,9 +90,15 @@ export class PesetaDetailDrawerComponent {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantiene la ficha: basta con el toast
+        if (String(this.peseta()?.id) !== id) this.hasError.set(true);
       },
     });
+  }
+
+  retry(): void {
+    const id = this.id();
+    if (id) this.load(id);
   }
 
   readonly conservationBadge = computed(() =>
