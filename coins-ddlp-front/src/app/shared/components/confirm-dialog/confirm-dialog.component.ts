@@ -1,25 +1,23 @@
-import { Component, input, output } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
+import { Component, input, model, output } from '@angular/core';
+import { DialogComponent } from '../dialog/dialog.component';
 import { ButtonComponent } from '../button/button.component';
 import { LITERALS } from '../../constants/literals';
-import { DIALOG_BREAKPOINTS } from '../../constants/dialog.const';
 
 @Component({
   selector: 'app-confirm-dialog',
-  imports: [Dialog, ButtonComponent],
+  imports: [DialogComponent, ButtonComponent],
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.scss',
 })
 export class ConfirmDialogComponent {
-  visible = input<boolean>(false);
-  header = input<string>('');
-  message = input<string>('');
-  confirmLabel = input<string>(LITERALS.shared.confirm);
-  loading = input<boolean>(false);
+  readonly visible = model(false);
+  readonly header = input<string>('');
+  readonly message = input<string>('');
+  readonly confirmLabel = input<string>(LITERALS.shared.confirm);
+  /** Mientras dura la acción el diálogo no se puede cerrar. */
+  readonly loading = input<boolean>(false);
 
-  confirmed = output<void>();
-  closed = output<void>();
+  readonly confirmed = output<void>();
 
   readonly cancelLabel = LITERALS.shared.cancel;
-  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 }

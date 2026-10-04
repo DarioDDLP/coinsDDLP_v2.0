@@ -1,0 +1,29 @@
+<p-dialog
+  [(visible)]="visible"
+  (onHide)="hidden.emit()"
+  [modal]="true"
+  [header]="title()"
+  [style]="style()"
+  [breakpoints]="breakpoints"
+  [draggable]="false"
+  [resizable]="false"
+  [closable]="closable()"
+  [closeOnEscape]="closable()"
+  [dismissableMask]="dismissable()"
+>
+  <ng-template #header let-labelId="ariaLabelledBy">
+    <div class="dialog-header">
+      <ng-content select="[dialog-header-start]" />
+      <span class="p-dialog-title" [id]="labelId">{{ title() }}</span>
+      <ng-content select="[dialog-header-end]" />
+    </div>
+  </ng-template>
+
+  <ng-content />
+
+  <ng-template #footer>
+    <div class="dialog-footer">
+      <ng-content select="[dialog-footer]" />
+    </div>
+  </ng-template>
+</p-dialog>

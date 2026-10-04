@@ -238,9 +238,4 @@ export class PesetasBrowserComponent {
     this.selectedPeseta.set(peseta);
     this.dialogVisible.set(true);
   }
-
-  onDialogClosed(): void {
-    this.dialogVisible.set(false);
-    this.selectedPeseta.set(null);
-  }
 }

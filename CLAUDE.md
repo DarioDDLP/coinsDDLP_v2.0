@@ -54,7 +54,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 - Nada de color, tamaño de fuente, peso ni letter-spacing hardcodeado: siempre `var(--…)`. Los únicos hex viven en `_variables.scss` y en `core/theme/app-preset.ts`
 - Estilos de cada componente en su `.component.scss`. `styles.scss` solo para reset, utilidades globales (`.sr-only`, `.table-stack`) y theming de PrimeNG. Sin `style="…"` en plantillas
 - Tablas: `<p-table class="table-stack">` (en PrimeNG 22 `styleClass` no se aplica a `p-table`) y en cada `<td>` `data-label="…"` o `data-cell="primary|secondary|hide-mobile"` para las tarjetas de móvil
-- Diálogos: `[breakpoints]="dialogBreakpoints"` (`DIALOG_BREAKPOINTS`) y Cancelar en `secondary`
+- Diálogos: siempre `app-dialog` (`shared/components/dialog`), nunca `p-dialog` directo. Inputs `header`, `size` sm/md/lg (400/440/460px, a todo el ancho en móvil), `closable` (false también quita Escape), `dismissable`; slots cuerpo, `[dialog-header-start|end]` y `<ng-container dialog-footer>` para las acciones (Cancelar en `secondary`). Cada diálogo expone `visible = model()` y el padre usa `[(visible)]`, sin output `closed`. El formulario se rellena **al abrir** (`effect` sobre `visible()` + `untracked`) y el estado transitorio se limpia en `(hidden)` (fin de la animación). Errores de guardado: solo el toast de `ErrorHandler` (aviso dentro del diálogo solo en login/recuperación). Los diálogos de edición se montan con `@if` del permiso
 - Accesibilidad: foco visible (`focus-ring`), botones solo-icono con `tooltip` (hace de `aria-label`), labels asociadas, filas clicables con `tabindex="0"` y Enter
 
 ## Estructura del front (`coins-ddlp-front/src/app/`)
@@ -62,7 +62,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 - `core/` — singletons. `guards/` (`adminGuard` para `/admin` y `/herramientas`; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth`, `numista` (Edge Function `numista-proxy`, expone la cuota restante), `owner` (colección activa), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
 - `layout/` — shell: `sidebar`, `user-menu`, `topbar`, `bottom-nav`, `more-sheet`, `login-dialog`, `recovery-password-dialog`, `layout-state.service.ts` (viewport, sidebar plegado, panel "Más", diálogo de login), `navigation.config.ts` (`NAV_ITEMS`)
 - `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (vacía), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog), `tools` (tools-add-euro, tools-add-year)
-- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, confirm-dialog, country-flag, empty-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`); `interfaces/`; `helpers/` (normalize-strings, search-state, badge, unique-id); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
+- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`); `interfaces/`; `helpers/` (normalize-strings, search-state, badge, unique-id); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
 - `app.config.ts`: Supabase, Router, HttpClient con `fetch`, PrimeNG (preset + licencia), `LOCALE_ID 'es'`. Assets en `coins-ddlp-front/public/` (favicon, `assets/flags/`)
 
 **Patrones:**
@@ -113,7 +113,7 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-03
+> **Última actualización:** 2026-10-04
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
 - **Ramas sin publicar:** `chore/angular-22` (Angular 22 + PrimeNG 22) y `feat/redesign` (rediseño oscuro y responsive, creada desde la anterior). **No fusionar en `main` hasta que Darío lo indique**; entonces: rama `release/…` desde `main`, fusionar ambas, verificar y pasar a `main` con su etiqueta de versión

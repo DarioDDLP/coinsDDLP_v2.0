@@ -7,20 +7,10 @@ export const TOAST_MESSAGES = {
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.euros.saveSuccess,
     },
-    saveError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.euros.saveError,
-    },
     deleteSuccess: {
       severity: 'success',
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.euros.deleteSuccess,
-    },
-    deleteError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.euros.deleteError,
     },
   },
   admin: {
@@ -29,20 +19,10 @@ export const TOAST_MESSAGES = {
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.admin.saveSuccess,
     },
-    saveError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.admin.saveError,
-    },
     deleteSuccess: {
       severity: 'success',
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.admin.deleteSuccess,
-    },
-    deleteError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.admin.deleteError,
     },
   },
   auth: {
@@ -50,11 +30,6 @@ export const TOAST_MESSAGES = {
       severity: 'success',
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.auth.loginSuccess,
-    },
-    loginError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.auth.loginError,
     },
     logoutSuccess: {
       severity: 'info',
@@ -72,11 +47,6 @@ export const TOAST_MESSAGES = {
       severity: 'success',
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.pesetas.saveSuccess,
-    },
-    saveError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.pesetas.saveError,
     },
   },
   herramientas: {
@@ -106,20 +76,10 @@ export const TOAST_MESSAGES = {
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.ubicacion.deleteSuccess,
     },
-    deleteError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.ubicacion.deleteError,
-    },
     saveSuccess: {
       severity: 'success',
       summary: LITERALS.shared.toastSuccess,
       detail: LITERALS.ubicacion.saveSuccess,
-    },
-    saveError: {
-      severity: 'error',
-      summary: LITERALS.shared.toastError,
-      detail: LITERALS.ubicacion.saveError,
     },
   },
 } as const;

@@ -47,18 +47,12 @@
   }
 </div>
 
-<app-admin-user-dialog
-  [visible]="dialogVisible()"
-  [user]="editingUser()"
-  (saved)="onDialogSaved()"
-  (closed)="onDialogClosed()"
-/>
+<app-admin-user-dialog [(visible)]="dialogVisible" [user]="editingUser()" (saved)="loadUsers()" />
 
 <app-confirm-dialog
-  [visible]="deleteDialogVisible()"
+  [(visible)]="deleteDialogVisible"
   [header]="literals.deleteUser"
   [message]="literals.deleteConfirm"
   [loading]="deleteLoading()"
   (confirmed)="onConfirmDelete()"
-  (closed)="onDeleteDialogClosed()"
 />

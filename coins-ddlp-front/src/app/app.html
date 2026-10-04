@@ -25,13 +25,10 @@
   <app-login-dialog
     [visible]="layout.authDialog() !== null"
     [mode]="layout.authDialog() ?? 'login'"
-    (closed)="layout.closeAuthDialog()"
+    (visibleChange)="!$event && layout.closeAuthDialog()"
   />
 }
 
 @defer (when authService.isRecoveryMode()) {
-  <app-recovery-password-dialog
-    [visible]="authService.isRecoveryMode()"
-    (closed)="authService.isRecoveryMode.set(false)"
-  />
+  <app-recovery-password-dialog [(visible)]="authService.isRecoveryMode" />
 }

@@ -283,11 +283,6 @@ export class EurosCountryComponent {
     this.dialogVisible.set(true);
   }
 
-  onDialogClosed(): void {
-    this.dialogVisible.set(false);
-    this.selectedCoin.set(null);
-  }
-
   onDeleteCoin(coin: EuroCoin): void {
     this.selectedDeleteCoin.set(coin);
     this.deleteDialogVisible.set(true);
@@ -300,17 +295,12 @@ export class EurosCountryComponent {
     try {
       await this.eurosService.remove(coin.id);
       this.messageService.add({ ...TOAST_MESSAGES.euros.deleteSuccess, life: 3000 });
-      this.onDeleteDialogClosed();
+      this.deleteDialogVisible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
     } finally {
       this.deleteLoading.set(false);
     }
-  }
-
-  onDeleteDialogClosed(): void {
-    this.deleteDialogVisible.set(false);
-    this.selectedDeleteCoin.set(null);
   }
 
   async exportExcel(): Promise<void> {

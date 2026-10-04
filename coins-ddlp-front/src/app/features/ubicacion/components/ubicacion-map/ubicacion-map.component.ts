@@ -114,30 +114,12 @@ export class UbicacionMapComponent implements OnInit {
       await this.service.remove(loc.id);
       this.allLocations.update((list) => list.filter((l) => l.id !== loc.id));
       this.messageService.add({ ...TOAST_MESSAGES.ubicacion.deleteSuccess, life: 3000 });
+      this.showConfirmDelete.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.deleteError, life: 3000 });
     } finally {
       this.isDeleting.set(false);
-      this.showConfirmDelete.set(false);
-      this.locationToDelete.set(null);
     }
-  }
-
-  protected onCloseConfirmDelete(): void {
-    this.showConfirmDelete.set(false);
-    this.locationToDelete.set(null);
-  }
-
-  protected onDialogSaved(): void {
-    this.showEditDialog.set(false);
-    this.selectedLocation.set(null);
-    this.loadLocations(false);
-  }
-
-  protected onDialogClosed(): void {
-    this.showEditDialog.set(false);
-    this.selectedLocation.set(null);
   }
 
   /** Tras guardar en el diálogo se recarga sin skeleton; al reintentar, con skeleton. */

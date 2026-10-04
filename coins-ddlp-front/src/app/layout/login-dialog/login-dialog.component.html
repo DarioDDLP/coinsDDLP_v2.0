@@ -1,38 +1,24 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="onHide()"
-  [modal]="true"
-  [header]="header()"
-  [style]="{ width: '400px' }"
-  [breakpoints]="dialogBreakpoints"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
->
-  @if (view() === 'logout') {
-    <div class="login-form">
-      <p class="login-form__confirm-message">{{ literals.logoutConfirm }}</p>
-      <div class="login-form__actions login-form__actions--spread">
-        <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
-        <app-button
-          [label]="sharedLiterals.confirm"
-          variant="danger"
-          (clicked)="onConfirmLogout()"
-        />
-      </div>
-    </div>
-  } @else if (view() === 'forgot') {
-    <div class="login-form">
-      @if (resetSent()) {
-        <p class="login-form__confirm-message">{{ literals.resetSent }}</p>
-        <div class="login-form__actions">
-          <app-button
-            [label]="literals.backToLogin"
-            variant="secondary"
-            (clicked)="view.set('login')"
+<app-dialog [(visible)]="visible" [header]="header()" size="sm" (hidden)="onHidden()">
+  <div class="login-form">
+    @switch (view()) {
+      @case ('logout') {
+        <p class="login-form__message">{{ literals.logoutConfirm }}</p>
+      }
+      @case ('forgot') {
+        @if (resetSent()) {
+          <p class="login-form__message">{{ literals.resetSent }}</p>
+        } @else {
+          <app-text-input
+            [label]="literals.emailLabel"
+            [value]="email()"
+            type="email"
+            [placeholder]="literals.emailPlaceholder"
+            autocomplete="email"
+            (valueChange)="email.set($event)"
           />
-        </div>
-      } @else {
+        }
+      }
+      @default {
         <app-text-input
           [label]="literals.emailLabel"
           [value]="email()"
@@ -42,52 +28,63 @@
           (valueChange)="email.set($event)"
         />
 
-        @if (errorMessage()) {
-          <p class="login-form__error" role="alert">{{ errorMessage() }}</p>
-        }
+        <app-text-input
+          [label]="literals.passwordLabel"
+          [value]="password()"
+          type="password"
+          [placeholder]="literals.passwordPlaceholder"
+          autocomplete="current-password"
+          (valueChange)="password.set($event)"
+          (enterPressed)="onSubmit()"
+        />
+      }
+    }
 
-        <div class="login-form__actions login-form__actions--spread">
-          <app-button
-            [label]="literals.backToLogin"
-            variant="secondary"
-            (clicked)="view.set('login')"
-          />
+    @if (errorMessage()) {
+      <p class="login-form__error" role="alert">{{ errorMessage() }}</p>
+    }
+  </div>
+
+  <!-- Acciones: la primera (.login-form__start) va a la izquierda -->
+  <ng-container dialog-footer>
+    @switch (view()) {
+      @case ('logout') {
+        <app-button
+          class="login-form__start"
+          [label]="sharedLiterals.cancel"
+          variant="secondary"
+          [disabled]="loading()"
+          (clicked)="visible.set(false)"
+        />
+        <app-button
+          [label]="sharedLiterals.confirm"
+          variant="danger"
+          [loading]="loading()"
+          (clicked)="onConfirmLogout()"
+        />
+      }
+      @case ('forgot') {
+        <app-button
+          [class.login-form__start]="!resetSent()"
+          [label]="literals.backToLogin"
+          variant="secondary"
+          (clicked)="showView('login')"
+        />
+        @if (!resetSent()) {
           <app-button
             [label]="literals.resetButton"
             [loading]="loading()"
             [disabled]="!email()"
             (clicked)="onResetPassword()"
           />
-        </div>
+        }
       }
-    </div>
-  } @else {
-    <div class="login-form">
-      <app-text-input
-        [label]="literals.emailLabel"
-        [value]="email()"
-        type="email"
-        [placeholder]="literals.emailPlaceholder"
-        autocomplete="email"
-        (valueChange)="email.set($event)"
-      />
-
-      <app-text-input
-        [label]="literals.passwordLabel"
-        [value]="password()"
-        type="password"
-        [placeholder]="literals.passwordPlaceholder"
-        autocomplete="current-password"
-        (valueChange)="password.set($event)"
-        (enterPressed)="onSubmit()"
-      />
-
-      @if (errorMessage()) {
-        <p class="login-form__error" role="alert">{{ errorMessage() }}</p>
-      }
-
-      <div class="login-form__actions login-form__actions--forgot">
-        <button class="login-form__forgot-link" type="button" (click)="view.set('forgot')">
+      @default {
+        <button
+          class="login-form__start login-form__forgot-link"
+          type="button"
+          (click)="showView('forgot')"
+        >
           {{ literals.forgotPassword }}
         </button>
         <app-button
@@ -96,7 +93,7 @@
           [disabled]="!email() || !password()"
           (clicked)="onSubmit()"
         />
-      </div>
-    </div>
-  }
-</p-dialog>
+      }
+    }
+  </ng-container>
+</app-dialog>

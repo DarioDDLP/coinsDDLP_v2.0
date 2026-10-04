@@ -142,8 +142,7 @@
 
 <router-outlet />
 
-<app-peseta-edit-dialog
-  [visible]="dialogVisible()"
-  [peseta]="selectedPeseta()"
-  (closed)="onDialogClosed()"
-/>
+<!-- El diálogo de edición solo se monta para quien puede usarlo -->
+@if (authService.isAdmin()) {
+  <app-peseta-edit-dialog [(visible)]="dialogVisible" [peseta]="selectedPeseta()" />
+}

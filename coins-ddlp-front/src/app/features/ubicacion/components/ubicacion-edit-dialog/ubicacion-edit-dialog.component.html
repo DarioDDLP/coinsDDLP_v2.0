@@ -1,14 +1,4 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="onHide()"
-  [modal]="true"
-  [header]="header()"
-  [style]="{ width: '440px' }"
-  [breakpoints]="dialogBreakpoints"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
->
+<app-dialog [(visible)]="visible" [header]="header()">
   <div class="entry-form">
     @if (countriesReady()) {
       <app-select
@@ -55,15 +45,19 @@
       [value]="isClosed()"
       (valueChange)="isClosed.set($event)"
     />
-
-    <div class="entry-form__actions">
-      <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
-      <app-button
-        [label]="sharedLiterals.save"
-        [loading]="loading()"
-        [disabled]="!canSubmit()"
-        (clicked)="onSubmit()"
-      />
-    </div>
   </div>
-</p-dialog>
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals.cancel"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+    <app-button
+      [label]="sharedLiterals.save"
+      [loading]="loading()"
+      [disabled]="!canSubmit()"
+      (clicked)="onSubmit()"
+    />
+  </ng-container>
+</app-dialog>

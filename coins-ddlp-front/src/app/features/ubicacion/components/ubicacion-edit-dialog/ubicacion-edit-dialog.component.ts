@@ -5,13 +5,14 @@ import {
   ErrorHandler,
   inject,
   input,
+  model,
   output,
   signal,
   untracked,
 } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { Dialog } from 'primeng/dialog';
 import { UbicacionService } from '../../services/ubicacion.service';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import {
@@ -25,13 +26,12 @@ import {
   NewCountryLocation,
 } from '../../../../shared/interfaces/country-location.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
-import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 
 @Component({
   selector: 'app-ubicacion-edit-dialog',
   imports: [
-    Dialog,
+    DialogComponent,
     ButtonComponent,
     TextInputComponent,
     SelectComponent,
@@ -46,15 +46,13 @@ export class UbicacionEditDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  visible = input<boolean>(false);
-  location = input<CountryLocation | null>(null);
+  readonly visible = model(false);
+  readonly location = input<CountryLocation | null>(null);
 
-  saved = output<void>();
-  closed = output<void>();
+  readonly saved = output<void>();
 
   readonly literals = LITERALS.ubicacion;
   readonly sharedLiterals = LITERALS.shared;
-  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly country = signal('');
   readonly album = signal('');
@@ -79,10 +77,23 @@ export class UbicacionEditDialogComponent {
   );
 
   constructor() {
-    this.setupFormEffect();
+    // Al abrir: se cargan los valores de la entrada (vacíos si es nueva) y, la primera vez, los países
     effect(() => {
-      if (this.visible() && !this.countriesRequested) untracked(() => this.loadCountries());
+      if (!this.visible()) return;
+      const loc = this.location();
+      untracked(() => {
+        this.fillForm(loc);
+        if (!this.countriesRequested) this.loadCountries();
+      });
     });
+  }
+
+  private fillForm(loc: CountryLocation | null): void {
+    this.country.set(loc?.country ?? '');
+    this.album.set(loc?.album?.toString() ?? '');
+    this.yearFrom.set(loc?.yearFrom?.toString() ?? '');
+    this.yearTo.set(loc?.yearTo?.toString() ?? '');
+    this.isClosed.set(loc?.isClosed ?? false);
   }
 
   private loadCountries(): void {
@@ -113,28 +124,12 @@ export class UbicacionEditDialogComponent {
       }
       this.messageService.add({ ...TOAST_MESSAGES.ubicacion.saveSuccess, life: 3000 });
       this.saved.emit();
-      this.close();
+      this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.saveError, life: 3000 });
     } finally {
       this.loading.set(false);
     }
-  }
-
-  protected onHide(): void {
-    this.close();
-  }
-
-  private setupFormEffect(): void {
-    effect(() => {
-      const loc = this.location();
-      this.country.set(loc?.country ?? '');
-      this.album.set(loc?.album?.toString() ?? '');
-      this.yearFrom.set(loc?.yearFrom?.toString() ?? '');
-      this.yearTo.set(loc?.yearTo?.toString() ?? '');
-      this.isClosed.set(loc?.isClosed ?? false);
-    });
   }
 
   private buildPayload(): NewCountryLocation {
@@ -145,10 +140,5 @@ export class UbicacionEditDialogComponent {
       yearTo: this.yearTo() ? Number(this.yearTo()) : null,
       isClosed: this.isClosed(),
     };
-  }
-
-  private close(): void {
-    this.loading.set(false);
-    this.closed.emit();
   }
 }

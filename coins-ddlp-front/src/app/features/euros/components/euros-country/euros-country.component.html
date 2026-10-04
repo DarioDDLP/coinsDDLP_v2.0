@@ -238,17 +238,17 @@
 
 <router-outlet />
 
-<app-coin-uds-dialog
-  [visible]="dialogVisible()"
-  [coin]="selectedCoin()"
-  (closed)="onDialogClosed()"
-/>
+<!-- Los diálogos de edición solo se montan para quien puede usarlos -->
+@if (canEdit()) {
+  <app-coin-uds-dialog [(visible)]="dialogVisible" [coin]="selectedCoin()" />
+}
 
-<app-confirm-dialog
-  [visible]="deleteDialogVisible()"
-  [header]="literals.deleteCoin"
-  [message]="literals.deleteConfirm"
-  [loading]="deleteLoading()"
-  (confirmed)="onConfirmDelete()"
-  (closed)="onDeleteDialogClosed()"
-/>
+@if (authService.isAdmin()) {
+  <app-confirm-dialog
+    [(visible)]="deleteDialogVisible"
+    [header]="literals.deleteCoin"
+    [message]="literals.deleteConfirm"
+    [loading]="deleteLoading()"
+    (confirmed)="onConfirmDelete()"
+  />
+}

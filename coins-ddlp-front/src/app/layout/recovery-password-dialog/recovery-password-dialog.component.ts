@@ -1,16 +1,15 @@
-import { Component, ErrorHandler, inject, input, output, signal } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
+import { Component, ErrorHandler, inject, model, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
 import { LITERALS } from '../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
-import { DIALOG_BREAKPOINTS } from '../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-recovery-password-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent],
+  imports: [DialogComponent, ButtonComponent, TextInputComponent],
   templateUrl: './recovery-password-dialog.component.html',
   styleUrl: './recovery-password-dialog.component.scss',
 })
@@ -19,11 +18,10 @@ export class RecoveryPasswordDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  visible = input<boolean>(false);
-  closed = output<void>();
+  /** Sin botón de cerrar ni Escape: solo se cierra al cambiar la contraseña. */
+  readonly visible = model(false);
 
   readonly literals = LITERALS.auth;
-  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly newPassword = signal('');
   readonly confirmPassword = signal('');
@@ -40,7 +38,7 @@ export class RecoveryPasswordDialogComponent {
     try {
       await this.authService.updatePassword(this.newPassword());
       this.messageService.add({ ...TOAST_MESSAGES.auth.recoverySuccess, life: 3000 });
-      this.close();
+      this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
       this.errorMessage.set(this.literals.recoveryError);
@@ -49,14 +47,10 @@ export class RecoveryPasswordDialogComponent {
     }
   }
 
-  onHide(): void {
-    this.close();
-  }
-
-  private close(): void {
+  /** Tras la animación de cierre: formulario limpio. */
+  onHidden(): void {
     this.newPassword.set('');
     this.confirmPassword.set('');
     this.errorMessage.set('');
-    this.closed.emit();
   }
 }

@@ -130,17 +130,17 @@
   }
 </app-detail-drawer>
 
-<app-coin-uds-dialog
-  [visible]="udsDialogVisible()"
-  [coin]="coin()"
-  (closed)="udsDialogVisible.set(false)"
-/>
+<!-- Los diálogos de edición solo se montan para quien puede usarlos -->
+@if (canEdit()) {
+  <app-coin-uds-dialog [(visible)]="udsDialogVisible" [coin]="coin()" />
+}
 
-<app-confirm-dialog
-  [visible]="deleteDialogVisible()"
-  [header]="eurosLiterals.deleteCoin"
-  [message]="eurosLiterals.deleteConfirm"
-  [loading]="deleteLoading()"
-  (confirmed)="onConfirmDelete()"
-  (closed)="deleteDialogVisible.set(false)"
-/>
+@if (authService.isAdmin()) {
+  <app-confirm-dialog
+    [(visible)]="deleteDialogVisible"
+    [header]="eurosLiterals.deleteCoin"
+    [message]="eurosLiterals.deleteConfirm"
+    [loading]="deleteLoading()"
+    (confirmed)="onConfirmDelete()"
+  />
+}

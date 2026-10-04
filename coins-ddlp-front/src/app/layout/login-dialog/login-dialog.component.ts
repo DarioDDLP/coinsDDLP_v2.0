@@ -5,22 +5,22 @@ import {
   ErrorHandler,
   inject,
   input,
-  output,
+  model,
   signal,
+  untracked,
 } from '@angular/core';
 import { Router } from '@angular/router';
-import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
+import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
 import { LITERALS } from '../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
-import { DIALOG_BREAKPOINTS } from '../../shared/constants/dialog.const';
 
 @Component({
   selector: 'app-login-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent],
+  imports: [DialogComponent, ButtonComponent, TextInputComponent],
   templateUrl: './login-dialog.component.html',
   styleUrl: './login-dialog.component.scss',
 })
@@ -30,12 +30,10 @@ export class LoginDialogComponent {
   private errorHandler = inject(ErrorHandler);
   private router = inject(Router);
 
-  visible = input<boolean>(false);
-  mode = input<'login' | 'logout'>('login');
-  closed = output<void>();
+  readonly visible = model(false);
+  readonly mode = input<'login' | 'logout'>('login');
 
   readonly literals = LITERALS.auth;
-  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
   readonly sharedLiterals = LITERALS.shared;
 
   readonly email = signal('');
@@ -52,8 +50,11 @@ export class LoginDialogComponent {
   });
 
   constructor() {
+    // La vista se fija al abrir: al cerrar, el modo vuelve a 'login' y no debe verse durante el fundido
     effect(() => {
-      this.view.set(this.mode() as 'login' | 'logout');
+      if (!this.visible()) return;
+      const mode = this.mode();
+      untracked(() => this.view.set(mode));
     });
   }
 
@@ -63,7 +64,7 @@ export class LoginDialogComponent {
     try {
       await this.authService.login(this.email(), this.password());
       this.messageService.add({ ...TOAST_MESSAGES.auth.loginSuccess, life: 3000 });
-      this.close();
+      this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
       this.errorMessage.set(this.literals.loginError);
@@ -73,10 +74,17 @@ export class LoginDialogComponent {
   }
 
   async onConfirmLogout(): Promise<void> {
-    await this.authService.logout();
-    this.messageService.add({ ...TOAST_MESSAGES.auth.logoutSuccess, life: 3000 });
-    this.close();
-    this.router.navigate(['/euros']);
+    this.loading.set(true);
+    try {
+      await this.authService.logout();
+      this.messageService.add({ ...TOAST_MESSAGES.auth.logoutSuccess, life: 3000 });
+      this.visible.set(false);
+      this.router.navigate(['/euros']);
+    } catch (e) {
+      this.errorHandler.handleError(e);
+    } finally {
+      this.loading.set(false);
+    }
   }
 
   async onResetPassword(): Promise<void> {
@@ -93,16 +101,16 @@ export class LoginDialogComponent {
     }
   }
 
-  onHide(): void {
-    this.close();
+  showView(view: 'login' | 'forgot'): void {
+    this.errorMessage.set('');
+    this.view.set(view);
   }
 
-  private close(): void {
+  /** Tras la animación de cierre: formulario limpio para la próxima vez. */
+  onHidden(): void {
     this.email.set('');
     this.password.set('');
     this.errorMessage.set('');
     this.resetSent.set(false);
-    this.view.set('login');
-    this.closed.emit();
   }
 }

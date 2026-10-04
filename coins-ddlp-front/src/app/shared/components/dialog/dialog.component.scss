@@ -1,0 +1,16 @@
+.dialog-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+// Acciones del diálogo: a la derecha; un botón con margin-inline-end: auto se va a la izquierda
+.dialog-footer {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-3);
+}

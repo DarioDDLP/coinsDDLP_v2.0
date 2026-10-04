@@ -1,24 +1,12 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="onHide()"
-  [modal]="true"
-  [style]="{ width: '460px' }"
-  [breakpoints]="dialogBreakpoints"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
->
-  <ng-template #header>
-    <div class="dialog-header">
-      @if (coin()) {
-        <app-country-flag [country]="coin()!.country" [size]="20" />
-      }
-      <span class="dialog-header__title">{{ dialogTitle() }}</span>
-      @if (coin()?.variant) {
-        <app-badge [label]="coin()!.variant!" severity="secondary" />
-      }
-    </div>
-  </ng-template>
+<app-dialog [(visible)]="visible" [header]="dialogTitle()" size="lg" (hidden)="onHidden()">
+  <!-- Un solo elemento por bloque @if: así se proyecta en su hueco de la cabecera -->
+  @if (coin(); as c) {
+    <app-country-flag dialog-header-start [country]="c.country" [size]="20" />
+  }
+  @if (coin()?.variant; as variant) {
+    <app-badge dialog-header-end [label]="variant" severity="secondary" />
+  }
+
   <div class="uds-form">
     @if (showOwnerPicker()) {
       <div class="uds-form__owner-picker">
@@ -73,14 +61,14 @@
       type="text"
       (valueChange)="idNum.set($event)"
     />
-
-    @if (errorMessage()) {
-      <p class="uds-form__error" role="alert">{{ errorMessage() }}</p>
-    }
-
-    <div class="uds-form__actions">
-      <app-button [label]="sharedLiterals.cancel" variant="secondary" (clicked)="onHide()" />
-      <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
-    </div>
   </div>
-</p-dialog>
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals.cancel"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+    <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
+  </ng-container>
+</app-dialog>

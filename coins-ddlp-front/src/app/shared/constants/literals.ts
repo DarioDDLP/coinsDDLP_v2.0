@@ -89,9 +89,7 @@ export const LITERALS = {
     deleteCoin: 'Eliminar moneda',
     deleteConfirm: '¿Seguro que quieres eliminar esta moneda?',
     saveSuccess: 'Moneda guardada correctamente',
-    saveError: 'Error al guardar la moneda',
     deleteSuccess: 'Moneda eliminada correctamente',
-    deleteError: 'Error al eliminar la moneda',
     observationsLabel: 'Observaciones',
     observationsPlaceholder: 'Notas sobre esta moneda...',
     unitsLabel: 'Unidades',
@@ -183,9 +181,7 @@ export const LITERALS = {
     namePlaceholder: 'Nombre completo',
     roleLabel: 'Rol',
     saveSuccess: 'Usuario guardado correctamente',
-    saveError: 'Error al guardar el usuario',
     deleteSuccess: 'Usuario eliminado correctamente',
-    deleteError: 'Error al eliminar el usuario',
   },
 
   herramientas: {
@@ -253,7 +249,6 @@ export const LITERALS = {
     emptySearch: 'No se encontraron resultados',
     editCoin: 'Editar peseta',
     saveSuccess: 'Peseta guardada correctamente',
-    saveError: 'Error al guardar la peseta',
     unitsLabel: 'Unidades',
     conservationLabel: 'Estado de conservación',
     conservationPlaceholder: 'Selecciona estado',
@@ -317,8 +312,6 @@ export const LITERALS = {
     yearToPlaceholder: 'Vacío = abierto',
     deleteConfirm: '¿Seguro que quieres eliminar esta entrada?',
     saveSuccess: 'Entrada guardada correctamente',
-    saveError: 'Error al guardar la entrada',
     deleteSuccess: 'Entrada eliminada correctamente',
-    deleteError: 'Error al eliminar la entrada',
   },
 } as const;

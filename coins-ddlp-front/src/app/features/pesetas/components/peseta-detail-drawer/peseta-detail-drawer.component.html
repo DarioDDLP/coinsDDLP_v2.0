@@ -117,8 +117,7 @@
   }
 </app-detail-drawer>
 
-<app-peseta-edit-dialog
-  [visible]="editVisible()"
-  [peseta]="peseta()"
-  (closed)="editVisible.set(false)"
-/>
+<!-- El diálogo de edición solo se monta para quien puede usarlo -->
+@if (authService.isAdmin()) {
+  <app-peseta-edit-dialog [(visible)]="editVisible" [peseta]="peseta()" />
+}

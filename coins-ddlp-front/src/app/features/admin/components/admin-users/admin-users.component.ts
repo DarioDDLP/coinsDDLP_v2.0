@@ -54,7 +54,7 @@ export class AdminUsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  private loadUsers(): void {
+  protected loadUsers(): void {
     this.adminService.getUsers().subscribe({
       next: (users) => {
         this.users.set(users);
@@ -85,7 +85,7 @@ export class AdminUsersComponent implements OnInit {
       next: () => {
         this.messageService.add({ ...TOAST_MESSAGES.admin.deleteSuccess, life: 3000 });
         this.deleteLoading.set(false);
-        this.onDeleteDialogClosed();
+        this.deleteDialogVisible.set(false);
         this.loadUsers();
       },
       error: (e) => {
@@ -93,20 +93,5 @@ export class AdminUsersComponent implements OnInit {
         this.deleteLoading.set(false);
       },
     });
-  }
-
-  protected onDialogSaved(): void {
-    this.dialogVisible.set(false);
-    this.loadUsers();
-  }
-
-  protected onDialogClosed(): void {
-    this.dialogVisible.set(false);
-    this.editingUser.set(null);
-  }
-
-  protected onDeleteDialogClosed(): void {
-    this.deleteDialogVisible.set(false);
-    this.deletingUser.set(null);
   }
 }

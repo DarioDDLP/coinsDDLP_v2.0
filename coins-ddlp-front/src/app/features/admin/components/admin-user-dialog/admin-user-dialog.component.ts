@@ -5,24 +5,25 @@ import {
   ErrorHandler,
   inject,
   input,
+  model,
   output,
   signal,
+  untracked,
 } from '@angular/core';
-import { Dialog } from 'primeng/dialog';
 import { MessageService } from 'primeng/api';
 import { AdminService } from '../../services/admin.service';
+import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { LITERALS } from '../../../../shared/constants/literals';
-import { DIALOG_BREAKPOINTS } from '../../../../shared/constants/dialog.const';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { ROLE_OPTIONS } from './admin-user-dialog.config';
 
 @Component({
   selector: 'app-admin-user-dialog',
-  imports: [Dialog, ButtonComponent, TextInputComponent, SelectComponent],
+  imports: [DialogComponent, ButtonComponent, TextInputComponent, SelectComponent],
   templateUrl: './admin-user-dialog.component.html',
   styleUrl: './admin-user-dialog.component.scss',
 })
@@ -31,23 +32,20 @@ export class AdminUserDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  visible = input<boolean>(false);
-  user = input<AppUser | null>(null);
+  readonly visible = model(false);
+  readonly user = input<AppUser | null>(null);
 
-  saved = output<void>();
-  closed = output<void>();
+  readonly saved = output<void>();
 
   readonly literals = LITERALS.admin;
   readonly authLiterals = LITERALS.auth;
   readonly sharedLiterals = LITERALS.shared;
-  readonly dialogBreakpoints = DIALOG_BREAKPOINTS;
 
   readonly email = signal('');
   readonly password = signal('');
   readonly displayName = signal('');
   readonly role = signal<'user' | 'admin'>('user');
   readonly loading = signal(false);
-  readonly errorMessage = signal('');
 
   readonly isEditMode = computed(() => !!this.user());
   readonly header = computed(() =>
@@ -58,18 +56,20 @@ export class AdminUserDialogComponent {
   readonly roleOptions = ROLE_OPTIONS;
 
   constructor() {
+    // Al abrir se cargan los datos del usuario (vacíos si es nuevo)
     effect(() => {
+      if (!this.visible()) return;
       const u = this.user();
-      this.displayName.set(u?.displayName ?? '');
-      this.role.set((u?.role as 'user' | 'admin') ?? 'user');
-      this.email.set('');
-      this.password.set('');
-      this.errorMessage.set('');
+      untracked(() => {
+        this.displayName.set(u?.displayName ?? '');
+        this.role.set((u?.role as 'user' | 'admin') ?? 'user');
+        this.email.set('');
+        this.password.set('');
+      });
     });
   }
 
   onSubmit(): void {
-    this.errorMessage.set('');
     this.loading.set(true);
 
     const obs$ = this.isEditMode()
@@ -86,23 +86,12 @@ export class AdminUserDialogComponent {
         this.messageService.add({ ...TOAST_MESSAGES.admin.saveSuccess, life: 3000 });
         this.loading.set(false);
         this.saved.emit();
-        this.close();
+        this.visible.set(false);
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.errorMessage.set(this.literals.saveError);
         this.loading.set(false);
       },
     });
-  }
-
-  onHide(): void {
-    this.close();
-  }
-
-  private close(): void {
-    this.errorMessage.set('');
-    this.loading.set(false);
-    this.closed.emit();
   }
 }

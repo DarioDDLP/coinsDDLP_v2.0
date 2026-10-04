@@ -87,18 +87,16 @@
 <!-- Solo admin puede editar: así el resto no monta el diálogo ni descarga la lista de países -->
 @if (canEdit()) {
   <app-ubicacion-edit-dialog
-    [visible]="showEditDialog()"
+    [(visible)]="showEditDialog"
     [location]="selectedLocation()"
-    (saved)="onDialogSaved()"
-    (closed)="onDialogClosed()"
+    (saved)="loadLocations(false)"
   />
 
   <app-confirm-dialog
-    [visible]="showConfirmDelete()"
+    [(visible)]="showConfirmDelete"
     [header]="literals.deleteEntry"
     [message]="literals.deleteConfirm"
     [loading]="isDeleting()"
     (confirmed)="onConfirmDelete()"
-    (closed)="onCloseConfirmDelete()"
   />
 }
