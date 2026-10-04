@@ -1,4 +1,40 @@
+/**
+ * Países por código ISO 3166-1 alfa-3 (EUE: código reservado para la UE).
+ * El nombre es el que guarda la BD; el código da el nombre de la bandera
+ * (`public/assets/flags/{iso3}.png`).
+ */
+const COUNTRIES = {
+  AND: 'Andorra',
+  AUT: 'Austria',
+  BEL: 'Bélgica',
+  BGR: 'Bulgaria',
+  CYP: 'Chipre',
+  DEU: 'Alemania',
+  ESP: 'España',
+  EST: 'Estonia',
+  EUE: 'Europa',
+  FIN: 'Finlandia',
+  FRA: 'Francia',
+  GRC: 'Grecia',
+  HRV: 'Croacia',
+  IRL: 'Irlanda',
+  ITA: 'Italia',
+  LTU: 'Lituania',
+  LUX: 'Luxemburgo',
+  LVA: 'Letonia',
+  MCO: 'Mónaco',
+  MLT: 'Malta',
+  NLD: 'Holanda',
+  PRT: 'Portugal',
+  SMR: 'San Marino',
+  SVK: 'Eslovaquia',
+  SVN: 'Eslovenia',
+  VAT: 'Vaticano',
+} as const;
+
 export const LITERALS = {
+  countries: COUNTRIES,
+
   shared: {
     loading: 'Cargando...',
     error: 'Ha ocurrido un error inesperado',
@@ -233,7 +269,7 @@ export const LITERALS = {
   pesetas: {
     title: 'Pesetas',
     overline: 'Colección',
-    country: 'España',
+    country: COUNTRIES.ESP,
     allLabel: 'Todas',
     search: 'Buscar por valor, título o año...',
     progressTotal: 'Progreso total',
