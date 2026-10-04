@@ -127,3 +127,6 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 **Pendiente:**
 1. Publicar la release (arriba) cuando Darío dé el visto bueno
 2. Sección **Estadísticas**: `estadisticas-dashboard` existe vacío (literales en `LITERALS.estadisticas`). Hacerla con `page-layout`, `progress-stat`, tokens y `resource`/`httpResource`
+3. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
+4. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
+5. `GlobalErrorHandler` muestra los mensajes de Supabase en inglés ("Invalid login credentials"…): traducir los más comunes
