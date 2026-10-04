@@ -1,0 +1,30 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "release-type": "simple",
+  "include-component-in-tag": false,
+  "bootstrap-sha": "d1cb08547c7282d1bff475021aa87c3eddd4bcf9",
+  "pull-request-title-pattern": "chore(release): v${version}",
+  "changelog-sections": [
+    { "type": "feat", "section": "Novedades" },
+    { "type": "fix", "section": "Correcciones" },
+    { "type": "perf", "section": "Rendimiento" },
+    { "type": "refactor", "section": "Mejoras internas" },
+    { "type": "revert", "section": "Reversiones" },
+    { "type": "docs", "section": "Documentación", "hidden": true },
+    { "type": "style", "section": "Estilo", "hidden": true },
+    { "type": "chore", "section": "Mantenimiento", "hidden": true },
+    { "type": "test", "section": "Tests", "hidden": true },
+    { "type": "build", "section": "Build", "hidden": true },
+    { "type": "ci", "section": "CI", "hidden": true }
+  ],
+  "packages": {
+    ".": {
+      "package-name": "coinsddlp",
+      "extra-files": [
+        { "type": "json", "path": "coins-ddlp-front/package.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "coins-ddlp-front/package-lock.json", "jsonpath": "$.version" },
+        { "type": "json", "path": "coins-ddlp-front/package-lock.json", "jsonpath": "$.packages[''].version" }
+      ]
+    }
+  }
+}
