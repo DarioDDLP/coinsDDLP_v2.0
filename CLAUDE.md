@@ -122,10 +122,10 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 > **Última actualización:** 2026-10-04
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
-- **Versión 3.0.0** (Angular 22 + PrimeNG 22 + rediseño oscuro y responsive) preparada en `release/3.0.0` (`feat/redesign` fusionada, ya incluye `chore/angular-22`). Publicar: `main` ← `merge --no-ff release/3.0.0`, etiqueta `v3.0.0` y `git push origin main --follow-tags`. **Solo cuando Darío lo confirme**. Si falla en producción: Vercel → Deployments → Instant Rollback
+- **Versión en producción: v3.0.0** (Angular 22 + PrimeNG 22 + rediseño oscuro y responsive), etiqueta `v3.0.0` en `main`. Releases: rama `release/x.y.z` desde `main`, `merge --no-ff`, versión en `package.json`, y a `main` con su etiqueta **solo cuando Darío lo confirme**. Si falla en producción: Vercel → Deployments → Instant Rollback
 
 **Pendiente:**
-1. Publicar `release/3.0.0` en `main` (arriba)
+1. Versionado automático con **release-please** (GitHub Action: PR de release con versión + `CHANGELOG.md` a partir de Conventional Commits, etiqueta al aceptarlo), partiendo de `v3.0.0` y con la app en `coins-ddlp-front/`. Explicar los archivos antes de fusionar
 2. Sección **Estadísticas**: `estadisticas-dashboard` existe vacío (literales en `LITERALS.estadisticas`). Hacerla con `page-layout`, `progress-stat`, tokens y `resource`/`httpResource`
 3. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
 4. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
