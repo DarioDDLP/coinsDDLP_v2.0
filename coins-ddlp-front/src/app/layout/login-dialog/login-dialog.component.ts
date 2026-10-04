@@ -63,7 +63,7 @@ export class LoginDialogComponent {
     this.loading.set(true);
     try {
       await this.authService.login(this.email(), this.password());
-      this.messageService.add({ ...TOAST_MESSAGES.auth.loginSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.auth.loginSuccess);
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
@@ -77,7 +77,7 @@ export class LoginDialogComponent {
     this.loading.set(true);
     try {
       await this.authService.logout();
-      this.messageService.add({ ...TOAST_MESSAGES.auth.logoutSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.auth.logoutSuccess);
       this.visible.set(false);
       this.router.navigate(['/euros']);
     } catch (e) {

@@ -37,7 +37,7 @@ export class RecoveryPasswordDialogComponent {
     this.loading.set(true);
     try {
       await this.authService.updatePassword(this.newPassword());
-      this.messageService.add({ ...TOAST_MESSAGES.auth.recoverySuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.auth.recoverySuccess);
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);

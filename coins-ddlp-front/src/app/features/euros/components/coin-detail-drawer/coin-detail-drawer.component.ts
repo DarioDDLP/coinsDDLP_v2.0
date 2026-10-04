@@ -208,7 +208,7 @@ export class CoinDetailDrawerComponent {
     this.deleteLoading.set(true);
     try {
       await this.eurosService.remove(coin.id);
-      this.messageService.add({ ...TOAST_MESSAGES.euros.deleteSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.euros.deleteSuccess);
       this.deleteDialogVisible.set(false);
       this.drawer().requestClose();
     } catch (e) {

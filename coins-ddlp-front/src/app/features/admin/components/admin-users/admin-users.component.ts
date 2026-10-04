@@ -83,7 +83,7 @@ export class AdminUsersComponent implements OnInit {
     this.deleteLoading.set(true);
     this.adminService.deleteUser(user.uid).subscribe({
       next: () => {
-        this.messageService.add({ ...TOAST_MESSAGES.admin.deleteSuccess, life: 3000 });
+        this.messageService.add(TOAST_MESSAGES.admin.deleteSuccess);
         this.deleteLoading.set(false);
         this.deleteDialogVisible.set(false);
         this.loadUsers();

@@ -52,7 +52,6 @@ export class ToolsAddEuroComponent {
   readonly idNum = signal('');
   readonly variant = signal('');
   readonly loading = signal(false);
-  readonly errorMessage = signal('');
 
   readonly isMintRequired = computed(() => this.country() === 'Alemania');
   readonly isVariantApplicable = computed(() => VARIANT_FACE_VALUES.has(this.faceValue()));
@@ -92,7 +91,6 @@ export class ToolsAddEuroComponent {
 
   async onSubmit(): Promise<void> {
     if (!this.isValid()) return;
-    this.errorMessage.set('');
     this.loading.set(true);
     try {
       await this.eurosService.create({
@@ -106,11 +104,10 @@ export class ToolsAddEuroComponent {
         idNum: this.idNum(),
         variant: this.variant() || undefined,
       });
-      this.messageService.add({ ...TOAST_MESSAGES.herramientas.addSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.herramientas.addSuccess);
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.addError);
     } finally {
       this.loading.set(false);
     }

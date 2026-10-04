@@ -97,7 +97,7 @@ export class PesetaEditDialogComponent {
         conservation: this.conservation() || 'ND',
         observations: this.observations() || null,
       });
-      this.messageService.add({ ...TOAST_MESSAGES.pesetas.saveSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.pesetas.saveSuccess);
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);

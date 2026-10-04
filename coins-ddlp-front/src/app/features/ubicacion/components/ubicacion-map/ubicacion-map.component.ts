@@ -113,7 +113,7 @@ export class UbicacionMapComponent implements OnInit {
     try {
       await this.service.remove(loc.id);
       this.allLocations.update((list) => list.filter((l) => l.id !== loc.id));
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.deleteSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.ubicacion.deleteSuccess);
       this.showConfirmDelete.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);

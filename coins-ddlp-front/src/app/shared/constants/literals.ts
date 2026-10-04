@@ -207,10 +207,8 @@ export const LITERALS = {
     placeholderSourceYear: 'Selecciona año fuente',
     tiradaButton: 'Añadir tirada',
     tiradaSuccess: 'monedas añadidas correctamente',
-    tiradaError: 'Error al añadir la tirada',
     tiradaEmpty: 'No se encontraron monedas de circulación para ese año',
     addSuccess: 'Moneda añadida correctamente',
-    addError: 'Error al añadir la moneda',
   },
 
   conmemorativas: {

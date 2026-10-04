@@ -112,16 +112,10 @@ export class ToolsAddYearComponent {
         ),
       );
 
-      this.messageService.add({
-        ...TOAST_MESSAGES.herramientas.tiradaSuccess,
-        detail: `${toCreate.length} ${this.literals.tiradaSuccess}`,
-        life: 4000,
-      });
+      this.messageService.add(TOAST_MESSAGES.herramientas.tiradaSuccess(toCreate.length));
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.messageService.add({ ...TOAST_MESSAGES.herramientas.tiradaError, life: 3000 });
-      this.errorMessage.set(this.literals.tiradaError);
     } finally {
       this.loading.set(false);
     }

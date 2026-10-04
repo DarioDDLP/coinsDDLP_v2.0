@@ -122,7 +122,7 @@ export class UbicacionEditDialogComponent {
       } else {
         await this.service.add(this.buildPayload());
       }
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.saveSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.ubicacion.saveSuccess);
       this.saved.emit();
       this.visible.set(false);
     } catch (e) {

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Toast } from 'primeng/toast';
 import { LITERALS } from './shared/constants/literals';
+import { TOAST_BREAKPOINTS } from './shared/constants/toast.const';
 import { AuthService } from './core/services/auth.service';
 import { LayoutStateService } from './layout/layout-state.service';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
@@ -30,4 +31,5 @@ export class App {
   readonly authService = inject(AuthService);
   readonly layout = inject(LayoutStateService);
   readonly literals = LITERALS.nav;
+  readonly toastBreakpoints = TOAST_BREAKPOINTS;
 }

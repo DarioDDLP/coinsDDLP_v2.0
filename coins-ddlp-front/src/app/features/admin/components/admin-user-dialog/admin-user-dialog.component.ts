@@ -83,7 +83,7 @@ export class AdminUserDialogComponent {
 
     obs$.subscribe({
       next: () => {
-        this.messageService.add({ ...TOAST_MESSAGES.admin.saveSuccess, life: 3000 });
+        this.messageService.add(TOAST_MESSAGES.admin.saveSuccess);
         this.loading.set(false);
         this.saved.emit();
         this.visible.set(false);

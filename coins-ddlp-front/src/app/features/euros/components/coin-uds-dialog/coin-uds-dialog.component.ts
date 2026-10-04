@@ -132,7 +132,7 @@ export class CoinUdsDialogComponent {
         },
         ownerId,
       );
-      this.messageService.add({ ...TOAST_MESSAGES.euros.saveSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.euros.saveSuccess);
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
