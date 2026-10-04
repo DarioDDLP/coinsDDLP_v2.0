@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
-import { LoadingService } from '../../../core/services/loading.service';
 import { OwnerService, OWNER_IDS } from '../../../core/services/owner.service';
 import {
   ConservationCode,
@@ -15,7 +14,6 @@ const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, 
 @Injectable({ providedIn: 'root' })
 export class ConmemorativasService {
   private supabase = inject(SupabaseService);
-  private loading = inject(LoadingService);
   private ownerService = inject(OwnerService);
 
   getAll(): Observable<EuroCoin[]> {
@@ -32,10 +30,7 @@ export class ConmemorativasService {
         },
         OWNERSHIP_JOIN,
       )
-      .pipe(
-        map((coins) => coins.map((c) => this.mapRawCoin(c))),
-        this.loading.withLoading(),
-      );
+      .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c))));
   }
 
   private mapRawCoin(raw: RawEuroCoin): EuroCoin {

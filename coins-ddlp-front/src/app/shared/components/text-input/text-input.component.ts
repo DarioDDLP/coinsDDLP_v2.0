@@ -1,4 +1,5 @@
 import { Component, input, output } from '@angular/core';
+import { uniqueId } from '../../helpers/unique-id.helper';
 
 export type TextInputType = 'text' | 'email' | 'password' | 'number';
 
@@ -19,6 +20,8 @@ export class TextInputComponent {
 
   valueChange = output<string>();
   enterPressed = output<void>();
+
+  readonly id = uniqueId('text-input');
 
   onInput(event: Event): void {
     this.valueChange.emit((event.target as HTMLInputElement).value);

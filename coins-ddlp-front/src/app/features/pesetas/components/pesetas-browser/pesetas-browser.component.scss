@@ -1,0 +1,140 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.total-progress {
+  padding: var(--space-4) var(--space-5);
+  @include card;
+}
+
+// --- Chips de denominación ---
+
+.value-chips {
+  @include scroll-row;
+  margin-bottom: var(--space-5);
+  padding-bottom: var(--space-1);
+
+  @include mobile {
+    margin: 0 calc(-1 * var(--space-4)) var(--space-4);
+    padding: 0 var(--space-4) var(--space-1);
+  }
+}
+
+.value-chip {
+  flex: none;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text-soft);
+  font-family: var(--font-family);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+  @include focus-ring;
+
+  &__label {
+    font-size: var(--font-body);
+    font-weight: var(--font-medium);
+    white-space: nowrap;
+  }
+
+  &__count {
+    font-size: var(--font-xs);
+    color: var(--text-faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &:hover:not(.value-chip--active) {
+    border-color: var(--border-strong);
+    color: var(--text);
+  }
+
+  &--active {
+    border-color: var(--accent);
+    background: rgba(var(--accent-rgb), 0.14);
+    color: var(--accent-soft);
+
+    .value-chip__count {
+      color: var(--accent);
+    }
+  }
+}
+
+// --- Tabla ---
+
+.col-nowrap {
+  white-space: nowrap;
+}
+
+.col-grow {
+  width: 100%;
+}
+
+.col-center {
+  text-align: center !important;
+  white-space: nowrap;
+}
+
+.col-actions {
+  width: 1%;
+  text-align: right !important;
+}
+
+.muted {
+  color: var(--text-faint);
+}
+
+:host ::ng-deep {
+  .coin-row {
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+  }
+
+  .coin-row__year {
+    color: var(--text);
+    font-weight: var(--font-medium);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .coin-row__title {
+    color: var(--text-soft);
+  }
+
+  .group-row > td {
+    padding: var(--space-3) var(--space-4) !important;
+    background: var(--surface-2) !important;
+  }
+
+  .group-row__title {
+    font-family: var(--font-family-display);
+    font-size: var(--font-md);
+    font-weight: var(--font-bold);
+    color: var(--accent-soft);
+  }
+
+  @include mobile {
+    .group-row > td {
+      flex: 1 1 100%;
+    }
+
+    .p-datatable-tbody > tr.group-row {
+      padding: 0;
+    }
+
+    .col-actions {
+      margin-left: auto;
+    }
+  }
+}

@@ -1,10 +1,13 @@
 .badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-snug);
+  font-variant-numeric: tabular-nums;
   white-space: nowrap;
 
   &--success {
@@ -27,9 +30,20 @@
     background: var(--state-secondary-bg);
     color: var(--state-secondary-text);
   }
+  &--accent {
+    background: var(--state-accent-bg);
+    color: var(--state-accent-text);
+  }
+  // Contorno sin relleno: marca discreta (p. ej. "NC" en filas no circulantes)
+  &--neutral {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-faint);
+  }
 
   &--md {
-    font-size: 14px;
-    padding: 4px 12px;
+    height: 28px;
+    padding: 0 var(--space-3);
+    font-size: var(--font-sm);
   }
 }

@@ -1,14 +1,8 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  width: 100%;
-}
+@use 'forms' as *;
 
-.select {
-  &__label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--deep-navy);
-  }
+@include field-styles;
+
+:host ::ng-deep .p-select {
+  min-height: 44px;
+  align-items: center;
 }

@@ -1,32 +1,84 @@
-@if (isReady()) {
-  @if (hasError()) {
-    <app-empty-panel
-      icon="pi-exclamation-circle"
-      [title]="sharedLiterals.errorLoad"
-      [message]="sharedLiterals.errorLoadMessage"
-      [retryLabel]="sharedLiterals.retry"
-      (retry)="loadCoins()"
-    />
-  } @else {
-    <app-collection-layout
-      [title]="literals.countriesTitle"
-      [searchPlaceholder]="literals.searchCountries"
-      [searchValue]="searchQuery()"
-      (searchChange)="onSearch($event)"
-    >
-      @if (countryGroups().length > 0) {
-        <div class="country-grid">
-          @for (group of countryGroups(); track group.country) {
-            <div class="country-card" [routerLink]="['/euros', group.country]">
-              <app-country-flag [country]="group.country" [size]="64" />
-              <span class="country-card__name">{{ group.country }}</span>
-              <span class="country-card__years"> {{ group.minYear }} — {{ group.maxYear }} </span>
-            </div>
-          }
-        </div>
+@if (hasError()) {
+  <app-page-layout [title]="literals.title">
+    <app-error-panel (retry)="loadSummary()" />
+  </app-page-layout>
+} @else {
+  <app-page-layout
+    [title]="literals.title"
+    [overline]="literals.overline"
+    [subtitle]="isReady() ? subtitle() : ''"
+    [searchPlaceholder]="literals.searchCountries"
+    [searchValue]="searchQuery()"
+    (searchChange)="onSearch($event)"
+  >
+    <div page-aside class="total-progress">
+      @if (isReady()) {
+        <app-progress-stat
+          [label]="literals.progressTotal"
+          [owned]="totals().owned"
+          [total]="totals().total"
+          size="lg"
+        />
       } @else {
-        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+        <app-skeleton height="3.25rem" [announce]="false" />
       }
-    </app-collection-layout>
-  }
+    </div>
+
+    <app-filter-pills
+      page-filters
+      [options]="ownerOptions"
+      [value]="ownerService.current()"
+      [ariaLabel]="sharedLiterals.collection"
+      (valueChange)="onOwnerChange($event)"
+    />
+
+    @if (!isReady()) {
+      <div class="country-grid">
+        @for (_ of skeletonCards; track $index) {
+          <div class="country-card country-card--skeleton">
+            <div class="country-card__head">
+              <app-skeleton
+                layout="inline"
+                shape="circle"
+                width="var(--flag-size, 48px)"
+                [announce]="$first"
+              />
+              <div class="country-card__names">
+                <app-skeleton width="7rem" height="1rem" [announce]="false" />
+                <app-skeleton width="5rem" height="0.8rem" [announce]="false" />
+              </div>
+            </div>
+            <app-skeleton height="1.75rem" [announce]="false" />
+          </div>
+        }
+      </div>
+    } @else if (countryCards().length > 0) {
+      <ul class="country-grid">
+        @for (card of countryCards(); track card.country) {
+          <li>
+            <a class="country-card" [routerLink]="['/euros', card.country]">
+              <div class="country-card__head">
+                <app-country-flag [country]="card.country" [size]="48" [decorative]="true" />
+                <div class="country-card__names">
+                  <span class="country-card__name">{{ card.country }}</span>
+                  <span class="country-card__years">{{ card.minYear }} — {{ card.maxYear }}</span>
+                </div>
+              </div>
+              <app-progress-stat [owned]="card.owned" [total]="card.total" size="sm" />
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
+    }
+  </app-page-layout>
 }

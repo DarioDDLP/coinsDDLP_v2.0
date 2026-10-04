@@ -1,3 +1,5 @@
+@use 'forms' as *;
+
 :host {
   display: block;
   width: 100%;
@@ -6,13 +8,13 @@
 .toggle {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
+  gap: var(--space-3);
   width: 100%;
+  min-height: 44px;
+}
 
-  &__label {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--deep-navy);
-  }
+.field-label {
+  @include field-label;
+  cursor: pointer;
 }

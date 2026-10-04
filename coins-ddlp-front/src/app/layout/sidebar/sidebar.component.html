@@ -1,0 +1,97 @@
+<nav class="sidebar" [attr.aria-label]="literals.mainNav">
+  <div class="sidebar__brand">
+    <a class="sidebar__logo" routerLink="/euros" [attr.aria-label]="literals.brandHome">
+      <span class="sidebar__mark" aria-hidden="true">&lt;/&gt;</span>
+      @if (!layout.sidebarRail()) {
+        <span class="sidebar__wordmark">{{ literals.brand }}</span>
+        <span class="sidebar__suffix">{{ literals.brandSuffix }}</span>
+      }
+    </a>
+  </div>
+
+  <div class="sidebar__nav">
+    @for (section of sections(); track section.group) {
+      @if (layout.sidebarRail()) {
+        @if (!$first) {
+          <span class="sidebar__divider" aria-hidden="true"></span>
+        }
+      } @else {
+        <span class="sidebar__group-label">{{ section.label }}</span>
+      }
+      <ul class="sidebar__list">
+        @for (item of section.items; track item.routerLink) {
+          <li>
+            <a
+              class="sidebar__item"
+              [routerLink]="item.routerLink"
+              routerLinkActive="sidebar__item--active"
+              #rla="routerLinkActive"
+              [attr.aria-current]="rla.isActive ? 'page' : null"
+              [attr.aria-label]="layout.sidebarRail() ? item.label : null"
+              [pTooltip]="item.label"
+              [tooltipDisabled]="!layout.sidebarRail()"
+              tooltipPosition="right"
+            >
+              <i [class]="item.icon" aria-hidden="true"></i>
+              @if (!layout.sidebarRail()) {
+                <span>{{ item.label }}</span>
+              }
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+
+  <div class="sidebar__footer">
+    @if (numistaService.remaining() !== null && !layout.sidebarRail()) {
+      <div class="sidebar__quota" [attr.title]="literals.numistaQuotaHint">
+        <div class="sidebar__quota-row">
+          <span>{{ literals.numistaQuota }}</span>
+          <span class="sidebar__quota-count">{{ numistaService.remaining() }} / {{ quota }}</span>
+        </div>
+        <div class="sidebar__quota-bar">
+          <span [style.width.%]="quotaPercent()"></span>
+        </div>
+      </div>
+    }
+
+    @if (authService.isLoggedIn()) {
+      <app-user-menu [compact]="layout.sidebarRail()" />
+    } @else {
+      <button
+        type="button"
+        class="sidebar__login"
+        [attr.aria-label]="authLiterals.loginTitle"
+        [pTooltip]="authLiterals.loginTitle"
+        [tooltipDisabled]="!layout.sidebarRail()"
+        tooltipPosition="right"
+        (click)="layout.openLogin()"
+      >
+        <i class="pi pi-sign-in" aria-hidden="true"></i>
+        @if (!layout.sidebarRail()) {
+          <span>{{ authLiterals.loginTitle }}</span>
+        }
+      </button>
+    }
+
+    @if (layout.viewport() === 'desktop') {
+      <button
+        type="button"
+        class="sidebar__collapse"
+        [attr.aria-label]="layout.sidebarCollapsed() ? literals.expand : literals.collapse"
+        [attr.aria-expanded]="!layout.sidebarCollapsed()"
+        [pTooltip]="layout.sidebarCollapsed() ? literals.expand : literals.collapse"
+        tooltipPosition="right"
+        (click)="layout.toggleSidebar()"
+      >
+        <i
+          [class]="
+            layout.sidebarCollapsed() ? 'pi pi-angle-double-right' : 'pi pi-angle-double-left'
+          "
+          aria-hidden="true"
+        ></i>
+      </button>
+    }
+  </div>
+</nav>

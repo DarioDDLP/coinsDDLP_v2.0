@@ -1,13 +1,4 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="onHide()"
-  [modal]="true"
-  [header]="header()"
-  [style]="{ width: '420px' }"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
->
+<app-dialog [(visible)]="visible" [header]="header()">
   <div class="user-form">
     @if (!isEditMode()) {
       <app-text-input
@@ -44,18 +35,19 @@
       [options]="roleOptions"
       (valueChange)="role.set($any($event))"
     />
-
-    @if (errorMessage()) {
-      <p class="user-form__error">{{ errorMessage() }}</p>
-    }
-
-    <div class="user-form__actions">
-      <app-button
-        [label]="sharedLiterals.save"
-        [loading]="loading()"
-        [disabled]="!canSubmit()"
-        (clicked)="onSubmit()"
-      />
-    </div>
   </div>
-</p-dialog>
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals.cancel"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+    <app-button
+      [label]="sharedLiterals.save"
+      [loading]="loading()"
+      [disabled]="!canSubmit()"
+      (clicked)="onSubmit()"
+    />
+  </ng-container>
+</app-dialog>

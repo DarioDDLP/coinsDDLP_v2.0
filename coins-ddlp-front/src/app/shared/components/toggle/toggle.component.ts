@@ -1,5 +1,6 @@
 import { Component, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { uniqueId } from '../../helpers/unique-id.helper';
 import { ToggleSwitch } from 'primeng/toggleswitch';
 
 @Component({
@@ -14,4 +15,6 @@ export class ToggleComponent {
   disabled = input<boolean>(false);
 
   valueChange = output<boolean>();
+
+  readonly id = uniqueId('toggle');
 }

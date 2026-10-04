@@ -1,0 +1,73 @@
+<p-drawer
+  [visible]="layout.moreOpen()"
+  (visibleChange)="layout.moreOpen.set($event)"
+  position="bottom"
+  appendTo="body"
+  styleClass="more-sheet"
+  [showCloseIcon]="false"
+  [blockScroll]="true"
+  [attr.aria-label]="literals.moreTitle"
+>
+  <ng-template #headless>
+    <div class="more-sheet__content">
+      <span class="more-sheet__handle" aria-hidden="true"></span>
+
+      @if (authService.isLoggedIn()) {
+        <div class="more-sheet__user">
+          <span class="more-sheet__avatar" aria-hidden="true">{{ initials() }}</span>
+          <span class="more-sheet__user-text">
+            <span class="more-sheet__user-name">{{ displayName() }}</span>
+            <span class="more-sheet__user-role">{{
+              authService.isAdmin() ? literals.adminRole : literals.userRole
+            }}</span>
+          </span>
+        </div>
+      }
+
+      @if (items().length > 0) {
+        <ul class="more-sheet__list">
+          @for (item of items(); track item.routerLink) {
+            <li>
+              <a class="more-sheet__item" [routerLink]="item.routerLink" (click)="close()">
+                <i [class]="item.icon" aria-hidden="true"></i>
+                {{ item.label }}
+              </a>
+            </li>
+          }
+        </ul>
+      }
+
+      @if (numistaService.remaining() !== null) {
+        <div class="more-sheet__quota" [attr.title]="literals.numistaQuotaHint">
+          <div class="more-sheet__quota-row">
+            <span>{{ literals.numistaQuota }}</span>
+            <span class="more-sheet__quota-count"
+              >{{ numistaService.remaining() }} / {{ quota }}</span
+            >
+          </div>
+          <div class="more-sheet__quota-bar"><span [style.width.%]="quotaPercent()"></span></div>
+        </div>
+      }
+
+      @if (authService.isLoggedIn()) {
+        <button
+          type="button"
+          class="more-sheet__item more-sheet__item--danger"
+          (click)="layout.openLogout()"
+        >
+          <i class="pi pi-sign-out" aria-hidden="true"></i>
+          {{ authLiterals.logoutButton }}
+        </button>
+      } @else {
+        <button
+          type="button"
+          class="more-sheet__item more-sheet__item--accent"
+          (click)="layout.openLogin()"
+        >
+          <i class="pi pi-sign-in" aria-hidden="true"></i>
+          {{ authLiterals.loginTitle }}
+        </button>
+      }
+    </div>
+  </ng-template>
+</p-drawer>

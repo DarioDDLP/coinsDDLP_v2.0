@@ -1,40 +1,80 @@
-.country-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 20px;
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.total-progress {
+  padding: var(--space-4) var(--space-5);
+  @include card;
 }
 
-.empty-msg {
-  text-align: center;
-  color: var(--cobalt);
+.country-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: var(--space-4);
   margin: 0;
-  padding: 40px 0;
+  padding: 0;
+  list-style: none;
+
+  @include mobile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
 }
 
 .country-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.15s;
+  gap: var(--space-4);
+  height: 100%;
+  padding: var(--space-5);
+  color: var(--text);
+  text-decoration: none;
+  @include card-interactive;
 
-  &:hover {
-    background: rgba(var(--gold-tan-rgb), 0.1);
+  @include mobile {
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  &--skeleton {
+    cursor: default;
+  }
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
+
+    @include mobile {
+      gap: var(--space-3);
+      --flag-size: 36px;
+    }
+  }
+
+  &__names {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
   }
 
   &__name {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--deep-navy);
-    text-align: center;
+    font-size: var(--font-base);
+    font-weight: var(--font-semibold);
+    @include truncate;
+
+    @include mobile {
+      font-size: var(--font-body);
+    }
   }
 
   &__years {
-    font-size: 12px;
-    color: var(--cobalt);
-    font-weight: 500;
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+
+    @include mobile {
+      font-size: var(--font-xs);
+    }
   }
 }

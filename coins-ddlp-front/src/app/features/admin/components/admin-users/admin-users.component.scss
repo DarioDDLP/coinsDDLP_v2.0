@@ -1,46 +1,51 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
 :host {
   display: block;
-  width: 100%;
 }
 
 .admin-users {
-  width: 90%;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 10px;
-  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
 
   &__toolbar {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
     align-items: center;
-    margin-bottom: 20px;
+    justify-content: space-between;
+    gap: var(--space-3);
   }
 
   &__title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--deep-navy);
     margin: 0;
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+  }
+
+  &__email {
+    color: var(--text);
+    font-weight: var(--font-medium);
   }
 
   &__actions {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
+    display: inline-flex;
+    gap: var(--space-1);
   }
 }
 
-:host ::ng-deep .p-datatable-thead > tr > th {
-  background: var(--deep-navy);
-  color: var(--cream);
-  font-weight: 600;
-  font-size: 13px;
+.col-center {
+  text-align: center !important;
+  white-space: nowrap;
 }
 
-@media (max-width: 900px) {
-  .admin-users {
-    width: 98%;
+.col-actions {
+  width: 1%;
+  text-align: right !important;
+  white-space: nowrap;
+
+  @include mobile {
+    margin-left: auto;
   }
 }

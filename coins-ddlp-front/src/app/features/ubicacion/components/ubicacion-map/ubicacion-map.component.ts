@@ -1,12 +1,14 @@
 import { Component, computed, ErrorHandler, inject, OnInit, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { CollectionLayoutComponent } from '../../../../shared/components/collection-layout/collection-layout.component';
+import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
-import { LoadingSpinnerComponent } from '../../../../shared/components/loading-spinner/loading-spinner.component';
 import { EmptyPanelComponent } from '../../../../shared/components/empty-panel/empty-panel.component';
+import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
+import { getEmptyState } from '../../../../shared/helpers/empty-state.helper';
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { UbicacionEditDialogComponent } from '../ubicacion-edit-dialog/ubicacion-edit-dialog.component';
 import { UbicacionService } from '../../services/ubicacion.service';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -21,11 +23,12 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
 @Component({
   selector: 'app-ubicacion-map',
   imports: [
-    CollectionLayoutComponent,
+    PageLayoutComponent,
     CountryFlagComponent,
     BadgeComponent,
-    LoadingSpinnerComponent,
+    SkeletonComponent,
     EmptyPanelComponent,
+    ErrorPanelComponent,
     ConfirmDialogComponent,
     ButtonComponent,
     UbicacionEditDialogComponent,
@@ -44,6 +47,7 @@ export class UbicacionMapComponent implements OnInit {
 
   private allLocations = signal<CountryLocation[]>([]);
   readonly searchQuery = signal('');
+  readonly emptyState = computed(() => getEmptyState(this.searchQuery()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly isDeleting = signal(false);
@@ -54,6 +58,13 @@ export class UbicacionMapComponent implements OnInit {
   readonly selectedLocation = signal<CountryLocation | null>(null);
 
   readonly canEdit = computed(() => this.authService.isAdmin());
+
+  readonly subtitle = computed(() => {
+    const locations = this.allLocations();
+    if (locations.length === 0) return '';
+    const albums = new Set(locations.map((l) => l.album)).size;
+    return `${albums} ${this.literals.albumsCount} · ${locations.length} ${this.literals.countriesCount}`;
+  });
 
   private readonly filteredLocations = computed<CountryLocation[]>(() => {
     const query = normalizeString(this.searchQuery());
@@ -106,34 +117,19 @@ export class UbicacionMapComponent implements OnInit {
     try {
       await this.service.remove(loc.id);
       this.allLocations.update((list) => list.filter((l) => l.id !== loc.id));
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.deleteSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.ubicacion.deleteSuccess);
+      this.showConfirmDelete.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.messageService.add({ ...TOAST_MESSAGES.ubicacion.deleteError, life: 3000 });
     } finally {
       this.isDeleting.set(false);
-      this.showConfirmDelete.set(false);
-      this.locationToDelete.set(null);
     }
   }
 
-  protected onCloseConfirmDelete(): void {
-    this.showConfirmDelete.set(false);
-    this.locationToDelete.set(null);
-  }
-
-  protected onDialogSaved(): void {
-    this.showEditDialog.set(false);
-    this.selectedLocation.set(null);
-    this.loadLocations();
-  }
-
-  protected onDialogClosed(): void {
-    this.showEditDialog.set(false);
-    this.selectedLocation.set(null);
-  }
-
-  private loadLocations(): void {
+  /** Tras guardar en el diálogo se recarga sin skeleton; al reintentar, con skeleton. */
+  loadLocations(showSkeleton = true): void {
+    this.hasError.set(false);
+    if (showSkeleton) this.isReady.set(false);
     this.service.getAll().subscribe({
       next: (locations) => {
         this.allLocations.set(locations);
@@ -141,7 +137,8 @@ export class UbicacionMapComponent implements OnInit {
       },
       error: (e) => {
         this.errorHandler.handleError(e);
-        this.hasError.set(true);
+        // Si falla una recarga tras editar se mantienen los datos: basta con el toast
+        if (showSkeleton) this.hasError.set(true);
         this.isReady.set(true);
       },
     });

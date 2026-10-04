@@ -1,16 +1,39 @@
-<p-toast position="top-right" />
+<a class="skip-link" href="#main">{{ literals.skipToContent }}</a>
 
-@if (loadingService.isLoading()) {
-  <app-loading-spinner />
-}
+<!-- Único p-toast de la app: apilado (PrimeNG 22), sin repetir uno que ya esté abierto -->
+<p-toast
+  [position]="layout.isMobile() ? 'top-center' : 'top-right'"
+  [breakpoints]="toastBreakpoints"
+  [preventOpenDuplicates]="true"
+/>
 
-<app-sidebar />
+<div class="shell" [class.shell--mobile]="layout.isMobile()">
+  @if (layout.isMobile()) {
+    <app-topbar />
+  } @else {
+    <app-sidebar />
+  }
 
-<div class="main-content">
-  <router-outlet />
+  <main class="shell__main" id="main" tabindex="-1">
+    <router-outlet />
+  </main>
 </div>
 
-<app-recovery-password-dialog
-  [visible]="authService.isRecoveryMode()"
-  (closed)="authService.isRecoveryMode.set(false)"
-/>
+@if (layout.isMobile()) {
+  <app-bottom-nav />
+  @defer (when layout.moreOpen()) {
+    <app-more-sheet />
+  }
+}
+
+@defer (when layout.authDialog() !== null) {
+  <app-login-dialog
+    [visible]="layout.authDialog() !== null"
+    [mode]="layout.authDialog() ?? 'login'"
+    (visibleChange)="!$event && layout.closeAuthDialog()"
+  />
+}
+
+@defer (when authService.isRecoveryMode()) {
+  <app-recovery-password-dialog [(visible)]="authService.isRecoveryMode" />
+}

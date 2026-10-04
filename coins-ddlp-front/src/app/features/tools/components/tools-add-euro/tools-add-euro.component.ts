@@ -8,6 +8,7 @@ import {
 } from '../../../../shared/components/select/select.component';
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
+import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { LITERALS } from '../../../../shared/constants/literals';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import {
@@ -19,7 +20,13 @@ import {
 
 @Component({
   selector: 'app-tools-add-euro',
-  imports: [TextInputComponent, SelectComponent, ToggleComponent, ButtonComponent],
+  imports: [
+    TextInputComponent,
+    SelectComponent,
+    ToggleComponent,
+    ButtonComponent,
+    SkeletonComponent,
+  ],
   templateUrl: './tools-add-euro.component.html',
   styleUrl: './tools-add-euro.component.scss',
 })
@@ -34,6 +41,7 @@ export class ToolsAddEuroComponent {
   readonly variantOptions = VARIANT_OPTIONS;
 
   readonly countryOptions = signal<SelectOption[]>([]);
+  readonly isReady = signal(false);
   readonly country = signal('');
   readonly year = signal(0);
   readonly faceValue = signal('');
@@ -44,7 +52,6 @@ export class ToolsAddEuroComponent {
   readonly idNum = signal('');
   readonly variant = signal('');
   readonly loading = signal(false);
-  readonly errorMessage = signal('');
 
   readonly isMintRequired = computed(() => this.country() === 'Alemania');
   readonly isVariantApplicable = computed(() => VARIANT_FACE_VALUES.has(this.faceValue()));
@@ -73,14 +80,17 @@ export class ToolsAddEuroComponent {
       next: (coins) => {
         const unique = [...new Set(coins.map((c) => c.country))].sort();
         this.countryOptions.set(unique.map((c) => ({ label: c, value: c })));
+        this.isReady.set(true);
       },
-      error: (e) => this.errorHandler.handleError(e),
+      error: (e) => {
+        this.errorHandler.handleError(e);
+        this.isReady.set(true);
+      },
     });
   }
 
   async onSubmit(): Promise<void> {
     if (!this.isValid()) return;
-    this.errorMessage.set('');
     this.loading.set(true);
     try {
       await this.eurosService.create({
@@ -94,11 +104,10 @@ export class ToolsAddEuroComponent {
         idNum: this.idNum(),
         variant: this.variant() || undefined,
       });
-      this.messageService.add({ ...TOAST_MESSAGES.herramientas.addSuccess, life: 3000 });
+      this.messageService.add(TOAST_MESSAGES.herramientas.addSuccess);
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.addError);
     } finally {
       this.loading.set(false);
     }

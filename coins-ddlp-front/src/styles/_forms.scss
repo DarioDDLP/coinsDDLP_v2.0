@@ -1,0 +1,59 @@
+// Estilos compartidos de los controles de formulario propios (text-input, textarea, select, toggle).
+// Cada componente los incluye en su propio .scss: @use 'forms' as *; @include field-styles;
+
+@mixin field-label {
+  font-size: var(--font-sm);
+  font-weight: var(--font-semibold);
+  color: var(--text-soft);
+}
+
+@mixin field-control {
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+  color: var(--text);
+  font-family: var(--font-family);
+  font-size: var(--font-base);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+
+  &:hover:not(:disabled):not(:focus) {
+    border-color: var(--border-strong);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: var(--ring);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &::placeholder {
+    color: var(--placeholder);
+  }
+}
+
+@mixin field-styles {
+  :host {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    width: 100%;
+  }
+
+  .field-label {
+    @include field-label;
+  }
+
+  .field-control {
+    @include field-control;
+  }
+}

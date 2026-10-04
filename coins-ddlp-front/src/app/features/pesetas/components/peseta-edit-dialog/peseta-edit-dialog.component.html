@@ -1,34 +1,23 @@
-<p-dialog
-  [visible]="visible()"
-  (onHide)="onHide()"
-  [modal]="true"
-  [style]="{ width: '380px' }"
-  [draggable]="false"
-  [resizable]="false"
-  [closable]="true"
->
-  <ng-template pTemplate="header">
-    <div class="dialog-header">
-      <span class="dialog-header__title">{{ dialogTitle() }}</span>
-    </div>
-  </ng-template>
+<app-dialog [(visible)]="visible" [header]="dialogTitle()">
   <div class="edit-form">
-    <app-text-input
-      [label]="literals.unitsLabel"
-      [value]="uds().toString()"
-      type="number"
-      [min]="0"
-      (valueChange)="uds.set(+$event)"
-    />
+    <div class="edit-form__row">
+      <app-text-input
+        [label]="literals.unitsLabel"
+        [value]="uds().toString()"
+        type="number"
+        [min]="0"
+        (valueChange)="uds.set(+$event)"
+      />
 
-    <app-select
-      [label]="literals.conservationLabel"
-      [value]="conservation()"
-      [options]="availableConservationOptions()"
-      [placeholder]="literals.conservationPlaceholder"
-      [disabled]="isConservationLocked()"
-      (valueChange)="conservation.set($event)"
-    />
+      <app-select
+        [label]="literals.conservationLabel"
+        [value]="conservation()"
+        [options]="availableConservationOptions()"
+        [placeholder]="literals.conservationPlaceholder"
+        [disabled]="isConservationLocked()"
+        (valueChange)="conservation.set($event)"
+      />
+    </div>
 
     <app-textarea
       [label]="literals.observationsLabel"
@@ -36,13 +25,14 @@
       [placeholder]="literals.observationsPlaceholder"
       (valueChange)="observations.set($event)"
     />
-
-    @if (errorMessage()) {
-      <p class="edit-form__error">{{ errorMessage() }}</p>
-    }
-
-    <div class="edit-form__actions">
-      <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
-    </div>
   </div>
-</p-dialog>
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals.cancel"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+    <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
+  </ng-container>
+</app-dialog>

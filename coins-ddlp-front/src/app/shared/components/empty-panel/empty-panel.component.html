@@ -1,10 +1,15 @@
-<div class="empty-panel">
-  <i class="empty-panel__icon pi {{ icon() }}"></i>
+<div class="empty-panel empty-panel--{{ tone() }}" [attr.role]="role()">
+  <span class="empty-panel__icon" aria-hidden="true"><i class="pi {{ icon() }}"></i></span>
   <p class="empty-panel__title">{{ title() }}</p>
   @if (message()) {
     <p class="empty-panel__message">{{ message() }}</p>
   }
-  @if (retryLabel()) {
-    <app-button [label]="retryLabel()" icon="pi pi-refresh" (clicked)="retry.emit()" />
+  @if (actionLabel()) {
+    <app-button
+      [label]="actionLabel()"
+      [icon]="actionIcon()"
+      [variant]="tone() === 'error' ? 'primary' : 'secondary'"
+      (clicked)="action.emit()"
+    />
   }
 </div>

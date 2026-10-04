@@ -42,6 +42,23 @@ export interface EuroCoin {
   observationsAlt?: string;
 }
 
+export interface RawEuroCoinSummary {
+  country: string;
+  year: number;
+  commemorative: boolean;
+  euro_ownership: Pick<RawOwnership, 'uds' | 'ownerId'>[] | null;
+}
+
+/** Fila mínima del catálogo para calcular progreso por país y año. */
+export interface EuroCoinSummary {
+  country: string;
+  year: number;
+  commemorative: boolean;
+  uds: number;
+  /** Solo en modo "ambas": unidades del segundo propietario. */
+  udsAlt?: number;
+}
+
 export type NewEuroCoin = Omit<
   EuroCoin,
   'id' | 'uds' | 'conservation' | 'observations' | 'udsAlt' | 'conservationAlt' | 'observationsAlt'

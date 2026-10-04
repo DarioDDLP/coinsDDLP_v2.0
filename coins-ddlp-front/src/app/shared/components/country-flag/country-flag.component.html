@@ -1,9 +1,12 @@
-<img
-  class="country-flag"
-  [src]="flagPath()"
-  [alt]="country()"
-  [title]="country()"
-  [style.width]="sizePx()"
-  [style.height]="sizePx()"
-  (error)="onImageError($event)"
-/>
+@if (flagPath(); as src) {
+  <img
+    class="country-flag"
+    [src]="src"
+    [alt]="decorative() ? '' : country()"
+    [style.width]="cssSize()"
+    [style.height]="cssSize()"
+    loading="lazy"
+    decoding="async"
+    (error)="onImageError($event)"
+  />
+}

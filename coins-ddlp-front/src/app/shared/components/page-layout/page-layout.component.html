@@ -1,0 +1,50 @@
+<div class="page">
+  <header class="page__header">
+    @if (backLink(); as link) {
+      <a class="page__back" [routerLink]="link" [queryParams]="backQueryParams()">
+        <i class="pi pi-chevron-left" aria-hidden="true"></i>
+        {{ backLabel() }}
+      </a>
+    }
+
+    <div class="page__heading">
+      <div class="page__title-block">
+        @if (country(); as c) {
+          <app-country-flag class="page__flag" [country]="c" [size]="56" [decorative]="true" />
+        }
+        <div class="page__titles">
+          @if (overline()) {
+            <span class="page__overline">{{ overline() }}</span>
+          }
+          <h1 class="page__title">{{ title() }}</h1>
+          @if (subtitle()) {
+            <p class="page__subtitle">{{ subtitle() }}</p>
+          }
+        </div>
+      </div>
+      <div class="page__aside">
+        <ng-content select="[page-aside]" />
+      </div>
+    </div>
+  </header>
+
+  <div class="page__toolbar">
+    @if (searchPlaceholder()) {
+      <app-search-input
+        class="page__search"
+        [placeholder]="searchPlaceholder()"
+        [value]="searchValue()"
+        (valueChange)="searchChange.emit($event)"
+      />
+    }
+    <ng-content select="[page-actions]" />
+  </div>
+
+  <div class="page__filters">
+    <ng-content select="[page-filters]" />
+  </div>
+
+  <div class="page__body">
+    <ng-content />
+  </div>
+</div>

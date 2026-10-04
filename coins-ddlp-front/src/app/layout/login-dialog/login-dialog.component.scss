@@ -1,0 +1,45 @@
+@use 'mixins' as *;
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__message {
+    margin: 0;
+    font-size: var(--font-base);
+    color: var(--text-soft);
+  }
+
+  &__error {
+    margin: 0;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--state-danger-bg);
+    color: var(--state-danger-text);
+    font-size: var(--font-sm);
+  }
+}
+
+// En el pie del diálogo: empuja el resto de acciones a la derecha
+.login-form__start {
+  margin-inline-end: auto;
+}
+
+.login-form__forgot-link {
+  padding: var(--space-1) 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--primary-soft);
+  font: inherit;
+  font-size: var(--font-sm);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  @include focus-ring;
+
+  &:hover {
+    color: var(--text);
+  }
+}

@@ -1,133 +1,210 @@
-@if (isReady()) {
-  @if (hasError()) {
-    <app-empty-panel
-      icon="pi-exclamation-circle"
-      [title]="sharedLiterals.errorLoad"
-      [message]="sharedLiterals.errorLoadMessage"
-      [retryLabel]="sharedLiterals.retry"
-      (retry)="loadCoins()"
-    />
-  } @else {
-    <app-collection-layout
-      [title]="literals.title"
-      [searchPlaceholder]="literals.search"
-      [searchValue]="searchQuery()"
-      cardBackground="#ffffff"
-      maxWidth="1400px"
-      (searchChange)="onSearch($event)"
-    >
-      <span layout-actions>
-        <app-button
-          icon="pi pi-file-excel"
-          [label]="sharedLiterals.exportExcel"
-          variant="tertiary"
-          (clicked)="exportExcel()"
+@if (hasError()) {
+  <app-page-layout [title]="literals.title">
+    <app-error-panel (retry)="loadCoins()" />
+  </app-page-layout>
+} @else {
+  <app-page-layout
+    [title]="literals.title"
+    [overline]="literals.overline"
+    [subtitle]="subtitle()"
+    [searchPlaceholder]="literals.search"
+    [searchValue]="searchQuery()"
+    (searchChange)="onSearch($event)"
+  >
+    <div page-aside class="total-progress">
+      @if (isReady()) {
+        <app-progress-stat
+          [label]="literals.progressTotal"
+          [owned]="progress().owned"
+          [total]="progress().total"
+          size="lg"
         />
-      </span>
-      <div class="filter-bar">
-        <app-filter-pills
-          [options]="ownerOptions"
-          [value]="ownerService.current()"
-          (valueChange)="onOwnerChange($event)"
-        />
-        <app-filter-pills
-          [options]="filterOptions"
-          [value]="ownershipFilter()"
-          (valueChange)="ownershipFilter.set($event)"
-        />
-      </div>
-
-      @if (!isEmpty()) {
-        @for (group of groupedCoins(); track group.year) {
-          <h2 class="year-header">{{ group.year }}</h2>
-          <p-table
-            [value]="group.rows"
-            [tableStyle]="{ width: '100%', 'table-layout': 'fixed' }"
-            [stripedRows]="true"
-          >
-            <ng-template pTemplate="header">
-              <tr>
-                <th style="width: 180px">{{ literals.colCountry }}</th>
-                <th style="width: 150px">{{ literals.colMint }}</th>
-                <th>{{ literals.colDescription }}</th>
-                @if (isAdmin()) {
-                  <th style="width: 130px; text-align: center">{{ literals.colLocation }}</th>
-                }
-                <th style="width: 110px; text-align: center">
-                  {{ literals.colConservation }}
-                  @if (isBoth()) {
-                    ({{ sharedLiterals.ownerDario }})
-                  }
-                </th>
-                <th style="width: 80px; text-align: center">
-                  {{ literals.colUnits }}
-                  @if (isBoth()) {
-                    ({{ sharedLiterals.ownerDario }})
-                  }
-                </th>
-                @if (isBoth()) {
-                  <th style="width: 110px; text-align: center">
-                    {{ literals.colConservation }} ({{ sharedLiterals.ownerManolo }})
-                  </th>
-                  <th style="width: 80px; text-align: center">
-                    {{ literals.colUnits }} ({{ sharedLiterals.ownerManolo }})
-                  </th>
-                }
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-row>
-              <tr class="row--clickable" (click)="onCoinClick(row.coin)">
-                <td>{{ row.coin.country }}</td>
-                <td>{{ row.coin.mint ?? '—' }}</td>
-                <td class="clip">
-                  {{ row.coin.description }}
-                  @if (row.coin.variant) {
-                    <app-badge [label]="row.coin.variant!" severity="secondary" />
-                  }
-                </td>
-                @if (isAdmin()) {
-                  <td style="text-align: center; white-space: nowrap">
-                    {{ row.location.album }} / {{ row.location.page }} / {{ row.location.position }}
-                  </td>
-                }
-                <td style="text-align: center">
-                  @if (row.conservationBadge) {
-                    <app-badge
-                      [label]="row.conservationBadge.label"
-                      [severity]="row.conservationBadge.severity"
-                      [tooltip]="row.conservationBadge.tooltip"
-                    />
-                  }
-                </td>
-                <td style="text-align: center">
-                  <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
-                </td>
-                @if (isBoth()) {
-                  <td style="text-align: center">
-                    @if (row.conservationBadgeAlt) {
-                      <app-badge
-                        [label]="row.conservationBadgeAlt.label"
-                        [severity]="row.conservationBadgeAlt.severity"
-                        [tooltip]="row.conservationBadgeAlt.tooltip"
-                      />
-                    }
-                  </td>
-                  <td style="text-align: center">
-                    @if (row.udsBadgeAlt) {
-                      <app-badge
-                        [label]="row.udsBadgeAlt.label"
-                        [severity]="row.udsBadgeAlt.severity"
-                      />
-                    }
-                  </td>
-                }
-              </tr>
-            </ng-template>
-          </p-table>
-        }
       } @else {
-        <app-empty-panel icon="pi-search" [title]="literals.emptySearch" />
+        <app-skeleton height="3.25rem" [announce]="false" />
       }
-    </app-collection-layout>
-  }
+    </div>
+
+    <app-button
+      page-actions
+      icon="pi pi-file-excel"
+      [label]="sharedLiterals.exportExcel"
+      variant="tertiary"
+      [disabled]="!isReady() || groupedCoins().length === 0"
+      (clicked)="exportExcel()"
+    />
+
+    <app-filter-pills
+      page-filters
+      [options]="ownerOptions"
+      [value]="ownerService.current()"
+      [ariaLabel]="sharedLiterals.collection"
+      (valueChange)="onOwnerChange($event)"
+    />
+    <app-filter-pills
+      page-filters
+      [options]="ownershipOptions"
+      [value]="ownershipFilter()"
+      [ariaLabel]="sharedLiterals.ownership"
+      (valueChange)="ownershipFilter.set($event)"
+    />
+
+    @if (!isReady()) {
+      <app-skeleton [count]="8" />
+    } @else if (groupedCoins().length > 0) {
+      <nav #jumpsNav class="year-jumps" [attr.aria-label]="literals.jumpToYear">
+        @for (group of groupedCoins(); track group.year) {
+          <button
+            type="button"
+            class="year-jump"
+            [class.year-jump--active]="currentYear() === group.year"
+            (click)="jumpToYear(group.year)"
+          >
+            {{ group.year }}
+          </button>
+        }
+      </nav>
+
+      <div #sections class="year-sections">
+        @for (group of groupedCoins(); track group.year) {
+          <section class="year-section" [id]="'year-' + group.year" [attr.data-year]="group.year">
+            <header class="year-section__header">
+              <h2 class="year-section__year">{{ group.year }}</h2>
+              <span class="year-section__count"> {{ group.owned }} / {{ group.rows.length }} </span>
+            </header>
+
+            <p-table class="table-stack" [value]="group.rows" dataKey="coin.id" [rowHover]="true">
+              <ng-template #header>
+                <tr>
+                  <th class="col-country">{{ literals.colCountry }}</th>
+                  <th class="col-mint">{{ literals.colMint }}</th>
+                  <th class="col-grow">{{ literals.colDescription }}</th>
+                  @if (isAdmin()) {
+                    <th class="col-center">{{ literals.colLocation }}</th>
+                  }
+                  <th class="col-center">
+                    {{ literals.colConservation }}
+                    @if (isBoth()) {
+                      <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                    }
+                  </th>
+                  <th class="col-center">
+                    {{ literals.colUnits }}
+                    @if (isBoth()) {
+                      <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                    }
+                  </th>
+                  @if (isBoth()) {
+                    <th class="col-center">
+                      {{ literals.colConservation }}
+                      <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                    </th>
+                    <th class="col-center">
+                      {{ literals.colUnits }}
+                      <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                    </th>
+                  }
+                </tr>
+              </ng-template>
+
+              <ng-template #body let-row>
+                <tr
+                  class="coin-row"
+                  tabindex="0"
+                  [attr.aria-label]="row.coin.country + ' · ' + row.coin.description"
+                  (click)="openCoin(row.coin)"
+                  (keydown.enter)="openCoin(row.coin)"
+                >
+                  <td class="col-country" data-cell="primary">
+                    <span class="country">
+                      <app-country-flag
+                        [country]="row.coin.country"
+                        [size]="24"
+                        [decorative]="true"
+                        [ring]="false"
+                      />
+                      {{ row.coin.country }}
+                    </span>
+                  </td>
+                  <td
+                    class="col-mint"
+                    [attr.data-label]="literals.colMint"
+                    [attr.data-cell]="row.coin.mint ? null : 'hide-mobile'"
+                  >
+                    {{ row.coin.mint || '—' }}
+                  </td>
+                  <td class="col-grow" data-cell="secondary">
+                    <div class="coin-row__desc">
+                      <span class="clip">{{ row.coin.description }}</span>
+                      @if (row.coin.variant) {
+                        <app-badge [label]="row.coin.variant" severity="secondary" />
+                      }
+                    </div>
+                  </td>
+                  @if (isAdmin()) {
+                    <td class="col-center col-location" [attr.data-label]="literals.colLocation">
+                      {{ row.location.album }} / {{ row.location.page }} /
+                      {{ row.location.position }}
+                    </td>
+                  }
+                  <td class="col-center" [attr.data-label]="literals.colConservation">
+                    @if (row.conservationBadge) {
+                      <app-badge
+                        [label]="row.conservationBadge.label"
+                        [severity]="row.conservationBadge.severity"
+                        [tooltip]="row.conservationBadge.tooltip"
+                      />
+                    } @else {
+                      <span class="muted">—</span>
+                    }
+                  </td>
+                  <td class="col-center" [attr.data-label]="literals.colUnits">
+                    <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
+                  </td>
+                  @if (isBoth()) {
+                    <td
+                      class="col-center"
+                      [attr.data-label]="
+                        literals.colConservation + ' ' + sharedLiterals.ownerManolo
+                      "
+                    >
+                      @if (row.conservationBadgeAlt) {
+                        <app-badge
+                          [label]="row.conservationBadgeAlt.label"
+                          [severity]="row.conservationBadgeAlt.severity"
+                          [tooltip]="row.conservationBadgeAlt.tooltip"
+                        />
+                      } @else {
+                        <span class="muted">—</span>
+                      }
+                    </td>
+                    <td
+                      class="col-center"
+                      [attr.data-label]="literals.colUnits + ' ' + sharedLiterals.ownerManolo"
+                    >
+                      @if (row.udsBadgeAlt) {
+                        <app-badge
+                          [label]="row.udsBadgeAlt.label"
+                          [severity]="row.udsBadgeAlt.severity"
+                        />
+                      }
+                    </td>
+                  }
+                </tr>
+              </ng-template>
+            </p-table>
+          </section>
+        }
+      </div>
+    } @else {
+      @let empty = emptyState();
+      <app-empty-panel
+        [icon]="empty.icon"
+        [title]="empty.title"
+        [tone]="empty.tone"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
+    }
+  </app-page-layout>
 }

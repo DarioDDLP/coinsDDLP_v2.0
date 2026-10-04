@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
-import { LoadingService } from '../../../core/services/loading.service';
 import {
   CountryLocation,
   NewCountryLocation,
@@ -11,14 +10,11 @@ import { TABLES } from '../../../shared/constants/collections.const';
 @Injectable({ providedIn: 'root' })
 export class UbicacionService {
   private supabase = inject(SupabaseService);
-  private loading = inject(LoadingService);
 
   getAll(): Observable<CountryLocation[]> {
-    return this.supabase
-      .getTableWhere<CountryLocation>(TABLES.countryLocation, (query) =>
-        query.order('album', { ascending: true }).order('country', { ascending: true }),
-      )
-      .pipe(this.loading.withLoading());
+    return this.supabase.getTableWhere<CountryLocation>(TABLES.countryLocation, (query) =>
+      query.order('album', { ascending: true }).order('country', { ascending: true }),
+    );
   }
 
   getCountries(): Observable<string[]> {
