@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Drawer } from 'primeng/drawer';
 import { LITERALS } from '../../shared/constants/literals';
+import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { AuthService } from '../../core/services/auth.service';
 import { NumistaService } from '../../core/services/numista.service';
 import { LayoutStateService } from '../layout-state.service';
@@ -23,6 +24,7 @@ export class MoreSheetComponent {
   readonly literals = LITERALS.nav;
   readonly authLiterals = LITERALS.auth;
   readonly quota = NUMISTA_MONTHLY_QUOTA;
+  readonly version = APP_VERSION;
 
   readonly items = computed(() =>
     NAV_ITEMS.filter((i) => !i.mobilePrimary && (!i.adminOnly || this.authService.isAdmin())),

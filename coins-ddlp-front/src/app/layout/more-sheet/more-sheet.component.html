@@ -68,6 +68,10 @@
           {{ authLiterals.loginTitle }}
         </button>
       }
+
+      <span class="more-sheet__version" [attr.title]="literals.versionHint"
+        >{{ literals.versionPrefix }}{{ version }}</span
+      >
     </div>
   </ng-template>
 </p-drawer>

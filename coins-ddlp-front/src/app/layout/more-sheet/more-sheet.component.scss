@@ -146,4 +146,11 @@
       background: var(--primary);
     }
   }
+
+  &__version {
+    padding-top: var(--space-2);
+    font-size: var(--font-2xs);
+    color: var(--text-faint);
+    text-align: center;
+  }
 }
