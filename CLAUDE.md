@@ -119,15 +119,16 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-04
+> **Última actualización:** 2026-10-05
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
-- **Versión en producción: v3.0.0** (Angular 22 + PrimeNG 22 + rediseño oscuro y responsive), etiqueta `v3.0.0` en `main`. Si falla en producción: Vercel → Deployments → Instant Rollback
-- **Releases con release-please:** en cada push a `main`, `.github/workflows/release-please.yml` abre o actualiza el PR `chore(release): vX.Y.Z` con `CHANGELOG.md` y la versión en `version.txt`, `coins-ddlp-front/package.json` y `package-lock.json`. Al fusionarlo crea la etiqueta `vX.Y.Z` y la release de GitHub. Versión según los commits: `fix`/`refactor`/`perf` → parche, `feat` → menor, `!`/BREAKING CHANGE → mayor; `docs`/`chore` no sacan versión. Configuración en `release-please-config.json` (repo entero, etiquetas sin componente, secciones en castellano) y `.release-please-manifest.json` (versión actual, la mantiene el robot). Nunca subir la versión ni etiquetar a mano. Requiere en GitHub *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* (activado)
+- **Versión en producción: v3.0.1** (v3.0.0 = Angular 22 + PrimeNG 22 + rediseño oscuro y responsive; v3.0.1 = sin toasts de errores de scripts ajenos). Si falla en producción: Vercel → Deployments → Instant Rollback
+- **Releases con release-please:** en cada push a `main`, `.github/workflows/release-please.yml` abre o actualiza el PR `chore(release): vX.Y.Z` con `CHANGELOG.md` y la versión en `version.txt`, `coins-ddlp-front/package.json` y `package-lock.json`. Al fusionarlo crea la etiqueta `vX.Y.Z` y la release de GitHub. Versión según los commits: `fix`/`refactor`/`perf` → parche, `feat` → menor, `!`/BREAKING CHANGE → mayor; `docs`/`chore` no sacan versión. Configuración en `release-please-config.json` (repo entero, etiquetas sin componente, secciones en castellano) y `.release-please-manifest.json` (versión actual, la mantiene el robot). Nunca subir la versión ni etiquetar a mano. Requiere en GitHub *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* y *Settings → General → Automatically delete head branches* (ambos activados). Comprobado: el primer `fix` abrió el PR #1 y al fusionarlo salió v3.0.1
 
 **Pendiente:**
-1. Comprobar que la primera ejecución de release-please (pestaña Actions) termina en verde y que el primer `feat`/`fix` abre el PR de release
-2. Sección **Estadísticas**: `estadisticas-dashboard` existe vacío (literales en `LITERALS.estadisticas`). Hacerla con `page-layout`, `progress-stat`, tokens y `resource`/`httpResource`
-3. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
-4. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
+1. Sección **Estadísticas**: `estadisticas-dashboard` existe vacío (literales en `LITERALS.estadisticas`). Hacerla con `page-layout`, `progress-stat`, tokens y `resource`/`httpResource`
+2. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
+3. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
+4. Permisos: la RLS de `euro_ownership` solo deja escribir filas propias, pero `injectCanEditCoins` deja al admin editar la colección de Manolo; probablemente Supabase rechace ese guardado. Probarlo y, si falla, migración con política de escritura para el admin
 5. `GlobalErrorHandler` muestra los mensajes de Supabase en inglés ("Invalid login credentials"…): traducir los más comunes
+6. Datos: 370 conmemorativas sin `idNum` (sin foto ni datos de Numista en la ficha)
