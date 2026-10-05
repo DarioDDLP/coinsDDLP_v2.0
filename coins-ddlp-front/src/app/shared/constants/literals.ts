@@ -168,6 +168,8 @@ export const LITERALS = {
     userRole: 'Usuario',
     back: 'Volver',
     skipToContent: 'Saltar al contenido',
+    versionPrefix: 'v',
+    versionHint: 'Versión de la app',
   },
 
   coinDetail: {
