@@ -9,7 +9,7 @@ import {
 import { ToggleComponent } from '../../../../shared/components/toggle/toggle.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import {
   FACE_VALUE_OPTIONS,
@@ -31,11 +31,12 @@ import {
   styleUrl: './tools-add-euro.component.scss',
 })
 export class ToolsAddEuroComponent {
+  private i18n = inject(I18nService);
   private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  readonly literals = LITERALS.herramientas;
+  readonly literals = injectLiterals('herramientas');
   readonly faceValueOptions = FACE_VALUE_OPTIONS;
   readonly mintOptions = MINT_OPTIONS_GERMANY;
   readonly variantOptions = VARIANT_OPTIONS;
@@ -104,7 +105,7 @@ export class ToolsAddEuroComponent {
         idNum: this.idNum(),
         variant: this.variant() || undefined,
       });
-      this.messageService.add(TOAST_MESSAGES.herramientas.addSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.herramientas.addSuccess));
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);

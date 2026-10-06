@@ -23,10 +23,11 @@ import { CountryFlagComponent } from '../../../../shared/components/country-flag
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ConservationCode, EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 import { FilterPillOption } from '../../../../shared/components/filter-pills/filter-pills.component';
+import { translateFaceValue } from '../../../../shared/helpers/face-value.helper';
 
 type OwnerSlug = 'dario' | 'manolo';
 
@@ -47,6 +48,7 @@ type OwnerSlug = 'dario' | 'manolo';
   styleUrl: './coin-uds-dialog.component.scss',
 })
 export class CoinUdsDialogComponent {
+  private i18n = inject(I18nService);
   private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -56,14 +58,15 @@ export class CoinUdsDialogComponent {
   readonly visible = model(false);
   readonly coin = input<EuroCoin | null>(null);
 
-  readonly literals = LITERALS.euros;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('euros');
+  readonly sharedLiterals = injectLiterals('shared');
+  private faceValues = injectLiterals('faceValues');
   readonly conservationOptions = CONSERVATION_OPTIONS;
 
-  readonly ownerPickerOptions: FilterPillOption[] = [
-    { value: 'dario', label: LITERALS.shared.ownerDario },
-    { value: 'manolo', label: LITERALS.shared.ownerManolo },
-  ];
+  readonly ownerPickerOptions = computed<FilterPillOption[]>(() => [
+    { value: 'dario', label: this.sharedLiterals().ownerDario },
+    { value: 'manolo', label: this.sharedLiterals().ownerManolo },
+  ]);
 
   readonly showOwnerPicker = computed(
     () => this.ownerService.current() === 'both' && this.authService.isAdmin(),
@@ -73,7 +76,9 @@ export class CoinUdsDialogComponent {
 
   readonly dialogTitle = computed(() => {
     const c = this.coin();
-    return c ? `${this.sharedLiterals.edit} ${c.faceValue} ${c.year}` : this.literals.editCoin;
+    return c
+      ? `${this.sharedLiterals().edit} ${translateFaceValue(c.faceValue, this.faceValues())} ${c.year}`
+      : this.literals().editCoin;
   });
 
   readonly uds = signal(0);
@@ -132,7 +137,7 @@ export class CoinUdsDialogComponent {
         },
         ownerId,
       );
-      this.messageService.add(TOAST_MESSAGES.euros.saveSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.euros.saveSuccess));
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);

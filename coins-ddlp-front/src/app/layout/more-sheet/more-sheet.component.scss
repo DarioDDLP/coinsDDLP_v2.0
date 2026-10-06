@@ -147,6 +147,10 @@
     }
   }
 
+  &__language {
+    padding-top: var(--space-3);
+  }
+
   &__version {
     padding-top: var(--space-2);
     font-size: var(--font-2xs);

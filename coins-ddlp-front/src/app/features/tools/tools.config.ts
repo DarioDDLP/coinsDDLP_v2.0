@@ -1,6 +1,6 @@
 import { SelectOption } from '../../shared/components/select/select.component';
 import { NavItem } from '../../shared/components/buttons-header/buttons-header.component';
-import { LITERALS } from '../../shared/constants/literals';
+import { Translations } from '../../shared/interfaces/translations.interface';
 
 export const STANDARD_FACE_VALUES = new Set([
   '1 Céntimo',
@@ -32,14 +32,14 @@ export const MINT_OPTIONS_GERMANY: SelectOption[] = [
   { label: 'J — Hamburgo', value: 'J' },
 ];
 
-export const TOOLS_NAV_ITEMS: NavItem[] = [
+export const getToolsNavItems = (t: Translations['herramientas']): NavItem[] => [
   {
-    label: LITERALS.herramientas.navAddEuro,
+    label: t.navAddEuro,
     routerLink: '/herramientas/añadir-euro',
     icon: 'pi pi-plus-circle',
   },
   {
-    label: LITERALS.herramientas.navAddYear,
+    label: t.navAddYear,
     routerLink: '/herramientas/añadir-año',
     icon: 'pi pi-copy',
   },

@@ -1,5 +1,6 @@
-import { Component, input } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { I18nService } from '../../../../shared/services/i18n.service';
 
 /** Tarjeta de KPI: icono, etiqueta, cifra grande y una línea de detalle. */
 @Component({
@@ -12,6 +13,7 @@ import { DecimalPipe } from '@angular/common';
   },
 })
 export class StatCardComponent {
+  readonly lang = inject(I18nService).lang;
   readonly icon = input.required<string>();
   readonly label = input.required<string>();
   readonly value = input.required<number>();

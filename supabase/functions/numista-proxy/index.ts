@@ -8,6 +8,9 @@ const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? D
 
 const MONTHLY_LIMIT = 2000;
 
+// Idiomas que acepta la API de Numista para descripciones y comentarios
+const NUMISTA_LANGS = ['es', 'en', 'fr'];
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -21,6 +24,8 @@ Deno.serve(async (req) => {
 
   const url = new URL(req.url);
   const idNum = url.searchParams.get('idNum');
+  const requestedLang = url.searchParams.get('lang') ?? '';
+  const lang = NUMISTA_LANGS.includes(requestedLang) ? requestedLang : 'es';
 
   if (!idNum) {
     return new Response(
@@ -29,7 +34,7 @@ Deno.serve(async (req) => {
     );
   }
 
-  const response = await fetch(`${NUMISTA_API_URL}${idNum}?lang=es`, {
+  const response = await fetch(`${NUMISTA_API_URL}${idNum}?lang=${lang}`, {
     headers: { 'Numista-API-Key': NUMISTA_API_KEY },
   });
 

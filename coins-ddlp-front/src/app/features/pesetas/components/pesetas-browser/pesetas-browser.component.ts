@@ -26,8 +26,8 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
 import { PesetasService } from '../../services/pesetas.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
-import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
+import { injectLiterals } from '../../../../shared/services/i18n.service';
+import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
@@ -76,9 +76,9 @@ export class PesetasBrowserComponent {
   private errorHandler = inject(ErrorHandler);
   readonly authService = inject(AuthService);
 
-  readonly literals = LITERALS.pesetas;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
+  readonly literals = injectLiterals('pesetas');
+  readonly sharedLiterals = injectLiterals('shared');
+  readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
 
   private readonly valueParam = toSignal(
     this.route.queryParamMap.pipe(map((q) => q.get('valor'))),
@@ -90,7 +90,9 @@ export class PesetasBrowserComponent {
   readonly hasError = signal(false);
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly ownershipFilter = signal('all');
-  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
+  readonly emptyState = computed(() =>
+    getEmptyState(this.sharedLiterals(), this.searchQuery(), this.ownershipFilter()),
+  );
 
   readonly dialogVisible = signal(false);
   readonly selectedPeseta = signal<Peseta | null>(null);
@@ -151,7 +153,7 @@ export class PesetasBrowserComponent {
     }
     const values = [...byValue.values()].sort((a, b) => a.order - b.order);
     const all = this.progress();
-    return [{ value: null, label: this.literals.allLabel, ...all }, ...values];
+    return [{ value: null, label: this.literals().allLabel, ...all }, ...values];
   });
 
   /** Denominación seleccionada; null = todas. Un valor desconocido se trata como "todas". */
@@ -211,8 +213,8 @@ export class PesetasBrowserComponent {
     const types = new Set(pesetas.map((p) => p.pesetaTypeId)).size;
     return [
       `${Math.min(...years)} — ${Math.max(...years)}`,
-      `${types} ${this.literals.typesCount}`,
-      `${pesetas.length} ${this.literals.coinsCount}`,
+      `${types} ${this.literals().typesCount}`,
+      `${pesetas.length} ${this.literals().coinsCount}`,
     ].join(' · ');
   });
 

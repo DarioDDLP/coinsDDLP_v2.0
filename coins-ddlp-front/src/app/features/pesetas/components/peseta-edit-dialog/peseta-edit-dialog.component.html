@@ -2,7 +2,7 @@
   <div class="edit-form">
     <div class="edit-form__row">
       <app-text-input
-        [label]="literals.unitsLabel"
+        [label]="literals().unitsLabel"
         [value]="uds().toString()"
         type="number"
         [min]="0"
@@ -10,29 +10,29 @@
       />
 
       <app-select
-        [label]="literals.conservationLabel"
+        [label]="literals().conservationLabel"
         [value]="conservation()"
         [options]="availableConservationOptions()"
-        [placeholder]="literals.conservationPlaceholder"
+        [placeholder]="literals().conservationPlaceholder"
         [disabled]="isConservationLocked()"
         (valueChange)="conservation.set($event)"
       />
     </div>
 
     <app-textarea
-      [label]="literals.observationsLabel"
+      [label]="literals().observationsLabel"
       [value]="observations()"
-      [placeholder]="literals.observationsPlaceholder"
+      [placeholder]="literals().observationsPlaceholder"
       (valueChange)="observations.set($event)"
     />
   </div>
 
   <ng-container dialog-footer>
     <app-button
-      [label]="sharedLiterals.cancel"
+      [label]="sharedLiterals().cancel"
       variant="secondary"
       (clicked)="visible.set(false)"
     />
-    <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
+    <app-button [label]="sharedLiterals().save" [loading]="loading()" (clicked)="onSubmit()" />
   </ng-container>
 </app-dialog>

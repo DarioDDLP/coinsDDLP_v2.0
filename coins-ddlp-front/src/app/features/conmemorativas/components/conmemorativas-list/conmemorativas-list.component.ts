@@ -7,7 +7,6 @@ import {
   ElementRef,
   ErrorHandler,
   inject,
-  LOCALE_ID,
   signal,
   untracked,
   viewChild,
@@ -31,9 +30,9 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
-import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
-import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
+import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
+import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
@@ -41,12 +40,14 @@ import {
 } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
 import { isOwned } from '../../../../shared/helpers/ownership.helper';
-import { ExcelExportService } from '../../../../shared/services/excel-export.service';
+import { ExcelExportService, ExcelLabels } from '../../../../shared/services/excel-export.service';
 import {
   ALBUM_POSITIONS_PER_ROW,
   ALBUM_POSITIONS_PER_PAGE,
   ALBUM_POSITIONS_PER_ALBUM,
 } from '../../conmemorativas.config';
+import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
+import { matchesCountry } from '../../../../shared/helpers/country.helper';
 
 interface AlbumLocation {
   album: number;
@@ -94,6 +95,7 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
 @Component({
   selector: 'app-conmemorativas-list',
   imports: [
+    CountryNamePipe,
     TableModule,
     PageLayoutComponent,
     BadgeComponent,
@@ -109,25 +111,34 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
   styleUrl: './conmemorativas-list.component.scss',
 })
 export class ConmemorativasListComponent {
+  readonly lang = inject(I18nService).lang;
   private service = inject(ConmemorativasService);
   private excelExport = inject(ExcelExportService);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   private authService = inject(AuthService);
-  private locale = inject(LOCALE_ID);
   readonly ownerService = inject(OwnerService);
 
   readonly isAdmin = this.authService.isAdmin;
-  readonly literals = LITERALS.conmemorativas;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
-  readonly ownerOptions = OWNER_FILTER_OPTIONS;
+  readonly literals = injectLiterals('conmemorativas');
+  readonly sharedLiterals = injectLiterals('shared');
+  private excelLiterals = injectLiterals('excel');
+  private excelLabels = computed<ExcelLabels>(() => ({
+    ...this.excelLiterals(),
+    ownerDario: this.sharedLiterals().ownerDario,
+    ownerManolo: this.sharedLiterals().ownerManolo,
+  }));
+  private countries = injectLiterals('countries');
+  readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
+  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
 
   private allCoins = signal<EuroCoin[]>([]);
   private loadSub?: Subscription;
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
   readonly ownershipFilter = signal('all');
-  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
+  readonly emptyState = computed(() =>
+    getEmptyState(this.sharedLiterals(), this.searchQuery(), this.ownershipFilter()),
+  );
   readonly isReady = signal(false);
   readonly hasError = signal(false);
 
@@ -214,7 +225,7 @@ export class ConmemorativasListComponent {
         (c) =>
           !query ||
           String(c.year).includes(query) ||
-          normalizeString(c.country).includes(query) ||
+          matchesCountry(c.country, query, this.countries()) ||
           normalizeString(c.description).includes(query),
       )
       .sort(albumOrder);
@@ -247,8 +258,8 @@ export class ConmemorativasListComponent {
     const coins = this.allCoins();
     if (coins.length === 0) return '';
     const years = coins.map((c) => c.year);
-    const total = formatNumber(coins.length, this.locale, '1.0-0');
-    return `${Math.min(...years)} — ${Math.max(...years)} · ${total} ${this.literals.coinsCount}`;
+    const total = formatNumber(coins.length, this.lang(), '1.0-0');
+    return `${Math.min(...years)} — ${Math.max(...years)} · ${total} ${this.literals().coinsCount}`;
   });
 
   // --- Acciones ---
@@ -275,7 +286,12 @@ export class ConmemorativasListComponent {
   }
 
   async exportExcel(): Promise<void> {
-    await this.excelExport.exportConmemorativas(this.groupedCoins(), this.isAdmin(), this.isBoth());
+    await this.excelExport.exportConmemorativas(
+      this.groupedCoins(),
+      this.isAdmin(),
+      this.excelLabels(),
+      this.isBoth(),
+    );
   }
 
   /** Resalta el chip del año cuya cabecera está más arriba dentro de la pantalla. */

@@ -1,4 +1,4 @@
-import { LITERALS } from '../constants/literals';
+import { Translations } from '../interfaces/translations.interface';
 import { EmptyPanelTone } from '../components/empty-panel/empty-panel.component';
 
 export interface EmptyState {
@@ -13,12 +13,16 @@ export interface EmptyState {
  * Qué decir cuando una lista sale vacía, según el motivo:
  * búsqueda sin coincidencias › filtro "faltantes" (no falta ninguna) › filtro "obtenidas" › sin datos.
  */
-export function getEmptyState(search: string, ownership = 'all'): EmptyState {
+export function getEmptyState(
+  t: Translations['shared'],
+  search: string,
+  ownership = 'all',
+): EmptyState {
   const query = search.trim();
   if (query) {
     return {
       icon: 'pi-search',
-      title: `${LITERALS.shared.emptySearchFor} «${query}»`,
+      title: `${t.emptySearchFor} «${query}»`,
       tone: 'neutral',
       canClearSearch: true,
     };
@@ -26,7 +30,7 @@ export function getEmptyState(search: string, ownership = 'all'): EmptyState {
   if (ownership === 'missing') {
     return {
       icon: 'pi-check-circle',
-      title: LITERALS.shared.emptyMissing,
+      title: t.emptyMissing,
       tone: 'success',
       canClearSearch: false,
     };
@@ -34,14 +38,14 @@ export function getEmptyState(search: string, ownership = 'all'): EmptyState {
   if (ownership === 'owned') {
     return {
       icon: 'pi-inbox',
-      title: LITERALS.shared.emptyOwned,
+      title: t.emptyOwned,
       tone: 'neutral',
       canClearSearch: false,
     };
   }
   return {
     icon: 'pi-inbox',
-    title: LITERALS.shared.emptyData,
+    title: t.emptyData,
     tone: 'neutral',
     canClearSearch: false,
   };

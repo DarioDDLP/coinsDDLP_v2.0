@@ -1,20 +1,20 @@
 @if (hasError()) {
-  <app-page-layout [title]="literals.title">
+  <app-page-layout [title]="literals().title">
     <app-error-panel (retry)="loadSummary()" />
   </app-page-layout>
 } @else {
   <app-page-layout
-    [title]="literals.title"
-    [overline]="literals.overline"
+    [title]="literals().title"
+    [overline]="literals().overline"
     [subtitle]="isReady() ? subtitle() : ''"
-    [searchPlaceholder]="literals.searchCountries"
+    [searchPlaceholder]="literals().searchCountries"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
     <div page-aside class="total-progress">
       @if (isReady()) {
         <app-progress-stat
-          [label]="literals.progressTotal"
+          [label]="literals().progressTotal"
           [owned]="totals().owned"
           [total]="totals().total"
           size="lg"
@@ -26,9 +26,9 @@
 
     <app-filter-pills
       page-filters
-      [options]="ownerOptions"
+      [options]="ownerOptions()"
       [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals.collection"
+      [ariaLabel]="sharedLiterals().collection"
       (valueChange)="onOwnerChange($event)"
     />
 
@@ -60,7 +60,7 @@
               <div class="country-card__head">
                 <app-country-flag [country]="card.country" [size]="48" [decorative]="true" />
                 <div class="country-card__names">
-                  <span class="country-card__name">{{ card.country }}</span>
+                  <span class="country-card__name">{{ card.country | countryName }}</span>
                   <span class="country-card__years">{{ card.minYear }} — {{ card.maxYear }}</span>
                 </div>
               </div>
@@ -75,7 +75,7 @@
         [icon]="empty.icon"
         [title]="empty.title"
         [tone]="empty.tone"
-        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals().clearSearch : ''"
         actionIcon="pi pi-times"
         (action)="onSearch('')"
       />

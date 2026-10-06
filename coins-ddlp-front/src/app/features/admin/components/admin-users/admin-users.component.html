@@ -1,7 +1,7 @@
 <div class="admin-users">
   <div class="admin-users__toolbar">
-    <h2 class="admin-users__title">{{ literals.usersTitle }}</h2>
-    <app-button [label]="literals.newUser" icon="pi pi-plus" (clicked)="onEdit(null)" />
+    <h2 class="admin-users__title">{{ literals().usersTitle }}</h2>
+    <app-button [label]="literals().newUser" icon="pi pi-plus" (clicked)="onEdit(null)" />
   </div>
 
   @if (!isReady()) {
@@ -10,11 +10,11 @@
     <p-table class="table-stack" [value]="userRows()" dataKey="user.uid" [stripedRows]="true">
       <ng-template #header>
         <tr>
-          <th>{{ literals.colEmail }}</th>
-          <th>{{ literals.colName }}</th>
-          <th class="col-center">{{ literals.colRole }}</th>
+          <th>{{ literals().colEmail }}</th>
+          <th>{{ literals().colName }}</th>
+          <th class="col-center">{{ literals().colRole }}</th>
           <th class="col-actions">
-            <span class="sr-only">{{ literals.colActions }}</span>
+            <span class="sr-only">{{ literals().colActions }}</span>
           </th>
         </tr>
       </ng-template>
@@ -22,7 +22,7 @@
         <tr>
           <td class="admin-users__email" data-cell="primary">{{ row.user.email }}</td>
           <td data-cell="secondary">{{ row.user.displayName ?? '—' }}</td>
-          <td class="col-center" [attr.data-label]="literals.colRole">
+          <td class="col-center" [attr.data-label]="literals().colRole">
             <app-badge [label]="row.roleBadge.label" [severity]="row.roleBadge.severity" />
           </td>
           <td class="col-actions">
@@ -30,13 +30,13 @@
               <app-button
                 icon="pi pi-pencil"
                 variant="ghost"
-                [tooltip]="literals.editUser"
+                [tooltip]="literals().editUser"
                 (clicked)="onEdit(row.user)"
               />
               <app-button
                 icon="pi pi-trash"
                 variant="danger"
-                [tooltip]="literals.deleteUser"
+                [tooltip]="literals().deleteUser"
                 (clicked)="onDelete(row.user)"
               />
             </div>
@@ -51,8 +51,8 @@
 
 <app-confirm-dialog
   [(visible)]="deleteDialogVisible"
-  [header]="literals.deleteUser"
-  [message]="literals.deleteConfirm"
+  [header]="literals().deleteUser"
+  [message]="literals().deleteConfirm"
   [loading]="deleteLoading()"
   (confirmed)="onConfirmDelete()"
 />

@@ -1,0 +1,53 @@
+@use 'mixins' as *;
+
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+.language-toggle {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-full);
+  background: var(--surface-1);
+}
+
+.language-toggle__btn,
+.language-toggle__single {
+  height: 26px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-family);
+  font-size: var(--font-xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-snug);
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  @include focus-ring;
+
+  &:hover:not(.language-toggle__btn--active) {
+    color: var(--text);
+  }
+
+  &:disabled {
+    cursor: progress;
+  }
+}
+
+.language-toggle__btn--active {
+  background: var(--text);
+  color: var(--bg);
+}
+
+// Modo raíl: un solo botón con borde, del ancho de los iconos del menú
+.language-toggle__single {
+  height: 32px;
+  border: 1px solid var(--border-subtle);
+}

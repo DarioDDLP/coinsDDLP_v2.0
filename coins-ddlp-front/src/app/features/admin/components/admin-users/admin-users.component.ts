@@ -8,7 +8,7 @@ import { AdminUserDialogComponent } from '../admin-user-dialog/admin-user-dialog
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 
@@ -26,11 +26,12 @@ import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
   styleUrl: './admin-users.component.scss',
 })
 export class AdminUsersComponent implements OnInit {
+  private i18n = inject(I18nService);
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  readonly literals = LITERALS.admin;
+  readonly literals = injectLiterals('admin');
 
   readonly users = signal<AppUser[]>([]);
   readonly userRows = computed(() =>
@@ -41,7 +42,7 @@ export class AdminUsersComponent implements OnInit {
         if (roleDiff !== 0) return roleDiff;
         return (a.email ?? '').localeCompare(b.email ?? '');
       })
-      .map((user) => ({ user, roleBadge: getRoleBadge(user.role) })),
+      .map((user) => ({ user, roleBadge: getRoleBadge(user.role, this.literals()) })),
   );
   readonly isReady = signal(false);
   readonly dialogVisible = signal(false);
@@ -83,7 +84,7 @@ export class AdminUsersComponent implements OnInit {
     this.deleteLoading.set(true);
     this.adminService.deleteUser(user.uid).subscribe({
       next: () => {
-        this.messageService.add(TOAST_MESSAGES.admin.deleteSuccess);
+        this.messageService.add(this.i18n.toast(TOAST_MESSAGES.admin.deleteSuccess));
         this.deleteLoading.set(false);
         this.deleteDialogVisible.set(false);
         this.loadUsers();

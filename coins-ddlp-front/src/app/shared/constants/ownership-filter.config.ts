@@ -1,8 +1,10 @@
 import { FilterPillOption } from '../components/filter-pills/filter-pills.component';
-import { LITERALS } from './literals';
+import { Translations } from '../interfaces/translations.interface';
 
-export const OWNERSHIP_FILTER_OPTIONS: FilterPillOption[] = [
-  { value: 'all', label: LITERALS.shared.all },
-  { value: 'owned', label: LITERALS.shared.filterOwned },
-  { value: 'missing', label: LITERALS.shared.filterMissing },
-];
+export function getOwnershipFilterOptions(t: Translations['shared']): FilterPillOption[] {
+  return [
+    { value: 'all', label: t.all },
+    { value: 'owned', label: t.filterOwned },
+    { value: 'missing', label: t.filterMissing },
+  ];
+}

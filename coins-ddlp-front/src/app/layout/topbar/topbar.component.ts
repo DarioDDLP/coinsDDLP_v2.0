@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { LITERALS } from '../../shared/constants/literals';
+import { injectLiterals } from '../../shared/services/i18n.service';
 import { PageHeaderService } from '../../shared/services/page-header.service';
 import { CountryFlagComponent } from '../../shared/components/country-flag/country-flag.component';
 import { AuthService } from '../../core/services/auth.service';
@@ -20,8 +20,8 @@ export class TopbarComponent {
   readonly authService = inject(AuthService);
   private pageHeader = inject(PageHeaderService);
 
-  readonly literals = LITERALS.nav;
-  readonly authLiterals = LITERALS.auth;
+  readonly literals = injectLiterals('nav');
+  readonly authLiterals = injectLiterals('auth');
 
   readonly header = this.pageHeader.header;
 
@@ -30,7 +30,8 @@ export class TopbarComponent {
     const fromPage = this.header()?.title;
     if (fromPage) return fromPage;
     const url = this.layout.currentUrl();
-    return NAV_ITEMS.find((i) => url.startsWith(i.routerLink))?.label ?? this.literals.brand;
+    const key = NAV_ITEMS.find((i) => url.startsWith(i.routerLink))?.labelKey;
+    return key ? this.literals()[key] : this.literals().brand;
   });
 
   readonly initials = computed(() => userInitials(this.authService.currentUser()));

@@ -1,6 +1,6 @@
 import { Component, computed, input } from '@angular/core';
 import { Skeleton } from 'primeng/skeleton';
-import { LITERALS } from '../../constants/literals';
+import { injectLiterals } from '../../services/i18n.service';
 
 export type SkeletonRadius = 'sm' | 'md' | 'lg' | 'full';
 export type SkeletonShape = 'rect' | 'circle';
@@ -32,7 +32,7 @@ export class SkeletonComponent {
   readonly layout = input<SkeletonLayout>('stack');
   readonly announce = input(true);
 
-  readonly loadingLabel = LITERALS.shared.loading;
+  readonly literals = injectLiterals('shared');
   readonly items = computed(() => Array.from({ length: this.count() }));
   readonly isCircle = computed(() => this.shape() === 'circle');
   readonly blockHeight = computed(() => (this.isCircle() ? 'auto' : this.height()));

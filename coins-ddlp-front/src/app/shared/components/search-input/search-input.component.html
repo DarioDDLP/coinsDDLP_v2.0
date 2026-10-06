@@ -3,8 +3,8 @@
   <input
     type="search"
     class="search-input__control"
-    [placeholder]="placeholder()"
-    [attr.aria-label]="placeholder()"
+    [placeholder]="placeholderText()"
+    [attr.aria-label]="placeholderText()"
     [value]="value()"
     (input)="onInput($event.target.value)"
   />
@@ -12,7 +12,7 @@
     <button
       type="button"
       class="search-input__clear"
-      [attr.aria-label]="clearLabel"
+      [attr.aria-label]="literals().clearSearch"
       (click)="onInput('')"
     >
       <i class="pi pi-times" aria-hidden="true"></i>

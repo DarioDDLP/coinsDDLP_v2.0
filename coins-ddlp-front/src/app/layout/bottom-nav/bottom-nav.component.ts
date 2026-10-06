@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LITERALS } from '../../shared/constants/literals';
+import { injectLiterals } from '../../shared/services/i18n.service';
 import { LayoutStateService } from '../layout-state.service';
 import { NAV_ITEMS } from '../navigation.config';
 
@@ -13,7 +13,7 @@ import { NAV_ITEMS } from '../navigation.config';
 })
 export class BottomNavComponent {
   readonly layout = inject(LayoutStateService);
-  readonly literals = LITERALS.nav;
+  readonly literals = injectLiterals('nav');
 
   readonly items = NAV_ITEMS.filter((i) => i.mobilePrimary);
 

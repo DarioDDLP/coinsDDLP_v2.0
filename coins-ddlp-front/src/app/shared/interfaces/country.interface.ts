@@ -1,4 +1,4 @@
-import { LITERALS } from '../constants/literals';
+import { COUNTRY_DB_NAMES } from '../constants/countries.const';
 
-/** Código ISO 3166-1 alfa-3 de un país con nombre en `LITERALS.countries`. */
-export type CountryIso3 = keyof typeof LITERALS.countries;
+/** Código ISO 3166-1 alfa-3 de un país de `COUNTRY_DB_NAMES`. */
+export type CountryIso3 = keyof typeof COUNTRY_DB_NAMES;

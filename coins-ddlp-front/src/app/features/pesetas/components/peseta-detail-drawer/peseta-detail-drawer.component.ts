@@ -4,7 +4,6 @@ import {
   effect,
   ErrorHandler,
   inject,
-  LOCALE_ID,
   signal,
   untracked,
 } from '@angular/core';
@@ -21,7 +20,8 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { DetailDrawerComponent } from '../../../../shared/components/detail-drawer/detail-drawer.component';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { COUNTRY_DB_NAMES } from '../../../../shared/constants/countries.const';
+import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
 import { PesetaEditDialogComponent } from '../peseta-edit-dialog/peseta-edit-dialog.component';
 
 interface Feature {
@@ -47,17 +47,18 @@ const NUMISTA_PIECE_URL = 'https://en.numista.com/catalogue/pieces';
   styleUrl: './peseta-detail-drawer.component.scss',
 })
 export class PesetaDetailDrawerComponent {
+  readonly lang = inject(I18nService).lang;
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private service = inject(PesetasService);
   private errorHandler = inject(ErrorHandler);
-  private locale = inject(LOCALE_ID);
   readonly authService = inject(AuthService);
 
-  readonly literals = LITERALS.pesetaDetail;
-  readonly pesetasLiterals = LITERALS.pesetas;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly country = LITERALS.pesetas.country;
+  readonly literals = injectLiterals('pesetaDetail');
+  readonly pesetasLiterals = injectLiterals('pesetas');
+  readonly sharedLiterals = injectLiterals('shared');
+  /** Nombre de BD: solo para la bandera. */
+  readonly country = COUNTRY_DB_NAMES.ESP;
 
   private readonly id = toSignal(this.route.paramMap.pipe(map((p) => p.get('id') ?? '')), {
     initialValue: '',
@@ -107,7 +108,7 @@ export class PesetaDetailDrawerComponent {
   readonly udsBadge = computed(() => getUdsBadge(this.peseta()?.uds ?? 0));
   readonly udsLabel = computed(() => {
     const uds = this.peseta()?.uds ?? 0;
-    return `${uds} ${uds === 1 ? this.pesetasLiterals.unitShort : this.pesetasLiterals.unitsShort}`;
+    return `${uds} ${uds === 1 ? this.pesetasLiterals().unitShort : this.pesetasLiterals().unitsShort}`;
   });
 
   readonly numistaUrl = computed(() => {
@@ -117,14 +118,14 @@ export class PesetaDetailDrawerComponent {
 
   readonly overline = computed(() => {
     const p = this.peseta();
-    return p ? `${this.country} · ${p.label}` : '';
+    return p ? `${this.pesetasLiterals().country} · ${p.label}` : '';
   });
 
   readonly features = computed<Feature[]>(() => {
     const p = this.peseta();
     if (!p) return [];
     const t = p.peseta_type;
-    const l = this.literals;
+    const l = this.literals();
     const rows: (Feature | null)[] = [
       { label: l.labelFaceValue, value: t.faceValueLabel },
       { label: l.labelYears, value: `${t.minYear}–${t.maxYear}` },
@@ -141,7 +142,7 @@ export class PesetaDetailDrawerComponent {
       t.engraverReverse ? { label: l.labelEngraverReverse, value: t.engraverReverse } : null,
       { label: l.labelMintYear, value: p.label, separator: true },
       p.mintage
-        ? { label: l.labelMintage, value: formatNumber(p.mintage, this.locale, '1.0-0') }
+        ? { label: l.labelMintage, value: formatNumber(p.mintage, this.lang(), '1.0-0') }
         : null,
     ];
     return rows.filter((r): r is Feature => r !== null);

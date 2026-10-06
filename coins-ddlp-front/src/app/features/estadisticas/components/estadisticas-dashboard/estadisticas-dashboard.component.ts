@@ -19,8 +19,8 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroStatsRow } from '../../../../shared/interfaces/euro-stats.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
-import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
+import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import {
   computeKpis,
   groupByCountry,
@@ -30,10 +30,14 @@ import {
 import { EstadisticasService } from '../../services/estadisticas.service';
 import { StatCardComponent } from '../stat-card/stat-card.component';
 import { YearChartComponent } from '../year-chart/year-chart.component';
+import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
+import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 
 @Component({
   selector: 'app-estadisticas-dashboard',
   imports: [
+    FaceValuePipe,
+    CountryNamePipe,
     RouterLink,
     PageLayoutComponent,
     ErrorPanelComponent,
@@ -48,13 +52,14 @@ import { YearChartComponent } from '../year-chart/year-chart.component';
   styleUrl: './estadisticas-dashboard.component.scss',
 })
 export class EstadisticasDashboardComponent {
+  readonly lang = inject(I18nService).lang;
   private estadisticasService = inject(EstadisticasService);
   private errorHandler = inject(ErrorHandler);
   readonly ownerService = inject(OwnerService);
 
-  readonly literals = LITERALS.estadisticas;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly ownerOptions = OWNER_FILTER_OPTIONS;
+  readonly literals = injectLiterals('estadisticas');
+  readonly sharedLiterals = injectLiterals('shared');
+  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
   readonly skeletonRows = Array.from({ length: 8 });
 
   private rows = signal<EuroStatsRow[]>([]);
@@ -70,17 +75,17 @@ export class EstadisticasDashboardComponent {
 
   readonly subtitle = computed(
     () =>
-      `${this.kpis().countries} ${this.literals.countriesCount} · ${this.format(this.kpis().total)} ${this.literals.coinsInCatalog}`,
+      `${this.kpis().countries} ${this.literals().countriesCount} · ${this.format(this.kpis().total)} ${this.literals().coinsInCatalog}`,
   );
 
   /** "de 5.441" junto a la cifra de obtenidas. */
-  readonly ofTotal = computed(() => `${this.literals.ofTotal} ${this.format(this.kpis().total)}`);
+  readonly ofTotal = computed(() => `${this.literals().ofTotal} ${this.format(this.kpis().total)}`);
   readonly ofCommemorative = computed(
-    () => `${this.literals.ofTotal} ${this.format(this.kpis().commemorativeTotal)}`,
+    () => `${this.literals().ofTotal} ${this.format(this.kpis().commemorativeTotal)}`,
   );
-  readonly ofCountries = computed(() => `${this.literals.ofTotal} ${this.kpis().countries}`);
+  readonly ofCountries = computed(() => `${this.literals().ofTotal} ${this.kpis().countries}`);
   readonly spareHint = computed(
-    () => `${this.format(this.kpis().spareUnits)} ${this.literals.spareUnits}`,
+    () => `${this.format(this.kpis().spareUnits)} ${this.literals().spareUnits}`,
   );
   readonly ownedPercent = computed(() => {
     const { owned, total } = this.kpis();
@@ -118,6 +123,6 @@ export class EstadisticasDashboardComponent {
   }
 
   private format(value: number): string {
-    return formatNumber(value, 'es', '1.0-0');
+    return formatNumber(value, this.lang(), '1.0-0');
   }
 }

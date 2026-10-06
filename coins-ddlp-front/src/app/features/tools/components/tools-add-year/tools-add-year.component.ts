@@ -9,7 +9,7 @@ import {
 } from '../../../../shared/components/select/select.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { STANDARD_FACE_VALUES } from '../../tools.config';
 
@@ -20,11 +20,12 @@ import { STANDARD_FACE_VALUES } from '../../tools.config';
   styleUrl: './tools-add-year.component.scss',
 })
 export class ToolsAddYearComponent {
+  private i18n = inject(I18nService);
   private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  readonly literals = LITERALS.herramientas;
+  readonly literals = injectLiterals('herramientas');
 
   private readonly allCoins = signal<{ country: string; year: number }[]>([]);
   readonly isReady = signal(false);
@@ -93,7 +94,7 @@ export class ToolsAddYearComponent {
       const toCreate = coins.filter((c) => STANDARD_FACE_VALUES.has(c.faceValue));
 
       if (toCreate.length === 0) {
-        this.errorMessage.set(this.literals.tiradaEmpty);
+        this.errorMessage.set(this.literals().tiradaEmpty);
         return;
       }
 
@@ -112,7 +113,9 @@ export class ToolsAddYearComponent {
         ),
       );
 
-      this.messageService.add(TOAST_MESSAGES.herramientas.tiradaSuccess(toCreate.length));
+      this.messageService.add(
+        this.i18n.toast(TOAST_MESSAGES.herramientas.tiradaSuccess, toCreate.length),
+      );
       this.resetForm();
     } catch (e) {
       this.errorHandler.handleError(e);

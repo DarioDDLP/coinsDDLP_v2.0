@@ -1,4 +1,4 @@
-<nav class="bottom-nav" [attr.aria-label]="literals.mainNav">
+<nav class="bottom-nav" [attr.aria-label]="literals().mainNav">
   @for (item of items; track item.routerLink) {
     <a
       class="bottom-nav__tab"
@@ -8,7 +8,7 @@
       [attr.aria-current]="rla.isActive ? 'page' : null"
     >
       <i [class]="item.icon" aria-hidden="true"></i>
-      <span>{{ item.shortLabel ?? item.label }}</span>
+      <span>{{ literals()[item.shortLabelKey ?? item.labelKey] }}</span>
     </a>
   }
   <button
@@ -20,6 +20,6 @@
     (click)="layout.moreOpen.set(true)"
   >
     <i class="pi pi-ellipsis-h" aria-hidden="true"></i>
-    <span>{{ literals.more }}</span>
+    <span>{{ literals().more }}</span>
   </button>
 </nav>

@@ -4,12 +4,14 @@
       class="topbar__icon-btn"
       [routerLink]="backLink"
       [queryParams]="header()?.backQueryParams ?? null"
-      [attr.aria-label]="literals.back"
+      [attr.aria-label]="literals().back"
     >
       <i class="pi pi-chevron-left" aria-hidden="true"></i>
     </a>
   } @else {
-    <a class="topbar__mark" routerLink="/euros" [attr.aria-label]="literals.brandHome">&lt;/&gt;</a>
+    <a class="topbar__mark" routerLink="/euros" [attr.aria-label]="literals().brandHome"
+      >&lt;/&gt;</a
+    >
   }
 
   @if (header()?.country; as country) {
@@ -21,7 +23,7 @@
     <button
       type="button"
       class="topbar__avatar"
-      [attr.aria-label]="literals.account"
+      [attr.aria-label]="literals().account"
       (click)="layout.moreOpen.set(true)"
     >
       {{ initials() }}
@@ -30,7 +32,7 @@
     <button
       type="button"
       class="topbar__icon-btn"
-      [attr.aria-label]="authLiterals.loginTitle"
+      [attr.aria-label]="authLiterals().loginTitle"
       (click)="layout.openLogin()"
     >
       <i class="pi pi-sign-in" aria-hidden="true"></i>

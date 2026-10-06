@@ -17,9 +17,9 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { ROLE_OPTIONS } from './admin-user-dialog.config';
+import { getRoleOptions } from './admin-user-dialog.config';
 
 @Component({
   selector: 'app-admin-user-dialog',
@@ -28,6 +28,7 @@ import { ROLE_OPTIONS } from './admin-user-dialog.config';
   styleUrl: './admin-user-dialog.component.scss',
 })
 export class AdminUserDialogComponent {
+  private i18n = inject(I18nService);
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -37,9 +38,9 @@ export class AdminUserDialogComponent {
 
   readonly saved = output<void>();
 
-  readonly literals = LITERALS.admin;
-  readonly authLiterals = LITERALS.auth;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('admin');
+  readonly authLiterals = injectLiterals('auth');
+  readonly sharedLiterals = injectLiterals('shared');
 
   readonly email = signal('');
   readonly password = signal('');
@@ -49,11 +50,11 @@ export class AdminUserDialogComponent {
 
   readonly isEditMode = computed(() => !!this.user());
   readonly header = computed(() =>
-    this.isEditMode() ? this.literals.editTitle : this.literals.createTitle,
+    this.isEditMode() ? this.literals().editTitle : this.literals().createTitle,
   );
   readonly canSubmit = computed(() => this.isEditMode() || (!!this.email() && !!this.password()));
 
-  readonly roleOptions = ROLE_OPTIONS;
+  readonly roleOptions = computed(() => getRoleOptions(this.literals()));
 
   constructor() {
     // Al abrir se cargan los datos del usuario (vacíos si es nuevo)
@@ -83,7 +84,7 @@ export class AdminUserDialogComponent {
 
     obs$.subscribe({
       next: () => {
-        this.messageService.add(TOAST_MESSAGES.admin.saveSuccess);
+        this.messageService.add(this.i18n.toast(TOAST_MESSAGES.admin.saveSuccess));
         this.loading.set(false);
         this.saved.emit();
         this.visible.set(false);

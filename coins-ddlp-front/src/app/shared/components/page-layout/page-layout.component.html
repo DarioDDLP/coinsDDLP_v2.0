@@ -3,7 +3,7 @@
     @if (backLink(); as link) {
       <a class="page__back" [routerLink]="link" [queryParams]="backQueryParams()">
         <i class="pi pi-chevron-left" aria-hidden="true"></i>
-        {{ backLabel() }}
+        {{ backText() }}
       </a>
     }
 

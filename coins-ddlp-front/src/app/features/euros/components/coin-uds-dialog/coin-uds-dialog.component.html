@@ -10,9 +10,9 @@
   <div class="uds-form">
     @if (showOwnerPicker()) {
       <div class="uds-form__owner-picker">
-        <span class="uds-form__owner-label">{{ literals.editingFor }}</span>
+        <span class="uds-form__owner-label">{{ literals().editingFor }}</span>
         <app-filter-pills
-          [options]="ownerPickerOptions"
+          [options]="ownerPickerOptions()"
           [value]="editingOwner()"
           (valueChange)="onOwnerPickerChange($event)"
         />
@@ -21,7 +21,7 @@
 
     <div class="uds-form__row">
       <app-text-input
-        [label]="literals.unitsLabel"
+        [label]="literals().unitsLabel"
         [value]="uds().toString()"
         type="number"
         [min]="0"
@@ -29,7 +29,7 @@
       />
 
       <app-select
-        [label]="literals.conservationLabel"
+        [label]="literals().conservationLabel"
         [value]="conservation()"
         [options]="conservationOptions"
         (valueChange)="conservation.set($any($event))"
@@ -37,26 +37,26 @@
     </div>
 
     <app-textarea
-      [label]="literals.descriptionLabel"
+      [label]="literals().descriptionLabel"
       [value]="description()"
       (valueChange)="description.set($event)"
     />
 
     <app-textarea
-      [label]="literals.observationsLabel"
+      [label]="literals().observationsLabel"
       [value]="observations()"
-      [placeholder]="literals.observationsPlaceholder"
+      [placeholder]="literals().observationsPlaceholder"
       (valueChange)="observations.set($event)"
     />
 
     <app-toggle
-      [label]="literals.circulationLabel"
+      [label]="literals().circulationLabel"
       [value]="circulation()"
       (valueChange)="circulation.set($event)"
     />
 
     <app-text-input
-      [label]="literals.idNumLabel"
+      [label]="literals().idNumLabel"
       [value]="idNum()"
       type="text"
       (valueChange)="idNum.set($event)"
@@ -65,10 +65,10 @@
 
   <ng-container dialog-footer>
     <app-button
-      [label]="sharedLiterals.cancel"
+      [label]="sharedLiterals().cancel"
       variant="secondary"
       (clicked)="visible.set(false)"
     />
-    <app-button [label]="sharedLiterals.save" [loading]="loading()" (clicked)="onSubmit()" />
+    <app-button [label]="sharedLiterals().save" [loading]="loading()" (clicked)="onSubmit()" />
   </ng-container>
 </app-dialog>

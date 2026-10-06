@@ -1,6 +1,6 @@
 import { NavItem } from '../../../../shared/components/buttons-header/buttons-header.component';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { Translations } from '../../../../shared/interfaces/translations.interface';
 
-export const ADMIN_NAV_ITEMS: NavItem[] = [
-  { label: LITERALS.admin.navUsers, routerLink: '/admin/usuarios', icon: 'pi pi-users' },
+export const getAdminNavItems = (t: Translations['admin']): NavItem[] => [
+  { label: t.navUsers, routerLink: '/admin/usuarios', icon: 'pi pi-users' },
 ];

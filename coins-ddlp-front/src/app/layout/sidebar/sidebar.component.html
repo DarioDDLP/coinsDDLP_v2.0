@@ -1,10 +1,10 @@
-<nav class="sidebar" [attr.aria-label]="literals.mainNav">
+<nav class="sidebar" [attr.aria-label]="literals().mainNav">
   <div class="sidebar__brand">
-    <a class="sidebar__logo" routerLink="/euros" [attr.aria-label]="literals.brandHome">
+    <a class="sidebar__logo" routerLink="/euros" [attr.aria-label]="literals().brandHome">
       <span class="sidebar__mark" aria-hidden="true">&lt;/&gt;</span>
       @if (!layout.sidebarRail()) {
-        <span class="sidebar__wordmark">{{ literals.brand }}</span>
-        <span class="sidebar__suffix">{{ literals.brandSuffix }}</span>
+        <span class="sidebar__wordmark">{{ literals().brand }}</span>
+        <span class="sidebar__suffix">{{ literals().brandSuffix }}</span>
       }
     </a>
   </div>
@@ -27,14 +27,14 @@
               routerLinkActive="sidebar__item--active"
               #rla="routerLinkActive"
               [attr.aria-current]="rla.isActive ? 'page' : null"
-              [attr.aria-label]="layout.sidebarRail() ? item.label : null"
-              [pTooltip]="item.label"
+              [attr.aria-label]="layout.sidebarRail() ? literals()[item.labelKey] : null"
+              [pTooltip]="literals()[item.labelKey]"
               [tooltipDisabled]="!layout.sidebarRail()"
               tooltipPosition="right"
             >
               <i [class]="item.icon" aria-hidden="true"></i>
               @if (!layout.sidebarRail()) {
-                <span>{{ item.label }}</span>
+                <span>{{ literals()[item.labelKey] }}</span>
               }
             </a>
           </li>
@@ -45,9 +45,9 @@
 
   <div class="sidebar__footer">
     @if (numistaService.remaining() !== null && !layout.sidebarRail()) {
-      <div class="sidebar__quota" [attr.title]="literals.numistaQuotaHint">
+      <div class="sidebar__quota" [attr.title]="literals().numistaQuotaHint">
         <div class="sidebar__quota-row">
-          <span>{{ literals.numistaQuota }}</span>
+          <span>{{ literals().numistaQuota }}</span>
           <span class="sidebar__quota-count">{{ numistaService.remaining() }} / {{ quota }}</span>
         </div>
         <div class="sidebar__quota-bar">
@@ -62,15 +62,15 @@
       <button
         type="button"
         class="sidebar__login"
-        [attr.aria-label]="authLiterals.loginTitle"
-        [pTooltip]="authLiterals.loginTitle"
+        [attr.aria-label]="authLiterals().loginTitle"
+        [pTooltip]="authLiterals().loginTitle"
         [tooltipDisabled]="!layout.sidebarRail()"
         tooltipPosition="right"
         (click)="layout.openLogin()"
       >
         <i class="pi pi-sign-in" aria-hidden="true"></i>
         @if (!layout.sidebarRail()) {
-          <span>{{ authLiterals.loginTitle }}</span>
+          <span>{{ authLiterals().loginTitle }}</span>
         }
       </button>
     }
@@ -79,9 +79,9 @@
       <button
         type="button"
         class="sidebar__collapse"
-        [attr.aria-label]="layout.sidebarCollapsed() ? literals.expand : literals.collapse"
+        [attr.aria-label]="layout.sidebarCollapsed() ? literals().expand : literals().collapse"
         [attr.aria-expanded]="!layout.sidebarCollapsed()"
-        [pTooltip]="layout.sidebarCollapsed() ? literals.expand : literals.collapse"
+        [pTooltip]="layout.sidebarCollapsed() ? literals().expand : literals().collapse"
         tooltipPosition="right"
         (click)="layout.toggleSidebar()"
       >
@@ -94,9 +94,11 @@
       </button>
     }
 
+    <app-language-toggle [compact]="layout.sidebarRail()" />
+
     @if (!layout.sidebarRail()) {
-      <span class="sidebar__version" [attr.title]="literals.versionHint"
-        >{{ literals.versionPrefix }}{{ version }}</span
+      <span class="sidebar__version" [attr.title]="literals().versionHint"
+        >{{ literals().versionPrefix }}{{ version }}</span
       >
     }
   </div>

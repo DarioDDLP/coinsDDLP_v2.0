@@ -1,14 +1,18 @@
 @if (hasError()) {
-  <app-page-layout [title]="country()" [backLink]="backLink" [backLabel]="literals.backToCountries">
+  <app-page-layout
+    [title]="country() | countryName"
+    [backLink]="backLink"
+    [backLabel]="literals().backToCountries"
+  >
     <app-error-panel (retry)="loadCoins(country())" />
   </app-page-layout>
 } @else {
   <app-page-layout
-    [title]="country()"
+    [title]="country() | countryName"
     [country]="country()"
     [subtitle]="subtitle()"
     [backLink]="backLink"
-    [backLabel]="literals.backToCountries"
+    [backLabel]="literals().backToCountries"
     [searchPlaceholder]="searchPlaceholder()"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
@@ -24,7 +28,7 @@
     <app-button
       page-actions
       icon="pi pi-file-excel"
-      [label]="sharedLiterals.exportExcel"
+      [label]="sharedLiterals().exportExcel"
       variant="tertiary"
       [disabled]="!isReady() || visibleCoins().length === 0"
       (clicked)="exportExcel()"
@@ -32,20 +36,20 @@
 
     <app-filter-pills
       page-filters
-      [options]="ownerOptions"
+      [options]="ownerOptions()"
       [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals.collection"
+      [ariaLabel]="sharedLiterals().collection"
       (valueChange)="onOwnerChange($event)"
     />
     <app-filter-pills
       page-filters
-      [options]="ownershipOptions"
+      [options]="ownershipOptions()"
       [value]="ownershipFilter()"
-      [ariaLabel]="sharedLiterals.ownership"
+      [ariaLabel]="sharedLiterals().ownership"
       (valueChange)="ownershipFilter.set($event)"
     />
 
-    <nav #yearChipsNav class="year-chips" [attr.aria-label]="literals.yearsLabel">
+    <nav #yearChipsNav class="year-chips" [attr.aria-label]="literals().yearsLabel">
       @if (isReady()) {
         @for (chip of yearChips(); track chip.label) {
           <button
@@ -78,36 +82,36 @@
       >
         <ng-template #header>
           <tr>
-            <th class="col-nowrap">{{ literals.colFaceValue }}</th>
-            <th class="col-grow">{{ literals.colDescription }}</th>
+            <th class="col-nowrap">{{ literals().colFaceValue }}</th>
+            <th class="col-grow">{{ literals().colDescription }}</th>
             @if (hasMint()) {
-              <th>{{ literals.colMint }}</th>
+              <th>{{ literals().colMint }}</th>
             }
             <th class="col-center">
-              {{ literals.colConservation }}
+              {{ literals().colConservation }}
               @if (isBoth()) {
-                <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
               }
             </th>
             <th class="col-center">
-              {{ literals.colUnits }}
+              {{ literals().colUnits }}
               @if (isBoth()) {
-                <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
               }
             </th>
             @if (isBoth()) {
               <th class="col-center">
-                {{ literals.colConservation }}
-                <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                {{ literals().colConservation }}
+                <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
               </th>
               <th class="col-center">
-                {{ literals.colUnits }}
-                <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                {{ literals().colUnits }}
+                <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
               </th>
             }
             @if (canEdit()) {
               <th class="col-actions">
-                <span class="sr-only">{{ sharedLiterals.actions }}</span>
+                <span class="sr-only">{{ sharedLiterals().actions }}</span>
               </th>
             }
           </tr>
@@ -126,20 +130,20 @@
             class="coin-row"
             [class.coin-row--non-circulating]="!row.coin.circulation"
             tabindex="0"
-            [attr.aria-label]="row.coin.faceValue + ' · ' + row.coin.description"
+            [attr.aria-label]="(row.coin.faceValue | faceValue) + ' · ' + row.coin.description"
             (click)="openCoin(row.coin)"
             (keydown.enter)="openCoin(row.coin)"
           >
             <td class="col-nowrap coin-row__value" data-cell="primary">
-              {{ row.coin.faceValue }}
+              {{ row.coin.faceValue | faceValue }}
               @if (row.coin.variant) {
                 <app-badge [label]="row.coin.variant" severity="secondary" />
               }
               @if (!row.coin.circulation) {
                 <app-badge
-                  [label]="literals.nonCirculatingShort"
+                  [label]="literals().nonCirculatingShort"
                   severity="neutral"
-                  [tooltip]="literals.nonCirculating"
+                  [tooltip]="literals().nonCirculating"
                 />
               }
             </td>
@@ -147,9 +151,9 @@
               {{ row.coin.description }}
             </td>
             @if (hasMint()) {
-              <td [attr.data-label]="literals.colMint">{{ row.coin.mint ?? '—' }}</td>
+              <td [attr.data-label]="literals().colMint">{{ row.coin.mint ?? '—' }}</td>
             }
-            <td class="col-center" [attr.data-label]="literals.colConservation">
+            <td class="col-center" [attr.data-label]="literals().colConservation">
               @if (row.conservationBadge) {
                 <app-badge
                   [label]="row.conservationBadge.label"
@@ -160,13 +164,13 @@
                 <span class="muted">—</span>
               }
             </td>
-            <td class="col-center" [attr.data-label]="literals.colUnits">
+            <td class="col-center" [attr.data-label]="literals().colUnits">
               <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
             </td>
             @if (isBoth()) {
               <td
                 class="col-center"
-                [attr.data-label]="literals.colConservation + ' ' + sharedLiterals.ownerManolo"
+                [attr.data-label]="literals().colConservation + ' ' + sharedLiterals().ownerManolo"
               >
                 @if (row.conservationBadgeAlt) {
                   <app-badge
@@ -180,7 +184,7 @@
               </td>
               <td
                 class="col-center"
-                [attr.data-label]="literals.colUnits + ' ' + sharedLiterals.ownerManolo"
+                [attr.data-label]="literals().colUnits + ' ' + sharedLiterals().ownerManolo"
               >
                 @if (row.udsBadgeAlt) {
                   <app-badge
@@ -200,14 +204,14 @@
                   <app-button
                     icon="pi pi-pencil"
                     variant="ghost"
-                    [tooltip]="literals.editUnits"
+                    [tooltip]="literals().editUnits"
                     (clicked)="onEditUnits(row.coin)"
                   />
                   @if (authService.isAdmin()) {
                     <app-button
                       icon="pi pi-trash"
                       variant="danger"
-                      [tooltip]="literals.deleteCoin"
+                      [tooltip]="literals().deleteCoin"
                       (clicked)="onDeleteCoin(row.coin)"
                     />
                   }
@@ -220,8 +224,8 @@
 
       @if (hasNonCirculating()) {
         <p class="legend">
-          <app-badge [label]="literals.nonCirculatingShort" severity="neutral" />
-          {{ literals.nonCirculatingLegend }}
+          <app-badge [label]="literals().nonCirculatingShort" severity="neutral" />
+          {{ literals().nonCirculatingLegend }}
         </p>
       }
     } @else {
@@ -230,7 +234,7 @@
         [icon]="empty.icon"
         [title]="empty.title"
         [tone]="empty.tone"
-        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals().clearSearch : ''"
         actionIcon="pi pi-times"
         (action)="onSearch('')"
       />
@@ -248,8 +252,8 @@
 @if (authService.isAdmin()) {
   <app-confirm-dialog
     [(visible)]="deleteDialogVisible"
-    [header]="literals.deleteCoin"
-    [message]="literals.deleteConfirm"
+    [header]="literals().deleteCoin"
+    [message]="literals().deleteConfirm"
     [loading]="deleteLoading()"
     (confirmed)="onConfirmDelete()"
   />
