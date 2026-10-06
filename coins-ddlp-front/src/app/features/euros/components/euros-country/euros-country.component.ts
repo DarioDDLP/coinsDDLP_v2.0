@@ -43,7 +43,8 @@ import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/ba
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
-import { injectCanEditCoins, isOwned } from '../../euros-permissions';
+import { injectCanEditCoins } from '../../euros-permissions';
+import { isOwned } from '../../../../shared/helpers/ownership.helper';
 
 interface YearChip {
   year: number | null;

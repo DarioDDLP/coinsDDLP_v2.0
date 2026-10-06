@@ -40,6 +40,7 @@ import {
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
+import { isOwned } from '../../../../shared/helpers/ownership.helper';
 import { ExcelExportService } from '../../../../shared/services/excel-export.service';
 import {
   ALBUM_POSITIONS_PER_ROW,
@@ -183,7 +184,7 @@ export class ConmemorativasListComponent {
   }
 
   private isOwned(c: EuroCoin): boolean {
-    return this.isBoth() ? c.uds > 0 && (c.udsAlt ?? 0) > 0 : c.uds > 0;
+    return isOwned(c.uds, c.udsAlt, this.isBoth());
   }
 
   /**

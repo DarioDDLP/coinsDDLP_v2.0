@@ -119,7 +119,7 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-05
+> **Última actualización:** 2026-10-06
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
 - **Versión en producción: v3.0.1** (v3.0.0 = Angular 22 + PrimeNG 22 + rediseño oscuro y responsive; v3.0.1 = sin toasts de errores de scripts ajenos). Si falla en producción: Vercel → Deployments → Instant Rollback
