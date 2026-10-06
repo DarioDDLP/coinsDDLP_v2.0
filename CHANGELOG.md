@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.2.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.1.0...v3.2.0) (2026-10-06)
+
+
+### Novedades
+
+* **i18n:** add English translation with live language switch ([c92cfda](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/c92cfda767e785b97d263a089d0f198a3e4d2ac9))
+* **numista-proxy:** accept the response language ([b2bc4bf](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/b2bc4bff656965103913930c92248290a01079c2))
+
 ## [3.1.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.0.1...v3.1.0) (2026-10-06)
 
 
