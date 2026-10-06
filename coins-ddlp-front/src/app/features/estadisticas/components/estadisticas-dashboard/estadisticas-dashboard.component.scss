@@ -1,0 +1,116 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.total-progress {
+  padding: var(--space-4) var(--space-5);
+  @include card;
+}
+
+.stats-section {
+  margin-bottom: var(--space-5);
+
+  @include mobile {
+    margin-bottom: var(--space-4);
+  }
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @include tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+.stats-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: start;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+
+  @include tablet {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+}
+
+.stats-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+  padding: var(--space-5) var(--space-6);
+  @include card;
+
+  @include mobile {
+    padding: var(--space-4);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-base);
+    font-weight: var(--font-semibold);
+    color: var(--text);
+  }
+}
+
+.country-list,
+.value-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.value-list {
+  gap: var(--space-4);
+}
+
+.country-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 9rem) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-2);
+  margin: 0 calc(-1 * var(--space-2));
+  border-radius: var(--radius-md);
+  color: var(--text);
+  text-decoration: none;
+  transition: background var(--transition-fast);
+  @include focus-ring;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+
+  @include mobile {
+    grid-template-columns: auto minmax(0, 1fr);
+    row-gap: var(--space-1);
+  }
+
+  &__name {
+    font-size: var(--font-body);
+    font-weight: var(--font-medium);
+    @include truncate;
+  }
+
+  &__progress {
+    @include mobile {
+      grid-column: 1 / -1;
+    }
+  }
+}

@@ -29,7 +29,7 @@ import {
   restoreSearchQuery,
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
-import { isOwned } from '../../euros-permissions';
+import { isOwned } from '../../../../shared/helpers/ownership.helper';
 
 interface CountryCard {
   country: string;

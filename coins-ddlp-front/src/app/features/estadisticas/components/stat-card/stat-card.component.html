@@ -1,0 +1,13 @@
+<div class="stat-card__head">
+  <span class="stat-card__icon" aria-hidden="true"><i [class]="icon()"></i></span>
+  <span class="stat-card__label">{{ label() }}</span>
+</div>
+<p class="stat-card__value">
+  <span class="stat-card__number">{{ value() | number: '1.0-0' }}</span>
+  @if (suffix()) {
+    <span class="stat-card__suffix">{{ suffix() }}</span>
+  }
+</p>
+@if (hint()) {
+  <p class="stat-card__hint">{{ hint() }}</p>
+}

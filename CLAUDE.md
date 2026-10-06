@@ -67,8 +67,8 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 
 - `core/` — singletons. `guards/` (`adminGuard` para `/admin` y `/herramientas`; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth`, `numista` (Edge Function `numista-proxy`, expone la cuota restante), `owner` (colección activa), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
 - `layout/` — shell: `sidebar`, `user-menu`, `topbar`, `bottom-nav`, `more-sheet`, `login-dialog`, `recovery-password-dialog`, `layout-state.service.ts` (viewport, sidebar plegado, panel "Más", diálogo de login), `navigation.config.ts` (`NAV_ITEMS`)
-- `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (vacía), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog), `tools` (tools-add-euro, tools-add-year)
-- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, error-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`, `app-version` = versión de `package.json`, mostrada al pie del sidebar y de "Más"); `interfaces/`; `helpers/` (normalize-strings, country, search-state, badge, unique-id, empty-state); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
+- `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (estadisticas-dashboard, stat-card, year-chart, `estadisticas.service`), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog), `tools` (tools-add-euro, tools-add-year)
+- `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, error-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (literals, toast-messages, dialog, conservation-states, collections, `*-filter.config`, `face-value-order`, `app-version` = versión de `package.json`, mostrada al pie del sidebar y de "Más"); `interfaces/`; `helpers/` (normalize-strings, country, search-state, badge, unique-id, empty-state, ownership = `isOwned`, euro-stats = agregados de Estadísticas); `pipes/` (euro-value); `services/` (excel-export con ExcelJS, page-header)
 - `app.config.ts`: Supabase, Router, HttpClient con `fetch`, PrimeNG (preset + licencia), `LOCALE_ID 'es'`. Assets en `coins-ddlp-front/public/` (favicon, `assets/flags/`)
 
 **Patrones:**
@@ -88,7 +88,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 | `/conmemorativas` | lista por año con chips de salto |
 | `/pesetas?valor=5 pesetas` · `/pesetas/moneda/:id` | chips de denominación · + drawer |
 | `/ubicacion` | álbumes en tarjetas; pública, edición solo admin |
-| `/estadisticas` | admin, pendiente |
+| `/estadisticas` | pública: KPIs, progreso por país, valor facial y año (euros, según la colección activa) |
 | `/admin/usuarios` · `/herramientas/añadir-euro\|año` | `adminGuard` |
 
 - Redirecciones de URLs antiguas: `/euros/:country/all`, `/euros/:country/:year[/:id]`, `/pesetas/all`, `/pesetas/:faceValue[/:id]`
@@ -119,7 +119,7 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-05
+> **Última actualización:** 2026-10-06
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
 - **Versión en producción: v3.0.1** (v3.0.0 = Angular 22 + PrimeNG 22 + rediseño oscuro y responsive; v3.0.1 = sin toasts de errores de scripts ajenos). Si falla en producción: Vercel → Deployments → Instant Rollback
@@ -127,7 +127,7 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 
 **Pendiente:**
 0. **PR de release v3.1.0** (incluye la versión visible, `feat(layout)` 63f8607): el 2026-10-05 la ejecución de release-please se quedó en cola por una incidencia de GitHub Actions. Comprobar que se abrió el PR y fusionarlo; si la ejecución se canceló (24 h en cola), Actions → Re-run jobs o se recupera con el siguiente push a `main`
-1. Sección **Estadísticas**: `estadisticas-dashboard` existe vacío (literales en `LITERALS.estadisticas`). Hacerla con `page-layout`, `progress-stat`, tokens y `resource`/`httpResource`
+1. **Estadísticas** (rama `feat/estadisticas`, sin fusionar a `main`): revisar en un navegador real (tooltip del gráfico por año, móvil, cambio de colección). Ampliaciones posibles: conservación, repetidas para intercambio, pesetas
 2. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
 3. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
 4. Permisos: la RLS de `euro_ownership` solo deja escribir filas propias, pero `injectCanEditCoins` deja al admin editar la colección de Manolo; probablemente Supabase rechace ese guardado. Probarlo y, si falla, migración con política de escritura para el admin
