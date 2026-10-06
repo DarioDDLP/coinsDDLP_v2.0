@@ -1,9 +1,9 @@
 <app-detail-drawer
   #drawer
   [overline]="coin() ? coin()!.country + ' · ' + coin()!.year : ''"
-  [title]="coin()?.faceValue ?? ''"
+  [title]="coin()?.faceValue | faceValue"
   [subtitle]="coin()?.description ?? ''"
-  [ariaLabel]="eurosLiterals.detailTitle"
+  [ariaLabel]="eurosLiterals().detailTitle"
   [loading]="isLoading()"
   (closed)="close()"
 >
@@ -29,7 +29,7 @@
       }
       <app-badge [label]="udsLabel()" [severity]="udsBadge().severity" size="md" />
       @if (!c.circulation) {
-        <app-badge [label]="eurosLiterals.nonCirculating" severity="accent" size="md" />
+        <app-badge [label]="eurosLiterals().nonCirculating" severity="accent" size="md" />
       }
     </div>
 
@@ -37,20 +37,20 @@
       @if (numista(); as n) {
         @if (n.obverse?.thumbnail) {
           <figure class="coin-images__item">
-            <img [src]="n.obverse!.thumbnail" [alt]="literals.labelObverse" />
-            <figcaption>{{ literals.labelObverse }}</figcaption>
+            <img [src]="n.obverse!.thumbnail" [alt]="literals().labelObverse" />
+            <figcaption>{{ literals().labelObverse }}</figcaption>
           </figure>
         }
         @if (n.reverse?.thumbnail) {
           <figure class="coin-images__item">
-            <img [src]="n.reverse!.thumbnail" [alt]="literals.labelReverse" />
-            <figcaption>{{ literals.labelReverse }}</figcaption>
+            <img [src]="n.reverse!.thumbnail" [alt]="literals().labelReverse" />
+            <figcaption>{{ literals().labelReverse }}</figcaption>
           </figure>
         }
         @if (n.edge?.thumbnail) {
           <figure class="coin-images__item coin-images__item--edge">
-            <img [src]="n.edge!.thumbnail" [alt]="literals.labelEdge" />
-            <figcaption>{{ literals.labelEdge }}</figcaption>
+            <img [src]="n.edge!.thumbnail" [alt]="literals().labelEdge" />
+            <figcaption>{{ literals().labelEdge }}</figcaption>
           </figure>
         }
       } @else {
@@ -65,19 +65,19 @@
     @if (numista(); as n) {
       @if (n.obverse?.description) {
         <section class="detail-section">
-          <h3 class="detail-section-title">{{ literals.labelObverse }}</h3>
+          <h3 class="detail-section-title">{{ literals().labelObverse }}</h3>
           <p class="detail-text">{{ n.obverse!.description }}</p>
         </section>
       }
       @if (n.reverse?.description) {
         <section class="detail-section">
-          <h3 class="detail-section-title">{{ literals.labelReverse }}</h3>
+          <h3 class="detail-section-title">{{ literals().labelReverse }}</h3>
           <p class="detail-text">{{ n.reverse!.description }}</p>
         </section>
       }
       @if (n.edge?.description) {
         <section class="detail-section">
-          <h3 class="detail-section-title">{{ literals.labelEdge }}</h3>
+          <h3 class="detail-section-title">{{ literals().labelEdge }}</h3>
           <p class="detail-text">{{ n.edge!.description }}</p>
         </section>
       }
@@ -85,7 +85,7 @@
 
     <section class="detail-section">
       <h3 class="detail-section-title">
-        {{ numista() ? literals.labelFeatures : literals.labelBasicData }}
+        {{ numista() ? literals().labelFeatures : literals().labelBasicData }}
       </h3>
       <dl class="features">
         @for (f of features(); track f.label) {
@@ -98,13 +98,13 @@
     </section>
 
     <section class="detail-section detail-section--card">
-      <h3 class="detail-section-title">{{ literals.labelObservations }}</h3>
-      <p class="detail-text">{{ c.observations || literals.labelNoObservations }}</p>
+      <h3 class="detail-section-title">{{ literals().labelObservations }}</h3>
+      <p class="detail-text">{{ c.observations || literals().labelNoObservations }}</p>
     </section>
 
     @if (numista(); as n) {
       <a class="detail-link" [href]="n.url" target="_blank" rel="noopener">
-        {{ literals.labelMoreInfo }}
+        {{ literals().labelMoreInfo }}
         <i class="pi pi-external-link" aria-hidden="true"></i>
       </a>
     }
@@ -114,7 +114,7 @@
     <div drawer-footer class="detail-actions">
       <app-button
         icon="pi pi-pencil"
-        [label]="eurosLiterals.editUnits"
+        [label]="eurosLiterals().editUnits"
         [block]="true"
         (clicked)="udsDialogVisible.set(true)"
       />
@@ -122,7 +122,7 @@
         <app-button
           icon="pi pi-trash"
           variant="danger"
-          [tooltip]="eurosLiterals.deleteCoin"
+          [tooltip]="eurosLiterals().deleteCoin"
           (clicked)="deleteDialogVisible.set(true)"
         />
       }
@@ -138,8 +138,8 @@
 @if (authService.isAdmin()) {
   <app-confirm-dialog
     [(visible)]="deleteDialogVisible"
-    [header]="eurosLiterals.deleteCoin"
-    [message]="eurosLiterals.deleteConfirm"
+    [header]="eurosLiterals().deleteCoin"
+    [message]="eurosLiterals().deleteConfirm"
     [loading]="deleteLoading()"
     (confirmed)="onConfirmDelete()"
   />

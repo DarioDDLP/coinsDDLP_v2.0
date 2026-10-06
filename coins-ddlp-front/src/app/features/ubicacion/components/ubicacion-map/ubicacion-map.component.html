@@ -1,20 +1,20 @@
 @if (hasError()) {
-  <app-page-layout [title]="literals.title">
+  <app-page-layout [title]="literals().title">
     <app-error-panel (retry)="loadLocations()" />
   </app-page-layout>
 } @else {
   <app-page-layout
-    [title]="literals.title"
-    [overline]="literals.overline"
+    [title]="literals().title"
+    [overline]="literals().overline"
     [subtitle]="subtitle()"
-    [searchPlaceholder]="literals.searchPlaceholder"
+    [searchPlaceholder]="literals().searchPlaceholder"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
     @if (canEdit()) {
       <app-button
         page-actions
-        [label]="literals.addCountry"
+        [label]="literals().addCountry"
         icon="pi pi-plus"
         (clicked)="onAddCountry()"
       />
@@ -30,11 +30,13 @@
           <section class="album-card">
             <header class="album-card__header">
               <span class="album-card__icon" aria-hidden="true"><i class="pi pi-book"></i></span>
-              <h2 class="album-card__title">{{ literals.album }} {{ group.album }}</h2>
+              <h2 class="album-card__title">{{ literals().album }} {{ group.album }}</h2>
               <span class="album-card__count">
                 {{ group.locations.length }}
                 {{
-                  group.locations.length === 1 ? literals.countrySingular : literals.countriesCount
+                  group.locations.length === 1
+                    ? literals().countrySingular
+                    : literals().countriesCount
                 }}
               </span>
             </header>
@@ -44,24 +46,24 @@
                 <li class="location">
                   <app-country-flag [country]="loc.country" [size]="28" [decorative]="true" />
                   <div class="location__text">
-                    <span class="location__country">{{ loc.country }}</span>
+                    <span class="location__country">{{ loc.country | countryName }}</span>
                     <span class="location__years">{{ yearRange(loc) }}</span>
                   </div>
                   @if (loc.isClosed) {
-                    <app-badge [label]="literals.closed" severity="secondary" />
+                    <app-badge [label]="literals().closed" severity="secondary" />
                   }
                   @if (canEdit()) {
                     <div class="location__actions">
                       <app-button
                         icon="pi pi-pencil"
                         variant="ghost"
-                        [tooltip]="literals.editEntry"
+                        [tooltip]="literals().editEntry"
                         (clicked)="onEdit(loc)"
                       />
                       <app-button
                         icon="pi pi-trash"
                         variant="danger"
-                        [tooltip]="literals.deleteEntry"
+                        [tooltip]="literals().deleteEntry"
                         (clicked)="onDelete(loc)"
                       />
                     </div>
@@ -78,7 +80,7 @@
         [icon]="empty.icon"
         [title]="empty.title"
         [tone]="empty.tone"
-        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals().clearSearch : ''"
         actionIcon="pi pi-times"
         (action)="onSearch('')"
       />
@@ -96,8 +98,8 @@
 
   <app-confirm-dialog
     [(visible)]="showConfirmDelete"
-    [header]="literals.deleteEntry"
-    [message]="literals.deleteConfirm"
+    [header]="literals().deleteEntry"
+    [message]="literals().deleteConfirm"
     [loading]="isDeleting()"
     (confirmed)="onConfirmDelete()"
   />

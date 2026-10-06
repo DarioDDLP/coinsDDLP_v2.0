@@ -1,9 +1,9 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ButtonsHeaderComponent } from '../../shared/components/buttons-header/buttons-header.component';
 import { AuthService } from '../../core/services/auth.service';
-import { TOOLS_NAV_ITEMS } from './tools.config';
-import { LITERALS } from '../../shared/constants/literals';
+import { getToolsNavItems } from './tools.config';
+import { injectLiterals } from '../../shared/services/i18n.service';
 
 @Component({
   selector: 'app-tools',
@@ -15,9 +15,11 @@ export class ToolsComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  readonly title = LITERALS.herramientas.title;
-  readonly overline = LITERALS.nav.groupManagement;
-  readonly navItems = TOOLS_NAV_ITEMS;
+  private literals = injectLiterals('herramientas');
+  private navLiterals = injectLiterals('nav');
+  readonly title = computed(() => this.literals().title);
+  readonly overline = computed(() => this.navLiterals().groupManagement);
+  readonly navItems = computed(() => getToolsNavItems(this.literals()));
 
   constructor() {
     effect(() => {

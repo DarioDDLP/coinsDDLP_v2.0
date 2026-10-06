@@ -1,7 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, DOCUMENT, effect, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Toast } from 'primeng/toast';
-import { LITERALS } from './shared/constants/literals';
+import { PrimeNG } from 'primeng/config';
+import { I18nService, injectLiterals } from './shared/services/i18n.service';
 import { TOAST_BREAKPOINTS } from './shared/constants/toast.const';
 import { AuthService } from './core/services/auth.service';
 import { LayoutStateService } from './layout/layout-state.service';
@@ -30,6 +31,19 @@ import { RecoveryPasswordDialogComponent } from './layout/recovery-password-dial
 export class App {
   readonly authService = inject(AuthService);
   readonly layout = inject(LayoutStateService);
-  readonly literals = LITERALS.nav;
+  readonly literals = injectLiterals('nav');
   readonly toastBreakpoints = TOAST_BREAKPOINTS;
+
+  constructor() {
+    const document = inject(DOCUMENT);
+    const primeng = inject(PrimeNG);
+    const i18n = inject(I18nService);
+    const primengLiterals = injectLiterals('primeng');
+
+    // El idioma activo llega a <html lang> (lectores de pantalla, guiones) y a los textos internos de PrimeNG
+    effect(() => {
+      document.documentElement.lang = i18n.lang();
+      primeng.setTranslation(primengLiterals());
+    });
+  }
 }

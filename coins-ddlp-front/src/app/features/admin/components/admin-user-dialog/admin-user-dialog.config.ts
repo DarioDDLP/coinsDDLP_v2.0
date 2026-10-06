@@ -1,6 +1,6 @@
-import { LITERALS } from '../../../../shared/constants/literals';
+import { Translations } from '../../../../shared/interfaces/translations.interface';
 
-export const ROLE_OPTIONS = [
-  { label: LITERALS.admin.roleUser, value: 'user' },
-  { label: LITERALS.admin.roleAdmin, value: 'admin' },
+export const getRoleOptions = (t: Translations['admin']) => [
+  { label: t.roleUser, value: 'user' },
+  { label: t.roleAdmin, value: 'admin' },
 ];

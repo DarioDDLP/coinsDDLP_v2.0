@@ -1,6 +1,6 @@
 import { ErrorHandler, inject, Injectable, Injector } from '@angular/core';
 import { MessageService } from 'primeng/api';
-import { LITERALS } from '../../shared/constants/literals';
+import { I18nService } from '../../shared/services/i18n.service';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -11,7 +11,7 @@ export class GlobalErrorHandler implements ErrorHandler {
     try {
       this.injector.get(MessageService).add({
         severity: 'error',
-        summary: LITERALS.shared.toastError,
+        summary: this.text('shared.toastError'),
         detail: this.extractMessage(error),
         life: 5000,
       });
@@ -20,13 +20,18 @@ export class GlobalErrorHandler implements ErrorHandler {
     }
   }
 
+  /** Texto en el idioma activo en el momento del error. */
+  private text(key: string): string {
+    return this.injector.get(I18nService).translate(key);
+  }
+
   private extractMessage(error: unknown): string {
-    if (error == null) return LITERALS.shared.error;
+    if (error == null) return this.text('shared.error');
     if (typeof error === 'string') return error;
     if (typeof error === 'object') {
       const e = error as Record<string, unknown>;
       // Status 0: la petición no llegó al servidor (red cortada, CORS, bloqueada)
-      if (e['status'] === 0) return LITERALS.shared.errorLoadMessage;
+      if (e['status'] === 0) return this.text('shared.errorLoadMessage');
       if (e['error'] != null) {
         // HttpErrorResponse: body JSON como objeto — buscar 'message' y luego 'error'
         if (typeof e['error'] === 'object' && !(e['error'] instanceof Event)) {
@@ -40,6 +45,6 @@ export class GlobalErrorHandler implements ErrorHandler {
       // Error estándar de JS o PostgrestError de Supabase
       if (typeof e['message'] === 'string') return e['message'];
     }
-    return LITERALS.shared.error;
+    return this.text('shared.error');
   }
 }

@@ -15,7 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
-import { LITERALS } from '../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
 
 @Component({
@@ -25,6 +25,7 @@ import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
   styleUrl: './login-dialog.component.scss',
 })
 export class LoginDialogComponent {
+  private i18n = inject(I18nService);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -33,8 +34,8 @@ export class LoginDialogComponent {
   readonly visible = model(false);
   readonly mode = input<'login' | 'logout'>('login');
 
-  readonly literals = LITERALS.auth;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('auth');
+  readonly sharedLiterals = injectLiterals('shared');
 
   readonly email = signal('');
   readonly password = signal('');
@@ -44,9 +45,9 @@ export class LoginDialogComponent {
   readonly view = signal<'login' | 'logout' | 'forgot'>('login');
 
   readonly header = computed(() => {
-    if (this.view() === 'logout') return this.literals.logoutButton;
-    if (this.view() === 'forgot') return this.literals.forgotTitle;
-    return this.literals.loginTitle;
+    if (this.view() === 'logout') return this.literals().logoutButton;
+    if (this.view() === 'forgot') return this.literals().forgotTitle;
+    return this.literals().loginTitle;
   });
 
   constructor() {
@@ -63,11 +64,11 @@ export class LoginDialogComponent {
     this.loading.set(true);
     try {
       await this.authService.login(this.email(), this.password());
-      this.messageService.add(TOAST_MESSAGES.auth.loginSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.auth.loginSuccess));
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.loginError);
+      this.errorMessage.set(this.literals().loginError);
     } finally {
       this.loading.set(false);
     }
@@ -77,7 +78,7 @@ export class LoginDialogComponent {
     this.loading.set(true);
     try {
       await this.authService.logout();
-      this.messageService.add(TOAST_MESSAGES.auth.logoutSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.auth.logoutSuccess));
       this.visible.set(false);
       this.router.navigate(['/euros']);
     } catch (e) {
@@ -95,7 +96,7 @@ export class LoginDialogComponent {
       this.resetSent.set(true);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.resetError);
+      this.errorMessage.set(this.literals().resetError);
     } finally {
       this.loading.set(false);
     }

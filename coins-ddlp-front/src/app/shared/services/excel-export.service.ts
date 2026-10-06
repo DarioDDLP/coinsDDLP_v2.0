@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import ExcelJS from 'exceljs';
 import { EuroCoin } from '../interfaces/euro-coin.interface';
+import { Translations } from '../interfaces/translations.interface';
 
 export interface ConmExportRow {
   coin: EuroCoin;
   location: { album: number; page: number; position: string };
 }
+
+/** Cabeceras y nombres de fichero en el idioma activo; las pasa el componente. */
+export type ExcelLabels = Translations['excel'] &
+  Pick<Translations['shared'], 'ownerDario' | 'ownerManolo'>;
 
 export interface ConmExportGroup {
   year: number;
@@ -57,30 +62,31 @@ export class ExcelExportService {
     country: string,
     year: number,
     hasMint: boolean,
+    l: ExcelLabels,
     isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(`${country} ${year}`);
 
     const cols: Partial<ExcelJS.Column>[] = [
-      { header: 'Valor facial', key: 'faceValue', width: 16 },
-      { header: 'Descripción', key: 'description', width: 42 },
+      { header: l.faceValue, key: 'faceValue', width: 16 },
+      { header: l.description, key: 'description', width: 42 },
     ];
-    if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
+    if (hasMint) cols.push({ header: l.mint, key: 'mint', width: 20 });
     if (isBoth) {
       cols.push(
-        { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
-        { header: 'Uds. (Darío)', key: 'uds', width: 12 },
-        { header: 'Observaciones (Darío)', key: 'observations', width: 32 },
-        { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
-        { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
-        { header: 'Observaciones (Manolo)', key: 'observationsAlt', width: 32 },
+        { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
+        { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
+        { header: `${l.observations} (${l.ownerDario})`, key: 'observations', width: 32 },
+        { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
+        { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
+        { header: `${l.observations} (${l.ownerManolo})`, key: 'observationsAlt', width: 32 },
       );
     } else {
       cols.push(
-        { header: 'Conservación', key: 'conservation', width: 14 },
-        { header: 'Uds.', key: 'uds', width: 8 },
-        { header: 'Observaciones', key: 'observations', width: 32 },
+        { header: l.conservation, key: 'conservation', width: 14 },
+        { header: l.units, key: 'uds', width: 8 },
+        { header: l.observations, key: 'observations', width: 32 },
       );
     }
     ws.columns = cols;
@@ -111,31 +117,32 @@ export class ExcelExportService {
     coins: EuroCoin[],
     country: string,
     hasMint: boolean,
+    l: ExcelLabels,
     isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(country);
 
     const cols: Partial<ExcelJS.Column>[] = [
-      { header: 'Año', key: 'year', width: 8 },
-      { header: 'Valor facial', key: 'faceValue', width: 16 },
-      { header: 'Descripción', key: 'description', width: 42 },
+      { header: l.year, key: 'year', width: 8 },
+      { header: l.faceValue, key: 'faceValue', width: 16 },
+      { header: l.description, key: 'description', width: 42 },
     ];
-    if (hasMint) cols.push({ header: 'Ceca', key: 'mint', width: 20 });
+    if (hasMint) cols.push({ header: l.mint, key: 'mint', width: 20 });
     if (isBoth) {
       cols.push(
-        { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
-        { header: 'Uds. (Darío)', key: 'uds', width: 12 },
-        { header: 'Observaciones (Darío)', key: 'observations', width: 32 },
-        { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
-        { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
-        { header: 'Observaciones (Manolo)', key: 'observationsAlt', width: 32 },
+        { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
+        { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
+        { header: `${l.observations} (${l.ownerDario})`, key: 'observations', width: 32 },
+        { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
+        { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
+        { header: `${l.observations} (${l.ownerManolo})`, key: 'observationsAlt', width: 32 },
       );
     } else {
       cols.push(
-        { header: 'Conservación', key: 'conservation', width: 14 },
-        { header: 'Uds.', key: 'uds', width: 8 },
-        { header: 'Observaciones', key: 'observations', width: 32 },
+        { header: l.conservation, key: 'conservation', width: 14 },
+        { header: l.units, key: 'uds', width: 8 },
+        { header: l.observations, key: 'observations', width: 32 },
       );
     }
     ws.columns = cols;
@@ -160,12 +167,13 @@ export class ExcelExportService {
       ws.addRow(row);
     }
 
-    await this.download(wb, `euros_${country}_todas.xlsx`);
+    await this.download(wb, `euros_${country}_${l.allFileSuffix}.xlsx`);
   }
 
   async exportConmemorativas(
     groups: ConmExportGroup[],
     isAdmin: boolean,
+    l: ExcelLabels,
     isBoth = false,
   ): Promise<void> {
     const wb = new ExcelJS.Workbook();
@@ -174,22 +182,22 @@ export class ExcelExportService {
       const ws = wb.addWorksheet(`${group.year}`);
 
       const cols: Partial<ExcelJS.Column>[] = [
-        { header: 'País', key: 'country', width: 22 },
-        { header: 'Ceca', key: 'mint', width: 18 },
-        { header: 'Descripción', key: 'description', width: 52 },
+        { header: l.country, key: 'country', width: 22 },
+        { header: l.mint, key: 'mint', width: 18 },
+        { header: l.description, key: 'description', width: 52 },
       ];
-      if (isAdmin) cols.push({ header: 'Álb / H / Pos', key: 'location', width: 16 });
+      if (isAdmin) cols.push({ header: l.location, key: 'location', width: 16 });
       if (isBoth) {
         cols.push(
-          { header: 'Conservación (Darío)', key: 'conservation', width: 20 },
-          { header: 'Uds. (Darío)', key: 'uds', width: 12 },
-          { header: 'Conservación (Manolo)', key: 'conservationAlt', width: 20 },
-          { header: 'Uds. (Manolo)', key: 'udsAlt', width: 12 },
+          { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
+          { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
+          { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
+          { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
         );
       } else {
         cols.push(
-          { header: 'Conservación', key: 'conservation', width: 14 },
-          { header: 'Uds.', key: 'uds', width: 8 },
+          { header: l.conservation, key: 'conservation', width: 14 },
+          { header: l.units, key: 'uds', width: 8 },
         );
       }
       ws.columns = cols;
@@ -214,6 +222,6 @@ export class ExcelExportService {
       }
     }
 
-    await this.download(wb, 'conmemorativas.xlsx');
+    await this.download(wb, `${l.conmemorativasFile}.xlsx`);
   }
 }

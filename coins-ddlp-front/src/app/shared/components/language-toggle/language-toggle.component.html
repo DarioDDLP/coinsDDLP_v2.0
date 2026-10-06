@@ -1,0 +1,30 @@
+@if (compact()) {
+  <button
+    type="button"
+    class="language-toggle__single"
+    [attr.aria-label]="literals().languageHint + ': ' + next().name"
+    [pTooltip]="literals().languageHint + ': ' + next().name"
+    tooltipPosition="right"
+    [disabled]="changing()"
+    (click)="select(next().lang)"
+  >
+    {{ next().short }}
+  </button>
+} @else {
+  <div class="language-toggle" role="group" [attr.aria-label]="literals().language">
+    @for (opt of options(); track opt.lang) {
+      <button
+        type="button"
+        class="language-toggle__btn"
+        [class.language-toggle__btn--active]="lang() === opt.lang"
+        [attr.aria-pressed]="lang() === opt.lang"
+        [attr.aria-label]="opt.name"
+        [attr.lang]="opt.lang"
+        [disabled]="changing()"
+        (click)="select(opt.lang)"
+      >
+        {{ opt.short }}
+      </button>
+    }
+  </div>
+}

@@ -4,7 +4,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { TextInputComponent } from '../../shared/components/text-input/text-input.component';
-import { LITERALS } from '../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
 
 @Component({
@@ -14,6 +14,7 @@ import { TOAST_MESSAGES } from '../../shared/constants/toast-messages.const';
   styleUrl: './recovery-password-dialog.component.scss',
 })
 export class RecoveryPasswordDialogComponent {
+  private i18n = inject(I18nService);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -21,7 +22,7 @@ export class RecoveryPasswordDialogComponent {
   /** Sin botón de cerrar ni Escape: solo se cierra al cambiar la contraseña. */
   readonly visible = model(false);
 
-  readonly literals = LITERALS.auth;
+  readonly literals = injectLiterals('auth');
 
   readonly newPassword = signal('');
   readonly confirmPassword = signal('');
@@ -30,18 +31,18 @@ export class RecoveryPasswordDialogComponent {
 
   async onSubmit(): Promise<void> {
     if (this.newPassword() !== this.confirmPassword()) {
-      this.errorMessage.set(this.literals.passwordMismatch);
+      this.errorMessage.set(this.literals().passwordMismatch);
       return;
     }
     this.errorMessage.set('');
     this.loading.set(true);
     try {
       await this.authService.updatePassword(this.newPassword());
-      this.messageService.add(TOAST_MESSAGES.auth.recoverySuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.auth.recoverySuccess));
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
-      this.errorMessage.set(this.literals.recoveryError);
+      this.errorMessage.set(this.literals().recoveryError);
     } finally {
       this.loading.set(false);
     }

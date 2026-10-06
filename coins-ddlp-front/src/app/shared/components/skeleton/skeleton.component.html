@@ -1,5 +1,5 @@
 @if (announce()) {
-  <span class="sr-only" role="status">{{ loadingLabel }}</span>
+  <span class="sr-only" role="status">{{ literals().loading }}</span>
 }
 @for (_ of items(); track $index) {
   <p-skeleton

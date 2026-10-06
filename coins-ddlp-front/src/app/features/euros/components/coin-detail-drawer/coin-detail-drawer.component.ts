@@ -24,10 +24,13 @@ import { CountryFlagComponent } from '../../../../shared/components/country-flag
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { DetailDrawerComponent } from '../../../../shared/components/detail-drawer/detail-drawer.component';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
+import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
+import { translateCountry } from '../../../../shared/helpers/country.helper';
+import { translateFaceValue } from '../../../../shared/helpers/face-value.helper';
 
 interface Feature {
   label: string;
@@ -38,6 +41,7 @@ interface Feature {
 @Component({
   selector: 'app-coin-detail-drawer',
   imports: [
+    FaceValuePipe,
     DetailDrawerComponent,
     BadgeComponent,
     ErrorPanelComponent,
@@ -50,17 +54,21 @@ interface Feature {
   styleUrl: './coin-detail-drawer.component.scss',
 })
 export class CoinDetailDrawerComponent {
+  private i18n = inject(I18nService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private eurosService = inject(EurosService);
   private numistaService = inject(NumistaService);
+  private lang = this.i18n.lang;
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
   readonly authService = inject(AuthService);
 
-  readonly literals = LITERALS.coinDetail;
-  readonly eurosLiterals = LITERALS.euros;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('coinDetail');
+  private countries = injectLiterals('countries');
+  private faceValues = injectLiterals('faceValues');
+  readonly eurosLiterals = injectLiterals('euros');
+  readonly sharedLiterals = injectLiterals('shared');
 
   private readonly id = toSignal(this.route.paramMap.pipe(map((p) => p.get('id') ?? '')), {
     initialValue: '',
@@ -89,11 +97,23 @@ export class CoinDetailDrawerComponent {
       this.eurosService.revision();
       if (id) untracked(() => this.load(id));
     });
+
+    // Al cambiar de idioma con la ficha abierta, los textos de Numista se vuelven a pedir en el nuevo
+    effect(() => {
+      const lang = this.lang();
+      untracked(() => {
+        const coin = this.coin();
+        if (coin && this.numistaLang !== null && lang !== this.numistaLang)
+          this.loadNumista(coin.idNum);
+      });
+    });
   }
 
   // Solo cuenta la última petición de cada tipo: una anterior que llegue tarde no pisa la ficha
   private loadSub?: Subscription;
   private numistaSub?: Subscription;
+  /** Idioma en que se pidieron los datos de Numista mostrados. */
+  private numistaLang: string | null = null;
 
   private load(id: string): void {
     this.hasError.set(false);
@@ -127,9 +147,10 @@ export class CoinDetailDrawerComponent {
     this.numistaError.set(false);
     this.numistaQuotaError.set(false);
     this.numistaLoading.set(false);
+    this.numistaLang = this.lang();
     if (!idNum || idNum === '0') return;
     this.numistaLoading.set(true);
-    this.numistaSub = this.numistaService.getCoinByIdNum(idNum).subscribe({
+    this.numistaSub = this.numistaService.getCoinByIdNum(idNum, this.numistaLang).subscribe({
       next: (data) => {
         this.numista.set(data);
         this.numistaLoading.set(false);
@@ -149,13 +170,13 @@ export class CoinDetailDrawerComponent {
   readonly udsBadge = computed(() => getUdsBadge(this.coin()?.uds ?? 0));
   readonly udsLabel = computed(() => {
     const uds = this.coin()?.uds ?? 0;
-    return `${uds} ${uds === 1 ? this.eurosLiterals.unitShort : this.eurosLiterals.unitsShort}`;
+    return `${uds} ${uds === 1 ? this.eurosLiterals().unitShort : this.eurosLiterals().unitsShort}`;
   });
 
   readonly noNumistaMessage = computed(() => {
-    if (this.numistaQuotaError()) return this.literals.errorNumistaQuota;
-    if (this.numistaError()) return this.literals.errorNumista;
-    return this.literals.labelNoIdNum;
+    if (this.numistaQuotaError()) return this.literals().errorNumistaQuota;
+    if (this.numistaError()) return this.literals().errorNumista;
+    return this.literals().labelNoIdNum;
   });
 
   readonly features = computed<Feature[]>(() => {
@@ -164,13 +185,19 @@ export class CoinDetailDrawerComponent {
     if (!c) return [];
     if (!n) {
       return [
-        { label: this.literals.labelCountry, value: c.country },
-        { label: this.literals.labelYear, value: String(c.year) },
-        { label: this.literals.labelFaceValue, value: c.faceValue },
-        ...(c.mint ? [{ label: this.literals.labelMint, value: c.mint }] : []),
         {
-          label: this.literals.labelCirculation,
-          value: c.circulation ? this.literals.labelYes : this.literals.labelNo,
+          label: this.literals().labelCountry,
+          value: translateCountry(c.country, this.countries()),
+        },
+        { label: this.literals().labelYear, value: String(c.year) },
+        {
+          label: this.literals().labelFaceValue,
+          value: translateFaceValue(c.faceValue, this.faceValues()),
+        },
+        ...(c.mint ? [{ label: this.literals().labelMint, value: c.mint }] : []),
+        {
+          label: this.literals().labelCirculation,
+          value: c.circulation ? this.literals().labelYes : this.literals().labelNo,
         },
       ];
     }
@@ -179,19 +206,21 @@ export class CoinDetailDrawerComponent {
       .map((r) => `${r.catalogue.code} ${r.number}`)
       .join(' · ');
     const rows: (Feature | null)[] = [
-      n.issuer?.name ? { label: this.literals.labelIssuer, value: n.issuer.name } : null,
-      n.type ? { label: this.literals.labelType, value: n.type } : null,
-      n.min_year ? { label: this.literals.labelYears, value: `${n.min_year}–${n.max_year}` } : null,
-      c.mint ? { label: this.literals.labelMint, value: c.mint } : null,
-      n.composition?.text
-        ? { label: this.literals.labelComposition, value: n.composition.text }
+      n.issuer?.name ? { label: this.literals().labelIssuer, value: n.issuer.name } : null,
+      n.type ? { label: this.literals().labelType, value: n.type } : null,
+      n.min_year
+        ? { label: this.literals().labelYears, value: `${n.min_year}–${n.max_year}` }
         : null,
-      n.weight ? { label: this.literals.labelWeight, value: `${n.weight} g` } : null,
-      n.size ? { label: this.literals.labelDiameter, value: `${n.size} mm` } : null,
-      n.thickness ? { label: this.literals.labelThickness, value: `${n.thickness} mm` } : null,
-      n.shape ? { label: this.literals.labelShape, value: n.shape } : null,
-      technique ? { label: this.literals.labelTechnique, value: technique } : null,
-      references ? { label: this.literals.labelReferences, value: references } : null,
+      c.mint ? { label: this.literals().labelMint, value: c.mint } : null,
+      n.composition?.text
+        ? { label: this.literals().labelComposition, value: n.composition.text }
+        : null,
+      n.weight ? { label: this.literals().labelWeight, value: `${n.weight} g` } : null,
+      n.size ? { label: this.literals().labelDiameter, value: `${n.size} mm` } : null,
+      n.thickness ? { label: this.literals().labelThickness, value: `${n.thickness} mm` } : null,
+      n.shape ? { label: this.literals().labelShape, value: n.shape } : null,
+      technique ? { label: this.literals().labelTechnique, value: technique } : null,
+      references ? { label: this.literals().labelReferences, value: references } : null,
     ];
     return rows.filter((r): r is Feature => r !== null);
   });
@@ -216,7 +245,7 @@ export class CoinDetailDrawerComponent {
     this.deleteLoading.set(true);
     try {
       await this.eurosService.remove(coin.id);
-      this.messageService.add(TOAST_MESSAGES.euros.deleteSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.euros.deleteSuccess));
       this.deleteDialogVisible.set(false);
       this.drawer().requestClose();
     } catch (e) {

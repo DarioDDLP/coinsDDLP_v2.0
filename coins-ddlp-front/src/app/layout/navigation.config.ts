@@ -1,11 +1,14 @@
-import { LITERALS } from '../shared/constants/literals';
+import { Translations } from '../shared/interfaces/translations.interface';
+
+type NavLabelKey = keyof Translations['nav'];
 
 export type NavGroup = 'collection' | 'management';
 
 export interface NavItem {
-  label: string;
+  /** Clave del texto en la sección `nav` de los diccionarios. */
+  labelKey: NavLabelKey;
   /** Etiqueta corta para la barra inferior de móvil (si difiere). */
-  shortLabel?: string;
+  shortLabelKey?: NavLabelKey;
   routerLink: string;
   icon: string;
   group: NavGroup;
@@ -18,49 +21,49 @@ export const NUMISTA_MONTHLY_QUOTA = 2000;
 
 export const NAV_ITEMS: NavItem[] = [
   {
-    label: LITERALS.nav.euros,
+    labelKey: 'euros',
     routerLink: '/euros',
     icon: 'pi pi-euro',
     group: 'collection',
     mobilePrimary: true,
   },
   {
-    label: LITERALS.nav.conmemorativas,
-    shortLabel: LITERALS.nav.conmemorativasShort,
+    labelKey: 'conmemorativas',
+    shortLabelKey: 'conmemorativasShort',
     routerLink: '/conmemorativas',
     icon: 'pi pi-star',
     group: 'collection',
     mobilePrimary: true,
   },
   {
-    label: LITERALS.nav.pesetas,
+    labelKey: 'pesetas',
     routerLink: '/pesetas',
     icon: 'pi pi-building-columns',
     group: 'collection',
     mobilePrimary: true,
   },
   {
-    label: LITERALS.nav.ubicacion,
+    labelKey: 'ubicacion',
     routerLink: '/ubicacion',
     icon: 'pi pi-map-marker',
     group: 'collection',
     mobilePrimary: true,
   },
   {
-    label: LITERALS.nav.estadisticas,
+    labelKey: 'estadisticas',
     routerLink: '/estadisticas',
     icon: 'pi pi-chart-bar',
     group: 'collection',
   },
   {
-    label: LITERALS.nav.admin,
+    labelKey: 'admin',
     routerLink: '/admin',
     icon: 'pi pi-shield',
     group: 'management',
     adminOnly: true,
   },
   {
-    label: LITERALS.nav.tools,
+    labelKey: 'tools',
     routerLink: '/herramientas',
     icon: 'pi pi-wrench',
     group: 'management',

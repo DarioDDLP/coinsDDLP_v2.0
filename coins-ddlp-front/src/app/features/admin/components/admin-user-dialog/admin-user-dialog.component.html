@@ -2,49 +2,49 @@
   <div class="user-form">
     @if (!isEditMode()) {
       <app-text-input
-        [label]="authLiterals.emailLabel"
+        [label]="authLiterals().emailLabel"
         [value]="email()"
         type="email"
-        [placeholder]="authLiterals.emailPlaceholder"
+        [placeholder]="authLiterals().emailPlaceholder"
         autocomplete="off"
         (valueChange)="email.set($event)"
       />
 
       <app-text-input
-        [label]="authLiterals.passwordLabel"
+        [label]="authLiterals().passwordLabel"
         [value]="password()"
         type="password"
-        [placeholder]="authLiterals.passwordPlaceholder"
+        [placeholder]="authLiterals().passwordPlaceholder"
         autocomplete="new-password"
         (valueChange)="password.set($event)"
       />
     }
 
     <app-text-input
-      [label]="literals.nameLabel"
+      [label]="literals().nameLabel"
       [value]="displayName()"
       type="text"
-      [placeholder]="literals.namePlaceholder"
+      [placeholder]="literals().namePlaceholder"
       autocomplete="off"
       (valueChange)="displayName.set($event)"
     />
 
     <app-select
-      [label]="literals.roleLabel"
+      [label]="literals().roleLabel"
       [value]="role()"
-      [options]="roleOptions"
+      [options]="roleOptions()"
       (valueChange)="role.set($any($event))"
     />
   </div>
 
   <ng-container dialog-footer>
     <app-button
-      [label]="sharedLiterals.cancel"
+      [label]="sharedLiterals().cancel"
       variant="secondary"
       (clicked)="visible.set(false)"
     />
     <app-button
-      [label]="sharedLiterals.save"
+      [label]="sharedLiterals().save"
       [loading]="loading()"
       [disabled]="!canSubmit()"
       (clicked)="onSubmit()"

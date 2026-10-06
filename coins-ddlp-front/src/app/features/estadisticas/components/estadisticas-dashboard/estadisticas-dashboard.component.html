@@ -1,17 +1,17 @@
 @if (hasError()) {
-  <app-page-layout [title]="literals.title">
+  <app-page-layout [title]="literals().title">
     <app-error-panel (retry)="load()" />
   </app-page-layout>
 } @else {
   <app-page-layout
-    [title]="literals.title"
-    [overline]="literals.overline"
+    [title]="literals().title"
+    [overline]="literals().overline"
     [subtitle]="isReady() ? subtitle() : ''"
   >
     <div page-aside class="total-progress">
       @if (isReady()) {
         <app-progress-stat
-          [label]="literals.progressTotal"
+          [label]="literals().progressTotal"
           [owned]="kpis().owned"
           [total]="kpis().total"
           size="lg"
@@ -23,18 +23,18 @@
 
     <app-filter-pills
       page-filters
-      [options]="ownerOptions"
+      [options]="ownerOptions()"
       [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals.collection"
+      [ariaLabel]="sharedLiterals().collection"
       (valueChange)="onOwnerChange($event)"
     />
 
-    <section class="stats-section" [attr.aria-label]="literals.summary">
+    <section class="stats-section" [attr.aria-label]="literals().summary">
       <div class="kpi-grid">
         @if (isReady()) {
           <app-stat-card
             icon="pi pi-check-circle"
-            [label]="literals.ownedCoins"
+            [label]="literals().ownedCoins"
             [value]="kpis().owned"
             [suffix]="ofTotal()"
             [hint]="ownedPercent()"
@@ -42,31 +42,31 @@
           />
           <app-stat-card
             icon="pi pi-search"
-            [label]="literals.missingCoins"
+            [label]="literals().missingCoins"
             [value]="kpis().total - kpis().owned"
-            [hint]="literals.missingHint"
+            [hint]="literals().missingHint"
           />
           <app-stat-card
             icon="pi pi-star"
-            [label]="literals.commemorative"
+            [label]="literals().commemorative"
             [value]="kpis().commemorativeOwned"
             [suffix]="ofCommemorative()"
           />
           <app-stat-card
             icon="pi pi-flag"
-            [label]="literals.completedCountries"
+            [label]="literals().completedCountries"
             [value]="kpis().completedCountries"
             [suffix]="ofCountries()"
           />
           <app-stat-card
             icon="pi pi-database"
-            [label]="literals.units"
+            [label]="literals().units"
             [value]="kpis().units"
-            [hint]="literals.unitsHint"
+            [hint]="literals().unitsHint"
           />
           <app-stat-card
             icon="pi pi-clone"
-            [label]="literals.duplicates"
+            [label]="literals().duplicates"
             [value]="kpis().duplicateCoins"
             [hint]="spareHint()"
           />
@@ -78,7 +78,7 @@
 
     <div class="stats-columns">
       <section class="stats-card stats-card--countries">
-        <h2 class="stats-card__title">{{ literals.byCountry }}</h2>
+        <h2 class="stats-card__title">{{ literals().byCountry }}</h2>
         @if (isReady()) {
           <ul class="country-list">
             @for (group of byCountry(); track group.key) {
@@ -90,7 +90,7 @@
                     [size]="28"
                     [decorative]="true"
                   />
-                  <span class="country-row__name">{{ group.label }}</span>
+                  <span class="country-row__name">{{ group.label | countryName }}</span>
                   <app-progress-stat
                     class="country-row__progress"
                     [owned]="group.owned"
@@ -107,13 +107,13 @@
       </section>
 
       <section class="stats-card">
-        <h2 class="stats-card__title">{{ literals.byValue }}</h2>
+        <h2 class="stats-card__title">{{ literals().byValue }}</h2>
         @if (isReady()) {
           <ul class="value-list">
             @for (group of byFaceValue(); track group.key) {
               <li>
                 <app-progress-stat
-                  [label]="group.label"
+                  [label]="group.label | faceValue"
                   [owned]="group.owned"
                   [total]="group.total"
                   size="sm"
@@ -128,7 +128,7 @@
     </div>
 
     <section class="stats-card">
-      <h2 class="stats-card__title">{{ literals.byYear }}</h2>
+      <h2 class="stats-card__title">{{ literals().byYear }}</h2>
       @if (isReady()) {
         <app-year-chart [groups]="byYear()" />
       } @else {

@@ -1,6 +1,6 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, input, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { LITERALS } from '../../constants/literals';
+import { injectLiterals, I18nService } from '../../services/i18n.service';
 
 export type ProgressStatSize = 'sm' | 'md' | 'lg';
 
@@ -15,11 +15,14 @@ export type ProgressStatSize = 'sm' | 'md' | 'lg';
   },
 })
 export class ProgressStatComponent {
+  readonly lang = inject(I18nService).lang;
   readonly owned = input.required<number>();
   readonly total = input.required<number>();
   readonly size = input<ProgressStatSize>('md');
   /** Texto a la izquierda de la cifra (p. ej. "Progreso total"). */
   readonly label = input<string>('');
+
+  private literals = injectLiterals('shared');
 
   readonly percent = computed(() => {
     const total = this.total();
@@ -27,6 +30,6 @@ export class ProgressStatComponent {
   });
 
   readonly ariaLabel = computed(
-    () => `${this.label() || LITERALS.shared.progress}: ${this.owned()} / ${this.total()}`,
+    () => `${this.label() || this.literals().progress}: ${this.owned()} / ${this.total()}`,
   );
 }

@@ -6,7 +6,7 @@
   styleClass="more-sheet"
   [showCloseIcon]="false"
   [blockScroll]="true"
-  [attr.aria-label]="literals.moreTitle"
+  [attr.aria-label]="literals().moreTitle"
 >
   <ng-template #headless>
     <div class="more-sheet__content">
@@ -18,7 +18,7 @@
           <span class="more-sheet__user-text">
             <span class="more-sheet__user-name">{{ displayName() }}</span>
             <span class="more-sheet__user-role">{{
-              authService.isAdmin() ? literals.adminRole : literals.userRole
+              authService.isAdmin() ? literals().adminRole : literals().userRole
             }}</span>
           </span>
         </div>
@@ -30,7 +30,7 @@
             <li>
               <a class="more-sheet__item" [routerLink]="item.routerLink" (click)="close()">
                 <i [class]="item.icon" aria-hidden="true"></i>
-                {{ item.label }}
+                {{ literals()[item.labelKey] }}
               </a>
             </li>
           }
@@ -38,9 +38,9 @@
       }
 
       @if (numistaService.remaining() !== null) {
-        <div class="more-sheet__quota" [attr.title]="literals.numistaQuotaHint">
+        <div class="more-sheet__quota" [attr.title]="literals().numistaQuotaHint">
           <div class="more-sheet__quota-row">
-            <span>{{ literals.numistaQuota }}</span>
+            <span>{{ literals().numistaQuota }}</span>
             <span class="more-sheet__quota-count"
               >{{ numistaService.remaining() }} / {{ quota }}</span
             >
@@ -56,7 +56,7 @@
           (click)="layout.openLogout()"
         >
           <i class="pi pi-sign-out" aria-hidden="true"></i>
-          {{ authLiterals.logoutButton }}
+          {{ authLiterals().logoutButton }}
         </button>
       } @else {
         <button
@@ -65,12 +65,14 @@
           (click)="layout.openLogin()"
         >
           <i class="pi pi-sign-in" aria-hidden="true"></i>
-          {{ authLiterals.loginTitle }}
+          {{ authLiterals().loginTitle }}
         </button>
       }
 
-      <span class="more-sheet__version" [attr.title]="literals.versionHint"
-        >{{ literals.versionPrefix }}{{ version }}</span
+      <app-language-toggle class="more-sheet__language" />
+
+      <span class="more-sheet__version" [attr.title]="literals().versionHint"
+        >{{ literals().versionPrefix }}{{ version }}</span
       >
     </div>
   </ng-template>

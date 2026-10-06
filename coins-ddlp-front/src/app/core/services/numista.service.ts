@@ -10,11 +10,15 @@ export class NumistaService {
 
   readonly remaining = signal<number | null>(null);
 
-  getCoinByIdNum(idNum: string): Observable<NumistaCoin> {
+  /** `lang`: idioma de las descripciones y comentarios que devuelve Numista. */
+  getCoinByIdNum(idNum: string, lang: string): Observable<NumistaCoin> {
     return this.http
-      .get<NumistaCoin>(`${environment.supabase.url}/functions/v1/numista-proxy?idNum=${idNum}`, {
-        observe: 'response',
-      })
+      .get<NumistaCoin>(
+        `${environment.supabase.url}/functions/v1/numista-proxy?idNum=${idNum}&lang=${lang}`,
+        {
+          observe: 'response',
+        },
+      )
       .pipe(
         tap((response) => {
           const remaining = response.headers.get('X-Numista-Remaining');

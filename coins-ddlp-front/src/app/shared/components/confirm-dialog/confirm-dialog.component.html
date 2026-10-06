@@ -8,13 +8,13 @@
 
   <ng-container dialog-footer>
     <app-button
-      [label]="cancelLabel"
+      [label]="literals().cancel"
       variant="secondary"
       [disabled]="loading()"
       (clicked)="visible.set(false)"
     />
     <app-button
-      [label]="confirmLabel()"
+      [label]="confirmText()"
       variant="danger"
       [loading]="loading()"
       (clicked)="confirmed.emit()"

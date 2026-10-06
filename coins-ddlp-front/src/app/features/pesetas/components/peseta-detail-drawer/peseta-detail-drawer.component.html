@@ -2,7 +2,7 @@
   [overline]="overline()"
   [title]="peseta()?.peseta_type?.faceValueLabel ?? ''"
   [subtitle]="peseta()?.peseta_type?.title ?? ''"
-  [ariaLabel]="pesetasLiterals.detailTitle"
+  [ariaLabel]="pesetasLiterals().detailTitle"
   [loading]="!peseta() && !hasError()"
   (closed)="close()"
 >
@@ -30,20 +30,20 @@
       <div class="coin-images">
         @if (p.peseta_type.imageObverse) {
           <figure class="coin-images__item">
-            <img [src]="p.peseta_type.imageObverse" [alt]="literals.labelObverse" />
-            <figcaption>{{ literals.labelObverse }}</figcaption>
+            <img [src]="p.peseta_type.imageObverse" [alt]="literals().labelObverse" />
+            <figcaption>{{ literals().labelObverse }}</figcaption>
           </figure>
         }
         @if (p.peseta_type.imageReverse) {
           <figure class="coin-images__item">
-            <img [src]="p.peseta_type.imageReverse" [alt]="literals.labelReverse" />
-            <figcaption>{{ literals.labelReverse }}</figcaption>
+            <img [src]="p.peseta_type.imageReverse" [alt]="literals().labelReverse" />
+            <figcaption>{{ literals().labelReverse }}</figcaption>
           </figure>
         }
         @if (p.peseta_type.imageEdge) {
           <figure class="coin-images__item coin-images__item--edge">
-            <img [src]="p.peseta_type.imageEdge" [alt]="literals.labelEdge" />
-            <figcaption>{{ literals.labelEdge }}</figcaption>
+            <img [src]="p.peseta_type.imageEdge" [alt]="literals().labelEdge" />
+            <figcaption>{{ literals().labelEdge }}</figcaption>
           </figure>
         }
       </div>
@@ -52,36 +52,36 @@
         <div class="coin-images__placeholder"><i class="pi pi-image" aria-hidden="true"></i></div>
         <div class="coin-images__placeholder"><i class="pi pi-image" aria-hidden="true"></i></div>
       </div>
-      <p class="detail-notice">{{ literals.labelNoImages }}</p>
+      <p class="detail-notice">{{ literals().labelNoImages }}</p>
     }
 
     @if (p.peseta_type.descriptionObverse) {
       <section class="detail-section">
-        <h3 class="detail-section-title">{{ literals.labelObverse }}</h3>
+        <h3 class="detail-section-title">{{ literals().labelObverse }}</h3>
         <p class="detail-text">{{ p.peseta_type.descriptionObverse }}</p>
       </section>
     }
     @if (p.peseta_type.descriptionReverse) {
       <section class="detail-section">
-        <h3 class="detail-section-title">{{ literals.labelReverse }}</h3>
+        <h3 class="detail-section-title">{{ literals().labelReverse }}</h3>
         <p class="detail-text">{{ p.peseta_type.descriptionReverse }}</p>
       </section>
     }
     @if (p.peseta_type.edgeDescription) {
       <section class="detail-section">
-        <h3 class="detail-section-title">{{ literals.labelEdge }}</h3>
+        <h3 class="detail-section-title">{{ literals().labelEdge }}</h3>
         <p class="detail-text">{{ p.peseta_type.edgeDescription }}</p>
       </section>
     }
     @if (p.peseta_type.comments) {
       <section class="detail-section">
-        <h3 class="detail-section-title">{{ literals.labelComments }}</h3>
+        <h3 class="detail-section-title">{{ literals().labelComments }}</h3>
         <p class="detail-text">{{ p.peseta_type.comments }}</p>
       </section>
     }
 
     <section class="detail-section">
-      <h3 class="detail-section-title">{{ literals.labelFeatures }}</h3>
+      <h3 class="detail-section-title">{{ literals().labelFeatures }}</h3>
       <dl class="features">
         @for (f of features(); track f.label) {
           <div class="features__row" [class.features__row--separator]="f.separator">
@@ -93,13 +93,13 @@
     </section>
 
     <section class="detail-section detail-section--card">
-      <h3 class="detail-section-title">{{ literals.labelObservations }}</h3>
-      <p class="detail-text">{{ p.observations || literals.labelNoObservations }}</p>
+      <h3 class="detail-section-title">{{ literals().labelObservations }}</h3>
+      <p class="detail-text">{{ p.observations || literals().labelNoObservations }}</p>
     </section>
 
     @if (numistaUrl(); as url) {
       <a class="detail-link" [href]="url" target="_blank" rel="noopener">
-        {{ literals.labelMoreInfo }}
+        {{ literals().labelMoreInfo }}
         <i class="pi pi-external-link" aria-hidden="true"></i>
       </a>
     }
@@ -109,7 +109,7 @@
     <div drawer-footer class="detail-actions">
       <app-button
         icon="pi pi-pencil"
-        [label]="pesetasLiterals.editCoin"
+        [label]="pesetasLiterals().editCoin"
         [block]="true"
         (clicked)="editVisible.set(true)"
       />

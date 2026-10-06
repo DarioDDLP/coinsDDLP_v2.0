@@ -2,6 +2,8 @@ import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
+import { TranslocoTestingModule } from '@jsverse/transloco';
+import es from '../../public/i18n/es.json';
 import { App } from './app';
 import { SUPABASE_CLIENT } from './app.config';
 
@@ -28,7 +30,14 @@ describe('App', () => {
   beforeEach(async () => {
     stubMatchMedia();
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [
+        App,
+        TranslocoTestingModule.forRoot({
+          langs: { es },
+          translocoConfig: { availableLangs: ['es', 'en'], defaultLang: 'es' },
+          preloadLangs: true,
+        }),
+      ],
       providers: [
         provideRouter([]),
         provideHttpClient(),

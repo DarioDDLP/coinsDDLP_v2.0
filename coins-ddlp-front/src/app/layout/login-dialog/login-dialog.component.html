@@ -2,17 +2,17 @@
   <div class="login-form">
     @switch (view()) {
       @case ('logout') {
-        <p class="login-form__message">{{ literals.logoutConfirm }}</p>
+        <p class="login-form__message">{{ literals().logoutConfirm }}</p>
       }
       @case ('forgot') {
         @if (resetSent()) {
-          <p class="login-form__message">{{ literals.resetSent }}</p>
+          <p class="login-form__message">{{ literals().resetSent }}</p>
         } @else {
           <app-text-input
-            [label]="literals.emailLabel"
+            [label]="literals().emailLabel"
             [value]="email()"
             type="email"
-            [placeholder]="literals.emailPlaceholder"
+            [placeholder]="literals().emailPlaceholder"
             autocomplete="email"
             (valueChange)="email.set($event)"
           />
@@ -20,19 +20,19 @@
       }
       @default {
         <app-text-input
-          [label]="literals.emailLabel"
+          [label]="literals().emailLabel"
           [value]="email()"
           type="email"
-          [placeholder]="literals.emailPlaceholder"
+          [placeholder]="literals().emailPlaceholder"
           autocomplete="email"
           (valueChange)="email.set($event)"
         />
 
         <app-text-input
-          [label]="literals.passwordLabel"
+          [label]="literals().passwordLabel"
           [value]="password()"
           type="password"
-          [placeholder]="literals.passwordPlaceholder"
+          [placeholder]="literals().passwordPlaceholder"
           autocomplete="current-password"
           (valueChange)="password.set($event)"
           (enterPressed)="onSubmit()"
@@ -51,13 +51,13 @@
       @case ('logout') {
         <app-button
           class="login-form__start"
-          [label]="sharedLiterals.cancel"
+          [label]="sharedLiterals().cancel"
           variant="secondary"
           [disabled]="loading()"
           (clicked)="visible.set(false)"
         />
         <app-button
-          [label]="sharedLiterals.confirm"
+          [label]="sharedLiterals().confirm"
           variant="danger"
           [loading]="loading()"
           (clicked)="onConfirmLogout()"
@@ -66,13 +66,13 @@
       @case ('forgot') {
         <app-button
           [class.login-form__start]="!resetSent()"
-          [label]="literals.backToLogin"
+          [label]="literals().backToLogin"
           variant="secondary"
           (clicked)="showView('login')"
         />
         @if (!resetSent()) {
           <app-button
-            [label]="literals.resetButton"
+            [label]="literals().resetButton"
             [loading]="loading()"
             [disabled]="!email()"
             (clicked)="onResetPassword()"
@@ -85,10 +85,10 @@
           type="button"
           (click)="showView('forgot')"
         >
-          {{ literals.forgotPassword }}
+          {{ literals().forgotPassword }}
         </button>
         <app-button
-          [label]="literals.loginButton"
+          [label]="literals().loginButton"
           [loading]="loading()"
           [disabled]="!email() || !password()"
           (clicked)="onSubmit()"

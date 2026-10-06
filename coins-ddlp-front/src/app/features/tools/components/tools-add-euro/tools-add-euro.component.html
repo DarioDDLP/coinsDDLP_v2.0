@@ -9,38 +9,38 @@
       <div class="add-euro__grid">
         <div class="add-euro__col">
           <app-select
-            [label]="literals.labelCountry"
+            [label]="literals().labelCountry"
             [value]="country()"
             [options]="countryOptions()"
-            [placeholder]="literals.placeholderCountry"
+            [placeholder]="literals().placeholderCountry"
             (valueChange)="country.set($event)"
           />
           <app-select
-            [label]="literals.labelFaceValue"
+            [label]="literals().labelFaceValue"
             [value]="faceValue()"
             [options]="faceValueOptions"
-            [placeholder]="literals.placeholderFaceValue"
+            [placeholder]="literals().placeholderFaceValue"
             (valueChange)="faceValue.set($event)"
           />
           @if (isVariantApplicable()) {
             <app-select
-              [label]="literals.labelVariant"
+              [label]="literals().labelVariant"
               [value]="variant()"
               [options]="variantOptions"
-              [placeholder]="literals.placeholderVariant"
+              [placeholder]="literals().placeholderVariant"
               (valueChange)="variant.set($event)"
             />
           }
           <app-select
-            [label]="literals.labelMint"
+            [label]="literals().labelMint"
             [value]="mint()"
             [options]="mintOptions"
-            [placeholder]="literals.placeholderMint"
+            [placeholder]="literals().placeholderMint"
             [disabled]="!isMintRequired()"
             (valueChange)="mint.set($event)"
           />
           <app-toggle
-            [label]="literals.labelCommemorative"
+            [label]="literals().labelCommemorative"
             [value]="commemorative()"
             (valueChange)="commemorative.set($event)"
           />
@@ -48,7 +48,7 @@
 
         <div class="add-euro__col">
           <app-text-input
-            [label]="literals.labelYear"
+            [label]="literals().labelYear"
             [value]="year() > 0 ? year().toString() : ''"
             type="number"
             [min]="1900"
@@ -56,17 +56,17 @@
             (valueChange)="year.set(+$event)"
           />
           <app-text-input
-            [label]="literals.labelDescription"
+            [label]="literals().labelDescription"
             [value]="description()"
             (valueChange)="description.set($event)"
           />
           <app-text-input
-            [label]="literals.labelIdNum"
+            [label]="literals().labelIdNum"
             [value]="idNum()"
             (valueChange)="idNum.set($event)"
           />
           <app-toggle
-            [label]="literals.labelCirculation"
+            [label]="literals().labelCirculation"
             [value]="circulation()"
             (valueChange)="circulation.set($event)"
           />
@@ -76,7 +76,7 @@
 
     <div class="add-euro__actions">
       <app-button
-        [label]="literals.addButton"
+        [label]="literals().addButton"
         [loading]="loading()"
         [disabled]="!isValid()"
         (clicked)="onSubmit()"

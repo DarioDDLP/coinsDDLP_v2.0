@@ -1,9 +1,18 @@
-import { Component, DestroyRef, effect, inject, input, output, untracked } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  output,
+  untracked,
+  computed,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SearchInputComponent } from '../search-input/search-input.component';
 import { CountryFlagComponent } from '../country-flag/country-flag.component';
 import { PageHeaderService } from '../../services/page-header.service';
-import { LITERALS } from '../../constants/literals';
+import { injectLiterals } from '../../services/i18n.service';
 
 /**
  * Estructura común de las páginas de colección.
@@ -26,7 +35,10 @@ export class PageLayoutComponent {
   readonly country = input<string | null | undefined>(null);
   readonly backLink = input<unknown[] | null | undefined>(null);
   readonly backQueryParams = input<Record<string, unknown> | null>(null);
-  readonly backLabel = input<string>(LITERALS.shared.back);
+  /** Por defecto, "Volver" en el idioma activo. */
+  readonly backLabel = input<string>('');
+  private sharedLiterals = injectLiterals('shared');
+  readonly backText = computed(() => this.backLabel() || this.sharedLiterals().back);
   readonly searchPlaceholder = input<string>('');
   readonly searchValue = input<string>('');
 

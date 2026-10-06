@@ -17,7 +17,7 @@ import { TextInputComponent } from '../../../../shared/components/text-input/tex
 import { SelectComponent } from '../../../../shared/components/select/select.component';
 import { TextareaComponent } from '../../../../shared/components/textarea/textarea.component';
 import { Peseta } from '../../../../shared/interfaces/peseta.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 
@@ -34,6 +34,7 @@ import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-
   styleUrl: './peseta-edit-dialog.component.scss',
 })
 export class PesetaEditDialogComponent {
+  private i18n = inject(I18nService);
   private pesetasService = inject(PesetasService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -41,14 +42,14 @@ export class PesetaEditDialogComponent {
   readonly visible = model(false);
   readonly peseta = input<Peseta | null>(null);
 
-  readonly literals = LITERALS.pesetas;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('pesetas');
+  readonly sharedLiterals = injectLiterals('shared');
 
   readonly dialogTitle = computed(() => {
     const p = this.peseta();
     return p
-      ? `${this.sharedLiterals.edit} ${p.peseta_type.faceValueLabel} ${p.mintYear}`
-      : this.literals.editCoin;
+      ? `${this.sharedLiterals().edit} ${p.peseta_type.faceValueLabel} ${p.mintYear}`
+      : this.literals().editCoin;
   });
 
   readonly uds = signal(0);
@@ -97,7 +98,7 @@ export class PesetaEditDialogComponent {
         conservation: this.conservation() || 'ND',
         observations: this.observations() || null,
       });
-      this.messageService.add(TOAST_MESSAGES.pesetas.saveSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.pesetas.saveSuccess));
       this.visible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);

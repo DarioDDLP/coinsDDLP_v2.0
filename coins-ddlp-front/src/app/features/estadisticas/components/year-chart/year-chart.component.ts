@@ -1,7 +1,7 @@
 import { Component, computed, input } from '@angular/core';
 import { TooltipModule } from 'primeng/tooltip';
 import { StatGroup } from '../../../../shared/interfaces/euro-stats.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { injectLiterals } from '../../../../shared/services/i18n.service';
 
 interface YearColumn {
   key: string;
@@ -23,7 +23,7 @@ interface YearColumn {
 export class YearChartComponent {
   readonly groups = input.required<StatGroup[]>();
 
-  readonly literals = LITERALS.estadisticas;
+  readonly literals = injectLiterals('estadisticas');
 
   readonly columns = computed<YearColumn[]>(() => {
     const groups = this.groups();

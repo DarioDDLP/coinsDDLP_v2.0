@@ -30,21 +30,23 @@ import { AuthService } from '../../../../core/services/auth.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { OWNERSHIP_FILTER_OPTIONS } from '../../../../shared/constants/ownership-filter.config';
-import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
+import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
-import { ExcelExportService } from '../../../../shared/services/excel-export.service';
+import { ExcelExportService, ExcelLabels } from '../../../../shared/services/excel-export.service';
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
 import { isOwned } from '../../../../shared/helpers/ownership.helper';
+import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
+import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 
 interface YearChip {
   year: number | null;
@@ -59,6 +61,8 @@ interface YearChip {
 @Component({
   selector: 'app-euros-country',
   imports: [
+    FaceValuePipe,
+    CountryNamePipe,
     RouterOutlet,
     TableModule,
     PageLayoutComponent,
@@ -76,6 +80,7 @@ interface YearChip {
   styleUrl: './euros-country.component.scss',
 })
 export class EurosCountryComponent {
+  private i18n = inject(I18nService);
   private eurosService = inject(EurosService);
   private messageService = inject(MessageService);
   private excelExport = inject(ExcelExportService);
@@ -85,10 +90,16 @@ export class EurosCountryComponent {
   readonly authService = inject(AuthService);
   readonly ownerService = inject(OwnerService);
 
-  readonly literals = LITERALS.euros;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly ownerOptions = OWNER_FILTER_OPTIONS;
-  readonly ownershipOptions = OWNERSHIP_FILTER_OPTIONS;
+  readonly literals = injectLiterals('euros');
+  readonly sharedLiterals = injectLiterals('shared');
+  private excelLiterals = injectLiterals('excel');
+  private excelLabels = computed<ExcelLabels>(() => ({
+    ...this.excelLiterals(),
+    ownerDario: this.sharedLiterals().ownerDario,
+    ownerManolo: this.sharedLiterals().ownerManolo,
+  }));
+  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
+  readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
   readonly backLink = ['/euros'];
 
   readonly country = toSignal(this.route.paramMap.pipe(map((p) => p.get('country') ?? '')), {
@@ -117,7 +128,9 @@ export class EurosCountryComponent {
   readonly canEdit = injectCanEditCoins();
   private readonly yearChipsNav = viewChild<ElementRef<HTMLElement>>('yearChipsNav');
   readonly isBoth = computed(() => this.ownerService.current() === 'both');
-  readonly emptyState = computed(() => getEmptyState(this.searchQuery(), this.ownershipFilter()));
+  readonly emptyState = computed(() =>
+    getEmptyState(this.sharedLiterals(), this.searchQuery(), this.ownershipFilter()),
+  );
 
   constructor() {
     // Al cambiar de país: restaurar su búsqueda guardada
@@ -177,7 +190,7 @@ export class EurosCountryComponent {
       .sort(([a], [b]) => a - b)
       .map(([year, total]) => ({ year, label: String(year), total }));
     return [
-      { year: null, label: this.literals.allYears, total: this.coinsData().length },
+      { year: null, label: this.literals().allYears, total: this.coinsData().length },
       ...years,
     ];
   });
@@ -247,14 +260,14 @@ export class EurosCountryComponent {
     const commemorative = coins.filter((c) => c.commemorative).length;
     return [
       `${Math.min(...years)} — ${Math.max(...years)}`,
-      `${coins.length - commemorative} ${this.literals.regular}`,
-      `${commemorative} ${this.literals.commemorative}`,
+      `${coins.length - commemorative} ${this.literals().regular}`,
+      `${commemorative} ${this.literals().commemorative}`,
     ].join(' · ');
   });
 
   readonly searchPlaceholder = computed(() => {
     const year = this.selectedYear();
-    return year ? `${this.literals.searchInYear} ${year}…` : this.literals.searchCoins;
+    return year ? `${this.literals().searchInYear} ${year}…` : this.literals().searchCoins;
   });
 
   // --- Acciones ---
@@ -300,7 +313,7 @@ export class EurosCountryComponent {
     this.deleteLoading.set(true);
     try {
       await this.eurosService.remove(coin.id);
-      this.messageService.add(TOAST_MESSAGES.euros.deleteSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.euros.deleteSuccess));
       this.deleteDialogVisible.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
@@ -318,10 +331,17 @@ export class EurosCountryComponent {
         this.country(),
         year,
         this.hasMint(),
+        this.excelLabels(),
         this.isBoth(),
       );
     } else {
-      await this.excelExport.exportEurosAll(coins, this.country(), this.hasMint(), this.isBoth());
+      await this.excelExport.exportEurosAll(
+        coins,
+        this.country(),
+        this.hasMint(),
+        this.excelLabels(),
+        this.isBoth(),
+      );
     }
   }
 

@@ -1,5 +1,5 @@
 import { CONSERVATION_MAP } from '../constants/conservation-states.const';
-import { LITERALS } from '../constants/literals';
+import { Translations } from '../interfaces/translations.interface';
 import { Severity } from '../interfaces/severity.interface';
 
 export interface BadgeData {
@@ -20,8 +20,8 @@ export function getUdsBadge(uds: number): BadgeData {
   return { label: String(uds), severity };
 }
 
-export function getRoleBadge(role: string | null): BadgeData {
+export function getRoleBadge(role: string | null, t: Translations['admin']): BadgeData {
   return role === 'admin'
-    ? { label: LITERALS.admin.roleAdmin, severity: 'warn' }
-    : { label: LITERALS.admin.roleUser, severity: 'info' };
+    ? { label: t.roleAdmin, severity: 'warn' }
+    : { label: t.roleUser, severity: 'info' };
 }

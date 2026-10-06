@@ -11,7 +11,7 @@ import {
 import { Drawer } from 'primeng/drawer';
 import { ButtonComponent } from '../button/button.component';
 import { SkeletonComponent } from '../skeleton/skeleton.component';
-import { LITERALS } from '../../constants/literals';
+import { injectLiterals } from '../../services/i18n.service';
 
 /** Duración aproximada de la animación de salida del drawer. */
 const CLOSE_ANIMATION_MS = 220;
@@ -44,7 +44,7 @@ export class DetailDrawerComponent {
   /** Se emite una sola vez, cuando el panel ha terminado de cerrarse. */
   readonly closed = output<void>();
 
-  readonly closeLabel = LITERALS.shared.close;
+  readonly literals = injectLiterals('shared');
   readonly open = signal(true);
   private closing = false;
 

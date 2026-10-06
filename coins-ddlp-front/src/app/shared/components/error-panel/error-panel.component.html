@@ -2,9 +2,9 @@
   icon="pi-exclamation-circle"
   tone="error"
   [compact]="compact()"
-  [title]="literals.errorLoad"
-  [message]="literals.errorLoadRetry"
-  [actionLabel]="literals.retry"
+  [title]="literals().errorLoad"
+  [message]="literals().errorLoadRetry"
+  [actionLabel]="literals().retry"
   actionIcon="pi pi-refresh"
   (action)="retry.emit()"
 />

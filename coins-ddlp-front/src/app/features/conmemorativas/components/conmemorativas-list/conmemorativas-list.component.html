@@ -1,20 +1,20 @@
 @if (hasError()) {
-  <app-page-layout [title]="literals.title">
+  <app-page-layout [title]="literals().title">
     <app-error-panel (retry)="loadCoins()" />
   </app-page-layout>
 } @else {
   <app-page-layout
-    [title]="literals.title"
-    [overline]="literals.overline"
+    [title]="literals().title"
+    [overline]="literals().overline"
     [subtitle]="subtitle()"
-    [searchPlaceholder]="literals.search"
+    [searchPlaceholder]="literals().search"
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
     <div page-aside class="total-progress">
       @if (isReady()) {
         <app-progress-stat
-          [label]="literals.progressTotal"
+          [label]="literals().progressTotal"
           [owned]="progress().owned"
           [total]="progress().total"
           size="lg"
@@ -27,7 +27,7 @@
     <app-button
       page-actions
       icon="pi pi-file-excel"
-      [label]="sharedLiterals.exportExcel"
+      [label]="sharedLiterals().exportExcel"
       variant="tertiary"
       [disabled]="!isReady() || groupedCoins().length === 0"
       (clicked)="exportExcel()"
@@ -35,23 +35,23 @@
 
     <app-filter-pills
       page-filters
-      [options]="ownerOptions"
+      [options]="ownerOptions()"
       [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals.collection"
+      [ariaLabel]="sharedLiterals().collection"
       (valueChange)="onOwnerChange($event)"
     />
     <app-filter-pills
       page-filters
-      [options]="ownershipOptions"
+      [options]="ownershipOptions()"
       [value]="ownershipFilter()"
-      [ariaLabel]="sharedLiterals.ownership"
+      [ariaLabel]="sharedLiterals().ownership"
       (valueChange)="ownershipFilter.set($event)"
     />
 
     @if (!isReady()) {
       <app-skeleton [count]="8" />
     } @else if (groupedCoins().length > 0) {
-      <nav #jumpsNav class="year-jumps" [attr.aria-label]="literals.jumpToYear">
+      <nav #jumpsNav class="year-jumps" [attr.aria-label]="literals().jumpToYear">
         @for (group of groupedCoins(); track group.year) {
           <button
             type="button"
@@ -75,32 +75,32 @@
             <p-table class="table-stack" [value]="group.rows" dataKey="coin.id" [rowHover]="true">
               <ng-template #header>
                 <tr>
-                  <th class="col-country">{{ literals.colCountry }}</th>
-                  <th class="col-mint">{{ literals.colMint }}</th>
-                  <th class="col-grow">{{ literals.colDescription }}</th>
+                  <th class="col-country">{{ literals().colCountry }}</th>
+                  <th class="col-mint">{{ literals().colMint }}</th>
+                  <th class="col-grow">{{ literals().colDescription }}</th>
                   @if (isAdmin()) {
-                    <th class="col-center">{{ literals.colLocation }}</th>
+                    <th class="col-center">{{ literals().colLocation }}</th>
                   }
                   <th class="col-center">
-                    {{ literals.colConservation }}
+                    {{ literals().colConservation }}
                     @if (isBoth()) {
-                      <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                      <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
                     }
                   </th>
                   <th class="col-center">
-                    {{ literals.colUnits }}
+                    {{ literals().colUnits }}
                     @if (isBoth()) {
-                      <span class="owner-tag">{{ sharedLiterals.ownerDario }}</span>
+                      <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
                     }
                   </th>
                   @if (isBoth()) {
                     <th class="col-center">
-                      {{ literals.colConservation }}
-                      <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                      {{ literals().colConservation }}
+                      <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
                     </th>
                     <th class="col-center">
-                      {{ literals.colUnits }}
-                      <span class="owner-tag">{{ sharedLiterals.ownerManolo }}</span>
+                      {{ literals().colUnits }}
+                      <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
                     </th>
                   }
                 </tr>
@@ -122,12 +122,12 @@
                         [decorative]="true"
                         [ring]="false"
                       />
-                      {{ row.coin.country }}
+                      {{ row.coin.country | countryName }}
                     </span>
                   </td>
                   <td
                     class="col-mint"
-                    [attr.data-label]="literals.colMint"
+                    [attr.data-label]="literals().colMint"
                     [attr.data-cell]="row.coin.mint ? null : 'hide-mobile'"
                   >
                     {{ row.coin.mint || '—' }}
@@ -141,12 +141,12 @@
                     </div>
                   </td>
                   @if (isAdmin()) {
-                    <td class="col-center col-location" [attr.data-label]="literals.colLocation">
+                    <td class="col-center col-location" [attr.data-label]="literals().colLocation">
                       {{ row.location.album }} / {{ row.location.page }} /
                       {{ row.location.position }}
                     </td>
                   }
-                  <td class="col-center" [attr.data-label]="literals.colConservation">
+                  <td class="col-center" [attr.data-label]="literals().colConservation">
                     @if (row.conservationBadge) {
                       <app-badge
                         [label]="row.conservationBadge.label"
@@ -157,14 +157,14 @@
                       <span class="muted">—</span>
                     }
                   </td>
-                  <td class="col-center" [attr.data-label]="literals.colUnits">
+                  <td class="col-center" [attr.data-label]="literals().colUnits">
                     <app-badge [label]="row.udsBadge.label" [severity]="row.udsBadge.severity" />
                   </td>
                   @if (isBoth()) {
                     <td
                       class="col-center"
                       [attr.data-label]="
-                        literals.colConservation + ' ' + sharedLiterals.ownerManolo
+                        literals().colConservation + ' ' + sharedLiterals().ownerManolo
                       "
                     >
                       @if (row.conservationBadgeAlt) {
@@ -179,7 +179,7 @@
                     </td>
                     <td
                       class="col-center"
-                      [attr.data-label]="literals.colUnits + ' ' + sharedLiterals.ownerManolo"
+                      [attr.data-label]="literals().colUnits + ' ' + sharedLiterals().ownerManolo"
                     >
                       @if (row.udsBadgeAlt) {
                         <app-badge
@@ -201,7 +201,7 @@
         [icon]="empty.icon"
         [title]="empty.title"
         [tone]="empty.tone"
-        [actionLabel]="empty.canClearSearch ? sharedLiterals.clearSearch : ''"
+        [actionLabel]="empty.canClearSearch ? sharedLiterals().clearSearch : ''"
         actionIcon="pi pi-times"
         (action)="onSearch('')"
       />

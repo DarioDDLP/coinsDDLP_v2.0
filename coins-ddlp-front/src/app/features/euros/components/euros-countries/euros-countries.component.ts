@@ -22,14 +22,16 @@ import { EurosService } from '../../services/euros.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoinSummary } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
-import { OWNER_FILTER_OPTIONS } from '../../../../shared/constants/owner-filter.config';
+import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
+import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
 import { isOwned } from '../../../../shared/helpers/ownership.helper';
+import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
+import { matchesCountry } from '../../../../shared/helpers/country.helper';
 
 interface CountryCard {
   country: string;
@@ -44,6 +46,7 @@ const SEARCH_KEY = 'euros-countries';
 @Component({
   selector: 'app-euros-countries',
   imports: [
+    CountryNamePipe,
     RouterLink,
     SkeletonComponent,
     CountryFlagComponent,
@@ -57,18 +60,20 @@ const SEARCH_KEY = 'euros-countries';
   styleUrl: './euros-countries.component.scss',
 })
 export class EurosCountriesComponent {
+  readonly lang = inject(I18nService).lang;
   private eurosService = inject(EurosService);
   private errorHandler = inject(ErrorHandler);
   readonly ownerService = inject(OwnerService);
 
-  readonly literals = LITERALS.euros;
-  readonly sharedLiterals = LITERALS.shared;
-  readonly ownerOptions = OWNER_FILTER_OPTIONS;
+  readonly literals = injectLiterals('euros');
+  readonly sharedLiterals = injectLiterals('shared');
+  private countries = injectLiterals('countries');
+  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
   readonly skeletonCards = Array.from({ length: 12 });
 
   private summary = signal<EuroCoinSummary[]>([]);
   readonly searchQuery = signal(restoreSearchQuery(SEARCH_KEY));
-  readonly emptyState = computed(() => getEmptyState(this.searchQuery()));
+  readonly emptyState = computed(() => getEmptyState(this.sharedLiterals(), this.searchQuery()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   /** Colección cargada: si cambia se vuelve a mostrar el skeleton. */
@@ -129,7 +134,7 @@ export class EurosCountriesComponent {
   readonly countryCards = computed(() => {
     const query = normalizeString(this.searchQuery().trim());
     const cards = this.allCards();
-    return query ? cards.filter((c) => normalizeString(c.country).includes(query)) : cards;
+    return query ? cards.filter((c) => matchesCountry(c.country, query, this.countries())) : cards;
   });
 
   readonly totals = computed(() =>
@@ -141,7 +146,7 @@ export class EurosCountriesComponent {
 
   readonly subtitle = computed(
     () =>
-      `${this.allCards().length} ${this.literals.countriesCount} · ${formatNumber(this.totals().total, 'es', '1.0-0')} ${this.literals.coinsInCatalog}`,
+      `${this.allCards().length} ${this.literals().countriesCount} · ${formatNumber(this.totals().total, this.lang(), '1.0-0')} ${this.literals().coinsInCatalog}`,
   );
 
   onSearch(query: string): void {

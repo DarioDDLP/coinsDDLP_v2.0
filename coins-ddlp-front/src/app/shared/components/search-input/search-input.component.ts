@@ -1,5 +1,5 @@
-import { Component, input, output } from '@angular/core';
-import { LITERALS } from '../../constants/literals';
+import { Component, input, output, computed } from '@angular/core';
+import { injectLiterals } from '../../services/i18n.service';
 
 @Component({
   selector: 'app-search-input',
@@ -7,12 +7,14 @@ import { LITERALS } from '../../constants/literals';
   styleUrl: './search-input.component.scss',
 })
 export class SearchInputComponent {
-  placeholder = input<string>(LITERALS.shared.search);
+  /** Por defecto, "Buscar" en el idioma activo. */
+  placeholder = input<string>('');
   value = input<string>('');
 
   valueChange = output<string>();
 
-  readonly clearLabel = LITERALS.shared.clearSearch;
+  readonly literals = injectLiterals('shared');
+  readonly placeholderText = computed(() => this.placeholder() || this.literals().search);
 
   onInput(query: string): void {
     this.valueChange.emit(query);

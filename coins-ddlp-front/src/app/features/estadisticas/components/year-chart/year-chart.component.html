@@ -1,9 +1,9 @@
 <div class="year-chart__legend" aria-hidden="true">
-  <span class="year-chart__key year-chart__key--owned">{{ literals.legendOwned }}</span>
-  <span class="year-chart__key year-chart__key--total">{{ literals.legendTotal }}</span>
+  <span class="year-chart__key year-chart__key--owned">{{ literals().legendOwned }}</span>
+  <span class="year-chart__key year-chart__key--total">{{ literals().legendTotal }}</span>
 </div>
 
-<ul class="year-chart__columns" [attr.aria-label]="literals.yearChartLabel">
+<ul class="year-chart__columns" [attr.aria-label]="literals().yearChartLabel">
   @for (col of columns(); track col.key) {
     <li class="year-chart__column" [pTooltip]="col.description" tooltipPosition="top">
       <span class="sr-only">{{ col.description }}</span>

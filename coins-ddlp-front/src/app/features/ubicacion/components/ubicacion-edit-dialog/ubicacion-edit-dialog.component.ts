@@ -25,8 +25,9 @@ import {
   CountryLocation,
   NewCountryLocation,
 } from '../../../../shared/interfaces/country-location.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
+import { translateCountry } from '../../../../shared/helpers/country.helper';
 
 @Component({
   selector: 'app-ubicacion-edit-dialog',
@@ -42,6 +43,7 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
   styleUrl: './ubicacion-edit-dialog.component.scss',
 })
 export class UbicacionEditDialogComponent {
+  private i18n = inject(I18nService);
   private service = inject(UbicacionService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
@@ -51,8 +53,8 @@ export class UbicacionEditDialogComponent {
 
   readonly saved = output<void>();
 
-  readonly literals = LITERALS.ubicacion;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('ubicacion');
+  readonly sharedLiterals = injectLiterals('shared');
 
   readonly country = signal('');
   readonly album = signal('');
@@ -62,14 +64,19 @@ export class UbicacionEditDialogComponent {
   readonly loading = signal(false);
 
   /** Países del catálogo: se piden la primera vez que se abre el diálogo, no al montar la vista. */
-  readonly countryOptions = signal<SelectOption[]>([]);
+  private countryNames = signal<string[]>([]);
+  private countries = injectLiterals('countries');
+  /** Valor: nombre de BD; etiqueta: nombre en el idioma activo. */
+  readonly countryOptions = computed<SelectOption[]>(() =>
+    this.countryNames().map((c) => ({ label: translateCountry(c, this.countries()), value: c })),
+  );
   readonly countriesReady = signal(false);
   private countriesRequested = false;
 
   readonly countryLocked = computed(() => this.location() !== null);
 
   readonly header = computed(() =>
-    this.location() ? this.literals.editEntry : this.literals.addCountry,
+    this.location() ? this.literals().editEntry : this.literals().addCountry,
   );
 
   readonly canSubmit = computed(
@@ -101,7 +108,7 @@ export class UbicacionEditDialogComponent {
     this.countriesReady.set(false);
     this.service.getCountries().subscribe({
       next: (countries) => {
-        this.countryOptions.set(countries.map((c) => ({ label: c, value: c })));
+        this.countryNames.set(countries);
         this.countriesReady.set(true);
       },
       error: (e) => {
@@ -122,7 +129,7 @@ export class UbicacionEditDialogComponent {
       } else {
         await this.service.add(this.buildPayload());
       }
-      this.messageService.add(TOAST_MESSAGES.ubicacion.saveSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.ubicacion.saveSuccess));
       this.saved.emit();
       this.visible.set(false);
     } catch (e) {

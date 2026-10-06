@@ -1,13 +1,14 @@
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
-import { LITERALS } from '../../shared/constants/literals';
+import { injectLiterals } from '../../shared/services/i18n.service';
 import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { NumistaService } from '../../core/services/numista.service';
 import { AuthService } from '../../core/services/auth.service';
 import { LayoutStateService } from '../layout-state.service';
 import { NAV_ITEMS, NavGroup, NavItem, NUMISTA_MONTHLY_QUOTA } from '../navigation.config';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
+import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 
 interface NavSection {
   group: NavGroup;
@@ -17,7 +18,13 @@ interface NavSection {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterLink, RouterLinkActive, TooltipModule, UserMenuComponent],
+  imports: [
+    LanguageToggleComponent,
+    RouterLink,
+    RouterLinkActive,
+    TooltipModule,
+    UserMenuComponent,
+  ],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
   host: {
@@ -29,8 +36,8 @@ export class SidebarComponent {
   readonly authService = inject(AuthService);
   readonly numistaService = inject(NumistaService);
 
-  readonly literals = LITERALS.nav;
-  readonly authLiterals = LITERALS.auth;
+  readonly literals = injectLiterals('nav');
+  readonly authLiterals = injectLiterals('auth');
   readonly quota = NUMISTA_MONTHLY_QUOTA;
   readonly version = APP_VERSION;
 
@@ -38,8 +45,8 @@ export class SidebarComponent {
     const isAdmin = this.authService.isAdmin();
     const visible = NAV_ITEMS.filter((i) => !i.adminOnly || isAdmin);
     const sections: NavSection[] = [
-      { group: 'collection', label: this.literals.groupCollection, items: [] },
-      { group: 'management', label: this.literals.groupManagement, items: [] },
+      { group: 'collection', label: this.literals().groupCollection, items: [] },
+      { group: 'management', label: this.literals().groupManagement, items: [] },
     ];
     for (const item of visible) sections.find((s) => s.group === item.group)!.items.push(item);
     return sections.filter((s) => s.items.length > 0);

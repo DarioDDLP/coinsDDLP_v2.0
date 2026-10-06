@@ -17,7 +17,7 @@ export class CountryFlagComponent {
   /** Decorativa (el nombre del país ya aparece al lado): alt vacío. */
   readonly decorative = input<boolean>(false);
 
-  /** `null` si el país no está en `LITERALS.countries`: no se pinta nada. */
+  /** `null` si el país no está en `COUNTRY_DB_NAMES`: no se pinta nada. */
   readonly flagPath = computed(() => getFlagPath(this.country()));
   /** El tamaño puede sobrescribirse desde CSS con --flag-size (p. ej. en móvil). */
   readonly cssSize = computed(() => `var(--flag-size, ${this.size()}px)`);

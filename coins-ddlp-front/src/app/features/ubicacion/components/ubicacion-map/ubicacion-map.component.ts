@@ -16,13 +16,16 @@ import {
   AlbumGroup,
   CountryLocation,
 } from '../../../../shared/interfaces/country-location.interface';
-import { LITERALS } from '../../../../shared/constants/literals';
+import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
+import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
+import { matchesCountry } from '../../../../shared/helpers/country.helper';
 
 @Component({
   selector: 'app-ubicacion-map',
   imports: [
+    CountryNamePipe,
     PageLayoutComponent,
     CountryFlagComponent,
     BadgeComponent,
@@ -37,17 +40,19 @@ import { normalizeString } from '../../../../shared/helpers/normalize-strings.he
   styleUrl: './ubicacion-map.component.scss',
 })
 export class UbicacionMapComponent implements OnInit {
+  private i18n = inject(I18nService);
   private service = inject(UbicacionService);
   private authService = inject(AuthService);
   private errorHandler = inject(ErrorHandler);
   private messageService = inject(MessageService);
 
-  readonly literals = LITERALS.ubicacion;
-  readonly sharedLiterals = LITERALS.shared;
+  readonly literals = injectLiterals('ubicacion');
+  readonly sharedLiterals = injectLiterals('shared');
+  private countries = injectLiterals('countries');
 
   private allLocations = signal<CountryLocation[]>([]);
   readonly searchQuery = signal('');
-  readonly emptyState = computed(() => getEmptyState(this.searchQuery()));
+  readonly emptyState = computed(() => getEmptyState(this.sharedLiterals(), this.searchQuery()));
   readonly isReady = signal(false);
   readonly hasError = signal(false);
   readonly isDeleting = signal(false);
@@ -63,13 +68,15 @@ export class UbicacionMapComponent implements OnInit {
     const locations = this.allLocations();
     if (locations.length === 0) return '';
     const albums = new Set(locations.map((l) => l.album)).size;
-    return `${albums} ${this.literals.albumsCount} · ${locations.length} ${this.literals.countriesCount}`;
+    return `${albums} ${this.literals().albumsCount} · ${locations.length} ${this.literals().countriesCount}`;
   });
 
   private readonly filteredLocations = computed<CountryLocation[]>(() => {
     const query = normalizeString(this.searchQuery());
     if (!query) return this.allLocations();
-    return this.allLocations().filter((loc) => normalizeString(loc.country).includes(query));
+    return this.allLocations().filter((loc) =>
+      matchesCountry(loc.country, query, this.countries()),
+    );
   });
 
   readonly albumGroups = computed<AlbumGroup[]>(() => {
@@ -117,7 +124,7 @@ export class UbicacionMapComponent implements OnInit {
     try {
       await this.service.remove(loc.id);
       this.allLocations.update((list) => list.filter((l) => l.id !== loc.id));
-      this.messageService.add(TOAST_MESSAGES.ubicacion.deleteSuccess);
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.ubicacion.deleteSuccess));
       this.showConfirmDelete.set(false);
     } catch (e) {
       this.errorHandler.handleError(e);
