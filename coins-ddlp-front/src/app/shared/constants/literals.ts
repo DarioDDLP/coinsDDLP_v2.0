@@ -323,11 +323,27 @@ export const LITERALS = {
 
   estadisticas: {
     title: 'Estadísticas',
-    totalCoins: 'Total monedas',
+    overline: 'Euros',
+    countriesCount: 'países',
+    coinsInCatalog: 'monedas en catálogo',
+    progressTotal: 'Progreso total',
     ownedCoins: 'Obtenidas',
+    ofTotal: 'de',
     missingCoins: 'Faltantes',
+    missingHint: 'Para completar el catálogo',
+    commemorative: 'Conmemorativas',
+    units: 'Unidades',
+    unitsHint: 'Monedas físicas en la colección',
+    duplicates: 'Repetidas',
+    spareUnits: 'uds. de sobra',
+    completedCountries: 'Países completos',
+    summary: 'Resumen',
     byCountry: 'Por país',
     byValue: 'Por valor facial',
+    byYear: 'Por año',
+    yearChartLabel: 'Monedas obtenidas por año',
+    legendOwned: 'Obtenidas',
+    legendTotal: 'Catálogo',
   },
 
   ubicacion: {

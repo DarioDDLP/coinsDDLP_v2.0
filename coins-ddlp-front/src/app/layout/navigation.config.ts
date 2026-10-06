@@ -50,8 +50,7 @@ export const NAV_ITEMS: NavItem[] = [
     label: LITERALS.nav.estadisticas,
     routerLink: '/estadisticas',
     icon: 'pi pi-chart-bar',
-    group: 'management',
-    adminOnly: true,
+    group: 'collection',
   },
   {
     label: LITERALS.nav.admin,
