@@ -6,6 +6,7 @@ export interface IAuthService {
   isLoggedIn: Signal<boolean>;
   isAdmin: Signal<boolean>;
   isRecoveryMode: Signal<boolean>;
+  ready: Promise<void>;
   login(email: string, password: string): Promise<void>;
   logout(): Promise<void>;
   resetPassword(email: string): Promise<void>;

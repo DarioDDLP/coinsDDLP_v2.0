@@ -34,6 +34,10 @@
   />
 }
 
+@defer (when layout.changePasswordOpen()) {
+  <app-recovery-password-dialog mode="change" [(visible)]="layout.changePasswordOpen" />
+}
+
 @defer (when authService.isRecoveryMode()) {
   <app-recovery-password-dialog [(visible)]="authService.isRecoveryMode" />
 }

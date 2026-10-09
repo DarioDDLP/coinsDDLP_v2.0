@@ -13,6 +13,8 @@ import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { OwnerService, OWNER_IDS } from '../../../../core/services/owner.service';
 import { AuthService } from '../../../../core/services/auth.service';
+import { injectCan } from '../../../../core/services/permissions.service';
+import { injectCanEditUnits } from '../../euros-permissions';
 import { DialogComponent } from '../../../../shared/components/dialog/dialog.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
 import { TextInputComponent } from '../../../../shared/components/text-input/text-input.component';
@@ -53,7 +55,11 @@ export class CoinUdsDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
   private ownerService = inject(OwnerService);
-  readonly authService = inject(AuthService);
+  private authService = inject(AuthService);
+
+  readonly canEditUnits = injectCanEditUnits();
+  readonly canEditCatalog = injectCan('euros.catalog.edit');
+  private canEditAny = injectCan('euros.units.editAny');
 
   readonly visible = model(false);
   readonly coin = input<EuroCoin | null>(null);
@@ -69,7 +75,7 @@ export class CoinUdsDialogComponent {
   ]);
 
   readonly showOwnerPicker = computed(
-    () => this.ownerService.current() === 'both' && this.authService.isAdmin(),
+    () => this.ownerService.current() === 'both' && this.canEditAny(),
   );
 
   readonly editingOwner = signal<OwnerSlug>('dario');
@@ -117,26 +123,33 @@ export class CoinUdsDialogComponent {
     const coin = this.coin();
     if (!coin) return;
 
-    const ownerId = !this.authService.isAdmin()
+    // Sin `editAny` solo puede escribir en su propia colección
+    const ownerId = !this.canEditAny()
       ? this.authService.currentUser()!.uid
       : this.showOwnerPicker()
         ? OWNER_IDS[this.editingOwner()]
         : (this.ownerService.primaryId() ?? OWNER_IDS.dario);
 
+    // Solo se envía lo que el usuario puede editar
+    const data: Partial<EuroCoin> = {};
+    if (this.canEditUnits()) {
+      Object.assign(data, {
+        uds: this.uds(),
+        conservation: this.conservation(),
+        observations: this.observations(),
+      });
+    }
+    if (this.canEditCatalog()) {
+      Object.assign(data, {
+        circulation: this.circulation(),
+        idNum: this.idNum(),
+        description: this.description(),
+      });
+    }
+
     this.loading.set(true);
     try {
-      await this.eurosService.update(
-        coin.id,
-        {
-          uds: this.uds(),
-          conservation: this.conservation(),
-          observations: this.observations(),
-          circulation: this.circulation(),
-          idNum: this.idNum(),
-          description: this.description(),
-        },
-        ownerId,
-      );
+      await this.eurosService.update(coin.id, data, ownerId);
       this.messageService.add(this.i18n.toast(TOAST_MESSAGES.euros.saveSuccess));
       this.visible.set(false);
     } catch (e) {

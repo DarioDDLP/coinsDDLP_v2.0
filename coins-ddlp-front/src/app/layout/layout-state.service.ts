@@ -27,6 +27,8 @@ export class LayoutStateService {
 
   readonly moreOpen = signal(false);
   readonly authDialog = signal<AuthDialogMode | null>(null);
+  /** Diálogo para que el usuario con sesión cambie su contraseña. */
+  readonly changePasswordOpen = signal(false);
 
   readonly currentUrl = toSignal(
     this.router.events.pipe(
@@ -61,6 +63,11 @@ export class LayoutStateService {
   openLogin(): void {
     this.moreOpen.set(false);
     this.authDialog.set('login');
+  }
+
+  openChangePassword(): void {
+    this.moreOpen.set(false);
+    this.changePasswordOpen.set(true);
   }
 
   openLogout(): void {

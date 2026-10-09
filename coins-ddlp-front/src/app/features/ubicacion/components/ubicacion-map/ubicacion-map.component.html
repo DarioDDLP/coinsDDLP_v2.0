@@ -11,7 +11,7 @@
     [searchValue]="searchQuery()"
     (searchChange)="onSearch($event)"
   >
-    @if (canEdit()) {
+    @if (canCreate()) {
       <app-button
         page-actions
         [label]="literals().addCountry"
@@ -52,20 +52,24 @@
                   @if (loc.isClosed) {
                     <app-badge [label]="literals().closed" severity="secondary" />
                   }
-                  @if (canEdit()) {
+                  @if (canUpdate() || canDelete()) {
                     <div class="location__actions">
-                      <app-button
-                        icon="pi pi-pencil"
-                        variant="ghost"
-                        [tooltip]="literals().editEntry"
-                        (clicked)="onEdit(loc)"
-                      />
-                      <app-button
-                        icon="pi pi-trash"
-                        variant="danger"
-                        [tooltip]="literals().deleteEntry"
-                        (clicked)="onDelete(loc)"
-                      />
+                      @if (canUpdate()) {
+                        <app-button
+                          icon="pi pi-pencil"
+                          variant="ghost"
+                          [tooltip]="literals().editEntry"
+                          (clicked)="onEdit(loc)"
+                        />
+                      }
+                      @if (canDelete()) {
+                        <app-button
+                          icon="pi pi-trash"
+                          variant="danger"
+                          [tooltip]="literals().deleteEntry"
+                          (clicked)="onDelete(loc)"
+                        />
+                      }
                     </div>
                   }
                 </li>
@@ -88,14 +92,16 @@
   </app-page-layout>
 }
 
-<!-- Solo admin puede editar: así el resto no monta el diálogo ni descarga la lista de países -->
-@if (canEdit()) {
+<!-- Solo con permiso: así el resto no monta el diálogo ni descarga la lista de países -->
+@if (canCreate() || canUpdate()) {
   <app-ubicacion-edit-dialog
     [(visible)]="showEditDialog"
     [location]="selectedLocation()"
     (saved)="loadLocations(false)"
   />
+}
 
+@if (canDelete()) {
   <app-confirm-dialog
     [(visible)]="showConfirmDelete"
     [header]="literals().deleteEntry"

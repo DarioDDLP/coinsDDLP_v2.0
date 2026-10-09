@@ -25,22 +25,26 @@
       }
     </div>
 
-    <app-button
-      page-actions
-      icon="pi pi-file-excel"
-      [label]="sharedLiterals().exportExcel"
-      variant="tertiary"
-      [disabled]="!isReady() || visibleCoins().length === 0"
-      (clicked)="exportExcel()"
-    />
+    @if (canExport()) {
+      <app-button
+        page-actions
+        icon="pi pi-file-excel"
+        [label]="sharedLiterals().exportExcel"
+        variant="tertiary"
+        [disabled]="!isReady() || visibleCoins().length === 0"
+        (clicked)="exportExcel()"
+      />
+    }
 
-    <app-filter-pills
-      page-filters
-      [options]="ownerOptions()"
-      [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals().collection"
-      (valueChange)="onOwnerChange($event)"
-    />
+    @if (canSwitchCollection()) {
+      <app-filter-pills
+        page-filters
+        [options]="ownerOptions()"
+        [value]="ownerService.current()"
+        [ariaLabel]="sharedLiterals().collection"
+        (valueChange)="onOwnerChange($event)"
+      />
+    }
     <app-filter-pills
       page-filters
       [options]="ownershipOptions()"
@@ -109,7 +113,7 @@
                 <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
               </th>
             }
-            @if (canEdit()) {
+            @if (showActions()) {
               <th class="col-actions">
                 <span class="sr-only">{{ sharedLiterals().actions }}</span>
               </th>
@@ -194,20 +198,22 @@
                 }
               </td>
             }
-            @if (canEdit()) {
+            @if (showActions()) {
               <td
                 class="col-actions"
                 (click)="$event.stopPropagation()"
                 (keydown.enter)="$event.stopPropagation()"
               >
                 <div class="row-actions">
-                  <app-button
-                    icon="pi pi-pencil"
-                    variant="ghost"
-                    [tooltip]="literals().editUnits"
-                    (clicked)="onEditUnits(row.coin)"
-                  />
-                  @if (authService.isAdmin()) {
+                  @if (canEdit()) {
+                    <app-button
+                      icon="pi pi-pencil"
+                      variant="ghost"
+                      [tooltip]="literals().editUnits"
+                      (clicked)="onEditUnits(row.coin)"
+                    />
+                  }
+                  @if (canDelete()) {
                     <app-button
                       icon="pi pi-trash"
                       variant="danger"
@@ -249,7 +255,7 @@
   <app-coin-uds-dialog [(visible)]="dialogVisible" [coin]="selectedCoin()" />
 }
 
-@if (authService.isAdmin()) {
+@if (canDelete()) {
   <app-confirm-dialog
     [(visible)]="deleteDialogVisible"
     [header]="literals().deleteCoin"

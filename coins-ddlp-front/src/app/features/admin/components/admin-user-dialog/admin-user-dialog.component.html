@@ -1,40 +1,76 @@
-<app-dialog [(visible)]="visible" [header]="header()">
+<app-dialog [(visible)]="visible" [header]="header()" size="lg">
   <div class="user-form">
-    @if (!isEditMode()) {
-      <app-text-input
-        [label]="authLiterals().emailLabel"
-        [value]="email()"
-        type="email"
-        [placeholder]="authLiterals().emailPlaceholder"
-        autocomplete="off"
-        (valueChange)="email.set($event)"
-      />
+    @if (guest()) {
+      <p class="user-form__hint">{{ literals().guestHint }}</p>
+    } @else {
+      @if (!isEditMode()) {
+        <app-text-input
+          [label]="authLiterals().emailLabel"
+          [value]="email()"
+          type="email"
+          [placeholder]="authLiterals().emailPlaceholder"
+          autocomplete="off"
+          (valueChange)="email.set($event)"
+        />
+
+        <app-text-input
+          [label]="authLiterals().passwordLabel"
+          [value]="password()"
+          type="password"
+          [placeholder]="authLiterals().passwordPlaceholder"
+          autocomplete="new-password"
+          (valueChange)="password.set($event)"
+        />
+      }
 
       <app-text-input
-        [label]="authLiterals().passwordLabel"
-        [value]="password()"
-        type="password"
-        [placeholder]="authLiterals().passwordPlaceholder"
-        autocomplete="new-password"
-        (valueChange)="password.set($event)"
+        [label]="literals().nameLabel"
+        [value]="displayName()"
+        type="text"
+        [placeholder]="literals().namePlaceholder"
+        autocomplete="off"
+        (valueChange)="displayName.set($event)"
       />
+
+      <app-select
+        [label]="literals().roleLabel"
+        [value]="role()"
+        [options]="roleOptions()"
+        (valueChange)="role.set($any($event))"
+      />
+
+      @if (isEditMode()) {
+        <app-button
+          [label]="literals().sendRecovery"
+          icon="pi pi-envelope"
+          variant="secondary"
+          [loading]="recoveryLoading()"
+          (clicked)="onSendRecovery()"
+        />
+      }
     }
 
-    <app-text-input
-      [label]="literals().nameLabel"
-      [value]="displayName()"
-      type="text"
-      [placeholder]="literals().namePlaceholder"
-      autocomplete="off"
-      (valueChange)="displayName.set($event)"
-    />
-
-    <app-select
-      [label]="literals().roleLabel"
-      [value]="role()"
-      [options]="roleOptions()"
-      (valueChange)="role.set($any($event))"
-    />
+    <section class="permissions" [attr.aria-label]="literals().permissionsTitle">
+      @if (!guest()) {
+        <h3 class="permissions__title">{{ literals().permissionsTitle }}</h3>
+      }
+      @if (isAdminRole()) {
+        <p class="user-form__hint">{{ literals().adminAllPermissions }}</p>
+      }
+      @for (group of permissionGroups(); track group.label) {
+        <div class="permissions__group">
+          <h4 class="permissions__group-title">{{ group.label }}</h4>
+          @for (item of group.items; track item.key) {
+            <app-toggle
+              [label]="item.label"
+              [value]="isAdminRole() || permissions().has(item.key)"
+              [disabled]="isAdminRole()"
+              (valueChange)="onTogglePermission(item.key, $event)"
+            />
+          }
+        </div>
+      }
+    </section>
   </div>
 
   <ng-container dialog-footer>

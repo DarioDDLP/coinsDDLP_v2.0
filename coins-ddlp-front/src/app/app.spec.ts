@@ -13,6 +13,8 @@ const supabaseStub = {
     getSession: () => Promise.resolve({ data: { session: null } }),
     onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
   },
+  // Permisos del Invitado (PermissionsService): ninguno
+  from: () => ({ select: () => Promise.resolve({ data: [], error: null }) }),
 };
 
 /** jsdom no implementa matchMedia (lo usa LayoutStateService): simula escritorio. */

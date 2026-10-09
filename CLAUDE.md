@@ -65,7 +65,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 
 ## Estructura del front (`coins-ddlp-front/src/app/`)
 
-- `core/` — singletons. `guards/` (`adminGuard` para `/admin` y `/herramientas`; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth`, `numista` (Edge Function `numista-proxy`, expone la cuota restante), `owner` (colección activa), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
+- `core/` — singletons. `guards/` (`adminGuard` para `/admin`; `permissionGuard(...permisos)` para secciones y Herramientas; ambos esperan a que cargue la sesión; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth` (`ready`), `permissions` (permisos efectivos, `injectCan(...)`, ver **Permisos**), `numista` (Edge Function `numista-proxy`, expone la cuota restante), `owner` (colección activa), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
 - `layout/` — shell: `sidebar`, `user-menu`, `topbar`, `bottom-nav`, `more-sheet`, `login-dialog`, `recovery-password-dialog`, `layout-state.service.ts` (viewport, sidebar plegado, panel "Más", diálogo de login), `navigation.config.ts` (`NAV_ITEMS`)
 - `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (estadisticas-dashboard, stat-card, year-chart, `estadisticas.service`), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog), `tools` (tools-add-euro, tools-add-year)
 - `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, error-panel, filter-pills, search-input, select, text-input, textarea, toggle); `constants/` (toast-messages, i18n (idiomas y clave de `localStorage`), countries (`COUNTRY_DB_NAMES`), dialog, conservation-states, collections, `*-filter.config`, `face-value-order`, `app-version` = versión de `package.json`, mostrada al pie del sidebar y de "Más"); `interfaces/`; `helpers/` (normalize-strings, country, search-state, badge, unique-id, empty-state, ownership = `isOwned`, euro-stats = agregados de Estadísticas); `pipes/` (euro-value, countryName, faceValue); `services/` (i18n, excel-export con ExcelJS (recibe las cabeceras traducidas), page-header)
@@ -100,7 +100,10 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 | `/pesetas?valor=5 pesetas` · `/pesetas/moneda/:id` | chips de denominación · + drawer |
 | `/ubicacion` | álbumes en tarjetas; pública, edición solo admin |
 | `/estadisticas` | pública: KPIs, progreso por país, valor facial y año (euros, según la colección activa) |
-| `/admin/usuarios` · `/herramientas/añadir-euro\|año` | `adminGuard` |
+| `/admin/usuarios` | `adminGuard` |
+| `/herramientas/añadir-euro\|año` | `permissionGuard('tools.addEuro' / 'tools.addYear')`; `/herramientas` abre la primera pestaña permitida |
+
+`/conmemorativas`, `/pesetas`, `/ubicacion` y `/estadisticas` llevan `permissionGuard('section.…')`.
 
 - Redirecciones de URLs antiguas: `/euros/:country/all`, `/euros/:country/:year[/:id]`, `/pesetas/all`, `/pesetas/:faceValue[/:id]`
 - No hay ruta `/login`: `login-dialog` se abre desde sidebar, topbar o "Más" con `LayoutStateService.openLogin()` / `openLogout()`
@@ -115,10 +118,11 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 - `peseta_type` — 187 tipos de pesetas circulantes 1868–2001 scrapeados de Numista (`cu=142`): datos técnicos, imágenes, descripciones y `mintingYears` (JSONB: `label`, `designYear`, `mintYear`, `mintage`). `peseta` — 525 ejemplares (`pesetaTypeId`, uds, conservación, observaciones)
 - `country_location` — álbum por país (`country`, `album`, `yearFrom`, `yearTo`, `isClosed`)
 - `numista_usage` — contadores de la API de Numista (los escribe `numista-proxy` con service_role)
-- **RLS** (además hacen falta `GRANT` para la Data API, ver `20260528000001_grant_data_api_access.sql`): `euro`, `peseta`, `peseta_type`, `country_location` → lectura `anon` + `authenticated`, escritura `authenticated`. `owner` → solo lectura. `euro_ownership` → lectura pública, escritura **solo de las filas propias** (`auth.uid() = ownerId`). `numista_usage` → lectura `authenticated`
-- **Edge Functions** (`supabase/functions/`): `numista-proxy` (pública, `verify_jwt = false` en `config.toml`: el front la llama sin token; oculta `NUMISTA_API_KEY`, devuelve `X-Numista-Remaining`, acepta `lang`) y `admin-users` (gestión de usuarios). Secretos (`SUPABASE_SERVICE_ROLE_KEY`, `NUMISTA_API_KEY`) solo en el panel de Supabase
+- `user_permission` (`userId`, `permission`) y `guest_permission` (`permission`): permisos por usuario y del perfil Invitado (ver **Permisos**). Solo los escribe `admin-users` (service_role)
+- **RLS** (además hacen falta `GRANT` para la Data API, ver `20260528000001_grant_data_api_access.sql`), desde `20261009000000_user_permissions.sql` con las funciones `is_admin()` y `has_permission(p)` (admin › Invitado › usuario): lectura pública en `euro`, `peseta`, `peseta_type`, `country_location`, `owner`, `euro_ownership`. Escritura: `euro` INSERT `tools.addEuro`/`tools.addYear`, UPDATE `euros.catalog.edit`, DELETE `euros.delete`; `euro_ownership` filas propias con `euros.units.editOwn` o cualquiera con `euros.units.editAny`; `country_location` `location.create/update/delete`; `peseta`, `peseta_type` solo admin. `user_permission` → cada uno lee las suyas; `guest_permission` → lectura pública. `numista_usage` → lectura `authenticated`
+- **Edge Functions** (`supabase/functions/`): `numista-proxy` (pública, `verify_jwt = false` en `config.toml`: el front la llama sin token; oculta `NUMISTA_API_KEY`, devuelve `X-Numista-Remaining`, acepta `lang`) y `admin-users` (solo admin: usuarios con sus permisos, `GET/PUT /guest` para el Invitado, `POST /:uid/recovery` envía el email de recuperación; valida las claves contra su lista `VALID_PERMISSIONS`/`GUEST_PERMISSIONS`). Secretos (`SUPABASE_SERVICE_ROLE_KEY`, `NUMISTA_API_KEY`) solo en el panel de Supabase
 
-**Colecciones (Darío / Manolo / ambas):** `OwnerService` guarda la activa en `sessionStorage`; los servicios hacen LEFT JOIN a `euro_ownership` y en modo *ambas* añaden campos `*Alt` (columnas dobles en tablas y Excel). Editar unidades (`injectCanEditCoins`, `euros-permissions.ts`): el admin siempre; un usuario solo viendo **su propia** colección, nunca en *ambas*. Borrar monedas, solo admin. En `coin-uds-dialog` el selector de colección solo aparece en *ambas* + admin. Los filtros *obtenidas*/*faltantes* en *ambas* exigen la condición a los dos dueños. `update()` reparte los cambios entre `euro` y `euro_ownership`; Herramientas solo crea catálogo (`NewEuroCoin`).
+**Colecciones (Darío / Manolo / ambas):** `OwnerService` guarda la activa en `sessionStorage`; los servicios hacen LEFT JOIN a `euro_ownership` y en modo *ambas* añaden campos `*Alt` (columnas dobles en tablas y Excel). Editar unidades (`injectCanEditUnits`, `euros-permissions.ts`): con `euros.units.editAny` siempre; con `euros.units.editOwn` solo viendo **su propia** colección (`OwnerService.ownSlug`), nunca en *ambas*. `coin-uds-dialog` muestra unidades/conservación/observaciones según eso y descripción/circulante/ID Numista solo con `euros.catalog.edit`, y solo envía lo permitido; su selector de colección aparece en *ambas* + `editAny`. Sin `collection.switch` se oculta el selector y la colección queda fija en la propia (o Darío). Los filtros *obtenidas*/*faltantes* en *ambas* exigen la condición a los dos dueños. `update()` reparte los cambios entre `euro` y `euro_ownership`; Herramientas solo crea catálogo (`NewEuroCoin`).
 
 ## PrimeNG 22
 
@@ -128,9 +132,25 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 - Con `rowGroupMode="subheader"` PrimeNG ordena `groupRowsBy` como texto: usar claves que ordenen bien (ceros a la izquierda)
 - **Licencia** PrimeUI Community en `environment.primeuiLicense` (ambos `environment*.ts`) → `providePrimeNG({ license })`. **Caduca el 2027-10-02**: renovar en https://primeui.dev/licenses/community (si caduca, la app muestra un aviso)
 
+## Permisos
+
+El admin (`app_metadata.role = 'admin'`) tiene todos. El resto: perfil **Invitado** (visitantes sin sesión; los usuarios también lo heredan) ∪ los suyos. Se editan en `/admin/usuarios` (interruptores en el diálogo de usuario; botón "Permisos de invitado"). Claves en `shared/constants/permissions.const.ts` (`PERMISSIONS`, `PERMISSION_GROUPS`, `GUEST_PERMISSIONS`), que deben coincidir con `admin-users` y la RLS:
+
+| Clave | Qué permite | Lo hace cumplir |
+|-------|-------------|-----------------|
+| `euros.units.editOwn` / `editAny` | Editar unidades de su colección / de cualquiera | UI + RLS |
+| `euros.catalog.edit` · `euros.delete` | Editar descripción, circulante, ID Numista · borrar monedas | UI + RLS |
+| `tools.addEuro` · `tools.addYear` | Herramientas | guard + RLS |
+| `location.create/update/delete` | Álbumes de Ubicación | UI + RLS |
+| `location.viewInLists` · `export.excel` · `collection.switch` · `numista.quotaView` · `section.*` | Consulta (las admite el Invitado) | Solo UI: los datos siguen siendo públicos |
+
+- Front: `PermissionsService` (`granted`, `can`, `ready`, `loaded`); en componentes `readonly canX = injectCan('…')`. Navegación con `NavItem.permissions` + `isNavItemVisible`. Los permisos propios se recargan al cambiar la sesión (al refrescar el token, ~1 h, o al recargar la página); la BD los aplica al momento
+- Editar pesetas y gestionar usuarios no son permisos: solo admin
+- Contraseñas: cada usuario cambia la suya ("Cambiar contraseña" en el menú de usuario y en "Más", `recovery-password-dialog` con `mode="change"`); el admin envía el email de recuperación desde el diálogo de usuario
+
 ## Estado actual
 
-> **Última actualización:** 2026-10-06
+> **Última actualización:** 2026-10-09
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
 - **Versión en producción: v3.2.0** (v3.0.0 = Angular 22 + PrimeNG 22 + rediseño oscuro y responsive; v3.0.1 = sin toasts de errores de scripts ajenos; v3.1.0 = versión visible + Estadísticas; v3.2.0 = idiomas ES/EN). Si falla en producción: Vercel → Deployments → Instant Rollback
@@ -140,7 +160,7 @@ Proyecto `https://uvkvagoipxgagyupxoqd.supabase.co` (anon key en `environment*.t
 0. **Idiomas ES/EN** (en producción desde v3.2.0; Numista en inglés ya comprobado): probar en un navegador real el cambio en caliente (menú, títulos, filtros, tablas, toasts, diálogos, barra de móvil), que se recuerde al recargar y el Excel en inglés
 1. **Estadísticas** (en producción desde v3.1.0): revisar en un navegador real (tooltip del gráfico por año, móvil, cambio de colección). Ampliaciones posibles: conservación, repetidas para intercambio, pesetas
 2. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)
-3. Permisos: `coin-uds-dialog` deja a un usuario no admin editar campos de catálogo (descripción, circulante, ID Numista) que se guardan en `euro`
-4. Permisos: la RLS de `euro_ownership` solo deja escribir filas propias, pero `injectCanEditCoins` deja al admin editar la colección de Manolo; probablemente Supabase rechace ese guardado. Probarlo y, si falla, migración con política de escritura para el admin
+3. **Permisos** (rama `feat/permissions`, 2026-10-09): migración `20261009000000_user_permissions.sql` aplicada y `admin-users` desplegada el 2026-10-09 (comprobado con la clave pública: Invitado con sus 7 permisos, `has_permission` responde y un anónimo no puede borrar). Falta publicar el front y probar en navegador cada permiso con un usuario de prueba y el Invitado, el admin editando la colección de Manolo, cambio de contraseña y email de recuperación. Ojo: mientras producción tenga el front viejo, un no admin no puede guardar unidades (manda también campos de catálogo)
+4. Permisos: hacer que cada usuario pueda tener su propia colección (hoy `OWNER_IDS` fijo con Darío y Manolo)
 5. `GlobalErrorHandler` muestra los mensajes de Supabase en inglés (también en modo ES) ("Invalid login credentials"…): traducir los más comunes
 6. Datos: 370 conmemorativas sin `idNum` (sin foto ni datos de Numista en la ficha)

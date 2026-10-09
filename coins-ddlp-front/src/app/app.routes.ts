@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin.guard';
+import { permissionGuard } from './core/guards/permission.guard';
 
 export const routes: Routes = [
   {
@@ -14,6 +15,7 @@ export const routes: Routes = [
   },
   {
     path: 'conmemorativas',
+    canActivate: [permissionGuard('section.conmemorativas')],
     loadComponent: () =>
       import('./features/conmemorativas/conmemorativas.component').then(
         (m) => m.ConmemorativasComponent,
@@ -21,12 +23,14 @@ export const routes: Routes = [
   },
   {
     path: 'pesetas',
+    canActivate: [permissionGuard('section.pesetas')],
     loadComponent: () =>
       import('./features/pesetas/pesetas.component').then((m) => m.PesetasComponent),
     loadChildren: () => import('./features/pesetas/pesetas.routes').then((m) => m.pesetasRoutes),
   },
   {
     path: 'estadisticas',
+    canActivate: [permissionGuard('section.estadisticas')],
     loadComponent: () =>
       import('./features/estadisticas/components/estadisticas-dashboard/estadisticas-dashboard.component').then(
         (m) => m.EstadisticasDashboardComponent,
@@ -34,6 +38,7 @@ export const routes: Routes = [
   },
   {
     path: 'ubicacion',
+    canActivate: [permissionGuard('section.ubicacion')],
     loadComponent: () =>
       import('./features/ubicacion/ubicacion.component').then((m) => m.UbicacionComponent),
     loadChildren: () =>
@@ -47,7 +52,7 @@ export const routes: Routes = [
   },
   {
     path: 'herramientas',
-    canActivate: [adminGuard],
+    canActivate: [permissionGuard('tools.addEuro', 'tools.addYear')],
     loadComponent: () => import('./features/tools/tools.component').then((m) => m.ToolsComponent),
     loadChildren: () => import('./features/tools/tools.routes').then((m) => m.toolsRoutes),
   },

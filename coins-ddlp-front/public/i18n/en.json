@@ -89,7 +89,8 @@
     "recoveryButton": "Save password",
     "recoverySuccess": "Password updated successfully",
     "recoveryError": "The password could not be updated",
-    "passwordMismatch": "Passwords don't match"
+    "passwordMismatch": "Passwords don't match",
+    "changePassword": "Change password"
   },
   "euros": {
     "title": "Euros",
@@ -214,7 +215,42 @@
     "namePlaceholder": "Full name",
     "roleLabel": "Role",
     "saveSuccess": "User saved successfully",
-    "deleteSuccess": "User deleted successfully"
+    "deleteSuccess": "User deleted successfully",
+    "guestButton": "Guest permissions",
+    "guestTitle": "Guest permissions",
+    "guestHint": "They apply to signed-out visitors and to every user too.",
+    "permissionsTitle": "Permissions",
+    "adminAllPermissions": "Admins always have every permission.",
+    "sendRecovery": "Send recovery email",
+    "recoverySent": "Recovery email sent",
+    "permissions": {
+      "groups": {
+        "euros": "Euros",
+        "tools": "Tools",
+        "location": "Location",
+        "consult": "Browsing",
+        "sections": "Visible sections"
+      },
+      "items": {
+        "euros_units_editOwn": "Edit units in their own collection",
+        "euros_units_editAny": "Edit units in any collection",
+        "euros_catalog_edit": "Edit catalogue (description, circulation, Numista ID)",
+        "euros_delete": "Delete coins",
+        "tools_addEuro": "Add coin",
+        "tools_addYear": "Add year",
+        "location_create": "Add locations",
+        "location_update": "Edit locations",
+        "location_delete": "Delete locations",
+        "location_viewInLists": "See the location in lists and Excel",
+        "export_excel": "Export to Excel",
+        "collection_switch": "Switch collection",
+        "section_estadisticas": "Statistics",
+        "section_ubicacion": "Location",
+        "section_pesetas": "Pesetas",
+        "section_conmemorativas": "Commemoratives",
+        "numista_quotaView": "See the Numista quota"
+      }
+    }
   },
   "herramientas": {
     "title": "Tools",

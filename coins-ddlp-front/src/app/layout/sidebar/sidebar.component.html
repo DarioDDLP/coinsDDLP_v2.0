@@ -44,7 +44,7 @@
   </div>
 
   <div class="sidebar__footer">
-    @if (numistaService.remaining() !== null && !layout.sidebarRail()) {
+    @if (canViewQuota() && numistaService.remaining() !== null && !layout.sidebarRail()) {
       <div class="sidebar__quota" [attr.title]="literals().numistaQuotaHint">
         <div class="sidebar__quota-row">
           <span>{{ literals().numistaQuota }}</span>

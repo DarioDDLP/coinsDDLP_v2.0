@@ -11,6 +11,7 @@ import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
+import { Permission } from '../../../../shared/constants/permissions.const';
 
 @Component({
   selector: 'app-admin-users',
@@ -47,12 +48,15 @@ export class AdminUsersComponent implements OnInit {
   readonly isReady = signal(false);
   readonly dialogVisible = signal(false);
   readonly editingUser = signal<AppUser | null>(null);
+  readonly editingGuest = signal(false);
+  readonly guestPermissions = signal<Permission[]>([]);
   readonly deleteDialogVisible = signal(false);
   readonly deletingUser = signal<AppUser | null>(null);
   readonly deleteLoading = signal(false);
 
   ngOnInit(): void {
     this.loadUsers();
+    this.loadGuestPermissions();
   }
 
   protected loadUsers(): void {
@@ -68,9 +72,28 @@ export class AdminUsersComponent implements OnInit {
     });
   }
 
+  protected loadGuestPermissions(): void {
+    this.adminService.getGuestPermissions().subscribe({
+      next: (permissions) => this.guestPermissions.set(permissions),
+      error: (e) => this.errorHandler.handleError(e),
+    });
+  }
+
   protected onEdit(user: AppUser | null): void {
+    this.editingGuest.set(false);
     this.editingUser.set(user);
     this.dialogVisible.set(true);
+  }
+
+  protected onEditGuest(): void {
+    this.editingGuest.set(true);
+    this.editingUser.set(null);
+    this.dialogVisible.set(true);
+  }
+
+  protected onSaved(): void {
+    if (this.editingGuest()) this.loadGuestPermissions();
+    else this.loadUsers();
   }
 
   protected onDelete(user: AppUser): void {

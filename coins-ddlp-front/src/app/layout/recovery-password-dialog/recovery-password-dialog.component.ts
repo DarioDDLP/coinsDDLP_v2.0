@@ -1,4 +1,4 @@
-import { Component, ErrorHandler, inject, model, signal } from '@angular/core';
+import { Component, computed, ErrorHandler, inject, input, model, signal } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { AuthService } from '../../core/services/auth.service';
 import { DialogComponent } from '../../shared/components/dialog/dialog.component';
@@ -19,10 +19,20 @@ export class RecoveryPasswordDialogComponent {
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
 
-  /** Sin botón de cerrar ni Escape: solo se cierra al cambiar la contraseña. */
+  /**
+   * `recovery`: tras el enlace del email; sin botón de cerrar ni Escape, solo se
+   * cierra al cambiar la contraseña. `change`: el usuario cambia la suya desde su menú.
+   */
+  readonly mode = input<'recovery' | 'change'>('recovery');
   readonly visible = model(false);
 
   readonly literals = injectLiterals('auth');
+  readonly sharedLiterals = injectLiterals('shared');
+
+  readonly isChange = computed(() => this.mode() === 'change');
+  readonly header = computed(() =>
+    this.isChange() ? this.literals().changePassword : this.literals().recoveryTitle,
+  );
 
   readonly newPassword = signal('');
   readonly confirmPassword = signal('');

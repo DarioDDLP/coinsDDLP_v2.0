@@ -16,6 +16,7 @@ import { ProgressStatComponent } from '../../../../shared/components/progress-st
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
+import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroStatsRow } from '../../../../shared/interfaces/euro-stats.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
@@ -60,6 +61,7 @@ export class EstadisticasDashboardComponent {
   readonly literals = injectLiterals('estadisticas');
   readonly sharedLiterals = injectLiterals('shared');
   readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
+  readonly canSwitchCollection = injectCan('collection.switch');
   readonly skeletonRows = Array.from({ length: 8 });
 
   private rows = signal<EuroStatsRow[]>([]);

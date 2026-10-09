@@ -1,7 +1,15 @@
 <div class="admin-users">
   <div class="admin-users__toolbar">
     <h2 class="admin-users__title">{{ literals().usersTitle }}</h2>
-    <app-button [label]="literals().newUser" icon="pi pi-plus" (clicked)="onEdit(null)" />
+    <div class="admin-users__toolbar-actions">
+      <app-button
+        [label]="literals().guestButton"
+        icon="pi pi-users"
+        variant="secondary"
+        (clicked)="onEditGuest()"
+      />
+      <app-button [label]="literals().newUser" icon="pi pi-plus" (clicked)="onEdit(null)" />
+    </div>
   </div>
 
   @if (!isReady()) {
@@ -47,7 +55,13 @@
   }
 </div>
 
-<app-admin-user-dialog [(visible)]="dialogVisible" [user]="editingUser()" (saved)="loadUsers()" />
+<app-admin-user-dialog
+  [(visible)]="dialogVisible"
+  [user]="editingUser()"
+  [guest]="editingGuest()"
+  [guestPermissions]="guestPermissions()"
+  (saved)="onSaved()"
+/>
 
 <app-confirm-dialog
   [(visible)]="deleteDialogVisible"
