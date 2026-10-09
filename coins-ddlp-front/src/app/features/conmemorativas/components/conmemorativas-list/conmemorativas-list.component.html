@@ -24,22 +24,26 @@
       }
     </div>
 
-    <app-button
-      page-actions
-      icon="pi pi-file-excel"
-      [label]="sharedLiterals().exportExcel"
-      variant="tertiary"
-      [disabled]="!isReady() || groupedCoins().length === 0"
-      (clicked)="exportExcel()"
-    />
+    @if (canExport()) {
+      <app-button
+        page-actions
+        icon="pi pi-file-excel"
+        [label]="sharedLiterals().exportExcel"
+        variant="tertiary"
+        [disabled]="!isReady() || groupedCoins().length === 0"
+        (clicked)="exportExcel()"
+      />
+    }
 
-    <app-filter-pills
-      page-filters
-      [options]="ownerOptions()"
-      [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals().collection"
-      (valueChange)="onOwnerChange($event)"
-    />
+    @if (canSwitchCollection()) {
+      <app-filter-pills
+        page-filters
+        [options]="ownerOptions()"
+        [value]="ownerService.current()"
+        [ariaLabel]="sharedLiterals().collection"
+        (valueChange)="onOwnerChange($event)"
+      />
+    }
     <app-filter-pills
       page-filters
       [options]="ownershipOptions()"
@@ -78,7 +82,7 @@
                   <th class="col-country">{{ literals().colCountry }}</th>
                   <th class="col-mint">{{ literals().colMint }}</th>
                   <th class="col-grow">{{ literals().colDescription }}</th>
-                  @if (isAdmin()) {
+                  @if (canViewLocation()) {
                     <th class="col-center">{{ literals().colLocation }}</th>
                   }
                   <th class="col-center">
@@ -140,7 +144,7 @@
                       }
                     </div>
                   </td>
-                  @if (isAdmin()) {
+                  @if (canViewLocation()) {
                     <td class="col-center col-location" [attr.data-label]="literals().colLocation">
                       {{ row.location.album }} / {{ row.location.page }} /
                       {{ row.location.position }}

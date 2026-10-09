@@ -172,7 +172,7 @@ export class ExcelExportService {
 
   async exportConmemorativas(
     groups: ConmExportGroup[],
-    isAdmin: boolean,
+    includeLocation: boolean,
     l: ExcelLabels,
     isBoth = false,
   ): Promise<void> {
@@ -186,7 +186,7 @@ export class ExcelExportService {
         { header: l.mint, key: 'mint', width: 18 },
         { header: l.description, key: 'description', width: 52 },
       ];
-      if (isAdmin) cols.push({ header: l.location, key: 'location', width: 16 });
+      if (includeLocation) cols.push({ header: l.location, key: 'location', width: 16 });
       if (isBoth) {
         cols.push(
           { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
@@ -211,7 +211,7 @@ export class ExcelExportService {
           conservation: this.conservation(r.coin.conservation, r.coin.uds),
           uds: r.coin.uds,
         };
-        if (isAdmin)
+        if (includeLocation)
           row['location'] = `${r.location.album} / ${r.location.page} / ${r.location.position}`;
         if (isBoth) {
           const udsAlt = r.coin.udsAlt ?? 0;

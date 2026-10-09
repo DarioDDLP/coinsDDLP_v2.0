@@ -21,6 +21,10 @@
 <p-popover #menu>
   <div class="menu">
     <span class="menu__email">{{ authService.currentUser()?.email }}</span>
+    <button type="button" class="menu__item" (click)="menu.hide(); layout.openChangePassword()">
+      <i class="pi pi-key" aria-hidden="true"></i>
+      {{ authLiterals().changePassword }}
+    </button>
     <button type="button" class="menu__item" (click)="menu.hide(); layout.openLogout()">
       <i class="pi pi-sign-out" aria-hidden="true"></i>
       {{ authLiterals().logoutButton }}

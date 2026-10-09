@@ -1,4 +1,5 @@
 import { Translations } from '../shared/interfaces/translations.interface';
+import { Permission } from '../shared/constants/permissions.const';
 
 type NavLabelKey = keyof Translations['nav'];
 
@@ -13,6 +14,8 @@ export interface NavItem {
   icon: string;
   group: NavGroup;
   adminOnly?: boolean;
+  /** Visible si el usuario tiene alguno de estos permisos. */
+  permissions?: Permission[];
   /** Pestaña fija en la barra inferior de móvil; el resto va al panel "Más". */
   mobilePrimary?: boolean;
 }
@@ -33,6 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
     routerLink: '/conmemorativas',
     icon: 'pi pi-star',
     group: 'collection',
+    permissions: ['section.conmemorativas'],
     mobilePrimary: true,
   },
   {
@@ -40,6 +44,7 @@ export const NAV_ITEMS: NavItem[] = [
     routerLink: '/pesetas',
     icon: 'pi pi-building-columns',
     group: 'collection',
+    permissions: ['section.pesetas'],
     mobilePrimary: true,
   },
   {
@@ -47,6 +52,7 @@ export const NAV_ITEMS: NavItem[] = [
     routerLink: '/ubicacion',
     icon: 'pi pi-map-marker',
     group: 'collection',
+    permissions: ['section.ubicacion'],
     mobilePrimary: true,
   },
   {
@@ -54,6 +60,7 @@ export const NAV_ITEMS: NavItem[] = [
     routerLink: '/estadisticas',
     icon: 'pi pi-chart-bar',
     group: 'collection',
+    permissions: ['section.estadisticas'],
   },
   {
     labelKey: 'admin',
@@ -67,6 +74,16 @@ export const NAV_ITEMS: NavItem[] = [
     routerLink: '/herramientas',
     icon: 'pi pi-wrench',
     group: 'management',
-    adminOnly: true,
+    permissions: ['tools.addEuro', 'tools.addYear'],
   },
 ];
+
+/** Si el elemento de navegación se muestra con el rol y los permisos actuales. */
+export function isNavItemVisible(
+  item: NavItem,
+  isAdmin: boolean,
+  granted: ReadonlySet<Permission>,
+): boolean {
+  if (item.adminOnly && !isAdmin) return false;
+  return !item.permissions || item.permissions.some((p) => granted.has(p));
+}

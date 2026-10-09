@@ -19,6 +19,7 @@ import { ProgressStatComponent } from '../../../../shared/components/progress-st
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { EurosService } from '../../services/euros.service';
+import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoinSummary } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
@@ -69,6 +70,7 @@ export class EurosCountriesComponent {
   readonly sharedLiterals = injectLiterals('shared');
   private countries = injectLiterals('countries');
   readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
+  readonly canSwitchCollection = injectCan('collection.switch');
   readonly skeletonCards = Array.from({ length: 12 });
 
   private summary = signal<EuroCoinSummary[]>([]);

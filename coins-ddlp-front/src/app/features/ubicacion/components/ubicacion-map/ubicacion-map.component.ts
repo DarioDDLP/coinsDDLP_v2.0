@@ -11,7 +11,7 @@ import { ButtonComponent } from '../../../../shared/components/button/button.com
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { UbicacionEditDialogComponent } from '../ubicacion-edit-dialog/ubicacion-edit-dialog.component';
 import { UbicacionService } from '../../services/ubicacion.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { injectCan } from '../../../../core/services/permissions.service';
 import {
   AlbumGroup,
   CountryLocation,
@@ -42,7 +42,6 @@ import { matchesCountry } from '../../../../shared/helpers/country.helper';
 export class UbicacionMapComponent implements OnInit {
   private i18n = inject(I18nService);
   private service = inject(UbicacionService);
-  private authService = inject(AuthService);
   private errorHandler = inject(ErrorHandler);
   private messageService = inject(MessageService);
 
@@ -62,7 +61,9 @@ export class UbicacionMapComponent implements OnInit {
   private locationToDelete = signal<CountryLocation | null>(null);
   readonly selectedLocation = signal<CountryLocation | null>(null);
 
-  readonly canEdit = computed(() => this.authService.isAdmin());
+  readonly canCreate = injectCan('location.create');
+  readonly canUpdate = injectCan('location.update');
+  readonly canDelete = injectCan('location.delete');
 
   readonly subtitle = computed(() => {
     const locations = this.allLocations();

@@ -5,8 +5,15 @@ import { injectLiterals } from '../../shared/services/i18n.service';
 import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { NumistaService } from '../../core/services/numista.service';
 import { AuthService } from '../../core/services/auth.service';
+import { injectCan, PermissionsService } from '../../core/services/permissions.service';
 import { LayoutStateService } from '../layout-state.service';
-import { NAV_ITEMS, NavGroup, NavItem, NUMISTA_MONTHLY_QUOTA } from '../navigation.config';
+import {
+  isNavItemVisible,
+  NAV_ITEMS,
+  NavGroup,
+  NavItem,
+  NUMISTA_MONTHLY_QUOTA,
+} from '../navigation.config';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
 import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 
@@ -35,6 +42,8 @@ export class SidebarComponent {
   readonly layout = inject(LayoutStateService);
   readonly authService = inject(AuthService);
   readonly numistaService = inject(NumistaService);
+  private permissions = inject(PermissionsService);
+  readonly canViewQuota = injectCan('numista.quotaView');
 
   readonly literals = injectLiterals('nav');
   readonly authLiterals = injectLiterals('auth');
@@ -43,7 +52,8 @@ export class SidebarComponent {
 
   readonly sections = computed<NavSection[]>(() => {
     const isAdmin = this.authService.isAdmin();
-    const visible = NAV_ITEMS.filter((i) => !i.adminOnly || isAdmin);
+    const granted = this.permissions.granted();
+    const visible = NAV_ITEMS.filter((i) => isNavItemVisible(i, isAdmin, granted));
     const sections: NavSection[] = [
       { group: 'collection', label: this.literals().groupCollection, items: [] },
       { group: 'management', label: this.literals().groupManagement, items: [] },

@@ -11,11 +11,16 @@ export class AuthService implements IAuthService {
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
   readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
   readonly isRecoveryMode = signal(false);
+  /** Se resuelve al conocer la sesión inicial (los guards esperan a esto). */
+  readonly ready: Promise<void>;
 
   constructor() {
-    this.supabase.auth.getSession().then(({ data: { session } }) => {
-      this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
-    });
+    this.ready = this.supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        this.currentUser.set(session?.user ? this.mapUser(session.user) : null);
+      })
+      .catch(() => undefined);
 
     this.supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'PASSWORD_RECOVERY') {

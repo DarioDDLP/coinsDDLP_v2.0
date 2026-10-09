@@ -37,7 +37,7 @@
         </ul>
       }
 
-      @if (numistaService.remaining() !== null) {
+      @if (canViewQuota() && numistaService.remaining() !== null) {
         <div class="more-sheet__quota" [attr.title]="literals().numistaQuotaHint">
           <div class="more-sheet__quota-row">
             <span>{{ literals().numistaQuota }}</span>
@@ -50,6 +50,10 @@
       }
 
       @if (authService.isLoggedIn()) {
+        <button type="button" class="more-sheet__item" (click)="layout.openChangePassword()">
+          <i class="pi pi-key" aria-hidden="true"></i>
+          {{ authLiterals().changePassword }}
+        </button>
         <button
           type="button"
           class="more-sheet__item more-sheet__item--danger"

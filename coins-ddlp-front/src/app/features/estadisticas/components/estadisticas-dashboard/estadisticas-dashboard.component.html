@@ -21,13 +21,15 @@
       }
     </div>
 
-    <app-filter-pills
-      page-filters
-      [options]="ownerOptions()"
-      [value]="ownerService.current()"
-      [ariaLabel]="sharedLiterals().collection"
-      (valueChange)="onOwnerChange($event)"
-    />
+    @if (canSwitchCollection()) {
+      <app-filter-pills
+        page-filters
+        [options]="ownerOptions()"
+        [value]="ownerService.current()"
+        [ariaLabel]="sharedLiterals().collection"
+        (valueChange)="onOwnerChange($event)"
+      />
+    }
 
     <section class="stats-section" [attr.aria-label]="literals().summary">
       <div class="kpi-grid">

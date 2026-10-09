@@ -22,6 +22,7 @@ export const TOAST_MESSAGES = {
   admin: {
     saveSuccess: success('admin.saveSuccess'),
     deleteSuccess: success('admin.deleteSuccess'),
+    recoverySent: success('admin.recoverySent'),
   },
   auth: {
     loginSuccess: success('auth.loginSuccess'),

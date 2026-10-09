@@ -110,15 +110,17 @@
     }
   }
 
-  @if (canEdit() && coin()) {
+  @if ((canEdit() || canDelete()) && coin()) {
     <div drawer-footer class="detail-actions">
-      <app-button
-        icon="pi pi-pencil"
-        [label]="eurosLiterals().editUnits"
-        [block]="true"
-        (clicked)="udsDialogVisible.set(true)"
-      />
-      @if (authService.isAdmin()) {
+      @if (canEdit()) {
+        <app-button
+          icon="pi pi-pencil"
+          [label]="eurosLiterals().editUnits"
+          [block]="true"
+          (clicked)="udsDialogVisible.set(true)"
+        />
+      }
+      @if (canDelete()) {
         <app-button
           icon="pi pi-trash"
           variant="danger"
@@ -135,7 +137,7 @@
   <app-coin-uds-dialog [(visible)]="udsDialogVisible" [coin]="coin()" />
 }
 
-@if (authService.isAdmin()) {
+@if (canDelete()) {
   <app-confirm-dialog
     [(visible)]="deleteDialogVisible"
     [header]="eurosLiterals().deleteCoin"

@@ -14,7 +14,6 @@ import { map, Subscription } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
 import { NumistaService } from '../../../../core/services/numista.service';
-import { AuthService } from '../../../../core/services/auth.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { NumistaCoin } from '../../../../shared/interfaces/numista-coin.interface';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
@@ -28,6 +27,7 @@ import { I18nService, injectLiterals } from '../../../../shared/services/i18n.se
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
+import { injectCan } from '../../../../core/services/permissions.service';
 import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 import { translateCountry } from '../../../../shared/helpers/country.helper';
 import { translateFaceValue } from '../../../../shared/helpers/face-value.helper';
@@ -62,7 +62,6 @@ export class CoinDetailDrawerComponent {
   private lang = this.i18n.lang;
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
-  readonly authService = inject(AuthService);
 
   readonly literals = injectLiterals('coinDetail');
   private countries = injectLiterals('countries');
@@ -90,6 +89,7 @@ export class CoinDetailDrawerComponent {
   readonly deleteLoading = signal(false);
 
   readonly canEdit = injectCanEditCoins();
+  readonly canDelete = injectCan('euros.delete');
 
   constructor() {
     effect(() => {

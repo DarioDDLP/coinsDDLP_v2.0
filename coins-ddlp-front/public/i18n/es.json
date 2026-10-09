@@ -89,7 +89,8 @@
     "recoveryButton": "Guardar contraseña",
     "recoverySuccess": "Contraseña actualizada correctamente",
     "recoveryError": "No se pudo actualizar la contraseña",
-    "passwordMismatch": "Las contraseñas no coinciden"
+    "passwordMismatch": "Las contraseñas no coinciden",
+    "changePassword": "Cambiar contraseña"
   },
   "euros": {
     "title": "Euros",
@@ -214,7 +215,42 @@
     "namePlaceholder": "Nombre completo",
     "roleLabel": "Rol",
     "saveSuccess": "Usuario guardado correctamente",
-    "deleteSuccess": "Usuario eliminado correctamente"
+    "deleteSuccess": "Usuario eliminado correctamente",
+    "guestButton": "Permisos de invitado",
+    "guestTitle": "Permisos de invitado",
+    "guestHint": "Se aplican a los visitantes sin sesión y también a todos los usuarios.",
+    "permissionsTitle": "Permisos",
+    "adminAllPermissions": "El admin tiene siempre todos los permisos.",
+    "sendRecovery": "Enviar email de recuperación",
+    "recoverySent": "Email de recuperación enviado",
+    "permissions": {
+      "groups": {
+        "euros": "Euros",
+        "tools": "Herramientas",
+        "location": "Ubicación",
+        "consult": "Consulta",
+        "sections": "Secciones visibles"
+      },
+      "items": {
+        "euros_units_editOwn": "Editar unidades de su colección",
+        "euros_units_editAny": "Editar unidades de cualquier colección",
+        "euros_catalog_edit": "Editar catálogo (descripción, circulante, ID Numista)",
+        "euros_delete": "Borrar monedas",
+        "tools_addEuro": "Añadir moneda",
+        "tools_addYear": "Añadir año",
+        "location_create": "Añadir ubicaciones",
+        "location_update": "Editar ubicaciones",
+        "location_delete": "Borrar ubicaciones",
+        "location_viewInLists": "Ver la ubicación en listas y Excel",
+        "export_excel": "Exportar a Excel",
+        "collection_switch": "Cambiar de colección",
+        "section_estadisticas": "Estadísticas",
+        "section_ubicacion": "Ubicación",
+        "section_pesetas": "Pesetas",
+        "section_conmemorativas": "Conmemorativas",
+        "numista_quotaView": "Ver la cuota de Numista"
+      }
+    }
   },
   "herramientas": {
     "title": "Herramientas",

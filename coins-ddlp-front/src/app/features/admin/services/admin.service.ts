@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { from, Observable, switchMap } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { AppUser } from '../../../shared/interfaces/app-user.interface';
+import { Permission } from '../../../shared/constants/permissions.const';
 import { SUPABASE_CLIENT } from '../../../app.config';
 import { environment } from '../../../../environments/environment';
 
@@ -20,21 +21,27 @@ export class AdminService {
     password: string,
     displayName: string,
     role: string,
+    permissions: Permission[],
   ): Observable<AppUser> {
     return this.withAuth((headers) =>
       this.http.post<AppUser>(
         this.edgeFunctionUrl,
-        { email, password, displayName, role },
+        { email, password, displayName, role, permissions },
         { headers },
       ),
     );
   }
 
-  updateUser(uid: string, displayName: string, role: string): Observable<AppUser> {
+  updateUser(
+    uid: string,
+    displayName: string,
+    role: string,
+    permissions: Permission[],
+  ): Observable<AppUser> {
     return this.withAuth((headers) =>
       this.http.patch<AppUser>(
         `${this.edgeFunctionUrl}/${uid}`,
-        { displayName, role },
+        { displayName, role, permissions },
         { headers },
       ),
     );
@@ -43,6 +50,35 @@ export class AdminService {
   deleteUser(uid: string): Observable<void> {
     return this.withAuth((headers) =>
       this.http.delete<void>(`${this.edgeFunctionUrl}/${uid}`, { headers }),
+    );
+  }
+
+  getGuestPermissions(): Observable<Permission[]> {
+    return this.withAuth((headers) =>
+      this.http
+        .get<{ permissions: Permission[] }>(`${this.edgeFunctionUrl}/guest`, { headers })
+        .pipe(map((r) => r.permissions)),
+    );
+  }
+
+  updateGuestPermissions(permissions: Permission[]): Observable<Permission[]> {
+    return this.withAuth((headers) =>
+      this.http
+        .put<{
+          permissions: Permission[];
+        }>(`${this.edgeFunctionUrl}/guest`, { permissions }, { headers })
+        .pipe(map((r) => r.permissions)),
+    );
+  }
+
+  /** Envía al usuario el email de recuperación de contraseña de Supabase. */
+  sendRecoveryEmail(uid: string): Observable<void> {
+    return this.withAuth((headers) =>
+      this.http.post<void>(
+        `${this.edgeFunctionUrl}/${uid}/recovery`,
+        { redirectTo: window.location.origin },
+        { headers },
+      ),
     );
   }
 

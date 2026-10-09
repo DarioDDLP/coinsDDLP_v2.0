@@ -26,7 +26,7 @@ import { ProgressStatComponent } from '../../../../shared/components/progress-st
 import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { ConmemorativasService } from '../../services/conmemorativas.service';
-import { AuthService } from '../../../../core/services/auth.service';
+import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
@@ -116,10 +116,11 @@ export class ConmemorativasListComponent {
   private excelExport = inject(ExcelExportService);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
-  private authService = inject(AuthService);
   readonly ownerService = inject(OwnerService);
 
-  readonly isAdmin = this.authService.isAdmin;
+  readonly canViewLocation = injectCan('location.viewInLists');
+  readonly canExport = injectCan('export.excel');
+  readonly canSwitchCollection = injectCan('collection.switch');
   readonly literals = injectLiterals('conmemorativas');
   readonly sharedLiterals = injectLiterals('shared');
   private excelLiterals = injectLiterals('excel');
@@ -288,7 +289,7 @@ export class ConmemorativasListComponent {
   async exportExcel(): Promise<void> {
     await this.excelExport.exportConmemorativas(
       this.groupedCoins(),
-      this.isAdmin(),
+      this.canViewLocation(),
       this.excelLabels(),
       this.isBoth(),
     );

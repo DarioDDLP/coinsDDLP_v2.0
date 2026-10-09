@@ -26,7 +26,6 @@ import { FilterPillsComponent } from '../../../../shared/components/filter-pills
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { EurosService } from '../../services/euros.service';
-import { AuthService } from '../../../../core/services/auth.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
@@ -44,6 +43,7 @@ import { ExcelExportService, ExcelLabels } from '../../../../shared/services/exc
 import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
+import { injectCan } from '../../../../core/services/permissions.service';
 import { isOwned } from '../../../../shared/helpers/ownership.helper';
 import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
 import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
@@ -87,7 +87,6 @@ export class EurosCountryComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
-  readonly authService = inject(AuthService);
   readonly ownerService = inject(OwnerService);
 
   readonly literals = injectLiterals('euros');
@@ -126,6 +125,10 @@ export class EurosCountryComponent {
   readonly deleteLoading = signal(false);
 
   readonly canEdit = injectCanEditCoins();
+  readonly canDelete = injectCan('euros.delete');
+  readonly showActions = computed(() => this.canEdit() || this.canDelete());
+  readonly canExport = injectCan('export.excel');
+  readonly canSwitchCollection = injectCan('collection.switch');
   private readonly yearChipsNav = viewChild<ElementRef<HTMLElement>>('yearChipsNav');
   readonly isBoth = computed(() => this.ownerService.current() === 'both');
   readonly emptyState = computed(() =>
