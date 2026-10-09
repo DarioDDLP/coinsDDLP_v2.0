@@ -1,5 +1,5 @@
-# Abre o actualiza el PR de release a partir de los Conventional Commits de main.
-# Al fusionar ese PR crea la etiqueta vX.Y.Z y la release de GitHub.
+# Abre o actualiza el PR de release a partir de los Conventional Commits de main,
+# lo fusiona y crea la etiqueta vX.Y.Z y la release de GitHub en la misma ejecución.
 # Configuración: release-please-config.json y .release-please-manifest.json
 name: release-please
 
@@ -11,8 +11,26 @@ permissions:
   contents: write
   pull-requests: write
 
+# Dos pushes seguidos no se pisan: la segunda ejecución espera a la primera
+concurrency:
+  group: release-please
+  cancel-in-progress: false
+
 jobs:
   release-please:
     runs-on: ubuntu-latest
     steps:
-      - uses: googleapis/release-please-action@v5
+      - id: release
+        uses: googleapis/release-please-action@v5
+
+      # Un merge con el GITHUB_TOKEN no lanza otro workflow: por eso la etiqueta
+      # y la release se crean en el paso siguiente, dentro de esta misma ejecución
+      - name: Fusionar el PR de release
+        if: ${{ steps.release.outputs.pr }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh pr merge ${{ fromJSON(steps.release.outputs.pr).number }} --merge --repo ${{ github.repository }}
+
+      - name: Crear etiqueta y release
+        if: ${{ steps.release.outputs.pr }}
+        uses: googleapis/release-please-action@v5
