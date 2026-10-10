@@ -1,5 +1,18 @@
 # Changelog
 
+## [3.5.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.4.0...v3.5.0) (2026-10-10)
+
+
+### Novedades
+
+* **admin:** add access log for admins ([af3a5e2](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/af3a5e2cfbebaaf1d5b1a7f0778f2cb1f076695c))
+* **admin:** add access log for admins ([18aae64](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/18aae64e0ce3ba6aec005cf0b301451ac711b71b))
+
+
+### Mejoras internas
+
+* **shared:** move stat-card to shared components ([62948e8](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/62948e8d3644942db5c1d40419377ba97395e5d6))
+
 ## [3.4.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.3.0...v3.4.0) (2026-10-10)
 
 
