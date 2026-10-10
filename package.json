@@ -1,0 +1,12 @@
+{
+  "name": "coinsddlp",
+  "private": true,
+  "description": "Herramientas del monorepo (la app está en coins-ddlp-front/)",
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "prettier": "3.8.1"
+  }
+}

@@ -23,7 +23,11 @@
       "extra-files": [
         { "type": "json", "path": "coins-ddlp-front/package.json", "jsonpath": "$.version" },
         { "type": "json", "path": "coins-ddlp-front/package-lock.json", "jsonpath": "$.version" },
-        { "type": "json", "path": "coins-ddlp-front/package-lock.json", "jsonpath": "$.packages[''].version" }
+        {
+          "type": "json",
+          "path": "coins-ddlp-front/package-lock.json",
+          "jsonpath": "$.packages[''].version"
+        }
       ]
     }
   }

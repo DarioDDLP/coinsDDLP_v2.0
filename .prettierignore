@@ -1,0 +1,18 @@
+# Generados
+node_modules
+dist
+.angular
+coverage
+package-lock.json
+CHANGELOG.md
+version.txt
+.release-please-manifest.json
+
+# Markdown: Prettier realinearía las tablas de CLAUDE.md y docs/
+*.md
+
+# Datos y especificaciones que no se tocan a mano
+swagger.yaml
+supabase/.temp
+supabase/config.toml
+coins-ddlp-front/public/assets

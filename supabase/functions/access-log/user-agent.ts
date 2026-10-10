@@ -7,7 +7,8 @@ export interface ParsedUserAgent {
   deviceType: DeviceType;
 }
 
-const BOT = /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|curl|wget|python|axios|node-fetch/i;
+const BOT =
+  /bot|crawl|spider|slurp|headless|lighthouse|preview|facebookexternalhit|curl|wget|python|axios|node-fetch/i;
 
 // Orden importante: Edge, Opera y Samsung también dicen "Chrome"; Chrome también dice "Safari"
 const BROWSERS: [string, RegExp][] = [
@@ -40,7 +41,8 @@ export function parseUserAgent(ua: string, touch = false): ParsedUserAgent {
 
   let deviceType: DeviceType;
   if (BOT.test(ua)) deviceType = 'bot';
-  else if (/iPad|Tablet/i.test(ua) || (/Android/.test(ua) && !/Mobile/.test(ua))) deviceType = 'tablet';
+  else if (/iPad|Tablet/i.test(ua) || (/Android/.test(ua) && !/Mobile/.test(ua)))
+    deviceType = 'tablet';
   else if (os === 'macOS' && touch) {
     deviceType = 'tablet';
     os = 'iPadOS';

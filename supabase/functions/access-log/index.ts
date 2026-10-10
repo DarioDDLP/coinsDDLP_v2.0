@@ -1,4 +1,4 @@
-import "@supabase/functions-js/edge-runtime.d.ts"
+import '@supabase/functions-js/edge-runtime.d.ts';
 import { createClient, SupabaseClient } from 'jsr:@supabase/supabase-js@2';
 import { parseUserAgent } from './user-agent.ts';
 
@@ -56,7 +56,12 @@ function isPrivateIp(ip: string): boolean {
   return /^(10\.|127\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.|::1$|fc|fd|fe80)/i.test(ip);
 }
 
-type Geo = { country: string | null; countryCode: string | null; region: string | null; city: string | null };
+type Geo = {
+  country: string | null;
+  countryCode: string | null;
+  region: string | null;
+  city: string | null;
+};
 
 /** País, región y ciudad aproximados con ipapi.co. Si tarda o falla, la visita se guarda sin ubicación. */
 async function geolocate(ip: string | null): Promise<Geo> {
@@ -145,7 +150,8 @@ async function createVisit(client: SupabaseClient, req: Request) {
 async function addEvent(client: SupabaseClient, req: Request) {
   const body = await readBody(req);
   const type = body.type;
-  if (typeof type !== 'string' || !EVENT_TYPES.has(type)) return json({ error: 'Tipo no válido' }, 400);
+  if (typeof type !== 'string' || !EVENT_TYPES.has(type))
+    return json({ error: 'Tipo no válido' }, 400);
 
   const visit = await findVisit(client, body.visitId);
   // 410: el front empieza una visita nueva y vuelve a mandar el evento
@@ -183,7 +189,10 @@ async function addEvent(client: SupabaseClient, req: Request) {
 async function ping(client: SupabaseClient, req: Request) {
   const visit = await findVisit(client, (await readBody(req)).visitId);
   if (!visit) return json({ error: 'Visita no encontrada o caducada' }, 410);
-  await client.from('access_visit').update({ lastSeenAt: new Date().toISOString() }).eq('id', visit.id);
+  await client
+    .from('access_visit')
+    .update({ lastSeenAt: new Date().toISOString() })
+    .eq('id', visit.id);
   return json({ ok: true });
 }
 

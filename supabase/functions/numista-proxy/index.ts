@@ -1,10 +1,11 @@
-import "@supabase/functions-js/edge-runtime.d.ts"
-import { createClient } from 'jsr:@supabase/supabase-js@2'
+import '@supabase/functions-js/edge-runtime.d.ts';
+import { createClient } from 'jsr:@supabase/supabase-js@2';
 
 const NUMISTA_API_URL = 'https://api.numista.com/api/v3/types/';
 const NUMISTA_API_KEY = Deno.env.get('NUMISTA_API_KEY') ?? '';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+const SUPABASE_SERVICE_ROLE_KEY =
+  Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? Deno.env.get('SUPABASE_ANON_KEY') ?? '';
 
 const MONTHLY_LIMIT = 2000;
 
@@ -28,10 +29,10 @@ Deno.serve(async (req) => {
   const lang = NUMISTA_LANGS.includes(requestedLang) ? requestedLang : 'es';
 
   if (!idNum) {
-    return new Response(
-      JSON.stringify({ error: 'idNum es requerido' }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: 'idNum es requerido' }), {
+      status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 
   const response = await fetch(`${NUMISTA_API_URL}${idNum}?lang=${lang}`, {
@@ -39,10 +40,10 @@ Deno.serve(async (req) => {
   });
 
   if (!response.ok) {
-    return new Response(
-      JSON.stringify({ error: `Numista respondió con ${response.status}` }),
-      { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    );
+    return new Response(JSON.stringify({ error: `Numista respondió con ${response.status}` }), {
+      status: response.status,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    });
   }
 
   const data = await response.json();
@@ -64,14 +65,11 @@ Deno.serve(async (req) => {
 
   const remaining = MONTHLY_LIMIT - (count ?? 0);
 
-  return new Response(
-    JSON.stringify(data),
-    {
-      headers: {
-        ...corsHeaders,
-        'Content-Type': 'application/json',
-        'X-Numista-Remaining': String(remaining),
-      }
-    }
-  );
+  return new Response(JSON.stringify(data), {
+    headers: {
+      ...corsHeaders,
+      'Content-Type': 'application/json',
+      'X-Numista-Remaining': String(remaining),
+    },
+  });
 });

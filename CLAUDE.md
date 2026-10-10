@@ -11,6 +11,8 @@ Gestión de una colección personal de monedas: consulta, búsqueda y filtros p�
 | `scripts/` | Utilidades de datos en Python (`scrape_ucoin.py`) |
 | `swagger.yaml` | Spec de la API de Numista |
 
+**Formato:** Prettier 3.8.1 instalado en la raíz (`package.json` privado, `npm install` en la raíz) con una sola configuración (`.prettierrc`: 100 columnas, comillas simples, parser `angular` para HTML) para el front, las Edge Functions y los scripts. `.prettierignore` excluye los Markdown (tablas de `CLAUDE.md`), `CHANGELOG.md`, lockfiles y generados. `npm run format` / `npm run format:check` desde la raíz. El hook global de Claude Code formatea cada fichero que se escribe; lo editado con scripts (sed, python) hay que pasarlo a mano
+
 ## Reglas de código (obligatorias)
 
 **Angular 22**

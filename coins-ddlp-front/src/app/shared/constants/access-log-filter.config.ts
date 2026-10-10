@@ -11,7 +11,9 @@ export const ACCESS_LOG_PERIOD_DAYS: Record<AccessLogPeriod, number> = {
   '90d': 90,
 };
 
-export function getAccessLogPeriodOptions(t: Translations['admin']['accessLog']): FilterPillOption[] {
+export function getAccessLogPeriodOptions(
+  t: Translations['admin']['accessLog'],
+): FilterPillOption[] {
   return [
     { value: 'today', label: t.periodToday },
     { value: '7d', label: t.period7 },

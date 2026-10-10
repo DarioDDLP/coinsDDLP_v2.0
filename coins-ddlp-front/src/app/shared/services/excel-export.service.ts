@@ -231,7 +231,10 @@ export class ExcelExportService {
   }
 
   /** Registro de accesos (admin): una fila por visita, con las fechas como fechas de Excel. */
-  async exportAccessLog(visits: AccessVisit[], l: Translations['admin']['accessLog']): Promise<void> {
+  async exportAccessLog(
+    visits: AccessVisit[],
+    l: Translations['admin']['accessLog'],
+  ): Promise<void> {
     const wb = new ExcelJS.Workbook();
     const ws = wb.addWorksheet(l.excelSheet);
     ws.columns = [
