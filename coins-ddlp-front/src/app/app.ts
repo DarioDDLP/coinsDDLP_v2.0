@@ -5,6 +5,7 @@ import { PrimeNG } from 'primeng/config';
 import { I18nService, injectLiterals } from './shared/services/i18n.service';
 import { TOAST_BREAKPOINTS } from './shared/constants/toast.const';
 import { AuthService } from './core/services/auth.service';
+import { AccessLogService } from './core/services/access-log.service';
 import { LayoutStateService } from './layout/layout-state.service';
 import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { TopbarComponent } from './layout/topbar/topbar.component';
@@ -45,5 +46,7 @@ export class App {
       document.documentElement.lang = i18n.lang();
       primeng.setTranslation(primengLiterals());
     });
+
+    inject(AccessLogService).start();
   }
 }

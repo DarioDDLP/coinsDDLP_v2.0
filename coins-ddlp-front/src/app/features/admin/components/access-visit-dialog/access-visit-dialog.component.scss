@@ -1,0 +1,114 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+.visit {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__when {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin: 0;
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3) var(--space-4);
+    margin: 0;
+
+    @include mobile {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  &__field {
+    min-width: 0;
+
+    dt {
+      @include overline;
+      margin-bottom: var(--space-1);
+    }
+
+    dd {
+      margin: 0;
+      font-size: var(--font-body);
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+
+    .mono {
+      font-family: var(--font-family-mono);
+      font-size: var(--font-sm);
+      color: var(--text-soft);
+    }
+  }
+
+  &__subtitle {
+    margin: 0 0 var(--space-3);
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: var(--font-sm);
+    color: var(--text-muted);
+  }
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__item {
+    display: grid;
+    grid-template-columns: auto auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    background: var(--surface-2);
+    font-size: var(--font-sm);
+
+    @include mobile {
+      grid-template-columns: auto auto minmax(0, 1fr);
+
+      .timeline__detail {
+        grid-column: 1 / -1;
+      }
+    }
+  }
+
+  &__icon {
+    color: var(--text-muted);
+  }
+
+  &__item--failed &__icon {
+    color: var(--state-danger-text);
+  }
+
+  &__time {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__label {
+    color: var(--text);
+    font-weight: var(--font-medium);
+  }
+
+  &__detail {
+    color: var(--text-soft);
+    @include truncate;
+  }
+}

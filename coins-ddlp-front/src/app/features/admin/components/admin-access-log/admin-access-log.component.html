@@ -1,0 +1,155 @@
+<div class="access-log">
+  <div class="access-log__toolbar">
+    <div class="access-log__heading">
+      <h2 class="access-log__title">{{ t().title }}</h2>
+      <p class="access-log__hint">{{ t().retentionHint }}</p>
+    </div>
+    <div class="access-log__toolbar-actions">
+      <app-button
+        [label]="sharedLiterals().exportExcel"
+        icon="pi pi-file-excel"
+        variant="secondary"
+        [loading]="exporting()"
+        [disabled]="total() === 0"
+        (clicked)="onExport()"
+      />
+      <app-button
+        [label]="t().clear"
+        icon="pi pi-trash"
+        variant="danger"
+        [disabled]="total() === 0"
+        (clicked)="clearDialogVisible.set(true)"
+      />
+    </div>
+  </div>
+
+  <div class="access-log__filters">
+    <app-filter-pills
+      [options]="periodOptions()"
+      [value]="period()"
+      [ariaLabel]="t().periodLabel"
+      (valueChange)="onPeriod($event)"
+    />
+    <app-select
+      class="access-log__user"
+      [ariaLabel]="t().userLabel"
+      [value]="user()"
+      [options]="userOptions()"
+      (valueChange)="user.set($event)"
+    />
+    <app-search-input
+      class="access-log__search"
+      [placeholder]="t().searchPlaceholder"
+      [value]="searchText()"
+      (valueChange)="onSearch($event)"
+    />
+    <app-toggle [label]="t().hideMine" [value]="hideMine()" (valueChange)="hideMine.set($event)" />
+  </div>
+
+  @if (!isReady()) {
+    <div class="kpi-grid">
+      <app-skeleton layout="inline" [count]="4" height="7.5rem" radius="lg" />
+    </div>
+    <app-skeleton [count]="8" height="2.75rem" [announce]="false" />
+  } @else if (hasError()) {
+    <app-error-panel (retry)="onRetry()" />
+  } @else {
+    <div class="kpi-grid">
+      <app-stat-card
+        icon="pi pi-eye"
+        [label]="t().kpiVisits"
+        [value]="stats().visits"
+        [highlight]="true"
+      />
+      <app-stat-card
+        icon="pi pi-globe"
+        [label]="t().kpiVisitors"
+        [value]="stats().visitors"
+        [hint]="t().kpiVisitorsHint"
+      />
+      <app-stat-card icon="pi pi-user" [label]="t().kpiUsers" [value]="stats().users" />
+      <app-stat-card
+        icon="pi pi-sign-in"
+        [label]="t().kpiLogins"
+        [value]="stats().logins"
+        [hint]="failedHint()"
+      />
+    </div>
+
+    @if (rows().length === 0) {
+      <app-empty-panel
+        [icon]="emptyState().icon"
+        [title]="emptyState().title"
+        [tone]="emptyState().tone"
+        [actionLabel]="emptyState().canClearSearch ? sharedLiterals().clearSearch : ''"
+        actionIcon="pi pi-times"
+        (action)="onSearch('')"
+      />
+    } @else {
+      <p-table class="table-stack" [value]="rows()" dataKey="visit.id" [stripedRows]="true">
+        <ng-template #header>
+          <tr>
+            <th>{{ t().colDate }}</th>
+            <th>{{ t().colUser }}</th>
+            <th>{{ t().colLocation }}</th>
+            <th>{{ t().colDevice }}</th>
+            <th class="col-num">{{ t().colPages }}</th>
+            <th class="col-num">{{ t().colDuration }}</th>
+            <th>{{ t().colIp }}</th>
+          </tr>
+        </ng-template>
+        <ng-template #body let-row>
+          <tr
+            class="access-log__row"
+            tabindex="0"
+            [attr.aria-label]="t().detailOpen"
+            (click)="openVisit(row.visit)"
+            (keydown.enter)="openVisit(row.visit)"
+          >
+            <td class="access-log__date" data-cell="primary">
+              {{ row.visit.startedAt | date: 'short' : undefined : lang() }}
+            </td>
+            <td [attr.data-label]="t().colUser">
+              @if (row.visit.userName) {
+                <span class="access-log__user-name">{{ row.visit.userName }}</span>
+              } @else {
+                <app-badge [label]="t().anonymous" severity="neutral" />
+              }
+            </td>
+            <td [attr.data-label]="t().colLocation">{{ row.location }}</td>
+            <td [attr.data-label]="t().colDevice">
+              <span class="access-log__device">
+                <i [class]="row.deviceIcon" [title]="row.deviceLabel" aria-hidden="true"></i>
+                <span class="sr-only">{{ row.deviceLabel }}</span>
+                {{ row.browser }}
+              </span>
+            </td>
+            <td class="col-num" [attr.data-label]="t().colPages">{{ row.visit.pageCount }}</td>
+            <td class="col-num" [attr.data-label]="t().colDuration">{{ row.duration }}</td>
+            <td class="access-log__ip" data-cell="hide-mobile">{{ row.visit.ip ?? '—' }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+
+      @if (total() > pageSize) {
+        <p-paginator
+          [first]="first()"
+          [rows]="pageSize"
+          [totalRecords]="total()"
+          (onPageChange)="onPage($event)"
+        />
+      }
+    }
+  }
+</div>
+
+<app-access-visit-dialog [(visible)]="detailVisible" [visit]="selectedVisit()" />
+
+<app-confirm-dialog
+  [(visible)]="clearDialogVisible"
+  [header]="t().clear"
+  [message]="t().clearConfirm"
+  [confirmLabel]="t().clear"
+  [loading]="clearing()"
+  (confirmed)="onConfirmClear()"
+/>

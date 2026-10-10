@@ -413,3 +413,10 @@ entrypoint = "./functions/numista-proxy/index.ts"
 # Specifies static files to be bundled with the function. Supports glob patterns.
 # For example, if you want to serve static HTML pages in your function:
 # static_files = [ "./functions/numista-proxy/*.html" ]
+
+[functions.access-log]
+enabled = true
+# Público: registra también las visitas sin sesión (el usuario, si lo hay, sale del token)
+verify_jwt = false
+import_map = "./functions/access-log/deno.json"
+entrypoint = "./functions/access-log/index.ts"

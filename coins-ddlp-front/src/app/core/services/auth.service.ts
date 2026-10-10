@@ -3,10 +3,12 @@ import { IAuthService } from '../../shared/interfaces/auth-service.interface';
 import { AppUser, UserRole } from '../../shared/interfaces/app-user.interface';
 import { SUPABASE_CLIENT } from '../../app.config';
 import { User } from '@supabase/supabase-js';
+import { AccessLogService } from './access-log.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService implements IAuthService {
   private supabase = inject(SUPABASE_CLIENT);
+  private accessLog = inject(AccessLogService);
   readonly currentUser = signal<AppUser | null>(null);
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
   readonly isAdmin = computed(() => this.currentUser()?.role === 'admin');
@@ -42,10 +44,16 @@ export class AuthService implements IAuthService {
 
   async login(email: string, password: string): Promise<void> {
     const { error } = await this.supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (error) {
+      void this.accessLog.track('login_failed', { detail: email });
+      throw error;
+    }
+    void this.accessLog.track('login');
   }
 
   async logout(): Promise<void> {
+    // Antes de cerrar la sesión: el evento todavía lleva el token del usuario
+    await this.accessLog.track('logout');
     const { error } = await this.supabase.auth.signOut();
     if (error) throw error;
   }

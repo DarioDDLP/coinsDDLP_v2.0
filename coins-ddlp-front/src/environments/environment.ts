@@ -1,5 +1,7 @@
 export const environment = {
   production: false,
+  // Registro de accesos: desactivado en local para no llenarlo con pruebas
+  accessLog: false,
   supabase: {
     url: 'https://uvkvagoipxgagyupxoqd.supabase.co',
     anonKey: 'sb_publishable_TS_lHvmYOi-FuxPr1dYEBA_zaLokJ_n',
