@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.4.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.3.0...v3.4.0) (2026-10-10)
+
+
+### Novedades
+
+* **collections:** own collection per user, compare any two ([e25f5d2](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/e25f5d2528fe874686549050a6c074cab13696ad))
+* **collections:** own collection per user, compare any two ([4a1470f](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/4a1470ff98ede31ca3df452e16c6ad4fab6a5951))
+
 ## [3.3.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.2.0...v3.3.0) (2026-10-09)
 
 
