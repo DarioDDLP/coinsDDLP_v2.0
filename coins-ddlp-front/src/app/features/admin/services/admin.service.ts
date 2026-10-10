@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { from, map, Observable, switchMap } from 'rxjs';
-import { AppUser } from '../../../shared/interfaces/app-user.interface';
+import { AppUser, UserCollectionSettings } from '../../../shared/interfaces/app-user.interface';
 import { Permission } from '../../../shared/constants/permissions.const';
 import { SUPABASE_CLIENT } from '../../../app.config';
 import { environment } from '../../../../environments/environment';
@@ -22,11 +22,12 @@ export class AdminService {
     displayName: string,
     role: string,
     permissions: Permission[],
+    collection: UserCollectionSettings,
   ): Observable<AppUser> {
     return this.withAuth((headers) =>
       this.http.post<AppUser>(
         this.edgeFunctionUrl,
-        { email, password, displayName, role, permissions },
+        { email, password, displayName, role, permissions, ...collection },
         { headers },
       ),
     );
@@ -37,11 +38,12 @@ export class AdminService {
     displayName: string,
     role: string,
     permissions: Permission[],
+    collection: UserCollectionSettings,
   ): Observable<AppUser> {
     return this.withAuth((headers) =>
       this.http.patch<AppUser>(
         `${this.edgeFunctionUrl}/${uid}`,
-        { displayName, role, permissions },
+        { displayName, role, permissions, ...collection },
         { headers },
       ),
     );

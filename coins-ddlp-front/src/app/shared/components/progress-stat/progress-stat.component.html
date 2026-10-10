@@ -18,3 +18,18 @@
 >
   <span [style.width.%]="percent()"></span>
 </div>
+@if (breakdown().length > 0) {
+  <ul class="progress-stat__breakdown">
+    @for (item of breakdown(); track $index) {
+      <li
+        class="progress-stat__breakdown-item"
+        [class.progress-stat__breakdown-item--compare]="$index > 0"
+      >
+        <span class="progress-stat__breakdown-name">{{ item.label }}</span>
+        <span class="progress-stat__breakdown-owned">{{
+          item.owned | number: '1.0-0' : lang()
+        }}</span>
+      </li>
+    }
+  </ul>
+}

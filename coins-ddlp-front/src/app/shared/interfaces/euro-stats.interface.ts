@@ -1,4 +1,5 @@
 import { RawOwnership } from './euro-coin.interface';
+import { OwnedCount } from './owned-count.interface';
 
 export interface RawEuroStatsRow {
   country: string;
@@ -15,24 +16,21 @@ export interface EuroStatsRow {
   faceValue: string;
   commemorative: boolean;
   uds: number;
-  /** Solo en modo "ambas": unidades del segundo propietario. */
+  /** Solo al comparar: unidades de la segunda colección. */
   udsAlt?: number;
 }
 
 /** Progreso de un grupo (país, valor facial, año). */
-export interface StatGroup {
+export interface StatGroup extends OwnedCount {
   key: string;
   label: string;
-  owned: number;
-  total: number;
 }
 
-export interface EuroStatsKpis {
-  owned: number;
-  total: number;
+/** `owned` cuenta, al comparar, las que tiene alguna de las dos colecciones. */
+export interface EuroStatsKpis extends OwnedCount {
   commemorativeOwned: number;
   commemorativeTotal: number;
-  /** Suma de unidades (de los dos propietarios en modo "ambas"). */
+  /** Suma de unidades (de las dos colecciones al comparar). */
   units: number;
   /** Monedas con alguna unidad de sobra. */
   duplicateCoins: number;

@@ -17,6 +17,7 @@
           [label]="literals().progressTotal"
           [owned]="progress().owned"
           [total]="progress().total"
+          [breakdown]="progressBreakdown()"
           size="lg"
         />
       } @else {
@@ -36,12 +37,13 @@
     }
 
     @if (canSwitchCollection()) {
-      <app-filter-pills
+      <app-collection-picker
         page-filters
-        [options]="ownerOptions()"
-        [value]="ownerService.current()"
-        [ariaLabel]="sharedLiterals().collection"
-        (valueChange)="onOwnerChange($event)"
+        [owners]="ownerService.owners()"
+        [primary]="ownerService.primaryId()"
+        [compare]="ownerService.compareId()"
+        (primaryChange)="ownerService.setPrimary($event)"
+        (compareChange)="ownerService.setCompare($event)"
       />
     }
     <app-filter-pills
@@ -88,23 +90,23 @@
                   <th class="col-center">
                     {{ literals().colConservation }}
                     @if (isBoth()) {
-                      <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
+                      <span class="owner-tag">{{ ownerService.primaryName() }}</span>
                     }
                   </th>
                   <th class="col-center">
                     {{ literals().colUnits }}
                     @if (isBoth()) {
-                      <span class="owner-tag">{{ sharedLiterals().ownerDario }}</span>
+                      <span class="owner-tag">{{ ownerService.primaryName() }}</span>
                     }
                   </th>
                   @if (isBoth()) {
                     <th class="col-center">
                       {{ literals().colConservation }}
-                      <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
+                      <span class="owner-tag">{{ ownerService.compareName() }}</span>
                     </th>
                     <th class="col-center">
                       {{ literals().colUnits }}
-                      <span class="owner-tag">{{ sharedLiterals().ownerManolo }}</span>
+                      <span class="owner-tag">{{ ownerService.compareName() }}</span>
                     </th>
                   }
                 </tr>
@@ -168,7 +170,7 @@
                     <td
                       class="col-center"
                       [attr.data-label]="
-                        literals().colConservation + ' ' + sharedLiterals().ownerManolo
+                        literals().colConservation + ' ' + ownerService.compareName()
                       "
                     >
                       @if (row.conservationBadgeAlt) {
@@ -183,7 +185,7 @@
                     </td>
                     <td
                       class="col-center"
-                      [attr.data-label]="literals().colUnits + ' ' + sharedLiterals().ownerManolo"
+                      [attr.data-label]="literals().colUnits + ' ' + ownerService.compareName()"
                     >
                       @if (row.udsBadgeAlt) {
                         <app-badge

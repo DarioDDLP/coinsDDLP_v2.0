@@ -36,7 +36,7 @@ export interface EuroCoin {
   uds: number;
   conservation: ConservationCode;
   observations?: string;
-  // Ambas mode: second owner's data
+  // Al comparar: datos de la segunda colección
   udsAlt?: number;
   conservationAlt?: ConservationCode;
   observationsAlt?: string;
@@ -55,7 +55,7 @@ export interface EuroCoinSummary {
   year: number;
   commemorative: boolean;
   uds: number;
-  /** Solo en modo "ambas": unidades del segundo propietario. */
+  /** Solo al comparar: unidades de la segunda colección. */
   udsAlt?: number;
 }
 

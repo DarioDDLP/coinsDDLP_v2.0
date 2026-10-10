@@ -16,6 +16,8 @@ export interface SelectOption {
 })
 export class SelectComponent {
   label = input<string>('');
+  /** Nombre accesible cuando no hay `label` visible. */
+  ariaLabel = input<string>('');
   value = input<string>('');
   options = input<SelectOption[]>([]);
   placeholder = input<string>('');

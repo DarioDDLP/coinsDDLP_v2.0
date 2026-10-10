@@ -1,6 +1,6 @@
 import { EuroStatsKpis, EuroStatsRow, StatGroup } from '../interfaces/euro-stats.interface';
 import { FACE_VALUE_ORDER } from '../constants/face-value-order.const';
-import { isOwned } from './ownership.helper';
+import { addToOwnedCount, emptyOwnedCount, isOwned } from './ownership.helper';
 import { normalizeString } from './normalize-strings.helper';
 
 /** Agrupa las filas por la clave dada contando obtenidas y total. */
@@ -12,9 +12,8 @@ function groupBy(
   const groups = new Map<string, StatGroup>();
   for (const row of rows) {
     const key = keyOf(row);
-    const group = groups.get(key) ?? { key, label: key, owned: 0, total: 0 };
-    group.total++;
-    if (isOwned(row.uds, row.udsAlt, both)) group.owned++;
+    const group = groups.get(key) ?? { key, label: key, ...emptyOwnedCount() };
+    addToOwnedCount(group, row, both);
     groups.set(key, group);
   }
   return groups;
@@ -30,8 +29,7 @@ function spare(uds: number | undefined): number {
 
 export function computeKpis(rows: EuroStatsRow[], both: boolean): EuroStatsKpis {
   const kpis: EuroStatsKpis = {
-    owned: 0,
-    total: rows.length,
+    ...emptyOwnedCount(),
     commemorativeOwned: 0,
     commemorativeTotal: 0,
     units: 0,
@@ -42,8 +40,8 @@ export function computeKpis(rows: EuroStatsRow[], both: boolean): EuroStatsKpis 
   };
 
   for (const row of rows) {
+    addToOwnedCount(kpis, row, both);
     const owned = isOwned(row.uds, row.udsAlt, both);
-    if (owned) kpis.owned++;
     if (row.commemorative) {
       kpis.commemorativeTotal++;
       if (owned) kpis.commemorativeOwned++;
@@ -84,7 +82,7 @@ export function groupByYear(rows: EuroStatsRow[], both: boolean): StatGroup[] {
   const result: StatGroup[] = [];
   for (let year = Math.min(...years); year <= Math.max(...years); year++) {
     const key = String(year);
-    result.push(groups.get(key) ?? { key, label: key, owned: 0, total: 0 });
+    result.push(groups.get(key) ?? { key, label: key, ...emptyOwnedCount() });
   }
   return result;
 }

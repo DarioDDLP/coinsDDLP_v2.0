@@ -1,6 +1,7 @@
 import { Component, computed, input, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { injectLiterals, I18nService } from '../../services/i18n.service';
+import { OwnedBreakdownItem } from '../../interfaces/owned-count.interface';
 
 export type ProgressStatSize = 'sm' | 'md' | 'lg';
 
@@ -21,6 +22,8 @@ export class ProgressStatComponent {
   readonly size = input<ProgressStatSize>('md');
   /** Texto a la izquierda de la cifra (p. ej. "Progreso total"). */
   readonly label = input<string>('');
+  /** Al comparar dos colecciones: obtenidas por cada una, bajo la barra del progreso conjunto. */
+  readonly breakdown = input<OwnedBreakdownItem[]>([]);
 
   private literals = injectLiterals('shared');
 

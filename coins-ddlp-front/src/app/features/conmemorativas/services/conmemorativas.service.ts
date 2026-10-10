@@ -1,13 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
-import { OwnerService, OWNER_IDS } from '../../../core/services/owner.service';
-import {
-  ConservationCode,
-  EuroCoin,
-  RawEuroCoin,
-} from '../../../shared/interfaces/euro-coin.interface';
+import { OwnerService } from '../../../core/services/owner.service';
+import { EuroCoin, RawEuroCoin } from '../../../shared/interfaces/euro-coin.interface';
 import { TABLES } from '../../../shared/constants/collections.const';
+import { ownerIdsOf, pickOwnership } from '../../../shared/helpers/ownership-map.helper';
 
 const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
 
@@ -17,50 +14,33 @@ export class ConmemorativasService {
   private ownerService = inject(OwnerService);
 
   getAll(): Observable<EuroCoin[]> {
-    const ownerId = this.ownerService.primaryId();
-    return this.supabase
-      .getTableWhere<RawEuroCoin>(
-        TABLES.euro,
-        (query) => {
-          const q = query
-            .eq('commemorative', true)
-            .order('description')
-            .order('variant', { nullsFirst: true });
-          return ownerId ? q.eq('euro_ownership.ownerId', ownerId) : q;
-        },
-        OWNERSHIP_JOIN,
-      )
-      .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c))));
+    return from(this.ownerService.ensureLoaded()).pipe(
+      switchMap(() => {
+        const primaryId = this.ownerService.primaryId();
+        const compareId = this.ownerService.compareId();
+        const ids = ownerIdsOf(primaryId, compareId);
+        return this.supabase
+          .getTableWhere<RawEuroCoin>(
+            TABLES.euro,
+            (query) => {
+              const q = query
+                .eq('commemorative', true)
+                .order('description')
+                .order('variant', { nullsFirst: true });
+              return ids.length ? q.in('euro_ownership.ownerId', ids) : q;
+            },
+            OWNERSHIP_JOIN,
+          )
+          .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c, primaryId, compareId))));
+      }),
+    );
   }
 
-  private mapRawCoin(raw: RawEuroCoin): EuroCoin {
-    const ownerships = raw.euro_ownership ?? [];
-    const mode = this.ownerService.current();
-
-    if (mode === 'both') {
-      const dario = ownerships.find((o) => o.ownerId === OWNER_IDS.dario);
-      const manolo = ownerships.find((o) => o.ownerId === OWNER_IDS.manolo);
-      return {
-        id: raw.id,
-        year: raw.year,
-        country: raw.country,
-        mint: raw.mint,
-        faceValue: raw.faceValue,
-        description: raw.description,
-        commemorative: raw.commemorative,
-        circulation: raw.circulation,
-        idNum: raw.idNum,
-        variant: raw.variant,
-        uds: dario?.uds ?? 0,
-        conservation: (dario?.conservation ?? 'ND') as ConservationCode,
-        observations: dario?.observations,
-        udsAlt: manolo?.uds ?? 0,
-        conservationAlt: (manolo?.conservation ?? 'ND') as ConservationCode,
-        observationsAlt: manolo?.observations,
-      };
-    }
-
-    const ownership = ownerships[0];
+  private mapRawCoin(
+    raw: RawEuroCoin,
+    primaryId: string | null,
+    compareId: string | null,
+  ): EuroCoin {
     return {
       id: raw.id,
       year: raw.year,
@@ -72,9 +52,7 @@ export class ConmemorativasService {
       circulation: raw.circulation,
       idNum: raw.idNum,
       variant: raw.variant,
-      uds: ownership?.uds ?? 0,
-      conservation: (ownership?.conservation ?? 'ND') as ConservationCode,
-      observations: ownership?.observations,
+      ...pickOwnership(raw.euro_ownership, primaryId, compareId),
     };
   }
 }

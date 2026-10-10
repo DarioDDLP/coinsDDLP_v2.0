@@ -1,5 +1,11 @@
 <div class="year-chart__legend" aria-hidden="true">
-  <span class="year-chart__key year-chart__key--owned">{{ literals().legendOwned }}</span>
+  @if (names(); as n) {
+    <span class="year-chart__key year-chart__key--owned">{{ n.primary }}</span>
+    <span class="year-chart__key year-chart__key--compare">{{ n.compare }}</span>
+    <span class="year-chart__key year-chart__key--together">{{ literals().legendTogether }}</span>
+  } @else {
+    <span class="year-chart__key year-chart__key--owned">{{ literals().legendOwned }}</span>
+  }
   <span class="year-chart__key year-chart__key--total">{{ literals().legendTotal }}</span>
 </div>
 
@@ -9,7 +15,18 @@
       <span class="sr-only">{{ col.description }}</span>
       <span class="year-chart__track" aria-hidden="true">
         <span class="year-chart__total" [style.height.%]="col.totalHeight">
-          <span class="year-chart__owned" [style.height.%]="col.ownedHeight"></span>
+          @if (names()) {
+            <span class="year-chart__split">
+              <span class="year-chart__owned" [style.height.%]="col.primaryHeight"></span>
+              <span
+                class="year-chart__owned year-chart__owned--compare"
+                [style.height.%]="col.compareHeight"
+              ></span>
+            </span>
+            <span class="year-chart__together" [style.bottom.%]="col.ownedHeight"></span>
+          } @else {
+            <span class="year-chart__owned" [style.height.%]="col.ownedHeight"></span>
+          }
         </span>
       </span>
       <span class="year-chart__year" aria-hidden="true">{{ col.label }}</span>

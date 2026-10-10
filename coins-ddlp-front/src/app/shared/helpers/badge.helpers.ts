@@ -25,3 +25,13 @@ export function getRoleBadge(role: string | null, t: Translations['admin']): Bad
     ? { label: t.roleAdmin, severity: 'warn' }
     : { label: t.roleUser, severity: 'info' };
 }
+
+export function getCollectionBadge(
+  collection: { isDefault: boolean } | null | undefined,
+  t: Translations['admin'],
+): BadgeData | null {
+  if (!collection) return null;
+  return collection.isDefault
+    ? { label: t.badgeDefaultCollection, severity: 'accent' }
+    : { label: t.badgeCollection, severity: 'secondary' };
+}

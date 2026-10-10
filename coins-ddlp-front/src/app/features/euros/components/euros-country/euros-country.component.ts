@@ -15,6 +15,7 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { map, Subscription } from 'rxjs';
 import { TableModule } from 'primeng/table';
 import { MessageService } from 'primeng/api';
+import { CollectionPickerComponent } from '../../../../shared/components/collection-picker/collection-picker.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -28,11 +29,9 @@ import { SkeletonComponent } from '../../../../shared/components/skeleton/skelet
 import { EurosService } from '../../services/euros.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
-import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
-import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
@@ -44,7 +43,7 @@ import { sortByFaceValue } from '../../constants/face-value-order.const';
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
 import { injectCan } from '../../../../core/services/permissions.service';
-import { isOwned } from '../../../../shared/helpers/ownership.helper';
+import { countOwned, isOwned, ownedBreakdown } from '../../../../shared/helpers/ownership.helper';
 import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
 import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 
@@ -61,6 +60,7 @@ interface YearChip {
 @Component({
   selector: 'app-euros-country',
   imports: [
+    CollectionPickerComponent,
     FaceValuePipe,
     CountryNamePipe,
     RouterOutlet,
@@ -94,10 +94,9 @@ export class EurosCountryComponent {
   private excelLiterals = injectLiterals('excel');
   private excelLabels = computed<ExcelLabels>(() => ({
     ...this.excelLiterals(),
-    ownerDario: this.sharedLiterals().ownerDario,
-    ownerManolo: this.sharedLiterals().ownerManolo,
+    primaryName: this.ownerService.primaryName(),
+    compareName: this.ownerService.compareName(),
   }));
-  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
   readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
   readonly backLink = ['/euros'];
 
@@ -130,7 +129,7 @@ export class EurosCountryComponent {
   readonly canExport = injectCan('export.excel');
   readonly canSwitchCollection = injectCan('collection.switch');
   private readonly yearChipsNav = viewChild<ElementRef<HTMLElement>>('yearChipsNav');
-  readonly isBoth = computed(() => this.ownerService.current() === 'both');
+  readonly isBoth = computed(() => this.ownerService.isComparing());
   readonly emptyState = computed(() =>
     getEmptyState(this.sharedLiterals(), this.searchQuery(), this.ownershipFilter()),
   );
@@ -145,9 +144,10 @@ export class EurosCountryComponent {
     // Recarga por país, colección activa o tras editar/borrar una moneda (esta última sin skeleton)
     effect(() => {
       const country = this.country();
-      const key = `${country}|${this.ownerService.current()}`;
+      const owners = this.ownerService.selectionKey();
+      const key = `${country}|${owners}`;
       this.eurosService.revision();
-      if (!country) return;
+      if (!country || owners === null) return;
       untracked(() => {
         this.loadCoins(country, key !== this.loadedKey);
         this.loadedKey = key;
@@ -215,9 +215,9 @@ export class EurosCountryComponent {
     return this.coinsData()
       .filter((c) => year === null || c.year === year)
       .filter((c) => {
+        // Al comparar: obtenida si la tiene alguna de las dos; faltante si no la tiene ninguna
         if (ownership === 'owned') return isOwned(c.uds, c.udsAlt, both);
-        if (ownership === 'missing')
-          return both ? c.uds === 0 && (c.udsAlt ?? 0) === 0 : c.uds === 0;
+        if (ownership === 'missing') return !isOwned(c.uds, c.udsAlt, both);
         return true;
       })
       .filter(
@@ -247,14 +247,10 @@ export class EurosCountryComponent {
 
   // --- Cabecera ---
 
-  readonly progress = computed(() => {
-    const both = this.isBoth();
-    const coins = this.coinsData();
-    return {
-      owned: coins.filter((c) => isOwned(c.uds, c.udsAlt, both)).length,
-      total: coins.length,
-    };
-  });
+  readonly progress = computed(() => countOwned(this.coinsData(), this.isBoth()));
+  readonly progressBreakdown = computed(() =>
+    ownedBreakdown(this.progress(), this.ownerService.comparedNames()),
+  );
 
   readonly subtitle = computed(() => {
     const coins = this.coinsData();
@@ -287,10 +283,6 @@ export class EurosCountryComponent {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery(this.searchKey(this.country()), query);
-  }
-
-  onOwnerChange(slug: string): void {
-    this.ownerService.setOwner(slug as OwnerSlug);
   }
 
   openCoin(coin: EuroCoin): void {

@@ -9,8 +9,11 @@ export interface ConmExportRow {
 }
 
 /** Cabeceras y nombres de fichero en el idioma activo; las pasa el componente. */
-export type ExcelLabels = Translations['excel'] &
-  Pick<Translations['shared'], 'ownerDario' | 'ownerManolo'>;
+export type ExcelLabels = Translations['excel'] & {
+  /** Nombres de las dos colecciones comparadas (cabeceras de las columnas dobles). */
+  primaryName: string;
+  compareName: string;
+};
 
 export interface ConmExportGroup {
   year: number;
@@ -75,12 +78,12 @@ export class ExcelExportService {
     if (hasMint) cols.push({ header: l.mint, key: 'mint', width: 20 });
     if (isBoth) {
       cols.push(
-        { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
-        { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
-        { header: `${l.observations} (${l.ownerDario})`, key: 'observations', width: 32 },
-        { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
-        { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
-        { header: `${l.observations} (${l.ownerManolo})`, key: 'observationsAlt', width: 32 },
+        { header: `${l.conservation} (${l.primaryName})`, key: 'conservation', width: 20 },
+        { header: `${l.units} (${l.primaryName})`, key: 'uds', width: 12 },
+        { header: `${l.observations} (${l.primaryName})`, key: 'observations', width: 32 },
+        { header: `${l.conservation} (${l.compareName})`, key: 'conservationAlt', width: 20 },
+        { header: `${l.units} (${l.compareName})`, key: 'udsAlt', width: 12 },
+        { header: `${l.observations} (${l.compareName})`, key: 'observationsAlt', width: 32 },
       );
     } else {
       cols.push(
@@ -131,12 +134,12 @@ export class ExcelExportService {
     if (hasMint) cols.push({ header: l.mint, key: 'mint', width: 20 });
     if (isBoth) {
       cols.push(
-        { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
-        { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
-        { header: `${l.observations} (${l.ownerDario})`, key: 'observations', width: 32 },
-        { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
-        { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
-        { header: `${l.observations} (${l.ownerManolo})`, key: 'observationsAlt', width: 32 },
+        { header: `${l.conservation} (${l.primaryName})`, key: 'conservation', width: 20 },
+        { header: `${l.units} (${l.primaryName})`, key: 'uds', width: 12 },
+        { header: `${l.observations} (${l.primaryName})`, key: 'observations', width: 32 },
+        { header: `${l.conservation} (${l.compareName})`, key: 'conservationAlt', width: 20 },
+        { header: `${l.units} (${l.compareName})`, key: 'udsAlt', width: 12 },
+        { header: `${l.observations} (${l.compareName})`, key: 'observationsAlt', width: 32 },
       );
     } else {
       cols.push(
@@ -189,10 +192,10 @@ export class ExcelExportService {
       if (includeLocation) cols.push({ header: l.location, key: 'location', width: 16 });
       if (isBoth) {
         cols.push(
-          { header: `${l.conservation} (${l.ownerDario})`, key: 'conservation', width: 20 },
-          { header: `${l.units} (${l.ownerDario})`, key: 'uds', width: 12 },
-          { header: `${l.conservation} (${l.ownerManolo})`, key: 'conservationAlt', width: 20 },
-          { header: `${l.units} (${l.ownerManolo})`, key: 'udsAlt', width: 12 },
+          { header: `${l.conservation} (${l.primaryName})`, key: 'conservation', width: 20 },
+          { header: `${l.units} (${l.primaryName})`, key: 'uds', width: 12 },
+          { header: `${l.conservation} (${l.compareName})`, key: 'conservationAlt', width: 20 },
+          { header: `${l.units} (${l.compareName})`, key: 'udsAlt', width: 12 },
         );
       } else {
         cols.push(

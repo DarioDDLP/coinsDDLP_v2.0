@@ -1,0 +1,19 @@
+<div class="collection-picker" role="group" [attr.aria-label]="literals().collection">
+  <app-select
+    class="collection-picker__select"
+    [ariaLabel]="literals().collection"
+    [options]="primaryOptions()"
+    [value]="primary() ?? ''"
+    (valueChange)="primaryChange.emit($event)"
+  />
+  <span class="collection-picker__vs" aria-hidden="true">
+    <i class="pi pi-arrow-right-arrow-left"></i>
+  </span>
+  <app-select
+    class="collection-picker__select"
+    [ariaLabel]="literals().compareWith"
+    [options]="compareOptions()"
+    [value]="compare() ?? ''"
+    (valueChange)="onCompareChange($event)"
+  />
+</div>

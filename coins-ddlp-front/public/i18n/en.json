@@ -49,9 +49,8 @@
     "all": "All",
     "filterOwned": "Owned",
     "filterMissing": "Missing",
-    "ownerDario": "Darío",
-    "ownerManolo": "Manolo",
-    "ownerBoth": "Both",
+    "compareWith": "Compare with",
+    "compareNone": "No comparison",
     "toastSuccess": "Success",
     "toastError": "Error",
     "toastInfo": "Information",
@@ -202,6 +201,7 @@
     "colEmail": "Email",
     "colName": "Name",
     "colRole": "Role",
+    "colCollection": "Collection",
     "colActions": "Actions",
     "newUser": "New user",
     "editUser": "Edit user",
@@ -223,6 +223,15 @@
     "adminAllPermissions": "Admins always have every permission.",
     "sendRecovery": "Send recovery email",
     "recoverySent": "Recovery email sent",
+    "collectionTitle": "Collection",
+    "collectionHint": "The collection uses the user’s name. The default collection is the one visitors see.",
+    "hasCollection": "Has own collection",
+    "defaultCollection": "Default collection",
+    "badgeCollection": "Own",
+    "badgeDefaultCollection": "Default",
+    "removeCollectionTitle": "Remove collection",
+    "removeCollectionMessage": "Removing the collection will delete all its saved coins. Coins with units:",
+    "removeCollectionConfirm": "Remove and delete",
     "permissions": {
       "groups": {
         "euros": "Euros",
@@ -365,6 +374,7 @@
     "byYear": "By year",
     "yearChartLabel": "Coins owned per year",
     "legendOwned": "Owned",
+    "legendTogether": "Together",
     "legendTotal": "Catalogue"
   },
   "ubicacion": {
