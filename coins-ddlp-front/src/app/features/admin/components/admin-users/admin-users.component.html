@@ -21,6 +21,7 @@
           <th>{{ literals().colEmail }}</th>
           <th>{{ literals().colName }}</th>
           <th class="col-center">{{ literals().colRole }}</th>
+          <th class="col-center">{{ literals().colCollection }}</th>
           <th class="col-actions">
             <span class="sr-only">{{ literals().colActions }}</span>
           </th>
@@ -32,6 +33,16 @@
           <td data-cell="secondary">{{ row.user.displayName ?? '—' }}</td>
           <td class="col-center" [attr.data-label]="literals().colRole">
             <app-badge [label]="row.roleBadge.label" [severity]="row.roleBadge.severity" />
+          </td>
+          <td class="col-center" [attr.data-label]="literals().colCollection">
+            @if (row.collectionBadge) {
+              <app-badge
+                [label]="row.collectionBadge.label"
+                [severity]="row.collectionBadge.severity"
+              />
+            } @else {
+              —
+            }
           </td>
           <td class="col-actions">
             <div class="admin-users__actions">

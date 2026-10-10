@@ -14,6 +14,7 @@
           [label]="literals().progressTotal"
           [owned]="kpis().owned"
           [total]="kpis().total"
+          [breakdown]="kpisBreakdown()"
           size="lg"
         />
       } @else {
@@ -22,12 +23,13 @@
     </div>
 
     @if (canSwitchCollection()) {
-      <app-filter-pills
+      <app-collection-picker
         page-filters
-        [options]="ownerOptions()"
-        [value]="ownerService.current()"
-        [ariaLabel]="sharedLiterals().collection"
-        (valueChange)="onOwnerChange($event)"
+        [owners]="ownerService.owners()"
+        [primary]="ownerService.primaryId()"
+        [compare]="ownerService.compareId()"
+        (primaryChange)="ownerService.setPrimary($event)"
+        (compareChange)="ownerService.setCompare($event)"
       />
     }
 
@@ -39,7 +41,7 @@
             [label]="literals().ownedCoins"
             [value]="kpis().owned"
             [suffix]="ofTotal()"
-            [hint]="ownedPercent()"
+            [hint]="ownedHint()"
             [highlight]="true"
           />
           <app-stat-card
@@ -97,6 +99,7 @@
                     class="country-row__progress"
                     [owned]="group.owned"
                     [total]="group.total"
+                    [breakdown]="group.breakdown"
                     size="sm"
                   />
                 </a>
@@ -118,6 +121,7 @@
                   [label]="group.label | faceValue"
                   [owned]="group.owned"
                   [total]="group.total"
+                  [breakdown]="group.breakdown"
                   size="sm"
                 />
               </li>
@@ -132,7 +136,7 @@
     <section class="stats-card">
       <h2 class="stats-card__title">{{ literals().byYear }}</h2>
       @if (isReady()) {
-        <app-year-chart [groups]="byYear()" />
+        <app-year-chart [groups]="byYear()" [names]="ownerService.comparedNames()" />
       } @else {
         <app-skeleton height="13rem" [announce]="false" />
       }

@@ -50,16 +50,39 @@
       }
     }
 
-    <section class="permissions" [attr.aria-label]="literals().permissionsTitle">
+    @if (!guest()) {
+      <section class="form-section" [attr.aria-label]="literals().collectionTitle">
+        <h3 class="form-section__title">{{ literals().collectionTitle }}</h3>
+        <p class="user-form__hint">{{ literals().collectionHint }}</p>
+        <div class="form-section__group">
+          <app-toggle
+            [label]="literals().hasCollection"
+            [value]="hasCollection()"
+            [disabled]="wasDefaultCollection()"
+            (valueChange)="onToggleCollection($event)"
+          />
+          @if (hasCollection()) {
+            <app-toggle
+              [label]="literals().defaultCollection"
+              [value]="isDefaultCollection()"
+              [disabled]="wasDefaultCollection()"
+              (valueChange)="isDefaultCollection.set($event)"
+            />
+          }
+        </div>
+      </section>
+    }
+
+    <section class="form-section" [attr.aria-label]="literals().permissionsTitle">
       @if (!guest()) {
-        <h3 class="permissions__title">{{ literals().permissionsTitle }}</h3>
+        <h3 class="form-section__title">{{ literals().permissionsTitle }}</h3>
       }
       @if (isAdminRole()) {
         <p class="user-form__hint">{{ literals().adminAllPermissions }}</p>
       }
       @for (group of permissionGroups(); track group.label) {
-        <div class="permissions__group">
-          <h4 class="permissions__group-title">{{ group.label }}</h4>
+        <div class="form-section__group">
+          <h4 class="form-section__group-title">{{ group.label }}</h4>
           @for (item of group.items; track item.key) {
             <app-toggle
               [label]="item.label"
@@ -87,3 +110,11 @@
     />
   </ng-container>
 </app-dialog>
+
+<app-confirm-dialog
+  [(visible)]="removeCollectionVisible"
+  [header]="literals().removeCollectionTitle"
+  [message]="removeCollectionMessage()"
+  [confirmLabel]="literals().removeCollectionConfirm"
+  (confirmed)="onConfirmRemoveCollection()"
+/>

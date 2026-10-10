@@ -3,6 +3,7 @@
 }
 <p-select
   [inputId]="id"
+  [ariaLabel]="ariaLabel() || undefined"
   [options]="options()"
   [ngModel]="value()"
   (ngModelChange)="valueChange.emit($event)"

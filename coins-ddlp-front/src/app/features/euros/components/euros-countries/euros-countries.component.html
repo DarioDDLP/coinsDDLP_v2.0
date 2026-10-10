@@ -17,6 +17,7 @@
           [label]="literals().progressTotal"
           [owned]="totals().owned"
           [total]="totals().total"
+          [breakdown]="totalsBreakdown()"
           size="lg"
         />
       } @else {
@@ -25,12 +26,13 @@
     </div>
 
     @if (canSwitchCollection()) {
-      <app-filter-pills
+      <app-collection-picker
         page-filters
-        [options]="ownerOptions()"
-        [value]="ownerService.current()"
-        [ariaLabel]="sharedLiterals().collection"
-        (valueChange)="onOwnerChange($event)"
+        [owners]="ownerService.owners()"
+        [primary]="ownerService.primaryId()"
+        [compare]="ownerService.compareId()"
+        (primaryChange)="ownerService.setPrimary($event)"
+        (compareChange)="ownerService.setCompare($event)"
       />
     }
 
@@ -66,7 +68,12 @@
                   <span class="country-card__years">{{ card.minYear }} — {{ card.maxYear }}</span>
                 </div>
               </div>
-              <app-progress-stat [owned]="card.owned" [total]="card.total" size="sm" />
+              <app-progress-stat
+                [owned]="card.owned"
+                [total]="card.total"
+                [breakdown]="card.breakdown"
+                size="sm"
+              />
             </a>
           </li>
         }

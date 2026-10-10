@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { EurosService } from '../../services/euros.service';
-import { OwnerService, OWNER_IDS } from '../../../../core/services/owner.service';
+import { OwnerService } from '../../../../core/services/owner.service';
 import { AuthService } from '../../../../core/services/auth.service';
 import { injectCan } from '../../../../core/services/permissions.service';
 import { injectCanEditUnits } from '../../euros-permissions';
@@ -30,8 +30,6 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
 import { CONSERVATION_OPTIONS } from '../../../../shared/constants/conservation-states.const';
 import { FilterPillOption } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { translateFaceValue } from '../../../../shared/helpers/face-value.helper';
-
-type OwnerSlug = 'dario' | 'manolo';
 
 @Component({
   selector: 'app-coin-uds-dialog',
@@ -69,16 +67,15 @@ export class CoinUdsDialogComponent {
   private faceValues = injectLiterals('faceValues');
   readonly conservationOptions = CONSERVATION_OPTIONS;
 
+  /** Al comparar, con `editAny`, se elige en cuál de las dos colecciones se guarda. */
   readonly ownerPickerOptions = computed<FilterPillOption[]>(() => [
-    { value: 'dario', label: this.sharedLiterals().ownerDario },
-    { value: 'manolo', label: this.sharedLiterals().ownerManolo },
+    { value: 'primary', label: this.ownerService.primaryName() },
+    { value: 'compare', label: this.ownerService.compareName() },
   ]);
 
-  readonly showOwnerPicker = computed(
-    () => this.ownerService.current() === 'both' && this.canEditAny(),
-  );
+  readonly showOwnerPicker = computed(() => this.ownerService.isComparing() && this.canEditAny());
 
-  readonly editingOwner = signal<OwnerSlug>('dario');
+  readonly editingOwner = signal<'primary' | 'compare'>('primary');
 
   readonly dialogTitle = computed(() => {
     const c = this.coin();
@@ -96,7 +93,7 @@ export class CoinUdsDialogComponent {
   readonly loading = signal(false);
 
   constructor() {
-    // Al abrir (o al cambiar de dueño en "ambas") se cargan los valores guardados de la moneda
+    // Al abrir (o al cambiar de colección al comparar) se cargan los valores guardados de la moneda
     effect(() => {
       if (!this.visible()) return;
       const coin = this.coin();
@@ -105,18 +102,18 @@ export class CoinUdsDialogComponent {
     });
   }
 
-  private fillForm(c: EuroCoin | null, owner: OwnerSlug): void {
-    const isManolo = owner === 'manolo';
-    this.uds.set(isManolo ? (c?.udsAlt ?? 0) : (c?.uds ?? 0));
-    this.conservation.set(isManolo ? (c?.conservationAlt ?? 'ND') : (c?.conservation ?? 'ND'));
-    this.observations.set(isManolo ? (c?.observationsAlt ?? '') : (c?.observations ?? ''));
+  private fillForm(c: EuroCoin | null, owner: 'primary' | 'compare'): void {
+    const isCompare = owner === 'compare';
+    this.uds.set(isCompare ? (c?.udsAlt ?? 0) : (c?.uds ?? 0));
+    this.conservation.set(isCompare ? (c?.conservationAlt ?? 'ND') : (c?.conservation ?? 'ND'));
+    this.observations.set(isCompare ? (c?.observationsAlt ?? '') : (c?.observations ?? ''));
     this.circulation.set(c?.circulation ?? true);
     this.idNum.set(c?.idNum ?? '');
     this.description.set(c?.description ?? '');
   }
 
-  onOwnerPickerChange(slug: string): void {
-    this.editingOwner.set(slug as OwnerSlug);
+  onOwnerPickerChange(value: string): void {
+    this.editingOwner.set(value === 'compare' ? 'compare' : 'primary');
   }
 
   async onSubmit(): Promise<void> {
@@ -126,9 +123,9 @@ export class CoinUdsDialogComponent {
     // Sin `editAny` solo puede escribir en su propia colección
     const ownerId = !this.canEditAny()
       ? this.authService.currentUser()!.uid
-      : this.showOwnerPicker()
-        ? OWNER_IDS[this.editingOwner()]
-        : (this.ownerService.primaryId() ?? OWNER_IDS.dario);
+      : this.showOwnerPicker() && this.editingOwner() === 'compare'
+        ? this.ownerService.compareId()
+        : this.ownerService.primaryId();
 
     // Solo se envía lo que el usuario puede editar
     const data: Partial<EuroCoin> = {};
@@ -159,8 +156,8 @@ export class CoinUdsDialogComponent {
     }
   }
 
-  /** Tras la animación de cierre: la próxima vez se abre editando a Darío. */
+  /** Tras la animación de cierre: la próxima vez se abre editando la colección principal. */
   onHidden(): void {
-    this.editingOwner.set('dario');
+    this.editingOwner.set('primary');
   }
 }

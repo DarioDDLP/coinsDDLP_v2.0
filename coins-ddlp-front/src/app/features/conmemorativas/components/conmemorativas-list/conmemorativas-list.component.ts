@@ -15,6 +15,7 @@ import { formatNumber } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TableModule } from 'primeng/table';
+import { CollectionPickerComponent } from '../../../../shared/components/collection-picker/collection-picker.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { BadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';
@@ -29,17 +30,15 @@ import { ConmemorativasService } from '../../services/conmemorativas.service';
 import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
-import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
 import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
 import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
-import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
   restoreSearchQuery,
   saveSearchQuery,
 } from '../../../../shared/helpers/search-state.helper';
 import { getConservationBadge, getUdsBadge } from '../../../../shared/helpers/badge.helpers';
-import { isOwned } from '../../../../shared/helpers/ownership.helper';
+import { countOwned, isOwned, ownedBreakdown } from '../../../../shared/helpers/ownership.helper';
 import { ExcelExportService, ExcelLabels } from '../../../../shared/services/excel-export.service';
 import {
   ALBUM_POSITIONS_PER_ROW,
@@ -95,6 +94,7 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
 @Component({
   selector: 'app-conmemorativas-list',
   imports: [
+    CollectionPickerComponent,
     CountryNamePipe,
     TableModule,
     PageLayoutComponent,
@@ -126,12 +126,11 @@ export class ConmemorativasListComponent {
   private excelLiterals = injectLiterals('excel');
   private excelLabels = computed<ExcelLabels>(() => ({
     ...this.excelLiterals(),
-    ownerDario: this.sharedLiterals().ownerDario,
-    ownerManolo: this.sharedLiterals().ownerManolo,
+    primaryName: this.ownerService.primaryName(),
+    compareName: this.ownerService.compareName(),
   }));
   private countries = injectLiterals('countries');
   readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
-  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
 
   private allCoins = signal<EuroCoin[]>([]);
   private loadSub?: Subscription;
@@ -149,11 +148,12 @@ export class ConmemorativasListComponent {
   private readonly jumpsNav = viewChild<ElementRef<HTMLElement>>('jumpsNav');
   private observer: IntersectionObserver | null = null;
 
-  readonly isBoth = computed(() => this.ownerService.current() === 'both');
+  readonly isBoth = computed(() => this.ownerService.isComparing());
 
   constructor() {
+    // Recarga al cambiar de colección (o de colección comparada)
     effect(() => {
-      this.ownerService.current();
+      if (this.ownerService.selectionKey() === null) return;
       untracked(() => this.loadCoins());
     });
 
@@ -211,15 +211,14 @@ export class ConmemorativasListComponent {
 
   readonly groupedCoins = computed<YearGroup[]>(() => {
     const ownership = this.ownershipFilter();
-    const both = this.isBoth();
     const query = normalizeString(this.searchQuery());
     const locations = this.locations();
 
     const filtered = [...this.allCoins()]
       .filter((c) => {
+        // Al comparar: obtenida si la tiene alguna de las dos; faltante si no la tiene ninguna
         if (ownership === 'owned') return this.isOwned(c);
-        if (ownership === 'missing')
-          return both ? c.uds === 0 && (c.udsAlt ?? 0) === 0 : c.uds === 0;
+        if (ownership === 'missing') return !this.isOwned(c);
         return true;
       })
       .filter(
@@ -250,10 +249,10 @@ export class ConmemorativasListComponent {
     return [...byYear.values()];
   });
 
-  readonly progress = computed(() => {
-    const coins = this.allCoins();
-    return { owned: coins.filter((c) => this.isOwned(c)).length, total: coins.length };
-  });
+  readonly progress = computed(() => countOwned(this.allCoins(), this.isBoth()));
+  readonly progressBreakdown = computed(() =>
+    ownedBreakdown(this.progress(), this.ownerService.comparedNames()),
+  );
 
   readonly subtitle = computed(() => {
     const coins = this.allCoins();
@@ -268,10 +267,6 @@ export class ConmemorativasListComponent {
   onSearch(query: string): void {
     this.searchQuery.set(query);
     saveSearchQuery(SEARCH_KEY, query);
-  }
-
-  onOwnerChange(slug: string): void {
-    this.ownerService.setOwner(slug as OwnerSlug);
   }
 
   jumpToYear(year: number): void {

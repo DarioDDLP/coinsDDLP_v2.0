@@ -49,9 +49,8 @@
     "all": "Todas",
     "filterOwned": "Obtenidas",
     "filterMissing": "Faltantes",
-    "ownerDario": "Darío",
-    "ownerManolo": "Manolo",
-    "ownerBoth": "Ambas",
+    "compareWith": "Comparar con",
+    "compareNone": "Sin comparar",
     "toastSuccess": "Éxito",
     "toastError": "Error",
     "toastInfo": "Información",
@@ -202,6 +201,7 @@
     "colEmail": "Email",
     "colName": "Nombre",
     "colRole": "Rol",
+    "colCollection": "Colección",
     "colActions": "Acciones",
     "newUser": "Nuevo usuario",
     "editUser": "Editar usuario",
@@ -223,6 +223,15 @@
     "adminAllPermissions": "El admin tiene siempre todos los permisos.",
     "sendRecovery": "Enviar email de recuperación",
     "recoverySent": "Email de recuperación enviado",
+    "collectionTitle": "Colección",
+    "collectionHint": "La colección usa el nombre del usuario. La colección por defecto es la que ven los visitantes.",
+    "hasCollection": "Tiene colección propia",
+    "defaultCollection": "Colección por defecto",
+    "badgeCollection": "Propia",
+    "badgeDefaultCollection": "Por defecto",
+    "removeCollectionTitle": "Quitar colección",
+    "removeCollectionMessage": "Al quitarle la colección se borrarán todas sus monedas guardadas. Monedas con unidades:",
+    "removeCollectionConfirm": "Quitar y borrar",
     "permissions": {
       "groups": {
         "euros": "Euros",
@@ -365,6 +374,7 @@
     "byYear": "Por año",
     "yearChartLabel": "Monedas obtenidas por año",
     "legendOwned": "Obtenidas",
+    "legendTogether": "Juntos",
     "legendTotal": "Catálogo"
   },
   "ubicacion": {

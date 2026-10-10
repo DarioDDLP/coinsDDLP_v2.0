@@ -10,18 +10,17 @@ import {
 import { formatNumber } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { CollectionPickerComponent } from '../../../../shared/components/collection-picker/collection-picker.component';
 import { PageLayoutComponent } from '../../../../shared/components/page-layout/page-layout.component';
 import { ErrorPanelComponent } from '../../../../shared/components/error-panel/error-panel.component';
 import { ProgressStatComponent } from '../../../../shared/components/progress-stat/progress-stat.component';
-import { FilterPillsComponent } from '../../../../shared/components/filter-pills/filter-pills.component';
 import { CountryFlagComponent } from '../../../../shared/components/country-flag/country-flag.component';
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
-import { EuroStatsRow } from '../../../../shared/interfaces/euro-stats.interface';
-import { OwnerSlug } from '../../../../shared/interfaces/owner.interface';
+import { EuroStatsRow, StatGroup } from '../../../../shared/interfaces/euro-stats.interface';
+import { ownedBreakdown } from '../../../../shared/helpers/ownership.helper';
 import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
-import { getOwnerFilterOptions } from '../../../../shared/constants/owner-filter.config';
 import {
   computeKpis,
   groupByCountry,
@@ -37,13 +36,13 @@ import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 @Component({
   selector: 'app-estadisticas-dashboard',
   imports: [
+    CollectionPickerComponent,
     FaceValuePipe,
     CountryNamePipe,
     RouterLink,
     PageLayoutComponent,
     ErrorPanelComponent,
     ProgressStatComponent,
-    FilterPillsComponent,
     CountryFlagComponent,
     SkeletonComponent,
     StatCardComponent,
@@ -60,7 +59,6 @@ export class EstadisticasDashboardComponent {
 
   readonly literals = injectLiterals('estadisticas');
   readonly sharedLiterals = injectLiterals('shared');
-  readonly ownerOptions = computed(() => getOwnerFilterOptions(this.sharedLiterals()));
   readonly canSwitchCollection = injectCan('collection.switch');
   readonly skeletonRows = Array.from({ length: 8 });
 
@@ -69,11 +67,17 @@ export class EstadisticasDashboardComponent {
   readonly hasError = signal(false);
   private loadSub?: Subscription;
 
-  private readonly both = computed(() => this.ownerService.current() === 'both');
+  private readonly both = computed(() => this.ownerService.isComparing());
   readonly kpis = computed(() => computeKpis(this.rows(), this.both()));
-  readonly byCountry = computed(() => groupByCountry(this.rows(), this.both()));
-  readonly byFaceValue = computed(() => groupByFaceValue(this.rows(), this.both()));
+  readonly byCountry = computed(() => this.withBreakdown(groupByCountry(this.rows(), this.both())));
+  readonly byFaceValue = computed(() =>
+    this.withBreakdown(groupByFaceValue(this.rows(), this.both())),
+  );
   readonly byYear = computed(() => groupByYear(this.rows(), this.both()));
+  /** Al comparar: obtenidas por cada colección bajo el progreso conjunto. */
+  readonly kpisBreakdown = computed(() =>
+    ownedBreakdown(this.kpis(), this.ownerService.comparedNames()),
+  );
 
   readonly subtitle = computed(
     () =>
@@ -89,15 +93,18 @@ export class EstadisticasDashboardComponent {
   readonly spareHint = computed(
     () => `${this.format(this.kpis().spareUnits)} ${this.literals().spareUnits}`,
   );
-  readonly ownedPercent = computed(() => {
+  /** Porcentaje y, al comparar, cuántas tiene cada colección ("46 % · Darío 2.535 · Manolo 0"). */
+  readonly ownedHint = computed(() => {
     const { owned, total } = this.kpis();
-    return total > 0 ? `${Math.round((owned / total) * 100)} %` : '';
+    const percent = total > 0 ? `${Math.round((owned / total) * 100)} %` : '';
+    const parts = this.kpisBreakdown().map((b) => `${b.label} ${this.format(b.owned)}`);
+    return [percent, ...parts].filter(Boolean).join(' · ');
   });
 
   constructor() {
-    // Recarga con skeleton al cambiar de colección (Darío / Manolo / ambas)
+    // Recarga con skeleton al cambiar de colección (o de colección comparada)
     effect(() => {
-      this.ownerService.current();
+      if (this.ownerService.selectionKey() === null) return;
       untracked(() => this.load());
     });
   }
@@ -120,8 +127,9 @@ export class EstadisticasDashboardComponent {
     });
   }
 
-  onOwnerChange(slug: string): void {
-    this.ownerService.setOwner(slug as OwnerSlug);
+  private withBreakdown(groups: StatGroup[]) {
+    const names = this.ownerService.comparedNames();
+    return groups.map((g) => ({ ...g, breakdown: ownedBreakdown(g, names) }));
   }
 
   private format(value: number): string {

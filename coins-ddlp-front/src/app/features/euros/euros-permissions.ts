@@ -4,8 +4,8 @@ import { injectCan } from '../../core/services/permissions.service';
 
 /**
  * Puede editar unidades en la colección que se está viendo: con `euros.units.editAny`
- * siempre; con `euros.units.editOwn` solo viendo su propia colección (nunca en
- * "ambas"). Llamar en un contexto de inyección.
+ * siempre; con `euros.units.editOwn` solo viendo su propia colección (nunca al
+ * comparar). Llamar en un contexto de inyección.
  */
 export function injectCanEditUnits(): Signal<boolean> {
   const owner = inject(OwnerService);
@@ -14,8 +14,8 @@ export function injectCanEditUnits(): Signal<boolean> {
   return computed(() => {
     if (editAny()) return true;
     if (!editOwn()) return false;
-    const own = owner.ownSlug();
-    return own !== null && owner.current() === own;
+    const own = owner.ownId();
+    return own !== null && !owner.isComparing() && owner.primaryId() === own;
   });
 }
 

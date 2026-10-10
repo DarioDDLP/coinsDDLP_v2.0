@@ -10,8 +10,9 @@ import { BadgeComponent } from '../../../../shared/components/badge/badge.compon
 import { AppUser } from '../../../../shared/interfaces/app-user.interface';
 import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
-import { getRoleBadge } from '../../../../shared/helpers/badge.helpers';
+import { getCollectionBadge, getRoleBadge } from '../../../../shared/helpers/badge.helpers';
 import { Permission } from '../../../../shared/constants/permissions.const';
+import { OwnerService } from '../../../../core/services/owner.service';
 
 @Component({
   selector: 'app-admin-users',
@@ -31,6 +32,7 @@ export class AdminUsersComponent implements OnInit {
   private adminService = inject(AdminService);
   private messageService = inject(MessageService);
   private errorHandler = inject(ErrorHandler);
+  private ownerService = inject(OwnerService);
 
   readonly literals = injectLiterals('admin');
 
@@ -43,7 +45,11 @@ export class AdminUsersComponent implements OnInit {
         if (roleDiff !== 0) return roleDiff;
         return (a.email ?? '').localeCompare(b.email ?? '');
       })
-      .map((user) => ({ user, roleBadge: getRoleBadge(user.role, this.literals()) })),
+      .map((user) => ({
+        user,
+        roleBadge: getRoleBadge(user.role, this.literals()),
+        collectionBadge: getCollectionBadge(user.collection, this.literals()),
+      })),
   );
   readonly isReady = signal(false);
   readonly dialogVisible = signal(false);
@@ -92,8 +98,17 @@ export class AdminUsersComponent implements OnInit {
   }
 
   protected onSaved(): void {
-    if (this.editingGuest()) this.loadGuestPermissions();
-    else this.loadUsers();
+    if (this.editingGuest()) {
+      this.loadGuestPermissions();
+      return;
+    }
+    this.loadUsers();
+    this.reloadCollections();
+  }
+
+  /** Las colecciones dependen de los usuarios: el selector de colección se actualiza al momento. */
+  private reloadCollections(): void {
+    this.ownerService.reload().catch((e) => this.errorHandler.handleError(e));
   }
 
   protected onDelete(user: AppUser): void {
@@ -111,6 +126,7 @@ export class AdminUsersComponent implements OnInit {
         this.deleteLoading.set(false);
         this.deleteDialogVisible.set(false);
         this.loadUsers();
+        this.reloadCollections();
       },
       error: (e) => {
         this.errorHandler.handleError(e);

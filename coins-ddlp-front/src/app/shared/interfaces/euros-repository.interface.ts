@@ -7,6 +7,7 @@ export interface IEurosRepository {
   getAllByCountry(country: string): Observable<EuroCoin[]>;
   getById(id: string): Observable<EuroCoin | null>;
   create(coin: NewEuroCoin): Promise<string>;
-  update(id: string, data: Partial<EuroCoin>, ownerId?: string): Promise<void>;
+  /** `ownerId`: colección donde se guardan unidades, conservación y observaciones. */
+  update(id: string, data: Partial<EuroCoin>, ownerId: string | null): Promise<void>;
   remove(id: string): Promise<void>;
 }

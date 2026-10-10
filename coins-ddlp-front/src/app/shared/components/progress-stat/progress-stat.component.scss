@@ -50,6 +50,52 @@
       transition: width 400ms ease;
     }
   }
+
+  &__breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: var(--font-xs);
+    color: var(--text-muted);
+  }
+
+  // Punto de color: oro la colección principal, azul la comparada (como en el gráfico por año)
+  &__breakdown-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+
+    &::before {
+      content: '';
+      flex: none;
+      width: 6px;
+      height: 6px;
+      border-radius: var(--radius-full);
+      background: var(--accent);
+    }
+
+    &--compare::before {
+      background: var(--primary);
+    }
+  }
+
+  &__breakdown-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__breakdown-owned {
+    color: var(--text-soft);
+  }
+}
+
+:host(.size-sm) .progress-stat__breakdown {
+  font-size: var(--font-2xs);
 }
 
 :host(.size-sm) {

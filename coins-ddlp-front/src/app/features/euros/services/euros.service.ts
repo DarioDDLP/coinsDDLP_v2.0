@@ -1,18 +1,17 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { map, Observable } from 'rxjs';
+import { from, map, Observable, switchMap } from 'rxjs';
 import { SupabaseService } from '../../../core/services/supabase.service';
-import { OwnerService, OWNER_IDS } from '../../../core/services/owner.service';
+import { OwnerService } from '../../../core/services/owner.service';
 import {
-  ConservationCode,
   EuroCoin,
   EuroCoinSummary,
   NewEuroCoin,
   RawEuroCoin,
   RawEuroCoinSummary,
-  RawOwnership,
 } from '../../../shared/interfaces/euro-coin.interface';
 import { IEurosRepository } from '../../../shared/interfaces/euros-repository.interface';
 import { TABLES } from '../../../shared/constants/collections.const';
+import { ownerIdsOf, pickOwnership } from '../../../shared/helpers/ownership-map.helper';
 
 const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
 const SUMMARY_SELECT = 'country, year, commemorative, euro_ownership!left(uds, ownerId)';
@@ -27,17 +26,18 @@ export class EurosService implements IEurosRepository {
 
   /**
    * Catálogo completo reducido a lo necesario para el progreso por país:
-   * una fila por moneda con las unidades del propietario activo (o de ambos).
+   * una fila por moneda con las unidades de la colección activa (y de la comparada).
    */
   getCatalogSummary(): Observable<EuroCoinSummary[]> {
-    const ownerId = this.ownerService.primaryId();
-    return this.supabase
-      .getTableWhere<RawEuroCoinSummary>(
-        TABLES.euro,
-        (query) => this.applyOwnerFilter(query, ownerId),
-        SUMMARY_SELECT,
-      )
-      .pipe(map((rows) => rows.map((r) => this.mapSummary(r))));
+    return this.withOwners((primaryId, compareId) =>
+      this.supabase
+        .getTableWhere<RawEuroCoinSummary>(
+          TABLES.euro,
+          (query) => this.applyOwnerFilter(query, primaryId, compareId),
+          SUMMARY_SELECT,
+        )
+        .pipe(map((rows) => rows.map((r) => this.mapSummary(r, primaryId, compareId)))),
+    );
   }
 
   getAll(): Observable<Pick<EuroCoin, 'country' | 'year'>[]> {
@@ -49,53 +49,28 @@ export class EurosService implements IEurosRepository {
   }
 
   getAllByCountry(country: string): Observable<EuroCoin[]> {
-    const ownerId = this.ownerService.primaryId();
-    return this.supabase
-      .getTableWhere<RawEuroCoin>(
-        TABLES.euro,
-        (query) =>
-          this.applyOwnerFilter(
-            query
-              .eq('country', country)
-              .order('faceValue')
-              .order('description')
-              .order('variant', { nullsFirst: true }),
-            ownerId,
-          ),
-        OWNERSHIP_JOIN,
-      )
-      .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c))));
+    return this.getCoins((query) =>
+      query
+        .eq('country', country)
+        .order('faceValue')
+        .order('description')
+        .order('variant', { nullsFirst: true }),
+    );
   }
 
   getByCountryAndYear(country: string, year: number): Observable<EuroCoin[]> {
-    const ownerId = this.ownerService.primaryId();
-    return this.supabase
-      .getTableWhere<RawEuroCoin>(
-        TABLES.euro,
-        (query) =>
-          this.applyOwnerFilter(
-            query
-              .eq('country', country)
-              .eq('year', year)
-              .order('faceValue')
-              .order('description')
-              .order('variant', { nullsFirst: true }),
-            ownerId,
-          ),
-        OWNERSHIP_JOIN,
-      )
-      .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c))));
+    return this.getCoins((query) =>
+      query
+        .eq('country', country)
+        .eq('year', year)
+        .order('faceValue')
+        .order('description')
+        .order('variant', { nullsFirst: true }),
+    );
   }
 
   getById(id: string): Observable<EuroCoin | null> {
-    const ownerId = this.ownerService.primaryId();
-    return this.supabase
-      .getTableWhere<RawEuroCoin>(
-        TABLES.euro,
-        (query) => this.applyOwnerFilter(query.eq('id', id), ownerId),
-        OWNERSHIP_JOIN,
-      )
-      .pipe(map((coins) => (coins[0] ? this.mapRawCoin(coins[0]) : null)));
+    return this.getCoins((query) => query.eq('id', id)).pipe(map((coins) => coins[0] ?? null));
   }
 
   async create(coin: NewEuroCoin): Promise<string> {
@@ -104,8 +79,7 @@ export class EurosService implements IEurosRepository {
     return id;
   }
 
-  async update(id: string, data: Partial<EuroCoin>, ownerId?: string): Promise<void> {
-    const resolvedOwnerId = ownerId ?? this.ownerService.primaryId() ?? OWNER_IDS.dario;
+  async update(id: string, data: Partial<EuroCoin>, ownerId: string | null): Promise<void> {
     const { uds, conservation, observations, udsAlt, conservationAlt, ...catalogData } = data;
 
     const ownershipUpdate: Record<string, unknown> = {};
@@ -118,11 +92,11 @@ export class EurosService implements IEurosRepository {
     if (Object.keys(catalogData).length > 0) {
       promises.push(this.supabase.update(TABLES.euro, id, catalogData));
     }
-    if (Object.keys(ownershipUpdate).length > 0) {
+    if (ownerId && Object.keys(ownershipUpdate).length > 0) {
       promises.push(
         this.supabase.upsert(
           TABLES.euroOwnership,
-          { euroId: id, ownerId: resolvedOwnerId, ...ownershipUpdate },
+          { euroId: id, ownerId, ...ownershipUpdate },
           'euroId,ownerId',
         ),
       );
@@ -141,57 +115,53 @@ export class EurosService implements IEurosRepository {
     this.revision.update((r) => r + 1);
   }
 
-  private mapSummary(raw: RawEuroCoinSummary): EuroCoinSummary {
-    const ownerships = raw.euro_ownership ?? [];
-    if (this.ownerService.current() === 'both') {
-      return {
-        country: raw.country,
-        year: raw.year,
-        commemorative: raw.commemorative,
-        uds: ownerships.find((o) => o.ownerId === OWNER_IDS.dario)?.uds ?? 0,
-        udsAlt: ownerships.find((o) => o.ownerId === OWNER_IDS.manolo)?.uds ?? 0,
-      };
-    }
+  /** Espera a que carguen las colecciones y lanza la consulta con las activas. */
+  private withOwners<T>(
+    fn: (primaryId: string | null, compareId: string | null) => Observable<T>,
+  ): Observable<T> {
+    return from(this.ownerService.ensureLoaded()).pipe(
+      switchMap(() => fn(this.ownerService.primaryId(), this.ownerService.compareId())),
+    );
+  }
+
+  private getCoins(filterFn: (query: any) => any): Observable<EuroCoin[]> {
+    return this.withOwners((primaryId, compareId) =>
+      this.supabase
+        .getTableWhere<RawEuroCoin>(
+          TABLES.euro,
+          (query) => this.applyOwnerFilter(filterFn(query), primaryId, compareId),
+          OWNERSHIP_JOIN,
+        )
+        .pipe(map((coins) => coins.map((c) => this.mapRawCoin(c, primaryId, compareId)))),
+    );
+  }
+
+  private mapSummary(
+    raw: RawEuroCoinSummary,
+    primaryId: string | null,
+    compareId: string | null,
+  ): EuroCoinSummary {
+    const { uds, udsAlt } = pickOwnership(raw.euro_ownership, primaryId, compareId);
     return {
       country: raw.country,
       year: raw.year,
       commemorative: raw.commemorative,
-      uds: ownerships[0]?.uds ?? 0,
+      uds,
+      ...(compareId ? { udsAlt } : {}),
     };
   }
 
-  private applyOwnerFilter(query: any, ownerId: string | null): any {
-    return ownerId ? query.eq('euro_ownership.ownerId', ownerId) : query;
+  /** Solo trae la posesión de las colecciones que se ven (no la de todos los usuarios). */
+  private applyOwnerFilter(query: any, primaryId: string | null, compareId: string | null): any {
+    const ids = ownerIdsOf(primaryId, compareId);
+    return ids.length ? query.in('euro_ownership.ownerId', ids) : query;
   }
 
-  private mapRawCoin(raw: RawEuroCoin): EuroCoin {
-    const ownerships = raw.euro_ownership ?? [];
-    const mode = this.ownerService.current();
-
-    if (mode === 'both') {
-      const dario = ownerships.find((o) => o.ownerId === OWNER_IDS.dario);
-      const manolo = ownerships.find((o) => o.ownerId === OWNER_IDS.manolo);
-      return {
-        id: raw.id,
-        year: raw.year,
-        country: raw.country,
-        mint: raw.mint,
-        faceValue: raw.faceValue,
-        description: raw.description,
-        commemorative: raw.commemorative,
-        circulation: raw.circulation,
-        idNum: raw.idNum,
-        variant: raw.variant,
-        uds: dario?.uds ?? 0,
-        conservation: (dario?.conservation ?? 'ND') as ConservationCode,
-        observations: dario?.observations,
-        udsAlt: manolo?.uds ?? 0,
-        conservationAlt: (manolo?.conservation ?? 'ND') as ConservationCode,
-        observationsAlt: manolo?.observations,
-      };
-    }
-
-    const ownership = ownerships[0];
+  private mapRawCoin(
+    raw: RawEuroCoin,
+    primaryId: string | null,
+    compareId: string | null,
+  ): EuroCoin {
     return {
       id: raw.id,
       year: raw.year,
@@ -203,9 +173,7 @@ export class EurosService implements IEurosRepository {
       circulation: raw.circulation,
       idNum: raw.idNum,
       variant: raw.variant,
-      uds: ownership?.uds ?? 0,
-      conservation: (ownership?.conservation ?? 'ND') as ConservationCode,
-      observations: ownership?.observations,
+      ...pickOwnership(raw.euro_ownership, primaryId, compareId),
     };
   }
 }
