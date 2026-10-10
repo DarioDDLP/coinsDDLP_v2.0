@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.1](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.5.0...v3.5.1) (2026-10-10)
+
+
+### Correcciones
+
+* use production environment in production builds ([55eb381](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/55eb381b555e88921736cffea18c53d7256f0745))
+
 ## [3.5.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.4.0...v3.5.0) (2026-10-10)
 
 
