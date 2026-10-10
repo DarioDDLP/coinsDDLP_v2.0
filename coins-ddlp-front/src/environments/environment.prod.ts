@@ -1,5 +1,7 @@
 export const environment = {
   production: true,
+  // Registro de accesos (Edge Function access-log): solo en producción, para no llenarlo con pruebas
+  accessLog: true,
   supabase: {
     url: 'https://uvkvagoipxgagyupxoqd.supabase.co',
     anonKey: 'sb_publishable_TS_lHvmYOi-FuxPr1dYEBA_zaLokJ_n',

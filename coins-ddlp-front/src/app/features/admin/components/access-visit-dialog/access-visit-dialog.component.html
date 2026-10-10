@@ -1,0 +1,58 @@
+<app-dialog [(visible)]="visible" [header]="t().detailTitle" size="lg" (hidden)="onHidden()">
+  @if (visit(); as v) {
+    <div class="visit">
+      <p class="visit__when">
+        <span>{{ t().fieldStarted }}: {{ v.startedAt | date: 'medium' : undefined : lang() }}</span>
+        <span
+          >{{ t().fieldLastSeen }}:
+          {{ v.lastSeenAt | date: 'mediumTime' : undefined : lang() }}</span
+        >
+      </p>
+
+      <dl class="visit__fields">
+        @for (field of fields(); track field.label) {
+          <div class="visit__field">
+            <dt>{{ field.label }}</dt>
+            <dd [class.mono]="field.mono">{{ field.value }}</dd>
+          </div>
+        }
+      </dl>
+
+      <section class="visit__timeline" [attr.aria-label]="t().timelineTitle">
+        <h3 class="visit__subtitle">{{ t().timelineTitle }}</h3>
+        @if (!eventsReady()) {
+          <app-skeleton [count]="4" height="2rem" />
+        } @else if (timeline().length === 0) {
+          <p class="visit__empty">{{ t().timelineEmpty }}</p>
+        } @else {
+          <ol class="timeline">
+            @for (event of timeline(); track event.id) {
+              <li class="timeline__item" [class.timeline__item--failed]="event.failed">
+                <span class="timeline__icon" aria-hidden="true"><i [class]="event.icon"></i></span>
+                <span class="timeline__time">{{
+                  event.at | date: 'HH:mm:ss' : undefined : lang()
+                }}</span>
+                <span class="timeline__label">
+                  @if (event.failed) {
+                    <app-badge [label]="event.label" severity="danger" />
+                  } @else {
+                    {{ event.label }}
+                  }
+                </span>
+                <span class="timeline__detail">{{ event.detail ?? event.path }}</span>
+              </li>
+            }
+          </ol>
+        }
+      </section>
+    </div>
+  }
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals().close"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+  </ng-container>
+</app-dialog>

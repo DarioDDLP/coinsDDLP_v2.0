@@ -28,7 +28,7 @@ import {
   groupByYear,
 } from '../../../../shared/helpers/euro-stats.helper';
 import { EstadisticasService } from '../../services/estadisticas.service';
-import { StatCardComponent } from '../stat-card/stat-card.component';
+import { StatCardComponent } from '../../../../shared/components/stat-card/stat-card.component';
 import { YearChartComponent } from '../year-chart/year-chart.component';
 import { CountryNamePipe } from '../../../../shared/pipes/country-name.pipe';
 import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';

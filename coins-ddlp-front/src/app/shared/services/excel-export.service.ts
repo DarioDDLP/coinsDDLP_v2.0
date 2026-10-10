@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import ExcelJS from 'exceljs';
 import { EuroCoin } from '../interfaces/euro-coin.interface';
 import { Translations } from '../interfaces/translations.interface';
+import { AccessVisit } from '../interfaces/access-log.interface';
+import { formatDuration, formatLocation } from '../helpers/access-log.helper';
 
 export interface ConmExportRow {
   coin: EuroCoin;
@@ -226,5 +228,47 @@ export class ExcelExportService {
     }
 
     await this.download(wb, `${l.conmemorativasFile}.xlsx`);
+  }
+
+  /** Registro de accesos (admin): una fila por visita, con las fechas como fechas de Excel. */
+  async exportAccessLog(visits: AccessVisit[], l: Translations['admin']['accessLog']): Promise<void> {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet(l.excelSheet);
+    ws.columns = [
+      { header: l.colDate, key: 'startedAt', width: 18, style: { numFmt: 'dd/mm/yyyy hh:mm' } },
+      { header: l.colUser, key: 'user', width: 22 },
+      { header: l.colIp, key: 'ip', width: 18 },
+      { header: l.colLocation, key: 'location', width: 34 },
+      { header: l.colDevice, key: 'device', width: 12 },
+      { header: l.fieldBrowser, key: 'browser', width: 16 },
+      { header: l.fieldOs, key: 'os', width: 12 },
+      { header: l.fieldScreen, key: 'screen', width: 12 },
+      { header: l.fieldLanguage, key: 'language', width: 10 },
+      { header: l.colPages, key: 'pages', width: 9 },
+      { header: l.colDuration, key: 'duration', width: 12 },
+      { header: l.fieldLanding, key: 'landing', width: 30 },
+      { header: l.fieldReferrer, key: 'referrer', width: 30 },
+    ];
+    this.styleHeader(ws.getRow(1));
+
+    for (const v of visits) {
+      ws.addRow({
+        startedAt: new Date(v.startedAt),
+        user: v.userName ?? l.anonymous,
+        ip: v.ip ?? '',
+        location: formatLocation(v) ?? '',
+        device: v.deviceType ? l.devices[v.deviceType] : '',
+        browser: [v.browser, v.browserVersion].filter(Boolean).join(' '),
+        os: v.os ?? '',
+        screen: v.screen ?? '',
+        language: v.language ?? '',
+        pages: v.pageCount,
+        duration: formatDuration(v.durationSeconds),
+        landing: v.landingPath ?? '',
+        referrer: v.referrer ?? '',
+      });
+    }
+
+    await this.download(wb, `${l.excelFile}.xlsx`);
   }
 }
