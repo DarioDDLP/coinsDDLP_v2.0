@@ -198,6 +198,7 @@
     "title": "Administración",
     "navUsers": "Usuarios",
     "navLog": "Registro",
+    "navDb": "Base de datos",
     "usersTitle": "Gestión de usuarios",
     "colEmail": "Email",
     "colName": "Nombre",
@@ -326,6 +327,191 @@
       "country": "País",
       "region": "Región",
       "city": "Ciudad"
+    },
+    "db": {
+      "title": "Base de datos",
+      "hint": "Cómo se guardan los datos en Supabase: tablas, relaciones, quién puede leer y escribir, y qué procesos las tocan.",
+      "kpiTables": "Tablas",
+      "kpiRows": "Filas en total",
+      "kpiEuros": "Monedas de euro en catálogo",
+      "kpiUsers": "Usuarios",
+      "diagramTitle": "Diagrama de tablas",
+      "diagramHint": "Pasa por encima de una tabla o proceso para ver con qué se relaciona; púlsalo para ver el detalle.",
+      "diagramLabel": "Diagrama entidad-relación de la base de datos",
+      "rows": "filas",
+      "processesTitle": "Procesos",
+      "listTitle": "Tablas por dominio",
+      "flowTitle": "Cómo encaja todo",
+      "flowLabel": "Esquema de la arquitectura de la aplicación",
+      "legend": {
+        "pk": "Clave primaria",
+        "fk": "Clave foránea (apunta a otra tabla)",
+        "relation": "Relación",
+        "external": "Tabla de Supabase (esquema auth)"
+      },
+      "groups": {
+        "catalog": "Catálogo de euros",
+        "collections": "Colecciones",
+        "pesetas": "Pesetas",
+        "location": "Ubicación",
+        "permissions": "Permisos",
+        "accessLog": "Registro de accesos",
+        "numista": "Numista",
+        "auth": "Autenticación"
+      },
+      "operations": {
+        "select": "Leer",
+        "insert": "Crear",
+        "update": "Editar",
+        "delete": "Borrar"
+      },
+      "access": {
+        "public": "Público",
+        "authenticated": "Con sesión",
+        "self": "Solo las suyas",
+        "admin": "Admin",
+        "service": "Edge Function",
+        "none": "Nadie",
+        "permissionHint": "El admin tiene siempre todos los permisos."
+      },
+      "onDelete": {
+        "cascade": "al borrar, se borra en cascada",
+        "setNull": "al borrar, queda vacío",
+        "restrict": "no deja borrar si hay filas que la usan"
+      },
+      "dialog": {
+        "rows": "Filas",
+        "group": "Dominio",
+        "columns": "Columnas",
+        "colName": "Columna",
+        "colType": "Tipo",
+        "colNote": "Notas",
+        "pk": "PK",
+        "fk": "FK",
+        "nullable": "Opcional",
+        "accessTitle": "Quién puede hacer qué (RLS)",
+        "relationsTitle": "Relaciones",
+        "relationTo": "apunta a",
+        "relationFrom": "la usa",
+        "writtenBy": "La escriben",
+        "frontend": "La app (con los permisos de arriba)"
+      },
+      "processes": {
+        "numistaProxy": {
+          "label": "numista-proxy",
+          "kind": "Edge Function",
+          "description": "Consulta la API de Numista sin exponer la clave y anota cada consulta para la cuota."
+        },
+        "adminUsers": {
+          "label": "admin-users",
+          "kind": "Edge Function",
+          "description": "Solo admin: crea, edita y borra usuarios, sus permisos, su colección y los del Invitado."
+        },
+        "accessLog": {
+          "label": "access-log",
+          "kind": "Edge Function",
+          "description": "Guarda visitas y eventos con navegador, dispositivo y ubicación aproximada."
+        },
+        "retention": {
+          "label": "access-log-retention",
+          "kind": "pg_cron · cada noche",
+          "description": "Borra las visitas de más de 90 días (y sus eventos)."
+        }
+      },
+      "tables": {
+        "euro": {
+          "description": "Catálogo de todas las monedas de euro: una fila por moneda (país, año, valor facial, ceca, variante). No guarda quién la tiene.",
+          "columns": {
+            "faceValue": "«2 Euros C» = conmemorativa de 2 €",
+            "circulation": "false = no circulante (de coleccionista)",
+            "idNum": "ID de Numista: foto y datos de la ficha",
+            "variant": "LA / LR, solo en 2 €"
+          }
+        },
+        "owner": {
+          "description": "Colecciones: una por usuario con colección propia (su id es el del usuario). La marcada por defecto es la que ven los visitantes.",
+          "columns": {
+            "id": "= id del usuario en auth.users",
+            "isDefault": "Solo una puede serlo"
+          }
+        },
+        "euro_ownership": {
+          "description": "Qué monedas tiene cada colección: unidades, conservación y observaciones. Una fila por moneda y colección; si no hay fila, no la tiene (ND).",
+          "columns": {
+            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC"
+          }
+        },
+        "peseta_type": {
+          "description": "Tipos de peseta circulantes 1868–2001 sacados de Numista: datos técnicos, imágenes y descripciones en castellano.",
+          "columns": {
+            "idNum": "ID de Numista"
+          }
+        },
+        "peseta": {
+          "description": "Cada año de acuñación de un tipo de peseta, con las unidades, la conservación y las observaciones de la colección.",
+          "columns": {
+            "label": "Año tal como se muestra (p. ej. «1975 (*80)»)"
+          }
+        },
+        "country_location": {
+          "description": "En qué álbum físico está guardado cada país y entre qué años. Un país puede ocupar varios álbumes.",
+          "columns": {
+            "isClosed": "El álbum ya no admite más años"
+          }
+        },
+        "user_permission": {
+          "description": "Permisos concedidos a cada usuario, además de los que hereda del Invitado.",
+          "columns": {}
+        },
+        "guest_permission": {
+          "description": "Permisos del perfil Invitado: los tienen los visitantes sin sesión y también todos los usuarios.",
+          "columns": {}
+        },
+        "access_visit": {
+          "description": "Registro de accesos: una fila por pestaña abierta (dispositivo, navegador, ubicación aproximada, usuario). La vista access_visit_summary añade páginas vistas y duración.",
+          "columns": {
+            "ip": "Dato personal (RGPD)",
+            "userName": "Copia: se conserva aunque se borre el usuario"
+          }
+        },
+        "access_event": {
+          "description": "Lo que pasa dentro de cada visita: páginas vistas, inicios y cierres de sesión e intentos fallidos.",
+          "columns": {
+            "type": "page, login, logout, login_failed"
+          }
+        },
+        "numista_usage": {
+          "description": "Una fila por consulta a la API de Numista, para saber cuántas quedan este mes.",
+          "columns": {}
+        },
+        "auth_users": {
+          "description": "Usuarios de Supabase Auth: email, contraseña cifrada y rol. Vive en el esquema auth y la gestiona Supabase.",
+          "columns": {
+            "raw_app_meta_data": "role = 'admin' para el administrador"
+          }
+        }
+      },
+      "flow": {
+        "browser": "Navegador",
+        "browserSub": "Angular 22 · alojado en Vercel",
+        "supabase": "Supabase",
+        "edge": "Edge Functions",
+        "edgeSub": "numista-proxy · admin-users · access-log",
+        "dataApi": "Data API + RLS",
+        "dataApiSub": "lecturas y escrituras directas",
+        "auth": "Auth",
+        "authSub": "login, sesión y contraseñas",
+        "postgres": "PostgreSQL",
+        "postgresSub": "tablas · funciones · pg_cron",
+        "numista": "API de Numista",
+        "numistaSub": "fotos y datos de euros",
+        "ipapi": "ipapi.co",
+        "ipapiSub": "ubicación de la IP",
+        "step1": "La app lee y escribe las tablas directamente con la Data API; la RLS de cada tabla decide qué se permite según la sesión y los permisos.",
+        "step2": "El login y la sesión van por Supabase Auth; el token lleva el rol (admin) y el id del usuario que usa la RLS.",
+        "step3": "Lo que necesita secretos o saltarse la RLS pasa por Edge Functions con la service_role: Numista, la gestión de usuarios y el registro de accesos.",
+        "step4": "pg_cron ejecuta tareas dentro de la base de datos: cada noche limpia el registro de accesos."
+      }
     }
   },
   "herramientas": {

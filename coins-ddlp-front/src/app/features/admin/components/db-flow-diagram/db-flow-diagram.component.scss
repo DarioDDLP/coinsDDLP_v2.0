@@ -1,0 +1,83 @@
+@use 'mixins' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.flow-scroll {
+  @include card;
+  overflow-x: auto;
+  padding: var(--space-3);
+}
+
+.flow {
+  display: block;
+  width: 100%;
+  min-width: 760px;
+  height: auto;
+  font-family: var(--font-family);
+
+  &__supabase {
+    fill: var(--surface-1);
+    stroke: var(--state-success-text);
+    stroke-opacity: 0.45;
+    stroke-dasharray: 6 4;
+  }
+
+  &__supabase-label {
+    fill: var(--state-success-text);
+    font-size: var(--font-xs);
+    font-weight: var(--font-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+  }
+
+  &__box {
+    fill: var(--surface-2);
+    stroke: var(--border);
+  }
+
+  &__node--outside .flow__box {
+    fill: var(--surface-3);
+    stroke: var(--accent);
+    stroke-opacity: 0.5;
+  }
+
+  &__title {
+    fill: var(--text);
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+  }
+
+  &__subtitle {
+    fill: var(--text-muted);
+    font-size: var(--font-2xs);
+  }
+
+  &__link {
+    fill: none;
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+  }
+
+  &__arrow {
+    fill: var(--border-strong);
+  }
+}
+
+.steps {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding-left: var(--space-5);
+  font-size: var(--font-sm);
+  line-height: var(--line-height-normal);
+  color: var(--text-soft);
+
+  &__item::marker {
+    color: var(--accent);
+    font-weight: var(--font-semibold);
+  }
+}

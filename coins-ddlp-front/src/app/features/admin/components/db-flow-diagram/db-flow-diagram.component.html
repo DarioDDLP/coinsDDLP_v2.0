@@ -1,0 +1,63 @@
+<div class="flow-scroll">
+  <svg class="flow" [attr.viewBox]="viewBox" role="img" [attr.aria-label]="label()">
+    <defs>
+      <marker
+        id="db-flow-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path class="flow__arrow" d="M 0 0 L 10 5 L 0 10 z" />
+      </marker>
+    </defs>
+
+    <rect
+      class="flow__supabase"
+      [attr.x]="supabase.x"
+      [attr.y]="supabase.y"
+      [attr.width]="supabase.width"
+      [attr.height]="supabase.height"
+      rx="16"
+    />
+    <text class="flow__supabase-label" [attr.x]="supabase.x + 20" [attr.y]="supabase.y + 24">
+      {{ t().supabase }}
+    </text>
+
+    @for (link of links; track $index) {
+      <path class="flow__link" [attr.d]="link" marker-end="url(#db-flow-arrow)" />
+    }
+
+    @for (node of nodes(); track node.name) {
+      <g class="flow__node" [class.flow__node--outside]="node.outside">
+        <rect
+          class="flow__box"
+          [attr.x]="node.x"
+          [attr.y]="node.y"
+          [attr.width]="node.width"
+          [attr.height]="node.height"
+          rx="10"
+        />
+        <text class="flow__title" text-anchor="middle" [attr.x]="node.cx" [attr.y]="node.cy - 3">
+          {{ node.title }}
+        </text>
+        <text
+          class="flow__subtitle"
+          text-anchor="middle"
+          [attr.x]="node.cx"
+          [attr.y]="node.cy + 15"
+        >
+          {{ node.subtitle }}
+        </text>
+      </g>
+    }
+  </svg>
+</div>
+
+<ol class="steps">
+  @for (step of steps(); track $index) {
+    <li class="steps__item">{{ step }}</li>
+  }
+</ol>

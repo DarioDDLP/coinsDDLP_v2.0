@@ -1,0 +1,146 @@
+<div class="diagram-scroll">
+  <svg
+    class="diagram"
+    [class.diagram--highlight]="related().active"
+    [attr.viewBox]="viewBox"
+    role="group"
+    [attr.aria-label]="t().diagramLabel"
+  >
+    <defs>
+      <marker
+        id="db-diagram-arrow"
+        viewBox="0 0 10 10"
+        refX="9"
+        refY="5"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path class="edge__arrow" d="M 0 0 L 10 5 L 0 10 z" />
+      </marker>
+    </defs>
+
+    @for (edge of edges; track $index) {
+      <path
+        class="edge"
+        [class.edge--active]="related().relations.has($index)"
+        [attr.d]="edge.path"
+        marker-end="url(#db-diagram-arrow)"
+      />
+    }
+
+    @for (card of cards(); track card.table.name) {
+      <g
+        class="card"
+        [class]="'card--' + card.table.group"
+        [class.card--external]="card.table.external"
+        [class.card--active]="related().tables.has(card.table.name)"
+        tabindex="0"
+        role="button"
+        [attr.aria-label]="card.ariaLabel"
+        (click)="onSelect(card.table.name)"
+        (keydown.enter)="onSelect(card.table.name, $event)"
+        (keydown.space)="onSelect(card.table.name, $event)"
+        (mouseenter)="highlight.set({ kind: 'table', name: card.table.name })"
+        (mouseleave)="highlight.set(null)"
+        (focus)="highlight.set({ kind: 'table', name: card.table.name })"
+        (blur)="highlight.set(null)"
+      >
+        <title>{{ t().tables[card.table.name].description }}</title>
+        <rect
+          class="card__box"
+          [attr.x]="card.rect.x"
+          [attr.y]="card.rect.y"
+          [attr.width]="card.rect.width"
+          [attr.height]="card.rect.height"
+          rx="10"
+        />
+        <circle class="card__dot" [attr.cx]="card.rect.x + 16" [attr.cy]="card.rect.y + 17" r="4" />
+        <text class="card__name" [attr.x]="card.rect.x + 28" [attr.y]="card.rect.y + 22">
+          {{ card.table.sqlName }}
+        </text>
+        <text
+          class="card__rows"
+          text-anchor="end"
+          [attr.x]="card.rect.x + card.rect.width - 12"
+          [attr.y]="card.rect.y + 22"
+        >
+          {{ card.rowsLabel }}
+        </text>
+        <line
+          class="card__divider"
+          [attr.x1]="card.rect.x"
+          [attr.x2]="card.rect.x + card.rect.width"
+          [attr.y1]="card.rect.y + 32"
+          [attr.y2]="card.rect.y + 32"
+        />
+        @for (row of card.columns; track row.column.name) {
+          @if (row.tag) {
+            <text class="card__tag" [attr.x]="card.rect.x + 12" [attr.y]="row.y">
+              {{ row.tag }}
+            </text>
+          }
+          <text
+            class="card__column"
+            [class.card__column--key]="row.tag"
+            [attr.x]="card.rect.x + 38"
+            [attr.y]="row.y"
+          >
+            {{ row.column.name }}
+          </text>
+          <text
+            class="card__type"
+            text-anchor="end"
+            [attr.x]="card.rect.x + card.rect.width - 12"
+            [attr.y]="row.y"
+          >
+            {{ row.column.type }}
+          </text>
+        }
+      </g>
+    }
+
+    <text class="processes-label" [attr.x]="20" [attr.y]="processLabelY">
+      {{ t().processesTitle }}
+    </text>
+    @for (p of processes(); track p.process.name) {
+      <g
+        class="process"
+        [class.process--active]="related().processes.has(p.process.name)"
+        tabindex="0"
+        [attr.aria-label]="p.text.label + '. ' + p.text.description"
+        (mouseenter)="highlight.set({ kind: 'process', name: p.process.name })"
+        (mouseleave)="highlight.set(null)"
+        (focus)="highlight.set({ kind: 'process', name: p.process.name })"
+        (blur)="highlight.set(null)"
+      >
+        <title>{{ p.text.description }}</title>
+        <rect
+          class="process__box"
+          [attr.x]="p.rect.x"
+          [attr.y]="p.rect.y"
+          [attr.width]="p.rect.width"
+          [attr.height]="p.rect.height"
+          rx="12"
+        />
+        <text class="process__name" [attr.x]="p.rect.x + 16" [attr.y]="p.rect.y + 24">
+          {{ p.text.label }}
+        </text>
+        <text class="process__kind" [attr.x]="p.rect.x + 16" [attr.y]="p.rect.y + 42">
+          {{ p.text.kind }}
+        </text>
+      </g>
+    }
+  </svg>
+</div>
+
+<ul class="legend">
+  <li class="legend__item"><span class="legend__tag">PK</span>{{ t().legend.pk }}</li>
+  <li class="legend__item"><span class="legend__tag">FK</span>{{ t().legend.fk }}</li>
+  <li class="legend__item">
+    <span class="legend__line" aria-hidden="true"></span>{{ t().legend.relation }}
+  </li>
+  <li class="legend__item">
+    <span class="legend__external" aria-hidden="true"></span>{{ t().legend.external }}
+  </li>
+</ul>

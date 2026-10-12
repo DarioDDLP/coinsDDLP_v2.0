@@ -1,0 +1,65 @@
+<div class="database">
+  <div class="database__heading">
+    <h2 class="database__title">{{ t().title }}</h2>
+    <p class="database__hint">{{ t().hint }}</p>
+  </div>
+
+  @if (!isReady()) {
+    <div class="kpi-grid">
+      <app-skeleton layout="inline" [count]="4" height="7.5rem" radius="lg" />
+    </div>
+  } @else if (hasError()) {
+    <app-error-panel (retry)="onRetry()" />
+  } @else {
+    <div class="kpi-grid">
+      <app-stat-card icon="pi pi-table" [label]="t().kpiTables" [value]="tableCount" />
+      <app-stat-card icon="pi pi-list" [label]="t().kpiRows" [value]="totalRows()" />
+      <app-stat-card icon="pi pi-euro" [label]="t().kpiEuros" [value]="counts().euro ?? 0" />
+      <app-stat-card icon="pi pi-users" [label]="t().kpiUsers" [value]="counts().auth_users ?? 0" />
+    </div>
+  }
+
+  <section class="database__section" [attr.aria-label]="t().diagramTitle">
+    <div class="database__section-head">
+      <h3 class="database__subtitle">{{ t().diagramTitle }}</h3>
+      <p class="database__hint">{{ t().diagramHint }}</p>
+    </div>
+    <app-db-diagram [counts]="counts()" (selected)="openTable($event)" />
+  </section>
+
+  <section class="database__section" [attr.aria-label]="t().listTitle">
+    <h3 class="database__subtitle">{{ t().listTitle }}</h3>
+    <div class="groups">
+      @for (g of groups(); track g.group) {
+        <div class="groups__item" [class]="'groups__item--' + g.group">
+          <p class="groups__label">
+            <span class="groups__dot" aria-hidden="true"></span>{{ g.label }}
+          </p>
+          <ul class="groups__tables">
+            @for (table of g.tables; track table.name) {
+              <li>
+                <button type="button" class="groups__table" (click)="openTable(table.name)">
+                  <code>{{ table.sqlName }}</code>
+                  @if (table.rows) {
+                    <span class="groups__rows">{{ table.rows }}</span>
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </section>
+
+  <section class="database__section" [attr.aria-label]="t().flowTitle">
+    <h3 class="database__subtitle">{{ t().flowTitle }}</h3>
+    <app-db-flow-diagram />
+  </section>
+</div>
+
+<app-db-table-dialog
+  [(visible)]="dialogVisible"
+  [(tableName)]="selectedTable"
+  [counts]="counts()"
+/>

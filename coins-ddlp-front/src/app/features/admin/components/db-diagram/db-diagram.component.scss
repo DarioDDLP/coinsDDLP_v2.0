@@ -1,0 +1,204 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+// En pantallas estrechas el diagrama conserva un ancho legible y se desplaza dentro de su caja
+.diagram-scroll {
+  @include card;
+  overflow-x: auto;
+  padding: var(--space-3);
+}
+
+.diagram {
+  display: block;
+  width: 100%;
+  min-width: 860px;
+  height: auto;
+  font-family: var(--font-family);
+}
+
+.card {
+  @include db-group-modifiers;
+  cursor: pointer;
+  outline: none;
+  transition: opacity var(--transition-fast);
+
+  &__box {
+    fill: var(--surface-2);
+    stroke: var(--border);
+    stroke-width: 1;
+    transition:
+      stroke var(--transition-fast),
+      fill var(--transition-fast);
+  }
+
+  &__dot {
+    fill: var(--group);
+  }
+
+  &__name {
+    fill: var(--text);
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+  }
+
+  &__rows {
+    fill: var(--text-muted);
+    font-size: var(--font-xs);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__divider {
+    stroke: var(--border-subtle);
+  }
+
+  &__tag {
+    fill: var(--accent);
+    font-size: var(--font-2xs);
+    font-weight: var(--font-bold);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  &__column {
+    fill: var(--text-soft);
+    font-size: var(--font-xs);
+
+    &--key {
+      fill: var(--text);
+      font-weight: var(--font-medium);
+    }
+  }
+
+  &__type {
+    fill: var(--text-faint);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-2xs);
+  }
+
+  &--external .card__box {
+    fill: var(--surface-1);
+    stroke-dasharray: 5 4;
+  }
+
+  &:hover .card__box,
+  &--active .card__box {
+    stroke: var(--group);
+  }
+
+  &:focus-visible .card__box {
+    stroke: var(--primary);
+    stroke-width: 2;
+  }
+}
+
+.edge {
+  fill: none;
+  stroke: var(--border-strong);
+  stroke-width: 1.5;
+  transition:
+    stroke var(--transition-fast),
+    opacity var(--transition-fast);
+
+  &__arrow {
+    fill: var(--border-strong);
+  }
+
+  &--active {
+    stroke: var(--accent);
+    stroke-width: 2;
+  }
+}
+
+.processes-label {
+  fill: var(--text-faint);
+  font-size: var(--font-2xs);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+}
+
+.process {
+  outline: none;
+  transition: opacity var(--transition-fast);
+
+  &__box {
+    fill: var(--surface-1);
+    stroke: var(--border);
+    stroke-dasharray: 4 3;
+  }
+
+  &__name {
+    fill: var(--text);
+    font-family: var(--font-family-mono);
+    font-size: var(--font-xs);
+    font-weight: var(--font-semibold);
+  }
+
+  &__kind {
+    fill: var(--text-muted);
+    font-size: var(--font-2xs);
+  }
+
+  &--active .process__box {
+    stroke: var(--accent);
+    stroke-dasharray: none;
+  }
+
+  &:focus-visible .process__box {
+    stroke: var(--primary);
+    stroke-width: 2;
+  }
+}
+
+// Con algo resaltado, lo que no tiene relación se atenúa
+.diagram--highlight {
+  .card:not(.card--active),
+  .process:not(.process--active) {
+    opacity: 0.35;
+  }
+
+  .edge:not(.edge--active) {
+    opacity: 0.2;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-xs);
+  color: var(--text-muted);
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  &__tag {
+    color: var(--accent);
+    font-size: var(--font-2xs);
+    font-weight: var(--font-bold);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+
+  &__line {
+    width: var(--space-6);
+    border-top: 2px solid var(--border-strong);
+  }
+
+  &__external {
+    width: var(--space-4);
+    height: var(--space-3);
+    border: 1px dashed var(--border-strong);
+    border-radius: var(--radius-sm);
+  }
+}

@@ -18,4 +18,11 @@ export const adminRoutes: Routes = [
         (m) => m.AdminAccessLogComponent,
       ),
   },
+  {
+    path: 'base-datos',
+    loadComponent: () =>
+      import('./components/admin-database/admin-database.component').then(
+        (m) => m.AdminDatabaseComponent,
+      ),
+  },
 ];

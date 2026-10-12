@@ -69,7 +69,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 
 - `core/` — singletons. `guards/` (`adminGuard` para `/admin`; `permissionGuard(...permisos)` para secciones y Herramientas; ambos esperan a que cargue la sesión; `authGuard` existe pero ninguna ruta lo usa); `services/`: `supabase` (CRUD genérico, cliente por el token `SUPABASE_CLIENT` de `app.config.ts`), `auth` (`ready`), `permissions` (permisos efectivos, `injectCan(...)`, ver **Permisos**), `numista` (Edge Function `numista-proxy`, expone la cuota restante), `access-log` (registro de accesos, ver **Registro de accesos**), `owner` (colecciones de la tabla `owner`, la activa y la comparada), `global-error-handler`; `theme/app-preset.ts` (preset Aura oscuro)
 - `layout/` — shell: `sidebar`, `user-menu`, `topbar`, `bottom-nav`, `more-sheet`, `login-dialog`, `recovery-password-dialog`, `layout-state.service.ts` (viewport, sidebar plegado, panel "Más", diálogo de login), `navigation.config.ts` (`NAV_ITEMS`)
-- `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (estadisticas-dashboard, year-chart, `estadisticas.service`), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog, admin-access-log, access-visit-dialog), `tools` (tools-add-euro, tools-add-year)
+- `features/` — `euros` (euros-countries, euros-country, coin-detail-drawer, coin-uds-dialog, `euros-permissions.ts`), `conmemorativas`, `pesetas` (pesetas-browser, peseta-detail-drawer, peseta-edit-dialog, `denomination-order.ts`), `estadisticas` (estadisticas-dashboard, year-chart, `estadisticas.service`), `ubicacion` (ubicacion-map, ubicacion-edit-dialog), `admin` (admin-users, admin-user-dialog, admin-access-log, access-visit-dialog, admin-database, db-diagram, db-flow-diagram, db-table-dialog, `config/db-schema.config.ts`), `tools` (tools-add-euro, tools-add-year)
 - `shared/` — `components/` (page-layout, detail-drawer, skeleton, progress-stat, badge, button, buttons-header, dialog, confirm-dialog, country-flag, empty-panel, error-panel, filter-pills, search-input, select, stat-card, text-input, textarea, toggle); `constants/` (toast-messages, i18n (idiomas y clave de `localStorage`), countries (`COUNTRY_DB_NAMES`), dialog, conservation-states, collections, `*-filter.config`, `face-value-order`, `app-version` = versión de `package.json`, mostrada al pie del sidebar y de "Más"); `interfaces/`; `helpers/` (normalize-strings, country, search-state, badge, unique-id, empty-state, ownership = `isOwned`, euro-stats = agregados de Estadísticas); `pipes/` (euro-value, countryName, faceValue); `services/` (i18n, excel-export con ExcelJS (recibe las cabeceras traducidas), page-header)
 - `app.config.ts`: Supabase, Router, HttpClient con `fetch`, PrimeNG (preset + licencia), Transloco (loader `core/i18n/transloco-loader.ts`, idioma inicial `core/i18n/initial-lang.ts`, diccionario precargado con `provideAppInitializer`), `LOCALE_ID 'es'` (solo por defecto: los números usan `lang()`). Assets en `coins-ddlp-front/public/` (favicon, `assets/flags/`)
 
@@ -102,7 +102,7 @@ Tema oscuro **"medianoche + oro"** siempre activo. Prototipo: https://claude.ai/
 | `/pesetas?valor=5 pesetas` · `/pesetas/moneda/:id` | chips de denominación · + drawer |
 | `/ubicacion` | álbumes en tarjetas; pública, edición solo admin |
 | `/estadisticas` | pública: KPIs, progreso por país, valor facial y año (euros, según la colección activa) |
-| `/admin/usuarios` · `/admin/registro` | `adminGuard` (usuarios · registro de accesos) |
+| `/admin/usuarios` · `/admin/registro` · `/admin/base-datos` | `adminGuard` (usuarios · registro de accesos · mapa de la BD) |
 | `/herramientas/añadir-euro\|año` | `permissionGuard('tools.addEuro' / 'tools.addYear')`; `/herramientas` abre la primera pestaña permitida |
 
 `/conmemorativas`, `/pesetas`, `/ubicacion` y `/estadisticas` llevan `permissionGuard('section.…')`.
@@ -151,6 +151,14 @@ El admin (`app_metadata.role = 'admin'`) tiene todos. El resto: perfil **Invitad
 - Editar pesetas y gestionar usuarios no son permisos: solo admin
 - Contraseñas: cada usuario cambia la suya ("Cambiar contraseña" en el menú de usuario y en "Más", `recovery-password-dialog` con `mode="change"`); el admin envía el email de recuperación desde el diálogo de usuario
 
+## Mapa de la base de datos
+
+Solo el admin, en `/admin/base-datos`: cifras (tablas, filas, euros, usuarios), diagrama entidad-relación en SVG propio (tarjetas por dominio con color `--db-*` y mixin `db-group-modifiers`, flechas de las FK, procesos: Edge Functions y pg_cron; al pasar por encima se resalta lo relacionado), tablas por dominio, diálogo de cada tabla (`db-table-dialog`: descripción, quién puede leer/crear/editar/borrar según la RLS, relaciones navegables, quién la escribe, columnas) y esquema de la arquitectura (`db-flow-diagram`).
+
+- **Estructura fija** en `features/admin/config/db-schema.config.ts` (`DB_TABLES` con columnas, acceso y posición en el diagrama, `DB_RELATIONS`, `DB_PROCESSES`) y textos en `admin.db` de los JSON (`DbTableName` = claves de `admin.db.tables`). **Al añadir o cambiar una tabla, columna, FK o política RLS hay que actualizar el config, sus textos y `db_table_counts()`**; `db-schema.config.spec.ts` comprueba la coherencia (FK ↔ relaciones, tarjetas sin solaparse)
+- **Recuentos en vivo**: función `db_table_counts()` (`20261012000000_db_overview.sql`, `security definer`, error si no `is_admin()`, sin `execute` para `anon`) vía `DbOverviewService`; incluye `auth.users` y los `user_permission` que la RLS oculta
+- Para revisar el esquema real: `npx supabase@latest db query --linked "select … from information_schema.columns …"` (solo lectura)
+
 ## Registro de accesos
 
 Solo el admin, en `/admin/registro`. Una **visita** es una pestaña abierta (`visitId` en `sessionStorage`: recargar no crea otra).
@@ -162,13 +170,14 @@ Solo el admin, en `/admin/registro`. Una **visita** es una pestaña abierta (`vi
 
 ## Estado actual
 
-> **Última actualización:** 2026-10-10
+> **Última actualización:** 2026-10-12
 
 - Producción: **https://coinsddlp.vercel.app** (Vercel Hobby, deploy en cada push a `main`)
 - **Versión en producción: v3.5.1** (v3.0.0 = Angular 22 + PrimeNG 22 + rediseño oscuro y responsive; v3.0.1 = sin toasts de errores de scripts ajenos; v3.1.0 = versión visible + Estadísticas; v3.2.0 = idiomas ES/EN; v3.3.0 = permisos de usuario, PR #4; v3.4.0 = colección propia por usuario, PR #5; v3.5.0 = registro de accesos, PR #7; v3.5.1 = `fileReplacements` en `angular.json`: hasta entonces producción usaba `environment.ts`). Si falla en producción: Vercel → Deployments → Instant Rollback
 - **Releases con release-please:** en cada push a `main`, `.github/workflows/release-please.yml` abre o actualiza el PR `chore(release): vX.Y.Z` con `CHANGELOG.md` y la versión en `version.txt`, `coins-ddlp-front/package.json` y `package-lock.json`, **lo fusiona solo** (`gh pr merge` con el `GITHUB_TOKEN`) y en la misma ejecución vuelve a llamar a release-please para crear la etiqueta `vX.Y.Z` y la release de GitHub (un merge con el `GITHUB_TOKEN` no lanza otro workflow). Desde 2026-10-09: cada `feat`/`fix` sale como versión al momento; tras cada release hay que hacer `git pull` en local. Si el merge falla, el PR queda abierto y se fusiona a mano con `gh pr merge <n> --merge`. Versión según los commits: `fix`/`refactor`/`perf` → parche, `feat` → menor, `!`/BREAKING CHANGE → mayor; `docs`/`chore` no sacan versión. Configuración en `release-please-config.json` (repo entero, etiquetas sin componente, secciones en castellano) y `.release-please-manifest.json` (versión actual, la mantiene el robot). Nunca subir la versión ni etiquetar a mano. Requiere en GitHub *Settings → Actions → General → Allow GitHub Actions to create and approve pull requests* y *Settings → General → Automatically delete head branches* (ambos activados). Comprobado: el primer `fix` abrió el PR #1 y al fusionarlo salió v3.0.1. Si una ejecución falla, la siguiente agrupa en un solo PR todos los commits pendientes (así salió v3.1.0, PR #2). `gh` instalado y autenticado (2026-10-09): los PR de release se pueden fusionar con `gh pr merge <n> --merge`. **Merge automático comprobado el 2026-10-10**: al fusionar el PR #5, el workflow abrió y fusionó solo el PR #6 y creó `v3.4.0` en ~20 s. Los PR de funcionalidad se fusionan a mano (el modo auto de Claude Code no deja a Claude fusionar en `main`)
 
 **Pendiente:**
+- **Mapa de la base de datos** (rama `feat/admin-db-overview`, migración aplicada el 2026-10-12): revisar `/admin/base-datos` con la sesión real de admin (cifras, diagrama, diálogo, móvil) tras el deploy
 0. **Idiomas ES/EN** (en producción desde v3.2.0; Numista en inglés ya comprobado): probar en un navegador real el cambio en caliente (menú, títulos, filtros, tablas, toasts, diálogos, barra de móvil), que se recuerde al recargar y el Excel en inglés
 1. **Estadísticas** (en producción desde v3.1.0): revisar en un navegador real (tooltip del gráfico por año, móvil, cambio de colección). Ampliaciones posibles: conservación, repetidas para intercambio, pesetas
 2. Probar en navegador lo del 2026-10-04 que solo se verificó compilando: banderas ISO3 (tarjetas de países, cabecera, fichas, conmemorativas, ubicación, topbar en móvil), diálogos (reabrir tras cancelar, cerrar sesión, Escape en recuperación, pie fijo en móvil), toasts (ancho en móvil, sin duplicados offline) y estados vacíos (búsqueda, Faltantes)

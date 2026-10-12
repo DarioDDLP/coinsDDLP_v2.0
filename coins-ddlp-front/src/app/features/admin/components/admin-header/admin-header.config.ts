@@ -4,4 +4,5 @@ import { Translations } from '../../../../shared/interfaces/translations.interfa
 export const getAdminNavItems = (t: Translations['admin']): NavItem[] => [
   { label: t.navUsers, routerLink: '/admin/usuarios', icon: 'pi pi-users' },
   { label: t.navLog, routerLink: '/admin/registro', icon: 'pi pi-history' },
+  { label: t.navDb, routerLink: '/admin/base-datos', icon: 'pi pi-database' },
 ];

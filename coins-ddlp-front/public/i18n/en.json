@@ -198,6 +198,7 @@
     "title": "Administration",
     "navUsers": "Users",
     "navLog": "Log",
+    "navDb": "Database",
     "usersTitle": "User management",
     "colEmail": "Email",
     "colName": "Name",
@@ -326,6 +327,191 @@
       "country": "Country",
       "region": "Region",
       "city": "City"
+    },
+    "db": {
+      "title": "Database",
+      "hint": "How data is stored in Supabase: tables, relations, who can read and write, and which processes touch them.",
+      "kpiTables": "Tables",
+      "kpiRows": "Total rows",
+      "kpiEuros": "Euro coins in the catalogue",
+      "kpiUsers": "Users",
+      "diagramTitle": "Table diagram",
+      "diagramHint": "Hover over a table or process to see what it relates to; click it for details.",
+      "diagramLabel": "Entity-relationship diagram of the database",
+      "rows": "rows",
+      "processesTitle": "Processes",
+      "listTitle": "Tables by domain",
+      "flowTitle": "How it all fits together",
+      "flowLabel": "Diagram of the application architecture",
+      "legend": {
+        "pk": "Primary key",
+        "fk": "Foreign key (points to another table)",
+        "relation": "Relation",
+        "external": "Supabase table (auth schema)"
+      },
+      "groups": {
+        "catalog": "Euro catalogue",
+        "collections": "Collections",
+        "pesetas": "Pesetas",
+        "location": "Location",
+        "permissions": "Permissions",
+        "accessLog": "Access log",
+        "numista": "Numista",
+        "auth": "Authentication"
+      },
+      "operations": {
+        "select": "Read",
+        "insert": "Create",
+        "update": "Edit",
+        "delete": "Delete"
+      },
+      "access": {
+        "public": "Public",
+        "authenticated": "Signed in",
+        "self": "Own rows only",
+        "admin": "Admin",
+        "service": "Edge Function",
+        "none": "Nobody",
+        "permissionHint": "The admin always has every permission."
+      },
+      "onDelete": {
+        "cascade": "on delete, cascades",
+        "setNull": "on delete, set to empty",
+        "restrict": "cannot delete while rows use it"
+      },
+      "dialog": {
+        "rows": "Rows",
+        "group": "Domain",
+        "columns": "Columns",
+        "colName": "Column",
+        "colType": "Type",
+        "colNote": "Notes",
+        "pk": "PK",
+        "fk": "FK",
+        "nullable": "Optional",
+        "accessTitle": "Who can do what (RLS)",
+        "relationsTitle": "Relations",
+        "relationTo": "points to",
+        "relationFrom": "used by",
+        "writtenBy": "Written by",
+        "frontend": "The app (with the permissions above)"
+      },
+      "processes": {
+        "numistaProxy": {
+          "label": "numista-proxy",
+          "kind": "Edge Function",
+          "description": "Queries the Numista API without exposing the key and records each call for the quota."
+        },
+        "adminUsers": {
+          "label": "admin-users",
+          "kind": "Edge Function",
+          "description": "Admin only: creates, edits and deletes users, their permissions and collection, and the Guest permissions."
+        },
+        "accessLog": {
+          "label": "access-log",
+          "kind": "Edge Function",
+          "description": "Stores visits and events with browser, device and approximate location."
+        },
+        "retention": {
+          "label": "access-log-retention",
+          "kind": "pg_cron · nightly",
+          "description": "Deletes visits older than 90 days (and their events)."
+        }
+      },
+      "tables": {
+        "euro": {
+          "description": "Catalogue of every euro coin: one row per coin (country, year, face value, mint, variant). It does not store who owns it.",
+          "columns": {
+            "faceValue": "“2 Euros C” = €2 commemorative",
+            "circulation": "false = non-circulating (collector)",
+            "idNum": "Numista ID: photo and details",
+            "variant": "LA / LR, €2 only"
+          }
+        },
+        "owner": {
+          "description": "Collections: one per user with their own collection (its id is the user's). The default one is what visitors see.",
+          "columns": {
+            "id": "= user id in auth.users",
+            "isDefault": "Only one can be"
+          }
+        },
+        "euro_ownership": {
+          "description": "Which coins each collection has: units, condition and notes. One row per coin and collection; no row means not owned (ND).",
+          "columns": {
+            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC"
+          }
+        },
+        "peseta_type": {
+          "description": "Circulating peseta types 1868–2001 scraped from Numista: technical data, images and descriptions in Spanish.",
+          "columns": {
+            "idNum": "Numista ID"
+          }
+        },
+        "peseta": {
+          "description": "Each minting year of a peseta type, with the collection's units, condition and notes.",
+          "columns": {
+            "label": "Year as displayed (e.g. “1975 (*80)”)"
+          }
+        },
+        "country_location": {
+          "description": "Which physical album holds each country, and for which years. A country can span several albums.",
+          "columns": {
+            "isClosed": "The album takes no more years"
+          }
+        },
+        "user_permission": {
+          "description": "Permissions granted to each user, on top of those inherited from Guest.",
+          "columns": {}
+        },
+        "guest_permission": {
+          "description": "Guest profile permissions: held by signed-out visitors and by every user too.",
+          "columns": {}
+        },
+        "access_visit": {
+          "description": "Access log: one row per open tab (device, browser, approximate location, user). The access_visit_summary view adds pages viewed and duration.",
+          "columns": {
+            "ip": "Personal data (GDPR)",
+            "userName": "Copy: kept even if the user is deleted"
+          }
+        },
+        "access_event": {
+          "description": "What happens within each visit: pages viewed, sign-ins, sign-outs and failed attempts.",
+          "columns": {
+            "type": "page, login, logout, login_failed"
+          }
+        },
+        "numista_usage": {
+          "description": "One row per Numista API call, to know how many are left this month.",
+          "columns": {}
+        },
+        "auth_users": {
+          "description": "Supabase Auth users: email, hashed password and role. Lives in the auth schema and is managed by Supabase.",
+          "columns": {
+            "raw_app_meta_data": "role = 'admin' for the administrator"
+          }
+        }
+      },
+      "flow": {
+        "browser": "Browser",
+        "browserSub": "Angular 22 · hosted on Vercel",
+        "supabase": "Supabase",
+        "edge": "Edge Functions",
+        "edgeSub": "numista-proxy · admin-users · access-log",
+        "dataApi": "Data API + RLS",
+        "dataApiSub": "direct reads and writes",
+        "auth": "Auth",
+        "authSub": "sign-in, session and passwords",
+        "postgres": "PostgreSQL",
+        "postgresSub": "tables · functions · pg_cron",
+        "numista": "Numista API",
+        "numistaSub": "euro photos and details",
+        "ipapi": "ipapi.co",
+        "ipapiSub": "IP location",
+        "step1": "The app reads and writes tables directly through the Data API; each table's RLS decides what is allowed based on the session and permissions.",
+        "step2": "Sign-in and session go through Supabase Auth; the token carries the role (admin) and the user id that RLS uses.",
+        "step3": "Anything that needs secrets or must bypass RLS goes through Edge Functions with the service_role: Numista, user management and the access log.",
+        "step4": "pg_cron runs jobs inside the database: every night it cleans up the access log."
+      }
     }
   },
   "herramientas": {
