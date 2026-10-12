@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.6.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.5.1...v3.6.0) (2026-10-12)
+
+
+### Novedades
+
+* add database overview tab to admin ([bc8ed6a](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/bc8ed6ac7fa598177d8d8c79eb0225b75dc9ff07))
+* add database overview tab to admin ([45d3ab3](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/45d3ab3b54e41c1b07fe121f52b9a1204c021788))
+
 ## [3.5.1](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.5.0...v3.5.1) (2026-10-10)
 
 
