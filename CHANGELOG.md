@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.6.1](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.6.0...v3.6.1) (2026-10-12)
+
+
+### Correcciones
+
+* open database tables without column notes ([dbe9076](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/dbe90760ca57d920d2185fa280ef0b2b1755649e))
+* open database tables without column notes ([34163a7](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/34163a709ec292cde86391ffb7b1d155e03be9c8))
+* track database table writers by index ([fc3b6bd](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/fc3b6bd7e9150a81358d036a4472a21d2dadd228))
+
 ## [3.6.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.5.1...v3.6.0) (2026-10-12)
 
 
