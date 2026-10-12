@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.7.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.6.1...v3.7.0) (2026-10-12)
+
+
+### Novedades
+
+* **trades:** request spare coins from other collections ([64c28b7](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/64c28b76ca29061fa116184a00e95a9116f12fc4))
+* **trades:** request spare coins from other collections ([c0e83f9](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/c0e83f90f64d2cbf4d20cff894c0555734691e34))
+
 ## [3.6.1](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.6.0...v3.6.1) (2026-10-12)
 
 
