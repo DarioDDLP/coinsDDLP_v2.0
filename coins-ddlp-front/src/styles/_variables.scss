@@ -55,6 +55,16 @@
   --state-accent-bg: rgba(212, 175, 106, 0.16);
   --state-accent-text: #e6c88e;
 
+  // Diagrama de la base de datos (Admin → Base de datos): un color por dominio
+  --db-catalog: var(--accent);
+  --db-collections: var(--primary-soft);
+  --db-pesetas: var(--state-warn-text);
+  --db-location: var(--state-success-text);
+  --db-permissions: var(--state-danger-text);
+  --db-access-log: #c4b5fd;
+  --db-numista: #5eead4;
+  --db-auth: var(--text-muted);
+
   // Radios
   --radius-sm: 6px;
   --radius-md: 10px;

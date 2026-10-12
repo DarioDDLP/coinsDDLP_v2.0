@@ -126,3 +126,22 @@
     }
   }
 }
+
+// Modificadores `--<dominio>` que fijan `--group` al color de ese dominio (Admin → Base de datos)
+@mixin db-group-modifiers {
+  $groups: (
+    catalog: --db-catalog,
+    collections: --db-collections,
+    pesetas: --db-pesetas,
+    location: --db-location,
+    permissions: --db-permissions,
+    accessLog: --db-access-log,
+    numista: --db-numista,
+    auth: --db-auth,
+  );
+  @each $group, $token in $groups {
+    &--#{$group} {
+      --group: var(#{$token});
+    }
+  }
+}

@@ -1,0 +1,130 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+}
+
+.database {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-md);
+    font-weight: var(--font-semibold);
+  }
+
+  &__hint {
+    margin: var(--space-1) 0 0;
+    font-size: var(--font-xs);
+    color: var(--text-faint);
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  &__subtitle {
+    @include overline;
+    margin: 0;
+  }
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+
+  @include tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mobile {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-3);
+
+  @include tablet {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @include mobile {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  &__item {
+    @include card;
+    @include db-group-modifiers;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+  }
+
+  &__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin: 0;
+    font-size: var(--font-sm);
+    font-weight: var(--font-semibold);
+    color: var(--text);
+  }
+
+  &__dot {
+    width: var(--space-2);
+    height: var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--group);
+  }
+
+  &__tables {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__table {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    width: 100%;
+    padding: var(--space-1) var(--space-2);
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--text-soft);
+    font-size: var(--font-xs);
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+    @include focus-ring;
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--text);
+    }
+
+    code {
+      font-family: var(--font-family-mono);
+    }
+  }
+
+  &__rows {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+}

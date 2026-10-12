@@ -1,0 +1,112 @@
+<app-dialog [(visible)]="visible" [header]="detail()?.table?.sqlName ?? ''" size="lg">
+  @if (detail(); as d) {
+    <div class="table-detail">
+      <p class="table-detail__description">{{ d.description }}</p>
+
+      <dl class="table-detail__meta">
+        <div>
+          <dt>{{ t().dialog.group }}</dt>
+          <dd>
+            <span
+              class="group-dot"
+              [class]="'group-dot--' + d.table.group"
+              aria-hidden="true"
+            ></span
+            >{{ d.group }}
+          </dd>
+        </div>
+        @if (d.rows !== null) {
+          <div>
+            <dt>{{ t().dialog.rows }}</dt>
+            <dd class="table-detail__number">{{ d.rows }}</dd>
+          </div>
+        }
+      </dl>
+
+      <section class="table-detail__section">
+        <h3 class="table-detail__subtitle">{{ t().dialog.accessTitle }}</h3>
+        <dl class="access">
+          @for (op of d.access; track op.label) {
+            <div class="access__row">
+              <dt class="access__op">{{ op.label }}</dt>
+              <dd class="access__badges">
+                @for (badge of op.badges; track $index) {
+                  <app-badge
+                    [label]="badge.label"
+                    [severity]="badge.severity"
+                    [tooltip]="badge.tooltip"
+                  />
+                }
+              </dd>
+            </div>
+          }
+        </dl>
+        <p class="table-detail__hint">{{ t().access.permissionHint }}</p>
+      </section>
+
+      @if (d.outgoing.length || d.incoming.length) {
+        <section class="table-detail__section">
+          <h3 class="table-detail__subtitle">{{ t().dialog.relationsTitle }}</h3>
+          <ul class="relations">
+            @for (r of d.outgoing; track r.column) {
+              <li class="relations__item">
+                <code>{{ r.column }}</code> {{ t().dialog.relationTo }}
+                <button type="button" class="relations__link" (click)="goTo(r.table)">
+                  {{ r.sqlName }}
+                </button>
+                <span class="relations__note">· {{ r.onDelete }}</span>
+              </li>
+            }
+            @for (r of d.incoming; track r.table + r.column) {
+              <li class="relations__item">
+                {{ t().dialog.relationFrom }}
+                <button type="button" class="relations__link" (click)="goTo(r.table)">
+                  {{ r.sqlName }}
+                </button>
+                <code>.{{ r.column }}</code>
+                <span class="relations__note">· {{ r.onDelete }}</span>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (d.writers.length) {
+        <section class="table-detail__section">
+          <h3 class="table-detail__subtitle">{{ t().dialog.writtenBy }}</h3>
+          <ul class="writers">
+            @for (writer of d.writers; track writer) {
+              <li><app-badge [label]="writer" severity="neutral" /></li>
+            }
+          </ul>
+        </section>
+      }
+
+      <section class="table-detail__section">
+        <h3 class="table-detail__subtitle">{{ t().dialog.columns }}</h3>
+        <ul class="columns">
+          @for (c of d.columns; track c.name) {
+            <li class="columns__item">
+              <div class="columns__head">
+                <code class="columns__name">{{ c.name }}</code>
+                @if (c.pk) {
+                  <app-badge [label]="t().dialog.pk" severity="accent" />
+                }
+                @if (c.fk) {
+                  <app-badge [label]="t().dialog.fk" severity="info" />
+                }
+                @if (c.nullable) {
+                  <span class="columns__optional">{{ t().dialog.nullable }}</span>
+                }
+                <span class="columns__type">{{ c.type }}</span>
+              </div>
+              @if (c.note) {
+                <p class="columns__note">{{ c.note }}</p>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    </div>
+  }
+</app-dialog>
