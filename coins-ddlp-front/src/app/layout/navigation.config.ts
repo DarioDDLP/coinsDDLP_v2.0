@@ -18,7 +18,13 @@ export interface NavItem {
   permissions?: Permission[];
   /** Pestaña fija en la barra inferior de móvil; el resto va al panel "Más". */
   mobilePrimary?: boolean;
+  /** Solo con sesión iniciada. */
+  requiresAuth?: boolean;
+  /** Contador de novedades que se pinta junto al elemento. */
+  badge?: NavBadge;
 }
+
+export type NavBadge = 'tradesUnread';
 
 export const NUMISTA_MONTHLY_QUOTA = 2000;
 
@@ -63,6 +69,14 @@ export const NAV_ITEMS: NavItem[] = [
     permissions: ['section.estadisticas'],
   },
   {
+    labelKey: 'trades',
+    routerLink: '/intercambios',
+    icon: 'pi pi-arrow-right-arrow-left',
+    group: 'collection',
+    requiresAuth: true,
+    badge: 'tradesUnread',
+  },
+  {
     labelKey: 'admin',
     routerLink: '/admin',
     icon: 'pi pi-shield',
@@ -78,12 +92,14 @@ export const NAV_ITEMS: NavItem[] = [
   },
 ];
 
-/** Si el elemento de navegación se muestra con el rol y los permisos actuales. */
+/** Si el elemento de navegación se muestra con la sesión, el rol y los permisos actuales. */
 export function isNavItemVisible(
   item: NavItem,
   isAdmin: boolean,
   granted: ReadonlySet<Permission>,
+  isLoggedIn: boolean,
 ): boolean {
   if (item.adminOnly && !isAdmin) return false;
+  if (item.requiresAuth && !isLoggedIn) return false;
   return !item.permissions || item.permissions.some((p) => granted.has(p));
 }

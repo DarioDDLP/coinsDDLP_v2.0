@@ -60,7 +60,9 @@
     "ownership": "Posesión",
     "actions": "Acciones",
     "close": "Cerrar",
-    "progress": "Progreso"
+    "progress": "Progreso",
+    "filterRepeated": "Repetidas",
+    "emptyRepeated": "No hay monedas repetidas"
   },
   "auth": {
     "loginTitle": "Acceder",
@@ -129,7 +131,8 @@
     "descriptionLabel": "Descripción",
     "editingFor": "Colección de",
     "nonCirculatingShort": "NC",
-    "nonCirculatingLegend": "Monedas no circulantes (atenuadas)"
+    "nonCirculatingLegend": "Monedas no circulantes (atenuadas)",
+    "tradeHiddenLabel": "No ofrecer las repetidas para intercambio"
   },
   "nav": {
     "brand": "DDLP",
@@ -162,7 +165,8 @@
     "language": "Idioma",
     "languageHint": "Cambiar idioma",
     "languageSpanish": "Español",
-    "languageEnglish": "English"
+    "languageEnglish": "English",
+    "trades": "Intercambios"
   },
   "coinDetail": {
     "labelIssuer": "Emisor",
@@ -240,7 +244,8 @@
         "tools": "Herramientas",
         "location": "Ubicación",
         "consult": "Consulta",
-        "sections": "Secciones visibles"
+        "sections": "Secciones visibles",
+        "trades": "Intercambios"
       },
       "items": {
         "euros_units_editOwn": "Editar unidades de su colección",
@@ -259,7 +264,8 @@
         "section_ubicacion": "Ubicación",
         "section_pesetas": "Pesetas",
         "section_conmemorativas": "Conmemorativas",
-        "numista_quotaView": "Ver la cuota de Numista"
+        "numista_quotaView": "Ver la cuota de Numista",
+        "trade_request": "Solicitar monedas repetidas a otras colecciones"
       }
     },
     "accessLog": {
@@ -438,7 +444,8 @@
         "euro_ownership": {
           "description": "Qué monedas tiene cada colección: unidades, conservación y observaciones. Una fila por moneda y colección; si no hay fila, no la tiene (ND).",
           "columns": {
-            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC"
+            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC",
+            "tradeHidden": "El dueño no ofrece sus repetidas para intercambio"
           }
         },
         "peseta_type": {
@@ -488,6 +495,22 @@
           "description": "Usuarios de Supabase Auth: email, contraseña cifrada y rol. Vive en el esquema auth y la gestiona Supabase.",
           "columns": {
             "raw_app_meta_data": "role = 'admin' para el administrador"
+          }
+        },
+        "trade_request": {
+          "description": "Solicitudes de intercambio: un usuario pide monedas repetidas a otra colección. Solo las ven las dos partes y se crean y cambian de estado con las funciones trade_request_*.",
+          "columns": {
+            "requesterName": "Nombre del solicitante al enviarla",
+            "kind": "exchange, purchase, gift",
+            "status": "pending, accepted, rejected, cancelled, completed",
+            "ownerSeen": "Novedades vistas por el dueño",
+            "requesterSeen": "Novedades vistas por el solicitante"
+          }
+        },
+        "trade_request_item": {
+          "description": "Monedas de cada solicitud y cuántas se piden (como mucho las repetidas que ofrece el dueño).",
+          "columns": {
+            "quantity": "Mayor que 0"
           }
         }
       },
@@ -674,6 +697,67 @@
     "location": "Álb / H / Pos",
     "allFileSuffix": "todas",
     "conmemorativasFile": "conmemorativas"
+  },
+  "trades": {
+    "title": "Intercambios",
+    "overline": "Repetidas",
+    "subtitle": "Monedas que pides y que te piden",
+    "tabsLabel": "Secciones de intercambios",
+    "tabCart": "Solicitud",
+    "tabReceived": "Recibidas",
+    "tabSent": "Enviadas",
+    "repeatedBadge": "Rep.",
+    "repeatedHint": "Repetidas que ofrece",
+    "loginToRequest": "Inicia sesión para pedirla",
+    "addToCart": "Añadir a la solicitud",
+    "inCartFull": "Ya está en tu solicitud",
+    "addedToCart": "Moneda añadida a la solicitud",
+    "cartEmpty": "Tu solicitud está vacía",
+    "cartEmptyMessage": "Busca en la colección de otro usuario las monedas marcadas como «Rep.» y añádelas desde la tabla o la ficha",
+    "requestTo": "Pedir a",
+    "quantity": "Cantidad",
+    "available": "disponibles",
+    "remove": "Quitar de la solicitud",
+    "kind": "Tipo",
+    "kindExchange": "Cambio",
+    "kindPurchase": "Compra",
+    "kindGift": "Regalo",
+    "message": "Mensaje",
+    "messagePlaceholder": "Cuéntale qué ofreces a cambio o cómo prefieres hacerlo…",
+    "send": "Enviar solicitud",
+    "sentSuccess": "Solicitud enviada",
+    "receivedEmpty": "No has recibido solicitudes",
+    "sentEmpty": "No has enviado solicitudes",
+    "colDate": "Fecha",
+    "colFrom": "De",
+    "colTo": "Para",
+    "colKind": "Tipo",
+    "colCoins": "Monedas",
+    "colStatus": "Estado",
+    "unread": "Novedad",
+    "unreadCount": "solicitudes con novedades",
+    "statusPending": "Pendiente",
+    "statusAccepted": "Aceptada",
+    "statusRejected": "Rechazada",
+    "statusCancelled": "Cancelada",
+    "statusCompleted": "Completada",
+    "requestTitle": "Solicitud",
+    "from": "De",
+    "to": "Para",
+    "coins": "Monedas",
+    "response": "Respuesta",
+    "responsePlaceholder": "Respuesta opcional…",
+    "noMessage": "Sin mensaje",
+    "accept": "Aceptar",
+    "reject": "Rechazar",
+    "cancelRequest": "Cancelar solicitud",
+    "complete": "Marcar como completada",
+    "contact": "Contacto",
+    "contactHint": "Escríbele para acordar el intercambio",
+    "respondSuccess": "Respuesta enviada",
+    "cancelSuccess": "Solicitud cancelada",
+    "completeSuccess": "Intercambio completado",
+    "unitsReminder": "Recuerda actualizar las unidades de tu colección cuando entregues las monedas"
   },
   "primeng": {
     "emptyMessage": "No hay resultados",

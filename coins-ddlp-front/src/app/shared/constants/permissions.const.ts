@@ -23,6 +23,7 @@ export const PERMISSIONS = [
   'section.pesetas',
   'section.conmemorativas',
   'numista.quotaView',
+  'trade.request',
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number];
@@ -61,6 +62,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
     ],
   },
   { labelKey: 'tools', permissions: ['tools.addEuro', 'tools.addYear'] },
+  { labelKey: 'trades', permissions: ['trade.request'] },
   {
     labelKey: 'location',
     permissions: ['location.create', 'location.update', 'location.delete', 'location.viewInLists'],

@@ -1,0 +1,113 @@
+<app-dialog [(visible)]="visible" [header]="header()" size="lg" (hidden)="onHidden()">
+  @if (status(); as s) {
+    <app-badge dialog-header-end [label]="s.label" [severity]="s.severity" />
+  }
+
+  @if (request(); as r) {
+    <div class="trade-request">
+      <dl class="trade-request__parties">
+        <div>
+          <dt>{{ literals().from }}</dt>
+          <dd>{{ r.requesterName }}</dd>
+        </div>
+        <div>
+          <dt>{{ literals().to }}</dt>
+          <dd>{{ r.ownerName }}</dd>
+        </div>
+        <div>
+          <dt>{{ literals().colDate }}</dt>
+          <dd>{{ r.createdAt | date: 'medium' : undefined : lang() }}</dd>
+        </div>
+      </dl>
+
+      <section class="trade-request__section">
+        <h3 class="trade-request__title">{{ literals().coins }}</h3>
+        <ul class="trade-request__items">
+          @for (item of r.items; track item.euroId) {
+            <li class="trade-request__item">
+              <app-trade-coin class="trade-request__coin" [coin]="item.euro" />
+              <span class="trade-request__qty">×{{ item.quantity }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+
+      <section class="trade-request__section">
+        <h3 class="trade-request__title">{{ literals().message }}</h3>
+        <p class="trade-request__text" [class.trade-request__text--empty]="!r.message">
+          {{ r.message || literals().noMessage }}
+        </p>
+      </section>
+
+      @if (r.response) {
+        <section class="trade-request__section">
+          <h3 class="trade-request__title">{{ literals().response }}</h3>
+          <p class="trade-request__text">{{ r.response }}</p>
+        </section>
+      }
+
+      @if (canRespond()) {
+        <app-textarea
+          [label]="literals().response"
+          [placeholder]="literals().responsePlaceholder"
+          [value]="response()"
+          (valueChange)="response.set($event)"
+        />
+      }
+
+      @if (showsContact() && contact()) {
+        <section class="trade-request__contact">
+          <i class="pi pi-envelope" aria-hidden="true"></i>
+          <div>
+            <h3 class="trade-request__title">{{ literals().contact }}</h3>
+            <a [href]="'mailto:' + contact()">{{ contact() }}</a>
+            <p class="trade-request__hint">{{ literals().contactHint }}</p>
+          </div>
+        </section>
+      }
+
+      @if (isOwner() && canComplete()) {
+        <p class="trade-request__hint">{{ literals().unitsReminder }}</p>
+      }
+    </div>
+  }
+
+  <ng-container dialog-footer>
+    <app-button
+      [label]="sharedLiterals().close"
+      variant="secondary"
+      (clicked)="visible.set(false)"
+    />
+    @if (canCancel()) {
+      <app-button
+        [label]="literals().cancelRequest"
+        variant="danger"
+        [loading]="loadingAction() === 'cancel'"
+        (clicked)="run('cancel')"
+      />
+    }
+    @if (canRespond()) {
+      <app-button
+        [label]="literals().reject"
+        variant="danger"
+        [loading]="loadingAction() === 'reject'"
+        [disabled]="loadingAction() === 'accept'"
+        (clicked)="run('reject')"
+      />
+      <app-button
+        [label]="literals().accept"
+        [loading]="loadingAction() === 'accept'"
+        [disabled]="loadingAction() === 'reject'"
+        (clicked)="run('accept')"
+      />
+    }
+    @if (canComplete()) {
+      <app-button
+        icon="pi pi-check"
+        [label]="literals().complete"
+        [loading]="loadingAction() === 'complete'"
+        (clicked)="run('complete')"
+      />
+    }
+  </ng-container>
+</app-dialog>

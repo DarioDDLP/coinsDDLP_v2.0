@@ -28,6 +28,8 @@ import { ConfirmDialogComponent } from '../../../../shared/components/confirm-di
 import { SkeletonComponent } from '../../../../shared/components/skeleton/skeleton.component';
 import { EurosService } from '../../services/euros.service';
 import { OwnerService } from '../../../../core/services/owner.service';
+import { TradeCartService } from '../../../../core/services/trade-cart.service';
+import { coinRepeated } from '../../../../shared/helpers/trade.helper';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { I18nService, injectLiterals } from '../../../../shared/services/i18n.service';
 import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
@@ -88,16 +90,20 @@ export class EurosCountryComponent {
   private router = inject(Router);
   private errorHandler = inject(ErrorHandler);
   readonly ownerService = inject(OwnerService);
+  private tradeCart = inject(TradeCartService);
 
   readonly literals = injectLiterals('euros');
   readonly sharedLiterals = injectLiterals('shared');
+  readonly tradeLiterals = injectLiterals('trades');
   private excelLiterals = injectLiterals('excel');
   private excelLabels = computed<ExcelLabels>(() => ({
     ...this.excelLiterals(),
     primaryName: this.ownerService.primaryName(),
     compareName: this.ownerService.compareName(),
   }));
-  readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
+  readonly ownershipOptions = computed(() =>
+    getOwnershipFilterOptions(this.sharedLiterals(), true),
+  );
   readonly backLink = ['/euros'];
 
   readonly country = toSignal(this.route.paramMap.pipe(map((p) => p.get('country') ?? '')), {
@@ -125,7 +131,8 @@ export class EurosCountryComponent {
 
   readonly canEdit = injectCanEditCoins();
   readonly canDelete = injectCan('euros.delete');
-  readonly showActions = computed(() => this.canEdit() || this.canDelete());
+  readonly canAddToCart = this.tradeCart.canAddFromSource;
+  readonly showActions = computed(() => this.canEdit() || this.canDelete() || this.canAddToCart());
   readonly canExport = injectCan('export.excel');
   readonly canSwitchCollection = injectCan('collection.switch');
   private readonly yearChipsNav = viewChild<ElementRef<HTMLElement>>('yearChipsNav');
@@ -218,6 +225,7 @@ export class EurosCountryComponent {
         // Al comparar: obtenida si la tiene alguna de las dos; faltante si no la tiene ninguna
         if (ownership === 'owned') return isOwned(c.uds, c.udsAlt, both);
         if (ownership === 'missing') return !isOwned(c.uds, c.udsAlt, both);
+        if (ownership === 'repeated') return this.repeatedOf(c) > 0;
         return true;
       })
       .filter(
@@ -239,8 +247,21 @@ export class EurosCountryComponent {
         ? getConservationBadge(coin.conservationAlt)
         : null,
       udsBadgeAlt: coin.udsAlt !== undefined ? getUdsBadge(coin.udsAlt) : null,
+      repeated: this.repeatedOf(coin),
+      cartFull:
+        this.tradeCart.quantityOf(coin.id, this.ownerService.tradeSourceId()) >=
+        this.repeatedOf(coin),
     })),
   );
+
+  /** Tooltip del badge de repetidas: de quién son y, sin sesión, cómo pedirlas. */
+  readonly repeatedTooltip = computed(() => {
+    const t = this.tradeLiterals();
+    const hint = `${t.repeatedHint} ${this.ownerService.tradeSourceName()}`;
+    return this.ownerService.canRequestFromSource() && !this.canAddToCart()
+      ? `${hint} · ${t.loginToRequest}`
+      : hint;
+  });
 
   readonly hasMint = computed(() => this.visibleCoins().some((c) => c.mint));
   readonly hasNonCirculating = computed(() => this.visibleCoins().some((c) => !c.circulation));
@@ -295,6 +316,21 @@ export class EurosCountryComponent {
   onEditUnits(coin: EuroCoin): void {
     this.selectedCoin.set(coin);
     this.dialogVisible.set(true);
+  }
+
+  onAddToCart(coin: EuroCoin): void {
+    if (this.tradeCart.addFromSource(coin)) {
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.trades.addedToCart));
+    }
+  }
+
+  /** Repetidas en la colección cuyas repetidas se ven; el dueño ve también las que no ofrece. */
+  private repeatedOf(coin: EuroCoin): number {
+    return coinRepeated(
+      coin,
+      this.ownerService.tradeSide(),
+      !this.ownerService.canRequestFromSource(),
+    );
   }
 
   onDeleteCoin(coin: EuroCoin): void {

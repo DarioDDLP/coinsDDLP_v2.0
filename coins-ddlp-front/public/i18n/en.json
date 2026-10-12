@@ -60,7 +60,9 @@
     "ownership": "Ownership",
     "actions": "Actions",
     "close": "Close",
-    "progress": "Progress"
+    "progress": "Progress",
+    "filterRepeated": "Spares",
+    "emptyRepeated": "There are no spare coins"
   },
   "auth": {
     "loginTitle": "Sign in",
@@ -129,7 +131,8 @@
     "descriptionLabel": "Description",
     "editingFor": "Collection of",
     "nonCirculatingShort": "NC",
-    "nonCirculatingLegend": "Non-circulating coins (dimmed)"
+    "nonCirculatingLegend": "Non-circulating coins (dimmed)",
+    "tradeHiddenLabel": "Do not offer the spares for trade"
   },
   "nav": {
     "brand": "DDLP",
@@ -162,7 +165,8 @@
     "language": "Language",
     "languageHint": "Change language",
     "languageSpanish": "Español",
-    "languageEnglish": "English"
+    "languageEnglish": "English",
+    "trades": "Trades"
   },
   "coinDetail": {
     "labelIssuer": "Issuer",
@@ -240,7 +244,8 @@
         "tools": "Tools",
         "location": "Location",
         "consult": "Browsing",
-        "sections": "Visible sections"
+        "sections": "Visible sections",
+        "trades": "Trades"
       },
       "items": {
         "euros_units_editOwn": "Edit units in their own collection",
@@ -259,7 +264,8 @@
         "section_ubicacion": "Location",
         "section_pesetas": "Pesetas",
         "section_conmemorativas": "Commemoratives",
-        "numista_quotaView": "See the Numista quota"
+        "numista_quotaView": "See the Numista quota",
+        "trade_request": "Request spare coins from other collections"
       }
     },
     "accessLog": {
@@ -438,7 +444,8 @@
         "euro_ownership": {
           "description": "Which coins each collection has: units, condition and notes. One row per coin and collection; no row means not owned (ND).",
           "columns": {
-            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC"
+            "conservation": "FDC, SC, EBC, MBC, BC, RC, MC",
+            "tradeHidden": "The owner does not offer their spares for trade"
           }
         },
         "peseta_type": {
@@ -488,6 +495,22 @@
           "description": "Supabase Auth users: email, hashed password and role. Lives in the auth schema and is managed by Supabase.",
           "columns": {
             "raw_app_meta_data": "role = 'admin' for the administrator"
+          }
+        },
+        "trade_request": {
+          "description": "Trade requests: a user asks another collection for spare coins. Only both parties can see them; they are created and change status through the trade_request_* functions.",
+          "columns": {
+            "requesterName": "Requester name when sent",
+            "kind": "exchange, purchase, gift",
+            "status": "pending, accepted, rejected, cancelled, completed",
+            "ownerSeen": "Updates seen by the owner",
+            "requesterSeen": "Updates seen by the requester"
+          }
+        },
+        "trade_request_item": {
+          "description": "Coins in each request and how many are requested (at most the spares the owner offers).",
+          "columns": {
+            "quantity": "Greater than 0"
           }
         }
       },
@@ -674,6 +697,67 @@
     "location": "Alb / P / Pos",
     "allFileSuffix": "all",
     "conmemorativasFile": "commemoratives"
+  },
+  "trades": {
+    "title": "Trades",
+    "overline": "Spares",
+    "subtitle": "Coins you request and coins requested from you",
+    "tabsLabel": "Trade sections",
+    "tabCart": "Request",
+    "tabReceived": "Received",
+    "tabSent": "Sent",
+    "repeatedBadge": "Spare",
+    "repeatedHint": "Spares offered by",
+    "loginToRequest": "Sign in to request it",
+    "addToCart": "Add to request",
+    "inCartFull": "Already in your request",
+    "addedToCart": "Coin added to the request",
+    "cartEmpty": "Your request is empty",
+    "cartEmptyMessage": "Browse another user’s collection for coins marked «Spare» and add them from the table or the detail panel",
+    "requestTo": "Request to",
+    "quantity": "Quantity",
+    "available": "available",
+    "remove": "Remove from request",
+    "kind": "Type",
+    "kindExchange": "Swap",
+    "kindPurchase": "Purchase",
+    "kindGift": "Gift",
+    "message": "Message",
+    "messagePlaceholder": "Tell them what you offer in return or how you’d like to do it…",
+    "send": "Send request",
+    "sentSuccess": "Request sent",
+    "receivedEmpty": "You have not received any requests",
+    "sentEmpty": "You have not sent any requests",
+    "colDate": "Date",
+    "colFrom": "From",
+    "colTo": "To",
+    "colKind": "Type",
+    "colCoins": "Coins",
+    "colStatus": "Status",
+    "unread": "New",
+    "unreadCount": "requests with updates",
+    "statusPending": "Pending",
+    "statusAccepted": "Accepted",
+    "statusRejected": "Rejected",
+    "statusCancelled": "Cancelled",
+    "statusCompleted": "Completed",
+    "requestTitle": "Request",
+    "from": "From",
+    "to": "To",
+    "coins": "Coins",
+    "response": "Reply",
+    "responsePlaceholder": "Optional reply…",
+    "noMessage": "No message",
+    "accept": "Accept",
+    "reject": "Decline",
+    "cancelRequest": "Cancel request",
+    "complete": "Mark as completed",
+    "contact": "Contact",
+    "contactHint": "Write to them to arrange the trade",
+    "respondSuccess": "Reply sent",
+    "cancelSuccess": "Request cancelled",
+    "completeSuccess": "Trade completed",
+    "unitsReminder": "Remember to update your collection units once you hand over the coins"
   },
   "primeng": {
     "emptyMessage": "No results found",

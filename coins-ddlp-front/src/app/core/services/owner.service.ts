@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import { SUPABASE_CLIENT } from '../../app.config';
 import { Owner, OwnerSelection } from '../../shared/interfaces/owner.interface';
 import { ComparedNames } from '../../shared/interfaces/owned-count.interface';
+import { TradeSide } from '../../shared/interfaces/trade.interface';
 import { TABLES } from '../../shared/constants/collections.const';
 import { AuthService } from './auth.service';
 import { PermissionsService } from './permissions.service';
@@ -72,6 +73,26 @@ export class OwnerService {
   /** Nombres para el desglose por colección; `null` si no se compara. */
   readonly comparedNames = computed<ComparedNames>(() =>
     this.isComparing() ? { primary: this.primaryName(), compare: this.compareName() } : null,
+  );
+
+  /**
+   * Lado de la comparación cuyas repetidas se muestran: la colección vista que no es
+   * la tuya (la principal si no es tuya; si no, la comparada). Viendo solo la tuya, la tuya.
+   */
+  readonly tradeSide = computed<TradeSide>(() =>
+    this.isComparing() && this.primaryId() === this.ownId() ? 'compare' : 'primary',
+  );
+
+  /** Colección cuyas repetidas se muestran. */
+  readonly tradeSourceId = computed(() =>
+    this.tradeSide() === 'primary' ? this.primaryId() : this.compareId(),
+  );
+
+  readonly tradeSourceName = computed(() => this.nameOf(this.tradeSourceId()));
+
+  /** Las repetidas que se ven son de otro: se pueden pedir. */
+  readonly canRequestFromSource = computed(
+    () => this.tradeSourceId() !== null && this.tradeSourceId() !== this.ownId(),
   );
 
   /**

@@ -7,6 +7,7 @@ export const TABLES = {
   countryLocation: 'country_location',
   userPermission: 'user_permission',
   guestPermission: 'guest_permission',
+  tradeRequest: 'trade_request',
 } as const;
 
 export type TableName = (typeof TABLES)[keyof typeof TABLES];

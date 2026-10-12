@@ -4,6 +4,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { injectLiterals } from '../../shared/services/i18n.service';
 import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { NumistaService } from '../../core/services/numista.service';
+import { TradeRequestsService } from '../../core/services/trade-requests.service';
 import { AuthService } from '../../core/services/auth.service';
 import { injectCan, PermissionsService } from '../../core/services/permissions.service';
 import { LayoutStateService } from '../layout-state.service';
@@ -11,10 +12,12 @@ import {
   isNavItemVisible,
   NAV_ITEMS,
   NavGroup,
+  NavBadge,
   NavItem,
   NUMISTA_MONTHLY_QUOTA,
 } from '../navigation.config';
 import { UserMenuComponent } from '../user-menu/user-menu.component';
+import { NavCountComponent } from '../nav-count/nav-count.component';
 import { LanguageToggleComponent } from '../../shared/components/language-toggle/language-toggle.component';
 
 interface NavSection {
@@ -27,6 +30,7 @@ interface NavSection {
   selector: 'app-sidebar',
   imports: [
     LanguageToggleComponent,
+    NavCountComponent,
     RouterLink,
     RouterLinkActive,
     TooltipModule,
@@ -44,16 +48,19 @@ export class SidebarComponent {
   readonly numistaService = inject(NumistaService);
   private permissions = inject(PermissionsService);
   readonly canViewQuota = injectCan('numista.quotaView');
+  private trades = inject(TradeRequestsService);
 
   readonly literals = injectLiterals('nav');
   readonly authLiterals = injectLiterals('auth');
+  readonly tradesLiterals = injectLiterals('trades');
   readonly quota = NUMISTA_MONTHLY_QUOTA;
   readonly version = APP_VERSION;
 
   readonly sections = computed<NavSection[]>(() => {
     const isAdmin = this.authService.isAdmin();
     const granted = this.permissions.granted();
-    const visible = NAV_ITEMS.filter((i) => isNavItemVisible(i, isAdmin, granted));
+    const loggedIn = this.authService.isLoggedIn();
+    const visible = NAV_ITEMS.filter((i) => isNavItemVisible(i, isAdmin, granted, loggedIn));
     const sections: NavSection[] = [
       { group: 'collection', label: this.literals().groupCollection, items: [] },
       { group: 'management', label: this.literals().groupManagement, items: [] },
@@ -61,6 +68,10 @@ export class SidebarComponent {
     for (const item of visible) sections.find((s) => s.group === item.group)!.items.push(item);
     return sections.filter((s) => s.items.length > 0);
   });
+
+  badgeCount(badge: NavBadge | undefined): number {
+    return badge === 'tradesUnread' ? this.trades.unreadCount() : 0;
+  }
 
   readonly quotaPercent = computed(() => {
     const remaining = this.numistaService.remaining();

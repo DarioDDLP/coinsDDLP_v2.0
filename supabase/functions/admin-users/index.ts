@@ -22,6 +22,7 @@ const VALID_PERMISSIONS = new Set([
   'section.pesetas',
   'section.conmemorativas',
   'numista.quotaView',
+  'trade.request',
 ]);
 
 // Solo de consulta: el Invitado no puede escribir. Debe coincidir con GUEST_PERMISSIONS del front

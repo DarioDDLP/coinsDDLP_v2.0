@@ -1,0 +1,103 @@
+@use 'mixins' as *;
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+}
+
+.trade-cart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__group {
+    @include card;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-5);
+
+    @include mobile {
+      padding: var(--space-4);
+    }
+  }
+
+  &__overline {
+    @include overline;
+  }
+
+  &__owner {
+    margin: var(--space-1) 0 0;
+    font-size: var(--font-lg);
+  }
+
+  &__items {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-subtle);
+
+    @include mobile {
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+  }
+
+  &__coin {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    @include mobile {
+      flex-basis: 100%;
+    }
+  }
+
+  &__qty {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 7rem;
+
+    @include mobile {
+      flex: 1 1 auto;
+    }
+  }
+
+  &__available {
+    font-size: var(--font-xs);
+    color: var(--text-faint);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  &__kind {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &__label {
+    font-size: var(--font-sm);
+    font-weight: var(--font-medium);
+    color: var(--text-soft);
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

@@ -1,0 +1,49 @@
+@if (hasError()) {
+  <app-page-layout [title]="literals().title">
+    <app-error-panel (retry)="load()" />
+  </app-page-layout>
+} @else {
+  <app-page-layout
+    [title]="literals().title"
+    [overline]="literals().overline"
+    [subtitle]="literals().subtitle"
+  >
+    <app-filter-pills
+      page-filters
+      [options]="tabOptions()"
+      [value]="tab()"
+      [ariaLabel]="literals().tabsLabel"
+      (valueChange)="selectTab($event)"
+    />
+
+    @switch (tab()) {
+      @case ('cart') {
+        <app-trade-cart (sent)="selectTab('sent')" />
+      }
+      @case ('received') {
+        @if (!isReady()) {
+          <app-skeleton [count]="4" />
+        } @else if (received().length > 0) {
+          <app-trade-request-list
+            [requests]="received()"
+            mode="received"
+            (opened)="openRequest($event)"
+          />
+        } @else {
+          <app-empty-panel icon="pi-inbox" [title]="literals().receivedEmpty" />
+        }
+      }
+      @case ('sent') {
+        @if (!isReady()) {
+          <app-skeleton [count]="4" />
+        } @else if (sent().length > 0) {
+          <app-trade-request-list [requests]="sent()" mode="sent" (opened)="openRequest($event)" />
+        } @else {
+          <app-empty-panel icon="pi-send" [title]="literals().sentEmpty" />
+        }
+      }
+    }
+  </app-page-layout>
+}
+
+<app-trade-request-dialog [(visible)]="dialogVisible" [request]="selected()" />

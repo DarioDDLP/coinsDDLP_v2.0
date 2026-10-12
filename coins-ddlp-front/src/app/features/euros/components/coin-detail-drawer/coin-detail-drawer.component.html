@@ -31,6 +31,14 @@
       @if (!c.circulation) {
         <app-badge [label]="eurosLiterals().nonCirculating" severity="accent" size="md" />
       }
+      @if (repeated() > 0) {
+        <app-badge
+          [label]="repeatedLabel()"
+          severity="accent"
+          [tooltip]="repeatedTooltip()"
+          size="md"
+        />
+      }
     </div>
 
     <div class="coin-images">
@@ -110,8 +118,18 @@
     }
   }
 
-  @if ((canEdit() || canDelete()) && coin()) {
+  @if ((canEdit() || canDelete() || showAddToCart()) && coin()) {
     <div drawer-footer class="detail-actions">
+      @if (showAddToCart()) {
+        <app-button
+          icon="pi pi-cart-plus"
+          [label]="cartFull() ? tradeLiterals().inCartFull : tradeLiterals().addToCart"
+          [variant]="canEdit() ? 'tertiary' : 'primary'"
+          [block]="!canEdit()"
+          [disabled]="cartFull()"
+          (clicked)="onAddToCart()"
+        />
+      }
       @if (canEdit()) {
         <app-button
           icon="pi pi-pencil"

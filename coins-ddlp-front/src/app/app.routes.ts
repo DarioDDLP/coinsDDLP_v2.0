@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin.guard';
 import { permissionGuard } from './core/guards/permission.guard';
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -43,6 +44,11 @@ export const routes: Routes = [
       import('./features/ubicacion/ubicacion.component').then((m) => m.UbicacionComponent),
     loadChildren: () =>
       import('./features/ubicacion/ubicacion.routes').then((m) => m.ubicacionRoutes),
+  },
+  {
+    path: 'intercambios',
+    canActivate: [authGuard],
+    loadChildren: () => import('./features/trades/trades.routes').then((m) => m.tradesRoutes),
   },
   {
     path: 'admin',

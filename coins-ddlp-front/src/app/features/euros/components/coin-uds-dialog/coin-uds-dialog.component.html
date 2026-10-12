@@ -53,6 +53,15 @@
         [placeholder]="literals().observationsPlaceholder"
         (valueChange)="observations.set($event)"
       />
+
+      <!-- Solo con repetidas: el dueño decide si las ofrece para intercambio -->
+      @if (uds() > 1) {
+        <app-toggle
+          [label]="literals().tradeHiddenLabel"
+          [value]="tradeHidden()"
+          (valueChange)="tradeHidden.set($event)"
+        />
+      }
     }
 
     @if (canEditCatalog()) {

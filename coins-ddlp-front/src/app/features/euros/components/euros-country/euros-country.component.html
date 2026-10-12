@@ -155,6 +155,13 @@
                   [tooltip]="literals().nonCirculating"
                 />
               }
+              @if (row.repeated > 0) {
+                <app-badge
+                  [label]="tradeLiterals().repeatedBadge + ' ×' + row.repeated"
+                  severity="accent"
+                  [tooltip]="repeatedTooltip()"
+                />
+              }
             </td>
             <td class="col-grow coin-row__desc" data-cell="secondary">
               {{ row.coin.description }}
@@ -210,6 +217,17 @@
                 (keydown.enter)="$event.stopPropagation()"
               >
                 <div class="row-actions">
+                  @if (canAddToCart() && row.repeated > 0) {
+                    <app-button
+                      icon="pi pi-cart-plus"
+                      variant="ghost"
+                      [tooltip]="
+                        row.cartFull ? tradeLiterals().inCartFull : tradeLiterals().addToCart
+                      "
+                      [disabled]="row.cartFull"
+                      (clicked)="onAddToCart(row.coin)"
+                    />
+                  }
                   @if (canEdit()) {
                     <app-button
                       icon="pi pi-pencil"

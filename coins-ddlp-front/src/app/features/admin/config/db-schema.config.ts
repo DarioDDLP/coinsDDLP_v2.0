@@ -16,6 +16,8 @@ const PUBLIC: DbAccessRule[] = [{ level: 'public' }];
 const ADMIN: DbAccessRule[] = [{ level: 'admin' }];
 const SERVICE: DbAccessRule[] = [{ level: 'service' }];
 const NONE: DbAccessRule[] = [{ level: 'none' }];
+/** Solicitudes de intercambio: se crean con la función `trade_request_create`. */
+const TRADE: DbAccessRule[] = [{ level: 'permission', permissions: ['trade.request'] }];
 const UNITS: DbAccessRule[] = [
   { level: 'self', permissions: ['euros.units.editOwn'] },
   { level: 'permission', permissions: ['euros.units.editAny'] },
@@ -28,10 +30,10 @@ export const DB_DIAGRAM = {
   headerHeight: 34,
   rowHeight: 22,
   paddingBottom: 8,
-  processY: 620,
+  processY: 740,
   processHeight: 56,
   width: 1180,
-  height: 696,
+  height: 816,
 } as const;
 
 const [C0, C1, C2, C3] = DB_DIAGRAM.columns;
@@ -86,6 +88,7 @@ export const DB_TABLES: DbTable[] = [
       { name: 'uds', type: 'integer', inDiagram: true },
       { name: 'conservation', type: 'text', nullable: true, inDiagram: true },
       { name: 'observations', type: 'text', nullable: true },
+      { name: 'tradeHidden', type: 'boolean' },
     ],
     access: { select: PUBLIC, insert: UNITS, update: UNITS, delete: UNITS },
   },
@@ -179,11 +182,51 @@ export const DB_TABLES: DbTable[] = [
     access: { select: SERVICE, insert: SERVICE, update: SERVICE, delete: SERVICE },
   },
   {
+    name: 'trade_request',
+    sqlName: 'trade_request',
+    group: 'collections',
+    x: C3,
+    y: 230,
+    columns: [
+      { name: 'id', type: 'uuid', pk: true },
+      { name: 'requesterId', type: 'uuid', fk: 'auth_users' },
+      { name: 'requesterName', type: 'text' },
+      { name: 'ownerId', type: 'uuid', fk: 'owner' },
+      { name: 'kind', type: 'text' },
+      { name: 'status', type: 'text', inDiagram: true },
+      { name: 'message', type: 'text', nullable: true },
+      { name: 'response', type: 'text', nullable: true },
+      { name: 'createdAt', type: 'timestamptz' },
+      { name: 'updatedAt', type: 'timestamptz' },
+      { name: 'ownerSeen', type: 'boolean' },
+      { name: 'requesterSeen', type: 'boolean' },
+    ],
+    access: {
+      select: [{ level: 'self' }],
+      insert: TRADE,
+      update: [{ level: 'self' }],
+      delete: NONE,
+    },
+  },
+  {
+    name: 'trade_request_item',
+    sqlName: 'trade_request_item',
+    group: 'collections',
+    x: C3,
+    y: 390,
+    columns: [
+      { name: 'requestId', type: 'uuid', pk: true, fk: 'trade_request' },
+      { name: 'euroId', type: 'text', pk: true, fk: 'euro' },
+      { name: 'quantity', type: 'integer', inDiagram: true },
+    ],
+    access: { select: [{ level: 'self' }], insert: TRADE, update: NONE, delete: NONE },
+  },
+  {
     name: 'peseta_type',
     sqlName: 'peseta_type',
     group: 'pesetas',
     x: C0,
-    y: 420,
+    y: 540,
     columns: [
       { name: 'idNum', type: 'integer', pk: true },
       { name: 'title', type: 'text', inDiagram: true },
@@ -207,7 +250,7 @@ export const DB_TABLES: DbTable[] = [
     sqlName: 'peseta',
     group: 'pesetas',
     x: C1,
-    y: 420,
+    y: 540,
     columns: [
       { name: 'id', type: 'uuid', pk: true },
       { name: 'pesetaTypeId', type: 'integer', fk: 'peseta_type' },
@@ -226,7 +269,7 @@ export const DB_TABLES: DbTable[] = [
     sqlName: 'access_visit',
     group: 'accessLog',
     x: C2,
-    y: 420,
+    y: 540,
     columns: [
       { name: 'id', type: 'uuid', pk: true },
       { name: 'startedAt', type: 'timestamptz', inDiagram: true },
@@ -254,7 +297,7 @@ export const DB_TABLES: DbTable[] = [
     sqlName: 'access_event',
     group: 'accessLog',
     x: C3,
-    y: 420,
+    y: 540,
     columns: [
       { name: 'id', type: 'bigint', pk: true },
       { name: 'visitId', type: 'uuid', fk: 'access_visit' },
@@ -277,6 +320,10 @@ export const DB_RELATIONS: DbRelation[] = [
   { from: 'access_event', column: 'visitId', to: 'access_visit', onDelete: 'cascade' },
   { from: 'access_event', column: 'userId', to: 'auth_users', onDelete: 'setNull' },
   { from: 'peseta', column: 'pesetaTypeId', to: 'peseta_type', onDelete: 'restrict' },
+  { from: 'trade_request', column: 'requesterId', to: 'auth_users', onDelete: 'cascade' },
+  { from: 'trade_request', column: 'ownerId', to: 'owner', onDelete: 'cascade' },
+  { from: 'trade_request_item', column: 'requestId', to: 'trade_request', onDelete: 'cascade' },
+  { from: 'trade_request_item', column: 'euroId', to: 'euro', onDelete: 'cascade' },
 ];
 
 export const DB_PROCESSES: DbProcess[] = [

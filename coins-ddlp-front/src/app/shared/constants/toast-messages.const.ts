@@ -42,4 +42,11 @@ export const TOAST_MESSAGES = {
     saveSuccess: success('ubicacion.saveSuccess'),
     deleteSuccess: success('ubicacion.deleteSuccess'),
   },
+  trades: {
+    addedToCart: success('trades.addedToCart'),
+    sentSuccess: success('trades.sentSuccess'),
+    respondSuccess: success('trades.respondSuccess'),
+    cancelSuccess: info('trades.cancelSuccess'),
+    completeSuccess: success('trades.completeSuccess'),
+  },
 } as const;

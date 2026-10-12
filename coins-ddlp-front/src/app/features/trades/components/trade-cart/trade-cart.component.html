@@ -1,0 +1,77 @@
+@if (cart.groups().length === 0) {
+  <app-empty-panel
+    icon="pi-shopping-cart"
+    [title]="literals().cartEmpty"
+    [message]="literals().cartEmptyMessage"
+  />
+} @else {
+  <div class="trade-cart">
+    @for (group of cart.groups(); track group.ownerId) {
+      @let draft = this.draft(group.ownerId);
+      <section
+        class="trade-cart__group"
+        [attr.aria-label]="literals().requestTo + ' ' + group.ownerName"
+      >
+        <header class="trade-cart__header">
+          <span class="trade-cart__overline">{{ literals().requestTo }}</span>
+          <h2 class="trade-cart__owner">{{ group.ownerName }}</h2>
+        </header>
+
+        <ul class="trade-cart__items">
+          @for (item of group.items; track item.coin.id) {
+            <li class="trade-cart__item">
+              <app-trade-coin class="trade-cart__coin" [coin]="item.coin" />
+              <div class="trade-cart__qty">
+                <app-text-input
+                  [label]="literals().quantity"
+                  type="number"
+                  [min]="1"
+                  [max]="item.max"
+                  [value]="item.quantity.toString()"
+                  (valueChange)="setQuantity(item.coin.id, group.ownerId, $event)"
+                />
+                <small class="trade-cart__available">
+                  {{ item.max }} {{ literals().available }}
+                </small>
+              </div>
+              <app-button
+                icon="pi pi-trash"
+                variant="danger"
+                [tooltip]="literals().remove"
+                (clicked)="cart.remove(item.coin.id, group.ownerId)"
+              />
+            </li>
+          }
+        </ul>
+
+        <div class="trade-cart__form">
+          <div class="trade-cart__kind">
+            <span class="trade-cart__label">{{ literals().kind }}</span>
+            <app-filter-pills
+              [options]="kindOptions()"
+              [value]="draft.kind"
+              [ariaLabel]="literals().kind"
+              (valueChange)="setKind(group.ownerId, $event)"
+            />
+          </div>
+          <app-textarea
+            [label]="literals().message"
+            [placeholder]="literals().messagePlaceholder"
+            [value]="draft.message"
+            (valueChange)="setMessage(group.ownerId, $event)"
+          />
+        </div>
+
+        <footer class="trade-cart__footer">
+          <app-button
+            icon="pi pi-send"
+            [label]="literals().send"
+            [loading]="sendingOwner() === group.ownerId"
+            [disabled]="sendingOwner() !== null && sendingOwner() !== group.ownerId"
+            (clicked)="send(group)"
+          />
+        </footer>
+      </section>
+    }
+  </div>
+}

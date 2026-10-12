@@ -4,9 +4,11 @@ export interface PickedOwnership {
   uds: number;
   conservation: ConservationCode;
   observations?: string;
+  tradeHidden?: boolean;
   udsAlt?: number;
   conservationAlt?: ConservationCode;
   observationsAlt?: string;
+  tradeHiddenAlt?: boolean;
 }
 
 /**
@@ -24,12 +26,14 @@ export function pickOwnership(
     uds: primary?.uds ?? 0,
     conservation: (primary?.conservation ?? 'ND') as ConservationCode,
     observations: primary?.observations,
+    tradeHidden: primary?.tradeHidden ?? false,
   };
   if (compareId) {
     const other = find(compareId);
     result.udsAlt = other?.uds ?? 0;
     result.conservationAlt = (other?.conservation ?? 'ND') as ConservationCode;
     result.observationsAlt = other?.observations;
+    result.tradeHiddenAlt = other?.tradeHidden ?? false;
   }
   return result;
 }

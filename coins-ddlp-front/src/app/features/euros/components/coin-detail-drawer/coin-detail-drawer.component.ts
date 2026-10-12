@@ -28,6 +28,9 @@ import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.cons
 import { CoinUdsDialogComponent } from '../coin-uds-dialog/coin-uds-dialog.component';
 import { injectCanEditCoins } from '../../euros-permissions';
 import { injectCan } from '../../../../core/services/permissions.service';
+import { OwnerService } from '../../../../core/services/owner.service';
+import { TradeCartService } from '../../../../core/services/trade-cart.service';
+import { coinRepeated } from '../../../../shared/helpers/trade.helper';
 import { FaceValuePipe } from '../../../../shared/pipes/face-value.pipe';
 import { translateCountry } from '../../../../shared/helpers/country.helper';
 import { translateFaceValue } from '../../../../shared/helpers/face-value.helper';
@@ -68,6 +71,9 @@ export class CoinDetailDrawerComponent {
   private faceValues = injectLiterals('faceValues');
   readonly eurosLiterals = injectLiterals('euros');
   readonly sharedLiterals = injectLiterals('shared');
+  readonly tradeLiterals = injectLiterals('trades');
+  private ownerService = inject(OwnerService);
+  private tradeCart = inject(TradeCartService);
 
   private readonly id = toSignal(this.route.paramMap.pipe(map((p) => p.get('id') ?? '')), {
     initialValue: '',
@@ -90,6 +96,31 @@ export class CoinDetailDrawerComponent {
 
   readonly canEdit = injectCanEditCoins();
   readonly canDelete = injectCan('euros.delete');
+  readonly canAddToCart = this.tradeCart.canAddFromSource;
+
+  /** Repetidas en la colección cuyas repetidas se ven; el dueño ve también las que no ofrece. */
+  readonly repeated = computed(() => {
+    const c = this.coin();
+    if (!c) return 0;
+    return coinRepeated(
+      c,
+      this.ownerService.tradeSide(),
+      !this.ownerService.canRequestFromSource(),
+    );
+  });
+  readonly repeatedLabel = computed(
+    () => `${this.tradeLiterals().repeatedBadge} ×${this.repeated()}`,
+  );
+  readonly repeatedTooltip = computed(
+    () => `${this.tradeLiterals().repeatedHint} ${this.ownerService.tradeSourceName()}`,
+  );
+  readonly cartFull = computed(() => {
+    const c = this.coin();
+    return (
+      !!c && this.tradeCart.quantityOf(c.id, this.ownerService.tradeSourceId()) >= this.repeated()
+    );
+  });
+  readonly showAddToCart = computed(() => this.canAddToCart() && this.repeated() > 0);
 
   constructor() {
     effect(() => {
@@ -237,6 +268,13 @@ export class CoinDetailDrawerComponent {
       relativeTo: this.route,
       queryParamsHandling: 'preserve',
     });
+  }
+
+  onAddToCart(): void {
+    const c = this.coin();
+    if (c && this.tradeCart.addFromSource(c)) {
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.trades.addedToCart));
+    }
   }
 
   async onConfirmDelete(): Promise<void> {
