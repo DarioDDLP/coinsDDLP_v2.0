@@ -87,6 +87,7 @@ export class CoinUdsDialogComponent {
   readonly uds = signal(0);
   readonly conservation = signal<ConservationCode>('ND');
   readonly observations = signal('');
+  readonly tradeHidden = signal(false);
   readonly circulation = signal(true);
   readonly idNum = signal('');
   readonly description = signal('');
@@ -107,6 +108,7 @@ export class CoinUdsDialogComponent {
     this.uds.set(isCompare ? (c?.udsAlt ?? 0) : (c?.uds ?? 0));
     this.conservation.set(isCompare ? (c?.conservationAlt ?? 'ND') : (c?.conservation ?? 'ND'));
     this.observations.set(isCompare ? (c?.observationsAlt ?? '') : (c?.observations ?? ''));
+    this.tradeHidden.set(isCompare ? !!c?.tradeHiddenAlt : !!c?.tradeHidden);
     this.circulation.set(c?.circulation ?? true);
     this.idNum.set(c?.idNum ?? '');
     this.description.set(c?.description ?? '');
@@ -134,6 +136,7 @@ export class CoinUdsDialogComponent {
         uds: this.uds(),
         conservation: this.conservation(),
         observations: this.observations(),
+        tradeHidden: this.tradeHidden(),
       });
     }
     if (this.canEditCatalog()) {

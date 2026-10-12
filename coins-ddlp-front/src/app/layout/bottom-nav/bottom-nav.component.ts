@@ -5,6 +5,7 @@ import { LayoutStateService } from '../layout-state.service';
 import { isNavItemVisible, NAV_ITEMS } from '../navigation.config';
 import { AuthService } from '../../core/services/auth.service';
 import { PermissionsService } from '../../core/services/permissions.service';
+import { TradeRequestsService } from '../../core/services/trade-requests.service';
 
 /** Barra de pestañas inferior de móvil: secciones principales + "Más". */
 @Component({
@@ -19,12 +20,21 @@ export class BottomNavComponent {
 
   private authService = inject(AuthService);
   private permissions = inject(PermissionsService);
+  private trades = inject(TradeRequestsService);
+
+  /** Novedades de las secciones del panel "Más": se marca un punto sobre su pestaña. */
+  readonly moreUnread = computed(() => this.trades.unreadCount() > 0);
 
   readonly items = computed(() =>
     NAV_ITEMS.filter(
       (i) =>
         i.mobilePrimary &&
-        isNavItemVisible(i, this.authService.isAdmin(), this.permissions.granted()),
+        isNavItemVisible(
+          i,
+          this.authService.isAdmin(),
+          this.permissions.granted(),
+          this.authService.isLoggedIn(),
+        ),
     ),
   );
 

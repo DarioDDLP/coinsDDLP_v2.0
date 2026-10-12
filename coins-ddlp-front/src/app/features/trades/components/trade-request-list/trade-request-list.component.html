@@ -1,0 +1,39 @@
+<p-table class="table-stack" [value]="rows()" dataKey="request.id" [rowHover]="true">
+  <ng-template #header>
+    <tr>
+      <th>{{ literals().colDate }}</th>
+      <th class="col-grow">{{ mode() === 'received' ? literals().colFrom : literals().colTo }}</th>
+      <th>{{ literals().colKind }}</th>
+      <th class="col-center">{{ literals().colCoins }}</th>
+      <th class="col-center">{{ literals().colStatus }}</th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-row>
+    <tr
+      class="request-row"
+      [class.request-row--unread]="row.unread"
+      tabindex="0"
+      [attr.aria-label]="row.party + ' · ' + row.status"
+      (click)="opened.emit(row.request)"
+      (keydown.enter)="opened.emit(row.request)"
+    >
+      <td data-cell="secondary">
+        {{ row.request.updatedAt | date: 'short' : undefined : lang() }}
+      </td>
+      <td class="col-grow" data-cell="primary">
+        <span class="request-row__party">
+          @if (row.unread) {
+            <span class="request-row__dot" [attr.aria-label]="literals().unread" role="img"></span>
+          }
+          {{ row.party }}
+        </span>
+      </td>
+      <td [attr.data-label]="literals().colKind">{{ row.kind }}</td>
+      <td class="col-center" [attr.data-label]="literals().colCoins">{{ row.coins }}</td>
+      <td class="col-center" [attr.data-label]="literals().colStatus">
+        <app-badge [label]="row.status" [severity]="row.severity" />
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

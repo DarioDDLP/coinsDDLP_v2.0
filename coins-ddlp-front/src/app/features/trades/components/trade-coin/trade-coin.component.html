@@ -1,0 +1,17 @@
+@let c = coin();
+<app-country-flag [country]="c.country" [size]="28" [decorative]="true" />
+<div class="trade-coin__text">
+  <span class="trade-coin__title">
+    {{ c.faceValue | faceValue }} · {{ c.year }}
+    @if (c.variant) {
+      <app-badge [label]="c.variant" severity="secondary" />
+    }
+  </span>
+  <span class="trade-coin__meta">
+    {{ c.country | countryName }}
+    @if (c.mint) {
+      · {{ c.mint }}
+    }
+    · {{ c.description }}
+  </span>
+</div>

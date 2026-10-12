@@ -6,7 +6,8 @@ import { EuroCoin, RawEuroCoin } from '../../../shared/interfaces/euro-coin.inte
 import { TABLES } from '../../../shared/constants/collections.const';
 import { ownerIdsOf, pickOwnership } from '../../../shared/helpers/ownership-map.helper';
 
-const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
+const OWNERSHIP_JOIN =
+  '*, euro_ownership!left(uds, conservation, observations, tradeHidden, ownerId)';
 
 @Injectable({ providedIn: 'root' })
 export class ConmemorativasService {

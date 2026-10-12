@@ -109,6 +109,11 @@
                       <span class="owner-tag">{{ ownerService.compareName() }}</span>
                     </th>
                   }
+                  @if (canAddToCart()) {
+                    <th class="col-actions">
+                      <span class="sr-only">{{ sharedLiterals().actions }}</span>
+                    </th>
+                  }
                 </tr>
               </ng-template>
 
@@ -143,6 +148,13 @@
                       <span class="clip">{{ row.coin.description }}</span>
                       @if (row.coin.variant) {
                         <app-badge [label]="row.coin.variant" severity="secondary" />
+                      }
+                      @if (row.repeated > 0) {
+                        <app-badge
+                          [label]="tradeLiterals().repeatedBadge + ' ×' + row.repeated"
+                          severity="accent"
+                          [tooltip]="repeatedTooltip()"
+                        />
                       }
                     </div>
                   </td>
@@ -191,6 +203,25 @@
                         <app-badge
                           [label]="row.udsBadgeAlt.label"
                           [severity]="row.udsBadgeAlt.severity"
+                        />
+                      }
+                    </td>
+                  }
+                  @if (canAddToCart()) {
+                    <td
+                      class="col-actions"
+                      (click)="$event.stopPropagation()"
+                      (keydown.enter)="$event.stopPropagation()"
+                    >
+                      @if (row.repeated > 0) {
+                        <app-button
+                          icon="pi pi-cart-plus"
+                          variant="ghost"
+                          [tooltip]="
+                            row.cartFull ? tradeLiterals().inCartFull : tradeLiterals().addToCart
+                          "
+                          [disabled]="row.cartFull"
+                          (clicked)="onAddToCart(row.coin)"
                         />
                       }
                     </td>

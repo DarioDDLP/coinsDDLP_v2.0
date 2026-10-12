@@ -31,6 +31,10 @@
               <a class="more-sheet__item" [routerLink]="item.routerLink" (click)="close()">
                 <i [class]="item.icon" aria-hidden="true"></i>
                 {{ literals()[item.labelKey] }}
+                @let count = badgeCount(item.badge);
+                @if (count > 0) {
+                  <app-nav-count [count]="count" [label]="tradesLiterals().unreadCount" />
+                }
               </a>
             </li>
           }

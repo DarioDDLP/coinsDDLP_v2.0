@@ -1,0 +1,25 @@
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  margin-left: auto;
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--font-2xs);
+  font-weight: var(--font-bold);
+}
+
+// Raíl del sidebar: solo un punto sobre el icono
+:host(.dot) {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-3);
+  min-width: 0;
+  width: var(--space-2);
+  height: var(--space-2);
+  padding: 0;
+}

@@ -11,7 +11,7 @@ export interface EmptyState {
 
 /**
  * Qué decir cuando una lista sale vacía, según el motivo:
- * búsqueda sin coincidencias › filtro "faltantes" (no falta ninguna) › filtro "obtenidas" › sin datos.
+ * búsqueda sin coincidencias › filtro "faltantes" (no falta ninguna) › "repetidas" › "obtenidas" › sin datos.
  */
 export function getEmptyState(
   t: Translations['shared'],
@@ -32,6 +32,14 @@ export function getEmptyState(
       icon: 'pi-check-circle',
       title: t.emptyMissing,
       tone: 'success',
+      canClearSearch: false,
+    };
+  }
+  if (ownership === 'repeated') {
+    return {
+      icon: 'pi-inbox',
+      title: t.emptyRepeated,
+      tone: 'neutral',
       canClearSearch: false,
     };
   }

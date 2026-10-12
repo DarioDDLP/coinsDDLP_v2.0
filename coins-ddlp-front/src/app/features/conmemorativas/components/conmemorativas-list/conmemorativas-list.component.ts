@@ -31,6 +31,10 @@ import { injectCan } from '../../../../core/services/permissions.service';
 import { OwnerService } from '../../../../core/services/owner.service';
 import { EuroCoin } from '../../../../shared/interfaces/euro-coin.interface';
 import { injectLiterals, I18nService } from '../../../../shared/services/i18n.service';
+import { MessageService } from 'primeng/api';
+import { TradeCartService } from '../../../../core/services/trade-cart.service';
+import { coinRepeated } from '../../../../shared/helpers/trade.helper';
+import { TOAST_MESSAGES } from '../../../../shared/constants/toast-messages.const';
 import { getOwnershipFilterOptions } from '../../../../shared/constants/ownership-filter.config';
 import { normalizeString } from '../../../../shared/helpers/normalize-strings.helper';
 import {
@@ -61,6 +65,8 @@ interface CoinRow {
   conservationBadgeAlt: ReturnType<typeof getConservationBadge>;
   udsBadgeAlt: ReturnType<typeof getUdsBadge> | null;
   location: AlbumLocation;
+  repeated: number;
+  cartFull: boolean;
 }
 
 interface YearGroup {
@@ -111,7 +117,10 @@ function albumOrder(a: EuroCoin, b: EuroCoin): number {
   styleUrl: './conmemorativas-list.component.scss',
 })
 export class ConmemorativasListComponent {
-  readonly lang = inject(I18nService).lang;
+  private i18n = inject(I18nService);
+  readonly lang = this.i18n.lang;
+  private messageService = inject(MessageService);
+  private tradeCart = inject(TradeCartService);
   private service = inject(ConmemorativasService);
   private excelExport = inject(ExcelExportService);
   private router = inject(Router);
@@ -123,6 +132,8 @@ export class ConmemorativasListComponent {
   readonly canSwitchCollection = injectCan('collection.switch');
   readonly literals = injectLiterals('conmemorativas');
   readonly sharedLiterals = injectLiterals('shared');
+  readonly tradeLiterals = injectLiterals('trades');
+  readonly canAddToCart = this.tradeCart.canAddFromSource;
   private excelLiterals = injectLiterals('excel');
   private excelLabels = computed<ExcelLabels>(() => ({
     ...this.excelLiterals(),
@@ -130,7 +141,9 @@ export class ConmemorativasListComponent {
     compareName: this.ownerService.compareName(),
   }));
   private countries = injectLiterals('countries');
-  readonly ownershipOptions = computed(() => getOwnershipFilterOptions(this.sharedLiterals()));
+  readonly ownershipOptions = computed(() =>
+    getOwnershipFilterOptions(this.sharedLiterals(), true),
+  );
 
   private allCoins = signal<EuroCoin[]>([]);
   private loadSub?: Subscription;
@@ -195,6 +208,24 @@ export class ConmemorativasListComponent {
     });
   }
 
+  /** Tooltip del badge de repetidas: de quién son y, sin sesión, cómo pedirlas. */
+  readonly repeatedTooltip = computed(() => {
+    const t = this.tradeLiterals();
+    const hint = `${t.repeatedHint} ${this.ownerService.tradeSourceName()}`;
+    return this.ownerService.canRequestFromSource() && !this.canAddToCart()
+      ? `${hint} · ${t.loginToRequest}`
+      : hint;
+  });
+
+  /** Repetidas en la colección cuyas repetidas se ven; el dueño ve también las que no ofrece. */
+  private repeatedOf(coin: EuroCoin): number {
+    return coinRepeated(
+      coin,
+      this.ownerService.tradeSide(),
+      !this.ownerService.canRequestFromSource(),
+    );
+  }
+
   private isOwned(c: EuroCoin): boolean {
     return isOwned(c.uds, c.udsAlt, this.isBoth());
   }
@@ -213,12 +244,14 @@ export class ConmemorativasListComponent {
     const ownership = this.ownershipFilter();
     const query = normalizeString(this.searchQuery());
     const locations = this.locations();
+    const sourceId = this.ownerService.tradeSourceId();
 
     const filtered = [...this.allCoins()]
       .filter((c) => {
         // Al comparar: obtenida si la tiene alguna de las dos; faltante si no la tiene ninguna
         if (ownership === 'owned') return this.isOwned(c);
         if (ownership === 'missing') return !this.isOwned(c);
+        if (ownership === 'repeated') return this.repeatedOf(c) > 0;
         return true;
       })
       .filter(
@@ -242,6 +275,8 @@ export class ConmemorativasListComponent {
           : null,
         udsBadgeAlt: coin.udsAlt !== undefined ? getUdsBadge(coin.udsAlt) : null,
         location: locations.get(coin.id)!,
+        repeated: this.repeatedOf(coin),
+        cartFull: this.tradeCart.quantityOf(coin.id, sourceId) >= this.repeatedOf(coin),
       });
       if (this.isOwned(coin)) group.owned++;
       byYear.set(coin.year, group);
@@ -279,6 +314,12 @@ export class ConmemorativasListComponent {
     this.router.navigate(['/euros', coin.country, 'moneda', coin.id], {
       queryParams: { year: coin.year, from: 'conmemorativas' },
     });
+  }
+
+  onAddToCart(coin: EuroCoin): void {
+    if (this.tradeCart.addFromSource(coin)) {
+      this.messageService.add(this.i18n.toast(TOAST_MESSAGES.trades.addedToCart));
+    }
   }
 
   async exportExcel(): Promise<void> {

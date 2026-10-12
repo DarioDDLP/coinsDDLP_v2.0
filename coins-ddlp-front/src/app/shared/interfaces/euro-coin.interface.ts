@@ -4,6 +4,7 @@ export interface RawOwnership {
   uds: number;
   conservation: string;
   observations?: string;
+  tradeHidden?: boolean;
   ownerId: string;
 }
 
@@ -36,10 +37,13 @@ export interface EuroCoin {
   uds: number;
   conservation: ConservationCode;
   observations?: string;
+  /** El dueño no la ofrece para intercambio aunque la tenga repetida. */
+  tradeHidden?: boolean;
   // Al comparar: datos de la segunda colección
   udsAlt?: number;
   conservationAlt?: ConservationCode;
   observationsAlt?: string;
+  tradeHiddenAlt?: boolean;
 }
 
 export interface RawEuroCoinSummary {
@@ -61,5 +65,13 @@ export interface EuroCoinSummary {
 
 export type NewEuroCoin = Omit<
   EuroCoin,
-  'id' | 'uds' | 'conservation' | 'observations' | 'udsAlt' | 'conservationAlt' | 'observationsAlt'
+  | 'id'
+  | 'uds'
+  | 'conservation'
+  | 'observations'
+  | 'tradeHidden'
+  | 'udsAlt'
+  | 'conservationAlt'
+  | 'observationsAlt'
+  | 'tradeHiddenAlt'
 >;

@@ -13,7 +13,8 @@ import { IEurosRepository } from '../../../shared/interfaces/euros-repository.in
 import { TABLES } from '../../../shared/constants/collections.const';
 import { ownerIdsOf, pickOwnership } from '../../../shared/helpers/ownership-map.helper';
 
-const OWNERSHIP_JOIN = '*, euro_ownership!left(uds, conservation, observations, ownerId)';
+const OWNERSHIP_JOIN =
+  '*, euro_ownership!left(uds, conservation, observations, tradeHidden, ownerId)';
 const SUMMARY_SELECT = 'country, year, commemorative, euro_ownership!left(uds, ownerId)';
 
 @Injectable({ providedIn: 'root' })
@@ -80,12 +81,23 @@ export class EurosService implements IEurosRepository {
   }
 
   async update(id: string, data: Partial<EuroCoin>, ownerId: string | null): Promise<void> {
-    const { uds, conservation, observations, udsAlt, conservationAlt, ...catalogData } = data;
+    const {
+      uds,
+      conservation,
+      observations,
+      tradeHidden,
+      udsAlt,
+      conservationAlt,
+      observationsAlt,
+      tradeHiddenAlt,
+      ...catalogData
+    } = data;
 
     const ownershipUpdate: Record<string, unknown> = {};
     if (uds !== undefined) ownershipUpdate['uds'] = uds;
     if (conservation !== undefined) ownershipUpdate['conservation'] = conservation;
     if (observations !== undefined) ownershipUpdate['observations'] = observations;
+    if (tradeHidden !== undefined) ownershipUpdate['tradeHidden'] = tradeHidden;
 
     const promises: Promise<void>[] = [];
 
