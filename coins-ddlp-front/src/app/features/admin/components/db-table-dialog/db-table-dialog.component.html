@@ -75,7 +75,7 @@
         <section class="table-detail__section">
           <h3 class="table-detail__subtitle">{{ t().dialog.writtenBy }}</h3>
           <ul class="writers">
-            @for (writer of d.writers; track writer) {
+            @for (writer of d.writers; track $index) {
               <li><app-badge [label]="writer" severity="neutral" /></li>
             }
           </ul>

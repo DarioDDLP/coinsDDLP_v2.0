@@ -55,7 +55,8 @@ export class DbTableDialogComponent {
     if (!table) return null;
     const t = this.t();
     const texts = t.tables[table.name];
-    const notes = texts.columns as Record<string, string>;
+    // Transloco descarta los objetos vacíos: las tablas sin notas llegan sin `columns`
+    const notes = (texts.columns ?? {}) as Record<string, string>;
     const count = this.counts()[table.name];
 
     const writtenBy = DB_PROCESSES.filter((p) => p.writes.includes(table.name)).map(
