@@ -103,11 +103,5 @@
     }
 
     <app-language-toggle [compact]="layout.sidebarRail()" />
-
-    @if (!layout.sidebarRail()) {
-      <span class="sidebar__version" [attr.title]="literals().versionHint"
-        >{{ literals().versionPrefix }}{{ version }}</span
-      >
-    }
   </div>
 </nav>

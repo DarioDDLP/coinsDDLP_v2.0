@@ -160,13 +160,18 @@
     "userRole": "User",
     "back": "Back",
     "skipToContent": "Skip to content",
-    "versionPrefix": "v",
-    "versionHint": "App version",
     "language": "Language",
     "languageHint": "Change language",
     "languageSpanish": "Español",
     "languageEnglish": "English",
     "trades": "Trades"
+  },
+  "footer": {
+    "brand": "coinsDDLP",
+    "createdBy": "Website by",
+    "logoLabel": "DDLP",
+    "versionPrefix": "v",
+    "versionHint": "App version"
   },
   "coinDetail": {
     "labelIssuer": "Issuer",

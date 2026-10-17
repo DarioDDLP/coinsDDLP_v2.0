@@ -1,0 +1,70 @@
+@use 'breakpoints' as *;
+
+:host {
+  display: block;
+  margin-top: auto;
+}
+
+.footer {
+  --footer-gutter: clamp(var(--space-5), 4vw, var(--space-9));
+
+  position: relative;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-5) var(--footer-gutter);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-3) var(--space-5);
+  font-size: var(--font-sm);
+  color: var(--text-muted);
+
+  // Separador dorado que se desvanece en los extremos
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    inset-inline: var(--footer-gutter);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent-deep) 20%,
+      var(--accent) 50%,
+      var(--accent-deep) 80%,
+      transparent
+    );
+  }
+
+  @include mobile {
+    --footer-gutter: var(--space-4);
+
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--font-xs);
+  }
+
+  &__meta,
+  &__by {
+    margin: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__version {
+    padding: 2px var(--space-2);
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-subtle);
+    background: var(--surface-2);
+    font-size: var(--font-caption);
+    color: var(--text-muted);
+  }
+
+  &__logo {
+    height: 20px;
+    color: var(--text-soft);
+  }
+}
