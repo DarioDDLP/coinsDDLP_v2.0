@@ -1,0 +1,12 @@
+<footer class="footer">
+  <p class="footer__meta">
+    <span>© {{ year }} {{ literals().brand }}</span>
+    <span class="footer__version" [attr.title]="literals().versionHint"
+      >{{ literals().versionPrefix }}{{ version }}</span
+    >
+  </p>
+  <p class="footer__by">
+    {{ literals().createdBy }}
+    <app-ddlp-logo class="footer__logo" [label]="literals().logoLabel" />
+  </p>
+</footer>

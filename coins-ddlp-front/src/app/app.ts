@@ -13,6 +13,7 @@ import { BottomNavComponent } from './layout/bottom-nav/bottom-nav.component';
 import { MoreSheetComponent } from './layout/more-sheet/more-sheet.component';
 import { LoginDialogComponent } from './layout/login-dialog/login-dialog.component';
 import { RecoveryPasswordDialogComponent } from './layout/recovery-password-dialog/recovery-password-dialog.component';
+import { FooterComponent } from './layout/footer/footer.component';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,7 @@ import { RecoveryPasswordDialogComponent } from './layout/recovery-password-dial
     SidebarComponent,
     TopbarComponent,
     BottomNavComponent,
+    FooterComponent,
     MoreSheetComponent,
     LoginDialogComponent,
     RecoveryPasswordDialogComponent,

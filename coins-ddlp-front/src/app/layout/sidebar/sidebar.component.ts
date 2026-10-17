@@ -2,7 +2,6 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TooltipModule } from 'primeng/tooltip';
 import { injectLiterals } from '../../shared/services/i18n.service';
-import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { NumistaService } from '../../core/services/numista.service';
 import { TradeRequestsService } from '../../core/services/trade-requests.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -54,7 +53,6 @@ export class SidebarComponent {
   readonly authLiterals = injectLiterals('auth');
   readonly tradesLiterals = injectLiterals('trades');
   readonly quota = NUMISTA_MONTHLY_QUOTA;
-  readonly version = APP_VERSION;
 
   readonly sections = computed<NavSection[]>(() => {
     const isAdmin = this.authService.isAdmin();

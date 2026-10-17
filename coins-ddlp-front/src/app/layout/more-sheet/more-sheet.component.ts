@@ -2,7 +2,6 @@ import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Drawer } from 'primeng/drawer';
 import { injectLiterals } from '../../shared/services/i18n.service';
-import { APP_VERSION } from '../../shared/constants/app-version.const';
 import { AuthService } from '../../core/services/auth.service';
 import { injectCan, PermissionsService } from '../../core/services/permissions.service';
 import { NumistaService } from '../../core/services/numista.service';
@@ -32,7 +31,6 @@ export class MoreSheetComponent {
   readonly tradesLiterals = injectLiterals('trades');
   private trades = inject(TradeRequestsService);
   readonly quota = NUMISTA_MONTHLY_QUOTA;
-  readonly version = APP_VERSION;
 
   readonly items = computed(() =>
     NAV_ITEMS.filter(
