@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.8.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.7.0...v3.8.0) (2026-10-17)
+
+
+### Novedades
+
+* add site footer with DDLP monogram ([f2390e8](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/f2390e84a2afe1c301548a184a5654e19e6484ed))
+* add site footer with DDLP monogram ([96b56eb](https://github.com/DarioDDLP/coinsDDLP_v2.0/commit/96b56eb1521799b608d047a0d0071cecffaf02c2))
+
 ## [3.7.0](https://github.com/DarioDDLP/coinsDDLP_v2.0/compare/v3.6.1...v3.7.0) (2026-10-12)
 
 
